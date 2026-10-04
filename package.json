@@ -1,0 +1,23 @@
+{
+  "name": "huego-monorepo",
+  "version": "1.0.0",
+  "description": "HUEGO - Ứng dụng trải nghiệm du lịch tự túc thông minh tại Huế",
+  "private": true,
+  "scripts": {
+    "start": "npm --prefix backend run start",
+    "start:dev": "npm --prefix backend run start:dev",
+    "build": "npm --prefix backend run build",
+    "test:mobile": "cd mobile && flutter test",
+    "mobile": "cd mobile && flutter run -d chrome",
+    "backend": "npm --prefix backend run start:dev"
+  },
+  "keywords": [
+    "huego",
+    "hue",
+    "tourism",
+    "flutter",
+    "nestjs",
+    "postgis"
+  ],
+  "author": "HUEGO Architecture Team"
+}

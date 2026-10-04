@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.dart_tool/
+.idea/
+*.iml
+.vscode/*.log
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+backend/.env
+mobile/android/local.properties
+mobile/flutter_01.log

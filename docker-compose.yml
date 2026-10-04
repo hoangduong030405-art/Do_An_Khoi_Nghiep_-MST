@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # 1. Cơ sở dữ liệu Không gian địa lý PostgreSQL 16 tích hợp PostGIS 3.4
+  postgres-postgis:
+    image: postgis/postgis:16-3.4
+    container_name: huego-postgis
+    restart: always
+    environment:
+      POSTGRES_DB: huego_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: huego_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - huego_pgdata:/var/lib/postgresql/data
+      - ./backend/database/seeds:/docker-entrypoint-initdb.d
+    networks:
+      - huego-net
+
+  # 2. MongoDB lưu trữ Lịch trình tùy biến & Phiên trò chuyện AI Assistant
+  mongodb:
+    image: mongo:7.0
+    container_name: huego-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - huego_mongodata:/data/db
+    networks:
+      - huego-net
+
+  # 3. Redis Cache lưu session GPS & thời tiết OpenWeatherMap
+  redis:
+    image: redis:7.2-alpine
+    container_name: huego-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - huego_redisdata:/data
+    networks:
+      - huego-net
+
+volumes:
+  huego_pgdata:
+  huego_mongodata:
+  huego_redisdata:
+
+networks:
+  huego-net:
+    driver: bridge

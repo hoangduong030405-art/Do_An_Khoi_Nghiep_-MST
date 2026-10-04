@@ -1,0 +1,27 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.autoSave": "onFocusChange",
+  "typescript.tsdk": "backend/node_modules/typescript/lib",
+  "dart.flutterSdkPath": "C:\\Users\\PREDATOR\\flutter",
+  "terminal.integrated.env.windows": {
+    "PATH": "C:\\Users\\PREDATOR\\flutter\\bin;C:\\Program Files\\nodejs;${env:PATH}"
+  },
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false
+  },
+  "sqltools.connections": [
+    {
+      "name": "HUEGO PostGIS Database",
+      "adapter": "PostgreSQL",
+      "server": "localhost",
+      "port": 5432,
+      "database": "huego_db",
+      "username": "postgres",
+      "password": "huego_secure_password_2026"
+    }
+  ]
+}

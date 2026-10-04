@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "Dart-Code.flutter",
+    "Dart-Code.dart-code",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg",
+    "ms-azuretools.vscode-docker"
+  ]
+}
