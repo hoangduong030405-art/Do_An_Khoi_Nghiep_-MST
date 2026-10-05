@@ -121,7 +121,16 @@ cd C:\Lap_Trinh_Ung_dung\backend
 cd C:\Lap_Trinh_Ung_dung\mobile
 & "C:\Users\PREDATOR\flutter\bin\flutter.bat" pub get
 & "C:\Users\PREDATOR\flutter\bin\flutter.bat" analyze
-& "C:\Users\PREDATOR\flutter\bin\flutter.bat" build web
+
+# BẮT BUỘC build web kèm --base-href=/flutter/
+& "C:\Users\PREDATOR\flutter\bin\flutter.bat" build web --base-href=/flutter/
+# KHÔNG được bỏ --base-href=/flutter/. Backend mount web tại /flutter (backend/src/main.ts:30),
+# còn build mặc định ghi <base href="/"> vào index.html -> browser sẽ tải
+# http://localhost:3000/main.dart.js (404) thay vì /flutter/main.dart.js -> TRANG TRẮNG.
+# Đây là lỗi đã xảy ra thật ở Phase 2. Mỗi lần build web phải kiểm tra lại:
+#   curl.exe -o NUL -w "%{http_code}" http://localhost:3000/flutter/main.dart.js   # phải ra 200
+
+# URL đúng để xem app: http://localhost:3000/flutter  (KHÔNG phải cổng khác)
 
 # Docker (PostGIS/Mongo/Redis)
 docker compose -f C:\Lap_Trinh_Ung_dung\docker-compose.yml up -d
