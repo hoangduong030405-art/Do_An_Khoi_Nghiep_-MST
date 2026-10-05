@@ -120,6 +120,31 @@ Client phải tự nối thêm `/$userId`. Tương tự `certificate` cần `/$u
 - Bảng màu: `HuegoTheme.royalViolet`, `.imperialGold`, `.emeraldGreen`, `.perfumeRiverTeal`, `.textMuted`, `.textDark`.
 - `flutter_map 6.x` + `latlong2` **đã có** — không thêm thư viện map mới.
 
+### 1.6 DANH SÁCH ĐẦY ĐỦ categoryCode của backend (26 địa danh, 9 mã)
+
+Backend có **26** địa danh, phân bố theo **9** `categoryCode` khác nhau. Đây là danh sách đầy đủ —
+`_shortCategory` phải xử lý **cả 9**, không thiếu mã nào:
+
+| `categoryCode` | `categoryName` | Số địa danh | Mã ngắn hiện tại |
+|---|---|---|---|
+| `HISTORICAL` | Di tích Cố đô | 5 | `HISTORICAL` |
+| `CUISINE` | Ẩm thực Huế | 6 | `CUISINE` |
+| `OUTSKIRTS_ECO` | Ngoại thành Sinh thái | 4 | `OUTSKIRTS` |
+| `SCENIC_VIEW` | Cảnh quan View Ngày & Đêm | 3 | `SCENIC` |
+| `CAFE` | Quán Cà Phê & Sang đo | 3 | `CAFE` |
+| `VEHICLE_RENTAL` | Tiện ích: Thuê Xe | 2 | `RENTAL` |
+| `GAS_STATION` | Tiện ích: Cây Xăng | 1 | `GAS` |
+| **`CULTURE_ART`** | **Văn hóa & Nghệ thuật** | **1** | **chưa có — thiếu!** |
+| **`CRAFT_VILLAGE`** | **Làng nghề & Truyền thống** | **1** | **chưa có — thiếu!** |
+
+Tổng: 5+6+4+3+3+2+1+1+1 = **26**.
+
+`CULTURE_ART` và `CRAFT_VILLAGE` rơi vào `default` → hiển thị nhầm icon `account_balance`
+(di tích hoàng gia). Phải thêm `case` cho cả hai, icon thuộc Material Icons sẵn có, màu phải
+phân biệt được với 7 màu đang dùng (cam đồng `0xFFD97706`, đỏ `0xFFDC2626`, `perfumeRiverTeal`,
+xanh lá `0xFF15803D`, xanh dương `0xFF2563EB`, cam `0xFFEA580C`, tím `royalViolet`).
+Gợi ý: `CULTURE_ART` → `Icons.museum`, `CRAFT_VILLAGE` → `Icons.handyman`.
+
 ---
 
 ## 2. CÁC BƯỚC THỰC HIỆN
@@ -408,8 +433,9 @@ Mỗi mục phải **dán bằng chứng thật**, không được viết "chắ
    curl.exe http://localhost:3000/api/v1/weather/hue-current
    curl.exe http://localhost:3000/api/v1/gamification/profile/e7b0e774-7243-41bb-9be4-8a4b868e82ef
    ```
-4. `flutter run -d chrome`: bản đồ hiện **20 marker** (đúng bằng `places.length` trong
+4. `flutter run -d chrome`: bản đồ hiện **26 marker** (đúng bằng `places.length` trong
    `in-memory-db.service.ts`) chứ không phải 16 marker cũ.
+   Backend có **9 mã `categoryCode` khác nhau** — xem mục 1.6.
 5. **BẰNG CHỨNG QUAN TRỌNG NHẤT — chứng minh dữ liệu thật:** sửa tạm một tên địa danh
    trong `in-memory-db.service.ts` (ví dụ thêm `" [TEST]"` vào `name` của Đại Nội),
    `flutter run` lại → web **hiện "[TEST]"** → **xoá lại thay đổi**, `git diff` phải rỗng.
@@ -484,8 +510,12 @@ Prompt trên đã viết lại ground truth theo sự thật đã kiểm chứng
    Đây là bằng chứng không thể giả bằng lời nói. Nếu agent nói "đã xong" mà không dán output trước/sau
    → yêu cầu chạy lại.
 
-2. **Tiêu chí 7 bắt lỗi map danh mục** — lỗi dễ xảy ra nhất. Nếu mọi marker đều cùng icon tím
-   (`account_balance`), nghĩa là agent quên map `SCENIC_VIEW` → `SCENIC`.
+2. **Tiêu chí 7 bắt lỗi map danh mục** — lỗi dễ xảy ra nhất. Nguyên nhân gốc: `_shortCategory`
+   chỉ liệt kê 6 mã trong khi backend có **9 mã**. `CULTURE_ART` và `CRAFT_VILLAGE` rơi vào
+   `default` và hiện nhầm icon `account_balance`.
+   **Cách kiểm tra đúng:** liệt kê *mọi* `categoryCode` khác nhau trong response `curl` và đối chiếu
+   với *mọi* `case` trong `_shortCategory`. Mã nào không có `case` tương ứng là bug — đừng chỉ kiểm tra
+   những mã mình đã biết.
 
-3. **Mong đợi cụ thể:** bản đồ **20 marker** (không phải 16), Green Points **125** (không phải 175),
-   tiến độ **0%**. Agent báo con số khác → sai.
+3. **Mong đợi cụ thể:** bản đồ **26 marker** (không phải 16), Green Points **125** (không phải 175),
+   tiến độ **0%**, `totalSystemPlaces` = **26**. Agent báo con số khác → sai.
