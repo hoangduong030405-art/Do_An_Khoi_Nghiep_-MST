@@ -36,7 +36,8 @@
       "*git clean*": "deny",
       "*rm -rf*": "deny",
       "*Remove-Item -Recurse*": "deny",
-      "*format *": "deny"
+      "format c*": "deny",
+      "format d*": "deny"
     }
   }
 }
