@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../../core/services/geofence_location_service.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../data/place_dto.dart';
 
 class HuegoMapScreen extends StatefulWidget {
   const HuegoMapScreen({Key? key}) : super(key: key);
@@ -18,126 +21,59 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
   // Tọa độ trung tâm Huế: Kỳ Đài / Đại Nội
   final LatLng _hueCenter = const LatLng(16.4697, 107.5779);
 
-  // Danh sách địa danh di sản, cà phê, đặc sản & tiện ích phong phú xứ Huế
-  final List<Map<String, dynamic>> _places = [
-    {
-      'name': 'Đại Nội Huế (Hoàng Thành)',
-      'latLng': const LatLng(16.4697, 107.5779),
-      'points': 30,
-      'env': 'OUTDOOR',
-      'category': 'HISTORICAL',
-    },
-    {
-      'name': 'Chùa Thiên Mụ (Linh Mụ Tự)',
-      'latLng': const LatLng(16.4529, 107.5451),
-      'points': 25,
-      'env': 'OUTDOOR',
-      'category': 'HISTORICAL',
-    },
-    {
-      'name': 'Bảo tàng Cổ vật Cung đình',
-      'latLng': const LatLng(16.4715, 107.5812),
-      'points': 25,
-      'env': 'INDOOR',
-      'category': 'HISTORICAL',
-    },
-    {
-      'name': 'Lăng Khải Định (Ứng Lăng)',
-      'latLng': const LatLng(16.3991, 107.5905),
-      'points': 25,
-      'env': 'SEMI_OUTDOOR',
-      'category': 'HISTORICAL',
-    },
-    {
-      'name': 'Lăng Tự Đức (Khiêm Lăng)',
-      'latLng': const LatLng(16.4328, 107.5658),
-      'points': 25,
-      'env': 'SEMI_OUTDOOR',
-      'category': 'HISTORICAL',
-    },
-    {
-      'name': 'Làng Hương Thủy Xuân',
-      'latLng': const LatLng(16.4358, 107.5647),
-      'points': 25,
-      'env': 'SEMI_OUTDOOR',
-      'category': 'SCENIC',
-    },
-    {
-      'name': 'Đồi Vọng Cảnh (Ngắm Sông Hương)',
-      'latLng': const LatLng(16.4258, 107.5512),
-      'points': 30,
-      'env': 'OUTDOOR',
-      'category': 'OUTSKIRTS',
-    },
-    {
-      'name': 'Cầu Tràng Tiền (Đổi màu về đêm)',
-      'latLng': const LatLng(16.4683, 107.5947),
-      'points': 20,
-      'env': 'OUTDOOR',
-      'category': 'SCENIC',
-    },
-    {
-      'name': 'Cầu Dã Viên (Hoàng Hôn)',
-      'latLng': const LatLng(16.4592, 107.5721),
-      'points': 20,
-      'env': 'OUTDOOR',
-      'category': 'SCENIC',
-    },
-    {
-      'name': 'Cà Phê Muối Gốc Nguyễn Huệ',
-      'latLng': const LatLng(16.4589, 107.5898),
-      'points': 20,
-      'env': 'INDOOR',
-      'category': 'CAFE',
-    },
-    {
-      'name': 'Tân Cafe Vintage Cố Đô',
-      'latLng': const LatLng(16.4635, 107.5882),
-      'points': 20,
-      'env': 'INDOOR',
-      'category': 'CAFE',
-    },
-    {
-      'name': 'Không gian Trà Kim Long',
-      'latLng': const LatLng(16.4608, 107.5601),
-      'points': 20,
-      'env': 'INDOOR',
-      'category': 'CUISINE',
-    },
-    {
-      'name': 'Bún Bò Huế Mụ Rơi',
-      'latLng': const LatLng(16.4745, 107.5862),
-      'points': 20,
-      'env': 'INDOOR',
-      'category': 'CUISINE',
-    },
-    {
-      'name': 'Cơm Hến Hoa Đông Cồn Hến',
-      'latLng': const LatLng(16.4789, 107.6012),
-      'points': 20,
-      'env': 'SEMI_OUTDOOR',
-      'category': 'CUISINE',
-    },
-    {
-      'name': 'Trạm Xe Đạp Xanh Cửa Hiển Nhơn',
-      'latLng': const LatLng(16.4705, 107.5815),
-      'points': 15,
-      'env': 'OUTDOOR',
-      'category': 'RENTAL',
-    },
-    {
-      'name': 'Cây Xăng Petrolimex Lê Lợi',
-      'latLng': const LatLng(16.4632, 107.5862),
-      'points': 5,
-      'env': 'OUTDOOR',
-      'category': 'GAS',
-    },
-  ];
+  late Future<List<PlaceDto>> _placesFuture;
+  Future<Map<String, dynamic>?>? _weatherFuture;
 
   @override
   void initState() {
     super.initState();
+    _placesFuture = _fetchPlaces();
+    _weatherFuture = _fetchWeather();
     _initTracking();
+  }
+
+  Future<List<PlaceDto>> _fetchPlaces() async {
+    final response = await ApiClient.instance.dio.get(ApiEndpoints.places);
+    final data = response.data as List<dynamic>;
+    return data
+        .map((e) => PlaceDto.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Map<String, dynamic>?> _fetchWeather() async {
+    try {
+      final response = await ApiClient.instance.dio.get(ApiEndpoints.currentWeather);
+      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+        return response.data as Map<String, dynamic>;
+      }
+    } catch (_) {
+      // Giữ fallback text cũ nếu lỗi mạng
+    }
+    return null;
+  }
+
+  /// Chuẩn hóa categoryCode từ backend về mã ngắn mà switch bên dưới đang dùng.
+  String _shortCategory(String? code) {
+    switch (code) {
+      case 'CAFE':
+        return 'CAFE';
+      case 'CUISINE':
+        return 'CUISINE';
+      case 'SCENIC_VIEW':
+        return 'SCENIC';
+      case 'OUTSKIRTS_ECO':
+        return 'OUTSKIRTS';
+      case 'VEHICLE_RENTAL':
+        return 'RENTAL';
+      case 'GAS_STATION':
+        return 'GAS';
+      case 'CULTURE_ART':
+        return 'CULTURE';
+      case 'CRAFT_VILLAGE':
+        return 'CRAFT_VILLAGE';
+      default:
+        return 'HISTORICAL';
+    }
   }
 
   Future<void> _initTracking() async {
@@ -208,7 +144,7 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
     );
   }
 
-  void _showPlaceDetailsModal(Map<String, dynamic> place) {
+  void _showPlaceDetailsModal(PlaceDto place) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -224,7 +160,7 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    place['name'],
+                    place.name,
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: HuegoTheme.royalViolet),
                   ),
                 ),
@@ -235,7 +171,7 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '+${place['points']} GP',
+                    '+${place.greenRewardPoints} GP',
                     style: const TextStyle(fontWeight: FontWeight.bold, color: HuegoTheme.emeraldGreen),
                   ),
                 ),
@@ -243,7 +179,7 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              place['env'] == 'INDOOR' ? '🏛️ Không gian trong nhà (Tối ưu ngày mưa)' : '🌳 Không gian ngoài trời thoáng đãng',
+              place.environmentType == 'INDOOR' ? '🏛️ Không gian trong nhà (Tối ưu ngày mưa)' : '🌳 Không gian ngoài trời thoáng đãng',
               style: const TextStyle(fontSize: 13, color: HuegoTheme.textMuted),
             ),
             const SizedBox(height: 16),
@@ -275,7 +211,7 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
                       Navigator.of(ctx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Mệ Huế: "Dạ thưa quý khách, chào mừng người đến với ${place['name']}..."'),
+                          content: Text('Mệ Huế: "Dạ thưa quý khách, chào mừng người đến với ${place.name}..."'),
                           backgroundColor: HuegoTheme.royalViolet,
                           duration: const Duration(seconds: 4),
                         ),
@@ -318,95 +254,155 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
       ),
       body: Stack(
         children: [
-          // 1. Bản đồ OpenStreetMap / Mapbox Tiles
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: _hueCenter,
-              initialZoom: 14.2,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-                subdomains: const ['0', '1', '2', '3'],
-                userAgentPackageName: 'com.huego.mobile',
-              ),
-              // Vòng tròn Geofence bán kính mô phỏng quanh các địa danh
-              CircleLayer(
-                circles: _places.map((p) {
-                  return CircleMarker(
-                    point: p['latLng'],
-                    radius: 35, // 35 mét
-                    useRadiusInMeter: true,
-                    color: HuegoTheme.imperialGold.withOpacity(0.25),
-                    borderColor: HuegoTheme.imperialGold,
-                    borderStrokeWidth: 2,
-                  );
-                }).toList(),
-              ),
-              // Markers biểu tượng địa danh Huế theo thể loại
-              MarkerLayer(
-                markers: _places.map((place) {
-                  final cat = place['category'] ?? 'HISTORICAL';
-                  Color pinColor;
-                  IconData pinIcon;
-
-                  switch (cat) {
-                    case 'CAFE':
-                      pinColor = const Color(0xFFD97706);
-                      pinIcon = Icons.local_cafe;
-                      break;
-                    case 'CUISINE':
-                      pinColor = const Color(0xFFDC2626);
-                      pinIcon = Icons.restaurant;
-                      break;
-                    case 'SCENIC':
-                      pinColor = HuegoTheme.perfumeRiverTeal;
-                      pinIcon = Icons.photo_camera;
-                      break;
-                    case 'OUTSKIRTS':
-                      pinColor = const Color(0xFF15803D);
-                      pinIcon = Icons.forest;
-                      break;
-                    case 'RENTAL':
-                      pinColor = const Color(0xFF2563EB);
-                      pinIcon = Icons.pedal_bike;
-                      break;
-                    case 'GAS':
-                      pinColor = const Color(0xFFEA580C);
-                      pinIcon = Icons.local_gas_station;
-                      break;
-                    default:
-                      pinColor = HuegoTheme.royalViolet;
-                      pinIcon = Icons.account_balance;
-                  }
-
-                  return Marker(
-                    point: place['latLng'],
-                    width: 46,
-                    height: 46,
-                    child: GestureDetector(
-                      onTap: () => _showPlaceDetailsModal(place),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: pinColor,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2.5),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black38, blurRadius: 6, offset: Offset(0, 3)),
-                          ],
+          // 1. Bản đồ OpenStreetMap / Google Map Tiles qua FutureBuilder
+          FutureBuilder<List<PlaceDto>>(
+            future: _placesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.wifi_off, size: 48, color: HuegoTheme.royalViolet),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Không thể kết nối đến máy chủ HUEGO',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        child: Icon(
-                          pinIcon,
-                          color: Colors.white,
-                          size: 22,
+                        const SizedBox(height: 8),
+                        Text(
+                          '${snapshot.error}',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 12, color: HuegoTheme.textMuted),
                         ),
-                      ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _placesFuture = _fetchPlaces();
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: HuegoTheme.royalViolet,
+                          ),
+                          child: const Text('Thử lại', style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
                     ),
-                  );
-                }).toList(),
-              ),
-            ],
+                  ),
+                );
+              }
+
+              final places = snapshot.data ?? [];
+              if (places.isEmpty) {
+                return const Center(
+                  child: Text('Chưa có địa danh nào', style: TextStyle(fontSize: 16)),
+                );
+              }
+
+              return FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter: _hueCenter,
+                  initialZoom: 14.2,
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                    subdomains: const ['0', '1', '2', '3'],
+                    userAgentPackageName: 'com.huego.mobile',
+                  ),
+                  // Vòng tròn Geofence bán kính lấy từ API từng nơi
+                  CircleLayer(
+                    circles: places.map((p) {
+                      return CircleMarker(
+                        point: LatLng(p.latitude, p.longitude),
+                        radius: p.geofenceRadiusMeters.toDouble(),
+                        useRadiusInMeter: true,
+                        color: HuegoTheme.imperialGold.withOpacity(0.25),
+                        borderColor: HuegoTheme.imperialGold,
+                        borderStrokeWidth: 2,
+                      );
+                    }).toList(),
+                  ),
+                  // Markers biểu tượng địa danh Huế theo thể loại
+                  MarkerLayer(
+                    markers: places.map((place) {
+                      final cat = _shortCategory(place.categoryCode);
+                      Color pinColor;
+                      IconData pinIcon;
+
+                      switch (cat) {
+                        case 'CAFE':
+                          pinColor = const Color(0xFFD97706);
+                          pinIcon = Icons.local_cafe;
+                          break;
+                        case 'CUISINE':
+                          pinColor = const Color(0xFFDC2626);
+                          pinIcon = Icons.restaurant;
+                          break;
+                        case 'SCENIC':
+                          pinColor = HuegoTheme.perfumeRiverTeal;
+                          pinIcon = Icons.photo_camera;
+                          break;
+                        case 'OUTSKIRTS':
+                          pinColor = const Color(0xFF15803D);
+                          pinIcon = Icons.forest;
+                          break;
+                        case 'RENTAL':
+                          pinColor = const Color(0xFF2563EB);
+                          pinIcon = Icons.pedal_bike;
+                          break;
+                        case 'GAS':
+                          pinColor = const Color(0xFFEA580C);
+                          pinIcon = Icons.local_gas_station;
+                          break;
+                        case 'CULTURE':
+                          pinColor = HuegoTheme.imperialGold;
+                          pinIcon = Icons.museum;
+                          break;
+                        case 'CRAFT_VILLAGE':
+                          pinColor = const Color(0xFF795548);
+                          pinIcon = Icons.handyman;
+                          break;
+                        default:
+                          pinColor = HuegoTheme.royalViolet;
+                          pinIcon = Icons.account_balance;
+                      }
+
+                      return Marker(
+                        point: LatLng(place.latitude, place.longitude),
+                        width: 46,
+                        height: 46,
+                        child: GestureDetector(
+                          onTap: () => _showPlaceDetailsModal(place),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: pinColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2.5),
+                              boxShadow: const [
+                                BoxShadow(color: Colors.black38, blurRadius: 6, offset: Offset(0, 3)),
+                              ],
+                            ),
+                            child: Icon(
+                              pinIcon,
+                              color: Colors.white,
+                              size: 22,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              );
+            },
           ),
 
           // 2. Banner Thông Minh: Thời tiết & Tự Động Thích Ứng Lịch Trình
@@ -414,45 +410,67 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
             top: 16,
             left: 16,
             right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.95),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: HuegoTheme.perfumeRiverTeal.withOpacity(0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.grain, color: HuegoTheme.perfumeRiverTeal),
+            child: FutureBuilder<Map<String, dynamic>?>(
+              future: _weatherFuture,
+              builder: (context, snap) {
+                final weather = snap.data;
+                final title = weather != null
+                    ? '${weather['description'] ?? 'Thời tiết Huế'} • ${weather['tempCelsius'] ?? 25}°C'
+                    : 'Mưa nhẹ Cố Đô • 24.5°C';
+                final subtitle = weather != null && weather['recommendation'] != null
+                    ? weather['recommendation'] as String
+                    : 'Mệ Huế khuyên ưu tiên điểm trong nhà & thưởng trà';
+
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.95),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text('Mưa nhẹ Cố Đô • 24.5°C', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                        Text('Mệ Huế khuyên ưu tiên điểm trong nhà & thưởng trà', style: TextStyle(fontSize: 12, color: HuegoTheme.textMuted)),
-                      ],
-                    ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: HuegoTheme.perfumeRiverTeal.withOpacity(0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.grain, color: HuegoTheme.perfumeRiverTeal),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                            Text(
+                              subtitle,
+                              style: const TextStyle(fontSize: 12, color: HuegoTheme.textMuted),
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // TODO Phase 4: nối thật sau khi sửa validation currentItinerary
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Tính năng tự động thích ứng lịch trình theo thời tiết sẽ có ở bản cập nhật tới!'),
+                            ),
+                          );
+                        },
+                        child: const Text('Đổi hướng', style: TextStyle(color: HuegoTheme.royalViolet, fontWeight: FontWeight.bold)),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('AI đã tối ưu: Chuyển sang Bảo tàng Cổ vật & Trà Kim Long!')),
-                      );
-                    },
-                    child: const Text('Đổi hướng', style: TextStyle(color: HuegoTheme.royalViolet, fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ],

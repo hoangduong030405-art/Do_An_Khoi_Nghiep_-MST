@@ -2,9 +2,10 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import '../constants/api_endpoints.dart';
+import '../network/api_client.dart';
 
 class GeofenceLocationService {
-  final Dio _dio = Dio();
+  final Dio _dio = ApiClient.instance.dio;
   StreamSubscription<Position>? _positionStreamSubscription;
 
   // Callback thông báo cho UI khi mở khóa thành công một địa danh

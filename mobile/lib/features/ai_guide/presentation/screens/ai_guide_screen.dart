@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/network/api_client.dart';
 
 class AiGuideScreen extends StatefulWidget {
   const AiGuideScreen({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _AiGuideScreenState extends State<AiGuideScreen> {
     }
   ];
   bool _isLoading = false;
-  final Dio _dio = Dio();
+  final Dio _dio = ApiClient.instance.dio;
 
   Future<void> _sendMessage(String text) async {
     if (text.trim().isEmpty) return;

@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/network/api_client.dart';
 
 class RandomWheelService {
-  final Dio _dio = Dio();
+  final Dio _dio = ApiClient.instance.dio;
 
   Future<Map<String, dynamic>> fetchWheelFilters() async {
     try {

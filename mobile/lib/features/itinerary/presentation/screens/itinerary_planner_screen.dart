@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/network/api_client.dart';
 import 'package:geolocator/geolocator.dart';
 
 class ItineraryPlannerScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class ItineraryPlannerScreen extends StatefulWidget {
 }
 
 class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
-  final Dio _dio = Dio();
+  final Dio _dio = ApiClient.instance.dio;
   bool _isLoading = false;
 
   // Danh sách các điểm trong Lịch trình chuyến đi Huế

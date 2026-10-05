@@ -49,6 +49,7 @@ export class GamificationService {
       },
       badges,
       canGenerateCertificate: progressPercent >= 80 || points >= 200,
+      pointsToNextCertificate: Math.max(0, 200 - points),
     };
   }
 
