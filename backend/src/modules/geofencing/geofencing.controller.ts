@@ -2,12 +2,16 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GeofencingService } from './geofencing.service';
 import { VerifyGpsDto } from './dto/verify-gps.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Geofencing & GPS Unlock')
 @Controller('api/v1/geofencing')
 export class GeofencingController {
   constructor(private readonly geofencingService: GeofencingService) {}
 
+  // TODO(phase4): Đây là endpoint cộng điểm Green Points. Phải bắt buộc token
+  // và lấy userId từ token thay vì từ body, nếu không ai cũng cộng điểm cho user khác.
+  @Public()
   @Post('unlock')
   @ApiOperation({
     summary: 'Kiểm tra tọa độ GPS và mở khóa địa danh (Geofencing 35m)',
@@ -18,6 +22,7 @@ export class GeofencingController {
     return await this.geofencingService.checkAndUnlockMilestone(dto);
   }
 
+  @Public()
   @Post('check-in-itinerary')
   @ApiOperation({
     summary: 'Check-in địa điểm theo Lịch trình & Tự động xuất Chứng nhận khi hoàn thành 100%',
@@ -28,6 +33,7 @@ export class GeofencingController {
     return await this.geofencingService.checkInItineraryMilestone(dto);
   }
 
+  @Public()
   @Get('unlocked-history/:userId')
   @ApiOperation({ summary: 'Lịch sử các cột mốc đã mở khóa của người dùng' })
   async getHistory(@Param('userId') userId: string) {

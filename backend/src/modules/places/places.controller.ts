@@ -1,12 +1,15 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlacesService } from './places.service';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Places & Heritage Map')
 @Controller('api/v1/places')
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
+  // Endpoint xem trước: khách chưa đăng nhập vẫn xem được bản đồ.
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Lấy toàn bộ địa danh kèm tọa độ GPS hiển thị trên bản đồ số Huế' })
   @ApiQuery({ name: 'category', required: false, description: 'Lọc theo danh mục: HISTORICAL, CUISINE, ECO_GREEN...' })
@@ -15,6 +18,7 @@ export class PlacesController {
     return await this.placesService.getAllPlaces(category, envType);
   }
 
+  @Public()
   @Get('nearby')
   @ApiOperation({ summary: 'Tìm các địa điểm du lịch gần vị trí du khách hiện tại (Radar GIS)' })
   @ApiQuery({ name: 'lng', type: Number, example: 107.5779 })

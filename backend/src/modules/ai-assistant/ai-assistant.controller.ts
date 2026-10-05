@@ -2,12 +2,16 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AiAssistantService } from './ai-assistant.service';
 import { AskGuideDto, AdaptItineraryDto, ExplainPlaceStoryDto } from './dto/ai-requests.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('AI Tour Guide (Mệ Huế)')
 @Controller('api/v1/ai-guide')
 export class AiAssistantController {
   constructor(private readonly aiAssistantService: AiAssistantService) {}
 
+  // TODO(phase4): Khi có rate limit theo user, chuyển sang bắt buộc token.
+  // Hiện @Public() để app Flutter gọi được; endpoint này tốn khoản Gemini API key.
+  @Public()
   @Post('chat')
   @ApiOperation({
     summary: 'Trò chuyện hỏi đáp về văn hóa, lịch sử, ẩm thực với Hướng dẫn viên Mệ Huế',
