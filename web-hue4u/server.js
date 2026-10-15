@@ -52,7 +52,8 @@ const MIME_TYPES = {
   '.gltf': 'model/gltf+json',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
-  '.ttf': 'font/ttf'
+  '.ttf': 'font/ttf',
+  '.wasm': 'application/wasm'
 };
 
 // Tính khoảng cách Haversine (km) giữa 2 toạ độ
@@ -325,8 +326,11 @@ const server = http.createServer((req, res) => {
   // --- STATIC FILE SERVING ---
   let filePath = path.join(PUBLIC_DIR, pathname === '/' ? 'index.html' : pathname);
   
-  // Hỗ trợ clean URLs như /explore -> /index.html, /map -> /map.html, v.v.
-  if (!path.extname(filePath)) {
+  // Hỗ trợ thư mục (phục vụ index.html bên trong thư mục)
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+    filePath = path.join(filePath, 'index.html');
+  } else if (!path.extname(filePath)) {
+    // Hỗ trợ clean URLs như /explore -> /index.html, /map -> /map.html, v.v.
     if (fs.existsSync(filePath + '.html')) {
       filePath = filePath + '.html';
     } else if (pathname === '/explore') {
