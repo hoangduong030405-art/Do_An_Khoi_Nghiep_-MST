@@ -4,14 +4,15 @@
   --font-sans: 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
   
-  /* Hue Palette: Vàng hoàng kim & Cố đô Huế */
-  --primary: #d97706;
-  --primary-hover: #b45309;
-  --primary-light: #fef3c7;
-  --primary-glow: rgba(217, 119, 6, 0.25);
-  --accent-gold: #f59e0b;
-  --imperial-purple: #581c87;
-  --imperial-red: #991b1b;
+  /* HUEGO Palette: Tím Hoàng Gia & Vàng Cung Đình Huế */
+  --primary: #582C83;
+  --primary-hover: #451E6B;
+  --primary-light: #F3E8FF;
+  --primary-glow: rgba(88, 44, 131, 0.25);
+  --accent-gold: #D4AF37;
+  --accent-gold-hover: #B8860B;
+  --imperial-purple: #582C83;
+  --imperial-red: #831843;
 
   /* Theme Light */
   --bg-page: #f8faf9;
@@ -36,9 +37,9 @@
   --text-main: #f1f5f9;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
-  --primary-light: rgba(217, 119, 6, 0.18);
+  --primary-light: rgba(88, 44, 131, 0.35);
   --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
-  --card-shadow-hover: 0 20px 25px -5px rgba(217, 119, 6, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 20px 25px -5px rgba(88, 44, 131, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   --modal-bg: rgba(0, 0, 0, 0.8);
 }
 
@@ -827,4 +828,358 @@ body {
   border-radius: 9999px;
   font-size: 0.8rem;
   pointer-events: none;
+}
+
+/* ==========================================================
+   HUEGO PRODUCTION WEB COMPONENTS
+   ========================================================== */
+
+/* 1. Header Weather Badge */
+.weather-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid rgba(88, 44, 131, 0.15);
+  box-shadow: 0 2px 6px rgba(88, 44, 131, 0.08);
+}
+.weather-icon {
+  font-size: 1.1rem;
+}
+
+/* 2. Audio Guide Player in Modal */
+.audio-guide-box {
+  background: linear-gradient(135deg, rgba(88, 44, 131, 0.08) 0%, rgba(212, 175, 55, 0.15) 100%);
+  border: 1.5px solid var(--accent-gold);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.audio-guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.audio-guide-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--primary);
+}
+.audio-guide-btn {
+  background: linear-gradient(135deg, var(--primary), #6B21A8);
+  color: white;
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(88, 44, 131, 0.25);
+}
+.audio-guide-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(88, 44, 131, 0.35);
+}
+.audio-guide-btn.playing {
+  background: linear-gradient(135deg, #DC2626, #B91C1C);
+}
+
+/* 3. Floating AI Assistant (Mệ Huế) FAB & Window */
+.ai-fab-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, #4C1D95 100%);
+  color: white;
+  border: 2px solid var(--accent-gold);
+  box-shadow: 0 8px 24px rgba(88, 44, 131, 0.45);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.ai-fab-btn:hover {
+  transform: scale(1.1) rotate(6deg);
+  box-shadow: 0 12px 30px rgba(88, 44, 131, 0.6);
+}
+.ai-fab-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--accent-gold);
+  color: #1E1B4B;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Chat Window Modal */
+.ai-chat-drawer {
+  position: fixed;
+  bottom: 96px;
+  right: 28px;
+  width: 380px;
+  max-width: calc(100vw - 40px);
+  height: 540px;
+  max-height: calc(100vh - 120px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  z-index: 1001;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ai-chat-drawer.active {
+  display: flex;
+}
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ai-chat-header {
+  background: linear-gradient(135deg, var(--primary) 0%, #3B0764 100%);
+  color: white;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--accent-gold);
+}
+.ai-header-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ai-header-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.ai-header-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.ai-header-sub {
+  font-size: 11px;
+  opacity: 0.85;
+}
+.ai-chat-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+  padding: 4px;
+}
+.ai-chat-close-btn:hover { opacity: 1; }
+
+.ai-chat-messages {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-page);
+}
+.chat-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.chat-msg.msg-ai {
+  align-self: flex-start;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--card-shadow);
+}
+.chat-msg.msg-user {
+  align-self: flex-end;
+  background: var(--primary);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.ai-quick-prompts {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.quick-prompt-chip {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: none;
+  border-radius: 9999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.quick-prompt-chip:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.ai-chat-input-bar {
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 8px;
+}
+.ai-chat-input {
+  flex: 1;
+  border: 1px solid var(--border-strong);
+  border-radius: 9999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  outline: none;
+  background: var(--bg-page);
+  color: var(--text-main);
+}
+.ai-chat-send-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+.ai-chat-send-btn:hover {
+  transform: scale(1.08);
+}
+
+/* 4. Itinerary Drawer & Action */
+.btn-save-itinerary {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 0.55rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.btn-save-itinerary:hover {
+  background: var(--primary);
+  color: white;
+}
+.btn-save-itinerary.saved {
+  background: #10B981;
+  color: white;
+  border-color: #10B981;
+}
+
+/* 5. Modern Production Footer */
+.site-footer {
+  background: #120524;
+  color: #E2E8F0;
+  border-top: 3px solid var(--accent-gold);
+  padding: 3.5rem 2rem 2rem 2rem;
+  margin-top: 4rem;
+}
+.footer-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 2.5rem;
+}
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+.footer-col h4 {
+  color: var(--accent-gold);
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.5px;
+}
+.footer-col p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #94A3B8;
+  margin-bottom: 0.75rem;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.footer-links a {
+  color: #CBD5E1;
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: color 0.2s;
+}
+.footer-links a:hover {
+  color: var(--accent-gold);
+}
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2.5rem auto 0 auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: #64748B;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
