@@ -102,6 +102,9 @@ flutter run
    - Trò chuyện với **Mệ Huế** về điển tích lịch sử triều Nguyễn, thơ ca, các món ăn đặc sắc xứ Huế.
 
 3. **POST** `/api/v1/ai-guide/adapt-itinerary`
+
+
+https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/
    - Phân tích thời tiết thực tế từ trạm khí tượng Huế. Nếu trời mưa ngâu hoặc nắng gắt (>37°C), tự động thay thế các địa điểm `OUTDOOR` thành `INDOOR` (nhà rường thưởng trà, bảo tàng cổ vật cung đình).
 
 4. **GET** `/api/v1/weather/hue-current`
