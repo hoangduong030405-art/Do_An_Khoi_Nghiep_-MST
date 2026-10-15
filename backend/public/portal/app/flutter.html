@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="HUEGO - Bản Đồ Số Du Lịch Huế">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Dynamic Base HREF & Cache Busting for Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (let r of regs) { r.unregister(); }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(keys) {
+        for (let k of keys) { caches.delete(k); }
+      });
+    }
+    if (!window.location.pathname.endsWith('/') && !window.location.pathname.endsWith('.html')) {
+      window.location.replace(window.location.pathname + '/' + window.location.search + window.location.hash);
+    }
+    var baseEl = document.createElement('base');
+    var currentPath = window.location.pathname;
+    if (currentPath.endsWith('.html')) {
+      currentPath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+    } else if (!currentPath.endsWith('/')) {
+      currentPath = currentPath + '/';
+    }
+    baseEl.href = window.location.origin + currentPath;
+    document.head.appendChild(baseEl);
+  </script>
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HUEGO">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>HUEGO — Ứng dụng Du lịch Cố Đô Huế</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #faf8f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+    }
+    .logo-text {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #582C83;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .logo-badge {
+      background: #DAA520;
+      color: #1e1b4b;
+      padding: 2px 10px;
+      border-radius: 8px;
+      margin-left: 6px;
+    }
+    .loading-sub {
+      color: #71717a;
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+      text-align: center;
+      padding: 0 16px;
+    }
+    .spinner {
+      width: 42px;
+      height: 42px;
+      border: 3.5px solid #e2e8f0;
+      border-top-color: #582C83;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="logo-text">HUE<span class="logo-badge">GO</span></div>
+    <div class="loading-sub">Khám Phá Cố Đô Huế Thông Minh · Đang tải ứng dụng...</div>
+    <div class="spinner"></div>
+  </div>
+  <script src="flutter_bootstrap.js?v=20261015c" async></script>
+</body>
+</html>

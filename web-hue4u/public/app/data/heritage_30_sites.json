@@ -1,0 +1,440 @@
+[
+  {
+    "id": "imperial-city",
+    "name": "Imperial City (Đại Nội)",
+    "name_vi": "Hoàng Thành (Đại Nội)",
+    "color": "#6b21a8",
+    "center": [
+      16.4691,
+      107.5775
+    ],
+    "zoom": 16,
+    "places": [
+      {
+        "id": "heritage-dai-noi-hue",
+        "name": "Imperial City of Hue",
+        "name_vi": "Đại Nội Huế",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4691,
+        "lng": 107.5775,
+        "img": "/images/pois/dai-noi-hue.webp",
+        "rating": 4.6,
+        "reviews": 28000,
+        "address": "Phú Hậu, Thành phố Huế, Thừa Thiên Huế"
+      },
+      {
+        "id": "heritage-dien-thai-hoa",
+        "name": "Thai Hoa Palace",
+        "name_vi": "Điện Thái Hòa",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4696,
+        "lng": 107.5786,
+        "img": "/images/pois/dien-thai-hoa.webp",
+        "rating": 4.6,
+        "reviews": 7200,
+        "address": "Trung tâm Đại Nội, Thành phố Huế"
+      },
+      {
+        "id": "heritage-ngo-mon",
+        "name": "Ngo Mon Gate",
+        "name_vi": "Cổng Ngọ Môn",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4674,
+        "lng": 107.5785,
+        "img": "/images/pois/ngo-mon.webp",
+        "rating": 4.7,
+        "reviews": 9500,
+        "address": "Cổng Nam Đại Nội Huế"
+      },
+      {
+        "id": "heritage-cuu-dinh",
+        "name": "Nine Dynastic Urns",
+        "name_vi": "Cửu Đỉnh",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4682,
+        "lng": 107.5771,
+        "img": "/images/pois/cuu-dinh.webp",
+        "rating": 4.5,
+        "reviews": 3200,
+        "address": "Thế Tổ Miếu, Đại Nội Huế"
+      },
+      {
+        "id": "heritage-ho-tinh-tam",
+        "name": "Tinh Tam Lake",
+        "name_vi": "Hồ Tịnh Tâm",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4772,
+        "lng": 107.5791,
+        "img": "/images/pois/ho-tinh-tam.webp",
+        "rating": 4.2,
+        "reviews": 1100,
+        "address": "Hồ Tịnh Tâm, Bắc Kinh thành Huế"
+      },
+      {
+        "id": "heritage-bao-tang-co-vat-cung-dinh-hue",
+        "name": "Hue Royal Antiquities Museum",
+        "name_vi": "Bảo tàng Cổ vật Cung đình Huế",
+        "cat": "Bridges, Markets & Museums",
+        "lat": 16.4715,
+        "lng": 107.5815,
+        "img": "/images/pois/bao-tang-co-vat-cung-dinh-hue.webp",
+        "rating": 4.5,
+        "reviews": 2100,
+        "address": "3 Lê Trực, Thành phố Huế"
+      },
+      {
+        "id": "heritage-bao-tang-ho-chi-minh-hue",
+        "name": "Ho Chi Minh Museum Hue",
+        "name_vi": "Bảo tàng Hồ Chí Minh Huế",
+        "cat": "Bridges, Markets & Museums",
+        "lat": 16.4633,
+        "lng": 107.5857,
+        "img": "https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-bao-tang-ho-chi-minh-hue.webp",
+        "rating": 4.3,
+        "reviews": 850,
+        "address": "7 Lê Lợi, Thành phố Huế"
+      },
+      {
+        "id": "heritage-bao-tang-my-thuat-hue",
+        "name": "Hue Fine Arts Museum",
+        "name_vi": "Bảo tàng Mỹ thuật Huế",
+        "cat": "Bridges, Markets & Museums",
+        "lat": 16.4627,
+        "lng": 107.5866,
+        "img": "/images/pois/bao-tang-my-thuat-hue.webp",
+        "rating": 4.2,
+        "reviews": 540,
+        "address": "44 Lê Lợi, Thành phố Huế"
+      }
+    ]
+  },
+  {
+    "id": "royal-tombs",
+    "name": "Royal Tombs of the Nguyen Emperors",
+    "name_vi": "Quần thể Lăng tẩm Hoàng gia Triều Nguyễn",
+    "color": "#6b21a8",
+    "center": [
+      16.415,
+      107.57
+    ],
+    "zoom": 14,
+    "places": [
+      {
+        "id": "heritage-lang-tu-duc",
+        "name": "Tomb of Tu Duc",
+        "name_vi": "Lăng Tự Đức (Khiêm Lăng)",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4328,
+        "lng": 107.5658,
+        "img": "/images/pois/lang-tu-duc.webp",
+        "rating": 4.5,
+        "reviews": 10500,
+        "address": "Thủy Bằng, Hương Thủy, Thừa Thiên Huế"
+      },
+      {
+        "id": "heritage-lang-khai-dinh",
+        "name": "Tomb of Khai Dinh",
+        "name_vi": "Lăng Khải Định (Ứng Lăng)",
+        "cat": "Imperial & Tombs",
+        "lat": 16.3989,
+        "lng": 107.5905,
+        "img": "/images/pois/lang-khai-dinh.webp",
+        "rating": 4.6,
+        "reviews": 12000,
+        "address": "Thủy Bằng, Hương Thủy, Thừa Thiên Huế"
+      },
+      {
+        "id": "heritage-lang-minh-mang",
+        "name": "Tomb of Minh Mang",
+        "name_vi": "Lăng Minh Mạng (Hiếu Lăng)",
+        "cat": "Imperial & Tombs",
+        "lat": 16.3888,
+        "lng": 107.5746,
+        "img": "/images/pois/lang-minh-mang.webp",
+        "rating": 4.5,
+        "reviews": 8900,
+        "address": "Hương Thọ, Hương Trà, Thừa Thiên Huế"
+      },
+      {
+        "id": "heritage-lang-gia-long",
+        "name": "Gia Long Tomb",
+        "name_vi": "Lăng Gia Long (Thiên Thọ Lăng)",
+        "cat": "Imperial & Tombs",
+        "lat": 16.3533,
+        "lng": 107.5878,
+        "img": "/images/pois/lang-gia-long.webp",
+        "rating": 4.4,
+        "reviews": 2400,
+        "address": "Hương Thọ, Hương Trà, Thừa Thiên Huế"
+      },
+      {
+        "id": "heritage-lang-dong-khanh",
+        "name": "Dong Khanh Tomb",
+        "name_vi": "Lăng Đồng Khánh (Tư Lăng)",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4335,
+        "lng": 107.5642,
+        "img": "/images/pois/lang-dong-khanh.webp",
+        "rating": 4.3,
+        "reviews": 1800,
+        "address": "Thủy Xuân, Thành phố Huế"
+      },
+      {
+        "id": "heritage-lang-thieu-tri",
+        "name": "Thieu Tri Tomb",
+        "name_vi": "Lăng Thiệu Trị (Xương Lăng)",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4172,
+        "lng": 107.5721,
+        "img": "/images/pois/lang-thieu-tri.webp",
+        "rating": 4.3,
+        "reviews": 1500,
+        "address": "Thủy Bằng, Hương Thủy, Thừa Thiên Huế"
+      },
+      {
+        "id": "nature-doi-vong-canh",
+        "name": "Vong Canh Hill",
+        "name_vi": "Đồi Vọng Cảnh",
+        "cat": "Nature",
+        "lat": 16.4258,
+        "lng": 107.5503,
+        "img": "/images/pois/oi-vong-canh.webp",
+        "rating": 4.3,
+        "reviews": 1900,
+        "address": "Thủy Biều, Thành phố Huế"
+      },
+      {
+        "id": "nature-doi-thien-an",
+        "name": "Thien An Hill",
+        "name_vi": "Đồi Thiên An",
+        "cat": "Nature",
+        "lat": 16.4201,
+        "lng": 107.5755,
+        "img": "https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/nature-doi-thien-an.webp",
+        "rating": 4.5,
+        "reviews": 2400,
+        "address": "Thủy Bằng, Hương Thủy, Thừa Thiên Huế"
+      }
+    ]
+  },
+  {
+    "id": "thien-mu-perfume-river",
+    "name": "Thien Mu Pagoda & Upper Perfume River",
+    "name_vi": "Chùa Thiên Mụ & Thượng nguồn Sông Hương",
+    "color": "#059669",
+    "center": [
+      16.453,
+      107.545
+    ],
+    "zoom": 14,
+    "places": [
+      {
+        "id": "heritage-chua-thien-mu",
+        "name": "Thien Mu Pagoda",
+        "name_vi": "Chùa Thiên Mụ (Linh Mụ)",
+        "cat": "Temples & Pagodas",
+        "lat": 16.4536,
+        "lng": 107.545,
+        "img": "/images/pois/chua-thien-mu.webp",
+        "rating": 4.7,
+        "reviews": 22000,
+        "address": "Hương Long, Thành phố Huế"
+      },
+      {
+        "id": "heritage-dien-hon-chen",
+        "name": "Hon Chen Temple",
+        "name_vi": "Điện Hòn Chén",
+        "cat": "Temples & Pagodas",
+        "lat": 16.4101,
+        "lng": 107.5452,
+        "img": "/images/pois/dien-hon-chen.webp",
+        "rating": 4.4,
+        "reviews": 1850,
+        "address": "Hương Thọ, Hương Trà, Thừa Thiên Huế"
+      }
+    ]
+  },
+  {
+    "id": "trang-tien-gia-hoi",
+    "name": "Trang Tien Bridge - Gia Hoi Old Quarter",
+    "name_vi": "Cầu Tràng Tiền - Phố Cổ Gia Hội",
+    "color": "#1e40af",
+    "center": [
+      16.467,
+      107.592
+    ],
+    "zoom": 15,
+    "places": [
+      {
+        "id": "heritage-cau-trang-tien",
+        "name": "Truong Tien Bridge",
+        "name_vi": "Cầu Tràng Tiền",
+        "cat": "Bridges, Markets & Museums",
+        "lat": 16.4686,
+        "lng": 107.595,
+        "img": "/images/pois/cau-trang-tien.webp",
+        "rating": 4.6,
+        "reviews": 8500,
+        "address": "Cầu Tràng Tiền, Trung tâm Huế"
+      },
+      {
+        "id": "heritage-cho-dong-ba",
+        "name": "Dong Ba Market",
+        "name_vi": "Chợ Đông Ba",
+        "cat": "Bridges, Markets & Museums",
+        "lat": 16.4716,
+        "lng": 107.5897,
+        "img": "/images/pois/cho-dong-ba.webp",
+        "rating": 4.2,
+        "reviews": 9500,
+        "address": "Phú Hòa, Thành phố Huế"
+      },
+      {
+        "id": "heritage-cho-ben-ngu",
+        "name": "Ben Ngu Market",
+        "name_vi": "Chợ Bến Ngự",
+        "cat": "Bridges, Markets & Museums",
+        "lat": 16.4592,
+        "lng": 107.5855,
+        "img": "/images/pois/cho-ben-ngu.webp",
+        "rating": 4.1,
+        "reviews": 1900,
+        "address": "Trường An, Thành phố Huế"
+      },
+      {
+        "id": "heritage-cung-an-dinh",
+        "name": "An Dinh Palace",
+        "name_vi": "Cung An Định",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4578,
+        "lng": 107.5955,
+        "img": "/images/pois/cung-an-inh.webp",
+        "rating": 4.5,
+        "reviews": 4800,
+        "address": "97 Phan Đình Phùng, Phú Nhuận, Huế"
+      },
+      {
+        "id": "heritage-chua-bao-quoc",
+        "name": "Bao Quoc Pagoda",
+        "name_vi": "Chùa Báo Quốc",
+        "cat": "Temples & Pagodas",
+        "lat": 16.4547,
+        "lng": 107.5819,
+        "img": "/images/pois/chua-bao-quoc.webp",
+        "rating": 4.4,
+        "reviews": 1200,
+        "address": "Phường Đúc, Thành phố Huế"
+      },
+      {
+        "id": "heritage-chua-tu-dam",
+        "name": "Tu Dam Pagoda",
+        "name_vi": "Chùa Từ Đàm",
+        "cat": "Temples & Pagodas",
+        "lat": 16.4502,
+        "lng": 107.5794,
+        "img": "/images/pois/chua-tu-dam.webp",
+        "rating": 4.5,
+        "reviews": 3400,
+        "address": "Trường An, Thành phố Huế"
+      },
+      {
+        "id": "heritage-cho-dem-hue",
+        "name": "Hue Night Market",
+        "name_vi": "Phố đi bộ & Chợ đêm Huế",
+        "cat": "Bridges, Markets & Museums",
+        "lat": 16.4673,
+        "lng": 107.5941,
+        "img": "https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-cho-dem-hue.webp",
+        "rating": 4.6,
+        "reviews": 850,
+        "address": "Thành phố Huế, Thừa Thiên Huế"
+      },
+      {
+        "id": "heritage-song-huong",
+        "name": "Perfume River",
+        "name_vi": "Sông Hương",
+        "cat": "Nature",
+        "lat": 16.4665,
+        "lng": 107.5888,
+        "img": "/images/pois/song-huong.webp",
+        "rating": 4.6,
+        "reviews": 15000,
+        "address": "Sông Hương — Cầu Tràng Tiền, Huế"
+      }
+    ]
+  },
+  {
+    "id": "natural-landmarks",
+    "name": "Natural Landmarks",
+    "name_vi": "Danh thắng Tự nhiên",
+    "color": "#047857",
+    "center": [
+      16.435,
+      107.595
+    ],
+    "zoom": 14,
+    "places": [
+      {
+        "id": "nature-nui-ngu-binh",
+        "name": "Ngu Binh Mountain",
+        "name_vi": "Núi Ngự Bình",
+        "cat": "Nature",
+        "lat": 16.4351,
+        "lng": 107.5954,
+        "img": "/images/pois/nui-ngu-binh.webp",
+        "rating": 4.4,
+        "reviews": 2800,
+        "address": "An Cựu, Thành phố Huế"
+      },
+      {
+        "id": "heritage-lang-duc-duc",
+        "name": "Duc Duc Tomb",
+        "name_vi": "Lăng Dục Đức (An Lăng)",
+        "cat": "Imperial & Tombs",
+        "lat": 16.4442,
+        "lng": 107.5852,
+        "img": "/images/pois/lang-duc-uc.webp",
+        "rating": 4.2,
+        "reviews": 920,
+        "address": "An Cựu, Thành phố Hu��"
+      }
+    ]
+  },
+  {
+    "id": "other-nearby",
+    "name": "Other - nearby area",
+    "name_vi": "Khu vực lân cận",
+    "color": "#475569",
+    "center": [
+      16.495,
+      107.635
+    ],
+    "zoom": 13,
+    "places": [
+      {
+        "id": "heritage-cau-ngoi-thanh-toan",
+        "name": "Thanh Toan Tile Bridge",
+        "name_vi": "Cầu ngói Thanh Toàn",
+        "cat": "Other Landmarks",
+        "lat": 16.4715,
+        "lng": 107.6331,
+        "img": "/images/pois/cau-ngoi-thanh-toan.webp",
+        "rating": 4.4,
+        "reviews": 1600,
+        "address": "Thủy Thanh, Hương Thủy, Thừa Thiên Huế"
+      },
+      {
+        "id": "nature-pha-tam-giang",
+        "name": "Tam Giang Lagoon",
+        "name_vi": "Phá Tam Giang",
+        "cat": "Other Landmarks",
+        "lat": 16.5562,
+        "lng": 107.5501,
+        "img": "/images/pois/pha-tam-giang.webp",
+        "rating": 4.5,
+        "reviews": 3800,
+        "address": "Quảng Điền, Thừa Thiên Huế"
+      }
+    ]
+  }
+]
