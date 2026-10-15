@@ -1,0 +1,19 @@
+{
+  "name": "hue4u-full",
+  "version": "1.0.0",
+  "description": "Nền tảng Du lịch Thông minh Huế - Tái hiện trọn vẹn Hue4U",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "hue4u",
+    "hue",
+    "tourism",
+    "heritage",
+    "travel"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}

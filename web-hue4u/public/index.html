@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khám phá Huế · Hue4U — Nền tảng Du lịch Thông minh Cố đô</title>
+  <meta name="description" content="Khám phá địa điểm du lịch Huế — di tích lịch sử, lăng tẩm hoàng gia, ẩm thực cố đô, lưu trú và quà lưu niệm.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d97706'><circle cx='12' cy='12' r='10'/></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Máy tính -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-header">
+        <a href="/" class="brand-logo">
+          <span>Hue</span><span class="brand-badge">4U</span>
+        </a>
+      </div>
+
+      <nav class="nav-links">
+        <a href="/" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
+          <span>Khám phá Huế</span>
+        </a>
+        <a href="/hue.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path></svg>
+          <span>Cẩm nang Huế</span>
+        </a>
+        <a href="/map.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+          <span>Bản đồ số Du lịch</span>
+        </a>
+        <a href="/museum.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+          <span>Bảo tàng số 3D</span>
+        </a>
+        <a href="/simulator.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+          <span>Mô phỏng 1 ngày</span>
+        </a>
+        <a href="/essentials.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>Khẩn cấp & Hỗ trợ</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Đổi giao diện sáng/tối">
+          <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span id="theme-label">Giao diện Tối</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Khu vực nội dung chính -->
+    <main class="main-wrapper">
+      <!-- Thanh điều hướng trên đỉnh -->
+      <header class="top-bar">
+        <div class="search-box-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="search-input" id="search-input" placeholder="Tìm kiếm địa điểm, di tích, món ngon, quán cà phê Huế..." autocomplete="off">
+        </div>
+
+        <div class="top-bar-actions">
+          <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary); background: var(--primary-light); padding: 0.4rem 0.85rem; border-radius: 9999px;">
+            📍 Huế, Việt Nam
+          </div>
+        </div>
+      </header>
+
+      <!-- Hero Banner -->
+      <section class="hero-banner">
+        <h1 class="hero-title">Khám phá <span>Huế di sản</span> theo cách của bạn</h1>
+        <p class="hero-subtitle">Hơn 4.350 địa điểm được tuyển chọn: từ lăng tẩm hoàng gia triều Nguyễn, chùa cổ thiền môn, ẩm thực cung đình đến quán cà phê bờ sông Hương thơ mộng.</p>
+      </section>
+
+      <!-- Bộ lọc Danh mục Tabs -->
+      <nav class="category-tabs-container" aria-label="Bộ lọc danh mục">
+        <button class="category-tab-btn active" data-vertical="all">🌟 Tất cả địa điểm</button>
+        <button class="category-tab-btn" data-vertical="tour">🏛️ Di tích & Tour (513)</button>
+        <button class="category-tab-btn" data-vertical="fnb">🍜 Ẩm thực & Quán ngon (1.000)</button>
+        <button class="category-tab-btn" data-vertical="cafe">☕ Cà phê & Chill (714)</button>
+        <button class="category-tab-btn" data-vertical="stay">🏨 Khách sạn & Nghỉ dưỡng (897)</button>
+        <button class="category-tab-btn" data-vertical="specialty">🎁 Đặc sản làm quà (228)</button>
+        <button class="category-tab-btn" data-vertical="service">🚗 Dịch vụ du lịch (1.000)</button>
+      </nav>
+
+      <!-- Phần Bộ sưu tập nổi bật -->
+      <section class="section-wrapper">
+        <div class="section-header">
+          <h2 class="section-title">Hành trình gợi ý</h2>
+        </div>
+        <div class="collections-grid" id="collections-grid">
+          <!-- Render tự động từ API -->
+        </div>
+
+        <!-- Danh sách địa điểm -->
+        <div class="section-header">
+          <h2 class="section-title">Danh sách Địa điểm</h2>
+          <span id="results-count" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Đang tải...</span>
+        </div>
+
+        <div class="places-grid" id="places-grid">
+          <!-- Render tự động từ API -->
+        </div>
+
+        <!-- Phân trang -->
+        <div class="pagination-container" id="pagination-container">
+          <!-- Render tự động từ pagination -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Liquid Bar -->
+  <nav class="mobile-nav" aria-label="Điều hướng di động">
+    <a href="/" class="mobile-nav-item active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
+      <span>Khám phá</span>
+    </a>
+    <a href="/map.html" class="mobile-nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon></svg>
+      <span>Bản đồ</span>
+    </a>
+    <a href="/museum.html" class="mobile-nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
+      <span>Bảo tàng 3D</span>
+    </a>
+    <a href="/hue.html" class="mobile-nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path></svg>
+      <span>Cẩm nang</span>
+    </a>
+    <a href="/simulator.html" class="mobile-nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+      <span>Mô phỏng</span>
+    </a>
+  </nav>
+
+  <!-- Modal Chi tiết Địa điểm -->
+  <div class="modal-overlay" id="place-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Đóng cửa sổ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div id="modal-dynamic-content">
+        <!-- Render nội dung chi tiết -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

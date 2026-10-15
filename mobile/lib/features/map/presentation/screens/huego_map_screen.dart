@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../../../../core/constants/api_endpoints.dart';
@@ -6,6 +7,7 @@ import '../../../../core/network/api_client.dart';
 import '../../../../core/services/geofence_location_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/place_dto.dart';
+import '../../../ai_guide/presentation/widgets/audio_guide_modal.dart';
 
 class HuegoMapScreen extends StatefulWidget {
   const HuegoMapScreen({Key? key}) : super(key: key);
@@ -17,6 +19,7 @@ class HuegoMapScreen extends StatefulWidget {
 class _HuegoMapScreenState extends State<HuegoMapScreen> {
   final GeofenceLocationService _locationService = GeofenceLocationService();
   final MapController _mapController = MapController();
+  String _currentAccuracyInfo = '';
 
   // Tọa độ trung tâm Huế: Kỳ Đài / Đại Nội
   final LatLng _hueCenter = const LatLng(16.4697, 107.5779);
@@ -77,13 +80,91 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
   }
 
   Future<void> _initTracking() async {
-    final granted = await _locationService.initializeLocationService();
-    if (granted) {
-      _locationService.onMilestoneUnlocked = (data) {
-        _showUnlockedMilestoneDialog(data);
-      };
-      _locationService.startGeofenceTracking();
+    try {
+      final granted = await _locationService.initializeLocationService();
+      if (granted) {
+        if (kIsWeb) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Hãy giữ màn hình sáng khi di chuyển để duy trì kết nối GPS trên web.'),
+                duration: Duration(seconds: 8),
+              ),
+            );
+          });
+        }
+        _locationService.onMilestoneUnlocked = (data) {
+          _showUnlockedMilestoneDialog(data);
+        };
+        _locationService.onErrorCallback = (msg) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+        };
+        _locationService.onPositionUpdated = (pos) {
+          setState(() {
+            _currentAccuracyInfo = 'Sai số ±${pos.accuracy.toStringAsFixed(0)} m';
+          });
+        };
+        _locationService.startGeofenceTracking();
+      }
+    } catch (e) {
+      _showErrorDialog(e.toString());
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Lỗi Định Vị', style: TextStyle(color: Colors.red)),
+        content: Text(message.replaceAll('Exception: ', '')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Đã hiểu'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showQrFallbackDialog() {
+    final TextEditingController qrCtrl = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Mở Khóa Bằng Mã QR Dự Phòng'),
+        content: TextField(
+          controller: qrCtrl,
+          decoration: const InputDecoration(
+            hintText: 'Nhập mã gồm 16+ ký tự...',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Hủy')),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              try {
+                final response = await ApiClient.instance.dio.post(
+                  ApiEndpoints.unlockGeofence,
+                  data: {'qrToken': qrCtrl.text},
+                );
+                if (response.statusCode == 200 && response.data['unlocked'] == true) {
+                  _showUnlockedMilestoneDialog(response.data);
+                } else if (response.data['message'] != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.data['message'])));
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Mã không hợp lệ hoặc lỗi kết nối')));
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: HuegoTheme.royalViolet),
+            child: const Text('Xác Nhận', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showUnlockedMilestoneDialog(Map<String, dynamic> data) {
@@ -209,13 +290,7 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       Navigator.of(ctx).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Mệ Huế: "Dạ thưa quý khách, chào mừng người đến với ${place.name}..."'),
-                          backgroundColor: HuegoTheme.royalViolet,
-                          duration: const Duration(seconds: 4),
-                        ),
-                      );
+                      AudioGuideModal.show(context, place);
                     },
                     icon: const Icon(Icons.volume_up, color: Colors.white),
                     label: const Text('Nghe Thuyết Minh AI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
@@ -471,6 +546,36 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
                   ),
                 );
               },
+            ),
+          ),
+          // 3. UI Hiển thị sai số & Nút quét QR
+          Positioned(
+            bottom: 24,
+            left: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_currentAccuracyInfo.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      _currentAccuracyInfo,
+                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                FloatingActionButton.extended(
+                  heroTag: 'qr_fallback',
+                  onPressed: _showQrFallbackDialog,
+                  icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
+                  label: const Text('Quét QR', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  backgroundColor: HuegoTheme.royalViolet,
+                ),
+              ],
             ),
           ),
         ],

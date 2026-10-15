@@ -1,18 +1,34 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { AiAssistantService } from './ai-assistant.service';
 import { AskGuideDto, AdaptItineraryDto, ExplainPlaceStoryDto } from './dto/ai-requests.dto';
 import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('AI Tour Guide (Mệ Huế)')
-@Controller('api/v1/ai-guide')
+@Controller('ai-guide')
 export class AiAssistantController {
   constructor(private readonly aiAssistantService: AiAssistantService) {}
 
-  // TODO(phase4): Khi có rate limit theo user, chuyển sang bắt buộc token.
-  // Hiện @Public() để app Flutter gọi được; endpoint này tốn khoản Gemini API key.
+  @Get('tts')
   @Public()
+  @ApiOperation({
+    summary: 'Phát trực tiếp luồng âm thanh giọng đọc tiếng Việt chuẩn (Vietnamese TTS Audio Stream)',
+  })
+  async streamTts(
+    @Query('text') text: string,
+    @Query('lang') lang: string,
+    @Res() res: Response,
+  ) {
+    const audioBuffer = await this.aiAssistantService.generateTtsAudio(text, lang || 'vi');
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Content-Length', audioBuffer.length);
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return res.end(audioBuffer);
+  }
+
   @Post('chat')
+  @Public()
   @ApiOperation({
     summary: 'Trò chuyện hỏi đáp về văn hóa, lịch sử, ẩm thực với Hướng dẫn viên Mệ Huế',
   })
@@ -22,6 +38,7 @@ export class AiAssistantController {
   }
 
   @Post('place-story')
+  @Public()
   @ApiOperation({
     summary: 'Thuyết minh và kể chuyện văn hóa địa điểm nổi bật Cố Đô (Audio Narrative & Lore)',
   })
@@ -31,6 +48,7 @@ export class AiAssistantController {
   }
 
   @Post('adapt-itinerary')
+  @Public()
   @ApiOperation({
     summary: 'Tự động điều chỉnh lịch trình thông minh theo thời tiết Huế thời gian thực',
   })

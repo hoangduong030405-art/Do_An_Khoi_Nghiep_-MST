@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CrowdsourceService, SubmitPlaceDto } from './crowdsource.service';
 
 @ApiTags('Crowdsourcing (Đóng góp cộng đồng)')
-@Controller('api/v1/crowdsource')
+@Controller('crowdsource')
 export class CrowdsourceController {
   constructor(private readonly crowdsourceService: CrowdsourceService) {}
 

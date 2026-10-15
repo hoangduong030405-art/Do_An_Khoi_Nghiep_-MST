@@ -25,37 +25,38 @@ C:\Lap_Trinh_Ung_dung\
 │   ├── launch.json              # Phím tắt F5 Debug Backend (NestJS) và Mobile (Flutter)
 │   └── extensions.json          # Gợi ý Extension khuyên dùng (Dart, ESLint, SQLTools, Docker)
 │
-├── backend/                     # BACKEND ENGINE (NestJS + TypeScript)
+├── backend/                     # BACKEND & WEB PORTAL (NestJS + TypeScript)
 │   ├── src/
 │   │   ├── main.ts              # Entry point, Swagger docs setup
-│   │   ├── app.module.ts        # TypeORM PostGIS & Module loading
-│   │   └── modules/
-│   │       ├── geofencing/      # Core API: ST_DWithin GPS check, Unlocking (+GP)
-│   │       ├── places/          # Tọa độ di sản, bán kính radar, lọc theo không gian
-│   │       ├── ai-assistant/    # Trợ lý Mệ Huế (Gemini Flash & Heuristic engine)
-│   │       ├── weather/         # OpenWeatherMap sync & cảnh báo thời tiết
-│   │       ├── gamification/    # Green Points, Badges, E-Certificate
-│   │       ├── crowdsource/     # Đóng góp địa điểm từ cộng đồng & hàng đợi duyệt
-│   │       └── affiliate/       # Theo dõi hoa hồng đối tác xe đạp/khách sạn
-│   ├── database/
-│   │   └── seeds/               # 01_init_postgis_and_seed.sql (Tọa độ GPS thật của Huế)
+│   │   ├── modules/
+│   │   │   ├── mobile-preview/  # Web Simulator chạy trực tiếp ứng dụng (/app)
+│   │   │   ├── admin/           # Web Quản trị di tích & QR Check-in (/admin)
+│   │   │   ├── portal/          # Web Portal dữ liệu di sản Cố Đô
+│   │   │   ├── geofencing/      # Core API: ST_DWithin GPS check, Unlocking (+GP)
+│   │   │   ├── places/          # Tọa độ di sản, bán kính radar, lọc theo không gian
+│   │   │   ├── ai-assistant/    # Trợ lý Mệ Huế (Gemini Flash & Heuristic engine)
+│   │   │   ├── weather/         # OpenWeatherMap sync & cảnh báo thời tiết
+│   │   │   ├── gamification/    # Green Points, Badges, E-Certificate
+│   │   │   ├── crowdsource/     # Đóng góp địa điểm từ cộng đồng & hàng đợi duyệt
+│   │   │   └── affiliate/       # Theo dõi hoa hồng đối tác xe đạp/khách sạn
 │   ├── package.json
-│   ├── tsconfig.json
-│   └── .env                     # Biến môi trường hệ thống
+│   └── tsconfig.json
 │
 ├── mobile/                      # FRONTEND MOBILE (Flutter Cross-Platform)
 │   ├── lib/
-│   │   ├── main.dart            # Điều hướng 4 màn hình chính
-│   │   ├── core/
-│   │   │   ├── theme/           # Bảng màu: Tím Hoàng Gia (#582C83) & Vàng Cung Đình (#D4AF37)
-│   │   │   ├── constants/       # API Endpoints
-│   │   │   └── services/        # GPS Geofence background stream tiết kiệm pin
-│   │   └── features/
-│   │       ├── map/             # Bản đồ số tương tác, radar geofence, banner thời tiết
-│   │       ├── ai_guide/        # Giao diện chat trực tiếp với Mệ Huế AI
-│   │       ├── gamification/    # Hồ sơ Điểm Xanh, huy hiệu cố đô & xuất E-Cert
-│   │       └── crowdsource/     # Form đề xuất quán ăn/địa điểm mới
+│   │   ├── main.dart            # Điều hướng màn hình chính
+│   │   ├── features/
+│   │   │   ├── map/             # Bản đồ số tương tác, radar geofence, banner thời tiết
+│   │   │   ├── ai_guide/        # Giao diện chat trực tiếp với Mệ Huế AI
+│   │   │   ├── gamification/    # Hồ sơ Điểm Xanh, huy hiệu cố đô & xuất E-Cert
+│   │   │   └── itinerary/       # Lập lịch trình & Vòng quay may mắn di sản
 │   └── pubspec.yaml
+│
+├── web-hue4u/                   # NỀN TẢNG WEB BẢN ĐỒ DI SẢN CỐ ĐÔ (Node.js/Express)
+│   ├── public/                  # Giao diện bản đồ, Audio thuyết minh & Di tích 3D
+│   ├── data/                    # Cơ sở dữ liệu di sản, bảo vật, bộ sưu tập
+│   ├── server.js                # Web server Node.js
+│   └── package.json
 │
 ├── docker-compose.yml           # Khởi chạy PostGIS 16, MongoDB 7.0, Redis 7.2
 └── README.md

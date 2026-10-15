@@ -8,11 +8,11 @@ class AppConfig {
 
   static String get apiBaseUrl {
     if (_fromDefine.isNotEmpty) return _fromDefine;
-    // Flutter Web: cùng origin với trang backend đang phục vụ.
-    if (kIsWeb) return 'http://localhost:3000/api/v1';
+    // Flutter Web: cùng origin với trang backend đang phục vụ (dùng đường dẫn tương đối)
+    if (kIsWeb) return '/api/v1';
     if (defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:3000/api/v1';
     }
-    return 'http://localhost:3000/api/v1';
+    return '/api/v1';
   }
 }

@@ -1,14 +1,75 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { InMemoryDbService } from '../../database/in-memory-db.service';
 import { CrowdsourceService } from '../crowdsource/crowdsource.service';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../auth/entities/user.entity';
+import { Public } from '../auth/decorators/public.decorator';
+import { AuthService } from '../auth/auth.service';
 
 @Controller('admin')
+@UseGuards(RolesGuard)
+@Roles(UserRole.ADMIN)
 export class AdminController {
   constructor(
     private readonly inMemoryDb: InMemoryDbService,
     private readonly crowdsourceService: CrowdsourceService,
+    private readonly authService: AuthService,
   ) {}
+
+  @Get('login')
+  @Public()
+  getAdminLogin(@Res() res: Response) {
+    const html = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng Nhập Quản Trị HUEGO</title>
+  <style>
+    body { background: #0F172A; color: white; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .login-box { background: #1E293B; padding: 40px; border-radius: 12px; border: 1px solid #334155; width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    input { width: 100%; padding: 14px; margin-bottom: 16px; border-radius: 8px; border: 1px solid #334155; background: #0F172A; color: white; box-sizing: border-box; font-size: 14px; }
+    button { width: 100%; padding: 14px; background: #582C83; color: white; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; transition: 0.2s; }
+    button:hover { background: #7c3aed; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2 style="color: #D4AF37; margin-bottom: 30px; letter-spacing: 2px;">HUEGO ADMIN</h2>
+    <form method="POST" action="/admin/login">
+      <input type="email" name="email" placeholder="Email quản trị" required value="tourist.demo@huego.vn">
+      <input type="password" name="password" placeholder="Mật khẩu" required value="Huego@2026">
+      <button type="submit">Đăng Nhập Quản Trị</button>
+    </form>
+  </div>
+</body>
+</html>`;
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  }
+
+  @Post('login')
+  @Public()
+  async postAdminLogin(@Body() body: any, @Res() res: Response) {
+    try {
+      const result = await this.authService.login(body);
+      if (result.user.role !== UserRole.ADMIN) {
+        throw new Error('Tài khoản của bạn không có quyền Quản trị viên (ADMIN).');
+      }
+      res.cookie('adminToken', result.accessToken, { httpOnly: true, maxAge: 15 * 60 * 1000 }); // 15 minutes
+      res.redirect('/admin');
+    } catch (e) {
+      res.status(401).send(`<body style="background: #0F172A; color: white; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;"><h2 style="color:#EF4444">Đăng nhập thất bại</h2><p>${e.message}</p><a href="/admin/login" style="color: #38BDF8; margin-top: 20px;">Quay lại đăng nhập</a></body>`);
+    }
+  }
+
+  @Get('logout')
+  @Public()
+  logout(@Res() res: Response) {
+    res.clearCookie('adminToken');
+    res.redirect('/admin/login');
+  }
 
   @Get()
   async getAdminDashboard(@Res() res: Response) {
@@ -84,6 +145,7 @@ export class AdminController {
       <div class="header-links">
         <a href="/app" target="_blank">📱 Mở Mobile Simulator</a>
         <a href="/flutter" target="_blank">🌐 Mở Flutter Web</a>
+        <a href="/admin/logout" style="color: #EF4444">🚪 Đăng xuất</a>
         <a href="/api/docs" target="_blank">📚 Swagger API Docs</a>
       </div>
     </div>
@@ -155,8 +217,8 @@ export class AdminController {
       <span>⚡ Công Cụ Quản Lý Nhanh</span>
     </div>
     <div class="quick-panel">
-      <a href="/api/v1/weather/hue-current" target="_blank" class="quick-btn">🌤️ Trạm Thời Tiết Huế</a>
-      <a href="/api/v1/places" target="_blank" class="quick-btn">📍 Dữ Liệu Tọa Độ PostGIS</a>
+      <a href="/weather/hue-current" target="_blank" class="quick-btn">🌤️ Trạm Thời Tiết Huế</a>
+      <a href="/places" target="_blank" class="quick-btn">📍 Dữ Liệu Tọa Độ PostGIS</a>
       <a href="/admin/cert-preview" target="_blank" class="quick-btn" style="background: var(--gold); color: black;">📜 Xem Mẫu E-Certificate Hoàng Cung</a>
     </div>
   </div>

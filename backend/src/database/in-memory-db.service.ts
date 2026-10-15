@@ -38,7 +38,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 40,
       environmentType: 'OUTDOOR',
       ticketPriceVnd: 200000,
-      greenRewardPoints: 30,
+      greenRewardPoints: 50,
       thumbnailUrl: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375',
     },
     {
@@ -55,7 +55,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 35,
       environmentType: 'OUTDOOR',
       ticketPriceVnd: 0,
-      greenRewardPoints: 25,
+      greenRewardPoints: 50,
       thumbnailUrl: 'https://images.unsplash.com/photo-1596401057633-54a8fe8ef647',
     },
     {
@@ -72,7 +72,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 30,
       environmentType: 'INDOOR',
       ticketPriceVnd: 50000,
-      greenRewardPoints: 25,
+      greenRewardPoints: 30,
       thumbnailUrl: 'https://images.unsplash.com/photo-1582560475093-ba66accbc424',
     },
     {
@@ -89,7 +89,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 35,
       environmentType: 'SEMI_OUTDOOR',
       ticketPriceVnd: 150000,
-      greenRewardPoints: 25,
+      greenRewardPoints: 50,
       thumbnailUrl: 'https://images.unsplash.com/photo-1548013146-72479768bada',
     },
     {
@@ -106,7 +106,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 35,
       environmentType: 'SEMI_OUTDOOR',
       ticketPriceVnd: 150000,
-      greenRewardPoints: 25,
+      greenRewardPoints: 50,
       thumbnailUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93',
     },
     {
@@ -123,7 +123,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 40,
       environmentType: 'SEMI_OUTDOOR',
       ticketPriceVnd: 150000,
-      greenRewardPoints: 25,
+      greenRewardPoints: 50,
       thumbnailUrl: 'https://images.unsplash.com/photo-1548013146-72479768bada',
     },
     {
@@ -208,7 +208,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 50,
       environmentType: 'OUTDOOR',
       ticketPriceVnd: 0,
-      greenRewardPoints: 35,
+      greenRewardPoints: 30,
       thumbnailUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b',
     },
     {
@@ -225,7 +225,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 50,
       environmentType: 'SEMI_OUTDOOR',
       ticketPriceVnd: 0,
-      greenRewardPoints: 35,
+      greenRewardPoints: 30,
       thumbnailUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e',
     },
     {
@@ -242,7 +242,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 30,
       environmentType: 'SEMI_OUTDOOR',
       ticketPriceVnd: 0,
-      greenRewardPoints: 25,
+      greenRewardPoints: 10,
       thumbnailUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93',
     },
     {
@@ -378,7 +378,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 25,
       environmentType: 'INDOOR',
       ticketPriceVnd: 15000,
-      greenRewardPoints: 15,
+      greenRewardPoints: 20,
       thumbnailUrl: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc',
     },
     {
@@ -395,7 +395,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 20,
       environmentType: 'INDOOR',
       ticketPriceVnd: 20000,
-      greenRewardPoints: 15,
+      greenRewardPoints: 20,
       thumbnailUrl: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc',
     },
     {
@@ -429,7 +429,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 20,
       environmentType: 'OUTDOOR',
       ticketPriceVnd: 10000,
-      greenRewardPoints: 15,
+      greenRewardPoints: 10,
       thumbnailUrl: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e',
     },
     {
@@ -446,7 +446,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 20,
       environmentType: 'OUTDOOR',
       ticketPriceVnd: 10000,
-      greenRewardPoints: 15,
+      greenRewardPoints: 10,
       thumbnailUrl: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e',
     },
     {
@@ -463,7 +463,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 20,
       environmentType: 'OUTDOOR',
       ticketPriceVnd: 0,
-      greenRewardPoints: 5,
+      greenRewardPoints: 10,
       thumbnailUrl: 'https://images.unsplash.com/photo-1545459720-aac8509eb02c',
     },
   ];

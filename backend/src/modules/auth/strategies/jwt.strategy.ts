@@ -12,6 +12,15 @@ export interface JwtPayload {
   role: string;
 }
 
+const cookieExtractor = (req: any) => {
+  let token = null;
+  if (req && req.headers && req.headers.cookie) {
+    const match = req.headers.cookie.match(/(^|;\s*)adminToken=([^;]*)/);
+    if (match) token = match[2];
+  }
+  return token;
+};
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -20,7 +29,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly userRepository: Repository<User>,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+        cookieExtractor
+      ]),
       ignoreExpiration: false,
       secretOrKey: config.getOrThrow<string>('JWT_SECRET'),
     });

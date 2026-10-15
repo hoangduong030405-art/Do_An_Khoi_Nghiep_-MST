@@ -1,0 +1,132 @@
+{
+  "styles": [
+    {
+      "id": "heritage",
+      "title": "Lõi Di sản & Lịch sử",
+      "description": "Dành cho người yêu kiến trúc cổ kính, triều đại nhà Nguyễn, các lăng tẩm và văn hoá cung đình.",
+      "recommended_places": [
+        "heritage-dai-noi-hue",
+        "heritage-chua-thien-mu",
+        "heritage-lang-khai-dinh",
+        "heritage-lang-tu-duc"
+      ]
+    },
+    {
+      "id": "foodie",
+      "title": "Ẩm thực Cố đô",
+      "description": "Khám phá bún bò Huế gia truyền, bánh bèo chén, nậm, lọc, chè bột lọc bọc heo quay, cà phê muối.",
+      "recommended_places": [
+        "fnb-bun-bo-hue",
+        "fnb-banh-beo-nam-loc",
+        "cafe-ca-phe-muoi"
+      ]
+    },
+    {
+      "id": "chill_nature",
+      "title": "Thong dong & Bờ sông Hương",
+      "description": "Tận hưởng nhịp sống chậm rãi: ngắm hoàng hôn đồi Vọng Cảnh, dạo cầu Gỗ Lim, ghé làng hương Thủy Xuân.",
+      "recommended_places": [
+        "nature-doi-vong-canh",
+        "nature-lang-huong-thuy-xuan",
+        "bridge-cau-trang-tien"
+      ]
+    }
+  ],
+  "itineraries": [
+    {
+      "days": 1,
+      "title": "Lõi di sản trong 1 ngày",
+      "description": "Trọn vẹn biểu tượng Huế cho chuyến đi ngắn ngày.",
+      "schedule": [
+        {
+          "time": "07:30",
+          "activity": "Ăn sáng bún bò Huế O Cương hoặc bún bò Mụ Rơi",
+          "place": "Bún bò Huế truyền thống"
+        },
+        {
+          "time": "08:30",
+          "activity": "Tham quan Đại Nội (Hoàng thành & Tử Cấm thành Huế)",
+          "place": "Đại Nội Huế"
+        },
+        {
+          "time": "11:45",
+          "activity": "Ăn trưa cơm hến / bánh bèo nậm lọc Cung An Định",
+          "place": "Ẩm thực Huế"
+        },
+        {
+          "time": "14:00",
+          "activity": "Thăm Lăng Khải Định (đỉnh cao kiến trúc giao thoa Đông - Tây)",
+          "place": "Lăng Khải Định"
+        },
+        {
+          "time": "16:30",
+          "activity": "Viếng Chùa Thiên Mụ & ngắm hoàng hôn bên bờ sông Hương",
+          "place": "Chùa Thiên Mụ"
+        },
+        {
+          "time": "19:00",
+          "activity": "Dạo cầu Tràng Tiền, nghe ca Huế trên sông Hương và ăn chè hẻm",
+          "place": "Sông Hương"
+        }
+      ]
+    },
+    {
+      "days": 2,
+      "title": "Thêm một bờ sông (2 ngày)",
+      "description": "Mở rộng trải nghiệm các lăng tẩm thơ mộng và không gian làng nghề truyền thống.",
+      "schedule": [
+        {
+          "time": "Ngày 1",
+          "activity": "Đại Nội Huế - Chùa Thiên Mụ - Thuyền rồng sông Hương - Phố đi bộ",
+          "place": "Trung tâm Huế"
+        },
+        {
+          "time": "Ngày 2 sáng",
+          "activity": "Lăng Tự Đức - Đồi Vọng Cảnh ngắm khúc quanh sông Hương",
+          "place": "Lăng Tự Đức & Vọng Cảnh"
+        },
+        {
+          "time": "Ngày 2 chiều",
+          "activity": "Làng hương Thủy Xuân - Cầu ngói Thanh Toàn - Cà phê muối",
+          "place": "Thủy Xuân & Thanh Toàn"
+        }
+      ]
+    },
+    {
+      "days": 3,
+      "title": "Ở lại để nhìn kỹ (3 ngày)",
+      "description": "Khám phá chiều sâu văn hóa, đầm phá Tam Giang và các bảo tàng nghệ thuật.",
+      "schedule": [
+        {
+          "time": "Ngày 1",
+          "activity": "Khám phá quần thể Di tích Cố đô Huế (Đại Nội, Cung An Định)",
+          "place": "Di sản hoàng triều"
+        },
+        {
+          "time": "Ngày 2",
+          "activity": "Cụm lăng tẩm (Minh Mạng, Gia Long, Khải Định) & Làng hương",
+          "place": "Lăng tẩm hoàng gia"
+        },
+        {
+          "time": "Ngày 3",
+          "activity": "Đầm Chuồn - Phá Tam Giang ngắm hoàng hôn vùng nước lợ lớn nhất Đông Nam Á",
+          "place": "Phá Tam Giang"
+        }
+      ]
+    }
+  ],
+  "tips": [
+    {
+      "title": "Thời điểm lý tưởng",
+      "content": "Tháng 1 đến tháng 4 là mùa xuân dịu mát, hoa nở đẹp. Tháng 5 đến tháng 8 nắng rực rỡ, thích hợp đi biển Thuận An và phá Tam Giang. Tháng 9 đến tháng 12 là mùa mưa Huế trầm mặc."
+    },
+    {
+      "title": "Phương tiện di chuyển",
+      "content": "Thuê xe máy (120k-150k/ngày), taxi điện Xanh SM, xích lô dạo quanh Đại Nội hoặc thuyền rồng trên sông Hương."
+    },
+    {
+      "title": "Trang phục tham quan",
+      "content": "Kín đáo, lịch sự khi vào Đại Nội, lăng tẩm và các ngôi chùa cổ. Nên thuê áo dài truyền thống hoặc cổ phục Nhật Bình để chụp ảnh check-in."
+    }
+  ]
+}

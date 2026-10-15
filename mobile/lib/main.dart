@@ -6,51 +6,65 @@ import 'features/itinerary/presentation/screens/itinerary_planner_screen.dart';
 import 'features/random_wheel/presentation/screens/random_wheel_screen.dart';
 import 'features/ai_guide/presentation/screens/ai_guide_screen.dart';
 import 'features/gamification/presentation/screens/green_points_screen.dart';
+import 'core/services/token_storage_service.dart';
+import 'features/auth/presentation/screens/login_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const HuegoApp());
 }
 
-class HuegoApp extends StatelessWidget {
+class HuegoApp extends StatefulWidget {
   const HuegoApp({super.key});
 
   @override
+  State<HuegoApp> createState() => _HuegoAppState();
+}
+
+class _HuegoAppState extends State<HuegoApp> {
+  bool _isLoading = true;
+  bool _isAuthenticated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAuth();
+  }
+
+  Future<void> _checkAuth() async {
+    String? token;
+    try {
+      token = await TokenStorageService.instance.getAccessToken();
+    } catch (e) {
+      debugPrint('HUEGO: doc token that bai, coi nhu chua dang nhap: $e');
+      try {
+        await TokenStorageService.instance.clearTokens();
+      } catch (_) {}
+    }
+    if (!mounted) return;
+    setState(() {
+      _isAuthenticated = token != null;
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
     return MaterialApp(
       title: 'HUEGO – Khám Phá Huế Thông Minh',
       debugShowCheckedModeBanner: false,
       theme: HuegoTheme.lightTheme,
-      home: const MainNavigationScreen(),
+      home: _isAuthenticated ? const MainNavigationScreen() : const LoginScreen(),
       builder: (context, child) {
-        if (kIsWeb) {
-          return Container(
-            color: const Color(0xFF150B22),
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: Container(
-                  width: 412,
-                  height: 840,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 40,
-                        spreadRadius: 8,
-                        offset: Offset(0, 14),
-                      ),
-                    ],
-                    border: Border.all(color: Colors.white24, width: 4),
-                  ),
-                  child: child,
-                ),
-              ),
-            ),
-          );
-        }
+        // Hỗ trợ PWA toàn màn hình trên Web (Safari iPhone, Add to Home Screen)
         return child!;
       },
     );

@@ -10,3 +10,18 @@ mobile/.flutter-plugins-dependencies
 backend/.env
 mobile/android/local.properties
 mobile/flutter_01.log
+
+# Temporary logs & test artifacts
+*.log
+*.err
+*.exe
+cloudflared.exe
+persist_token.txt
+temp.json
+backend/backend.err
+backend/persist_token.txt
+backend/temp.json
+backend/check-gemini.ts
+backend/test-ai.ts
+backend/print-points.*
+backend/print-db-points.*

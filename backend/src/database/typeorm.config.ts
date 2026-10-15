@@ -41,7 +41,8 @@ export const getTypeOrmConfig = (
     username,
     password,
     database,
-    entities: [User],
+    entities: [User, __dirname + '/../**/*.entity{.ts,.js}'],
+    migrations: [__dirname + '/migrations/*{.ts,.js}'],
     // Tuyệt đối KHÔNG bật true. Schema do backend/database/seeds/*.sql quản lý.
     // true khiến TypeORM tự ý sửa/xoá cột không có trong entity, gây mất dữ liệu.
     synchronize: false,

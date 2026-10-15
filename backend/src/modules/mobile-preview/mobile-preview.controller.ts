@@ -1,7 +1,9 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('app')
+@Public()
 export class MobilePreviewController {
   @Get()
   getMobileApp(@Res() res: Response) {
@@ -12,7 +14,10 @@ export class MobilePreviewController {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HUEGO – Ứng Dụng Khám Phá Huế Thông Minh</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
@@ -188,10 +193,68 @@ export class MobilePreviewController {
     #tab-map { position: relative; height: 100%; overflow: hidden; }
     #map { width: 100%; height: 100%; }
 
+    /* Map Search Bar & Stats */
+    .map-search-bar-wrap {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      z-index: 550;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .map-search-box {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      border-radius: 22px;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      border: 1.5px solid rgba(88, 44, 131, 0.2);
+    }
+    .map-search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1E293B;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .clear-search-btn {
+      background: #E2E8F0;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748B;
+    }
+    .map-stats-badge {
+      background: linear-gradient(135deg, var(--royal-violet) 0%, #371457 100%);
+      color: var(--imperial-gold);
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(88, 44, 131, 0.35);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+
     /* Category Filter Pills on Map */
     .map-filter-bar {
       position: absolute;
-      top: 58px;
+      top: 54px;
       left: 0;
       right: 0;
       z-index: 500;
@@ -203,6 +266,20 @@ export class MobilePreviewController {
       scrollbar-width: none;
     }
     .map-filter-bar::-webkit-scrollbar { display: none; }
+
+    /* Leaflet MarkerCluster Hue Theme Styling */
+    .marker-cluster-small { background-color: rgba(212, 175, 55, 0.5) !important; }
+    .marker-cluster-small div { background-color: rgba(212, 175, 55, 0.95) !important; color: #1E1B4B !important; font-weight: 800; }
+    .marker-cluster-medium { background-color: rgba(88, 44, 131, 0.5) !important; }
+    .marker-cluster-medium div { background-color: rgba(88, 44, 131, 0.95) !important; color: #FFF !important; font-weight: 800; }
+    .marker-cluster-large { background-color: rgba(30, 107, 123, 0.5) !important; }
+    .marker-cluster-large div { background-color: rgba(30, 107, 123, 0.95) !important; color: #FFF !important; font-weight: 800; }
+    .marker-cluster div {
+      border-radius: 50%;
+      text-align: center;
+      font-size: 11px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
 
     /* Map Layer Toggle Pill */
     .map-layer-pill {
@@ -255,19 +332,19 @@ export class MobilePreviewController {
     /* Floating Weather Banner */
     .weather-banner {
       position: absolute;
-      top: 10px;
-      left: 12px;
-      right: 12px;
+      bottom: 24px;
+      right: 14px;
       z-index: 500;
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
       border-radius: 18px;
-      padding: 8px 12px;
+      padding: 6px 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-      border: 1px solid rgba(255,255,255,0.8);
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(88,44,131,0.15);
+      max-width: 210px;
     }
     .weather-icon { font-size: 24px; }
     .weather-info { flex: 1; }
@@ -534,7 +611,212 @@ export class MobilePreviewController {
     .cert-desc { font-size: 11px; line-height: 1.4; color: #E2E8F0; margin-bottom: 14px; }
     .cert-code-chip { background: rgba(255,255,255,0.1); border: 1px dashed var(--imperial-gold); padding: 6px 12px; border-radius: 12px; font-size: 11px; font-family: monospace; color: var(--imperial-gold); margin-bottom: 14px; display: inline-block; }
     .cert-share-btn { background: var(--imperial-gold); color: #000; border: none; padding: 10px 18px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; width: 100%; }
-    .cert-close-btn { background: transparent; color: #94A3B8; border: none; font-size: 12px; margin-top: 10px; cursor: pointer; }
+    /* Audio Guide Royal Modal */
+    .audio-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(13, 6, 21, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 2100;
+      display: none;
+      flex-direction: column;
+      padding: 16px;
+      overflow-y: auto;
+      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUp { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
+    .audio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .audio-header-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--imperial-gold);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .audio-close-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .audio-disc-card {
+      background: radial-gradient(circle at center, #3A1559 0%, #1A092A 100%);
+      border: 1.5px solid rgba(212, 175, 55, 0.4);
+      border-radius: 24px;
+      padding: 18px 14px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      margin-bottom: 14px;
+    }
+    .audio-cover-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 10px auto;
+      border: 3px solid var(--imperial-gold);
+      box-shadow: 0 8px 25px rgba(212, 175, 55, 0.35);
+      transition: transform 0.3s;
+    }
+    .audio-cover-img.spinning {
+      animation: spinCover 14s linear infinite;
+    }
+    @keyframes spinCover { 100% { transform: rotate(360deg); } }
+    .audio-place-name {
+      font-family: 'Playfair Display', serif;
+      color: #FFF;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .audio-speaker-sub {
+      font-size: 11px;
+      color: var(--imperial-gold);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .audio-wave-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      height: 22px;
+      margin-bottom: 10px;
+    }
+    .audio-wave-bar {
+      width: 3px;
+      height: 5px;
+      background: var(--imperial-gold);
+      border-radius: 3px;
+      transition: height 0.2s;
+    }
+    .audio-wave-wrap.active .audio-wave-bar {
+      animation: waveBeat 1s infinite ease-in-out;
+    }
+    .audio-wave-wrap.active .audio-wave-bar:nth-child(2) { animation-delay: 0.15s; }
+    .audio-wave-wrap.active .audio-wave-bar:nth-child(3) { animation-delay: 0.3s; }
+    .audio-wave-wrap.active .audio-wave-bar:nth-child(4) { animation-delay: 0.45s; }
+    .audio-wave-wrap.active .audio-wave-bar:nth-child(5) { animation-delay: 0.2s; }
+    .audio-wave-wrap.active .audio-wave-bar:nth-child(6) { animation-delay: 0.35s; }
+    .audio-wave-wrap.active .audio-wave-bar:nth-child(7) { animation-delay: 0.1s; }
+    @keyframes waveBeat { 0%, 100% { height: 5px; } 50% { height: 20px; } }
+    .audio-timeline-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #94A3B8;
+      margin-bottom: 12px;
+    }
+    .audio-timeline-slider {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      outline: none;
+    }
+    .audio-timeline-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--imperial-gold);
+      cursor: pointer;
+    }
+    .audio-controls-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+    .audio-ctrl-btn {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .audio-play-main-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--imperial-gold), #B45309);
+      border: none;
+      color: #000;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    }
+    .audio-speed-btn {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--imperial-gold);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(212,175,55,0.3);
+      padding: 4px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .audio-info-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      color: white;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .audio-info-card h5 {
+      color: var(--imperial-gold);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .audio-mini-bar {
+      position: absolute;
+      bottom: 72px;
+      left: 12px;
+      right: 12px;
+      background: rgba(26, 9, 42, 0.95);
+      border: 1.5px solid var(--imperial-gold);
+      border-radius: 20px;
+      padding: 8px 12px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      z-index: 105;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
@@ -574,25 +856,28 @@ export class MobilePreviewController {
 
         <!-- TAB 1: BẢN ĐỒ HUẾ SỐ CHUYÊN SÂU -->
         <div class="tab-view active" id="tab-map">
-          <!-- Weather Floating Banner -->
-          <div class="weather-banner">
-            <span class="weather-icon">🌧️</span>
-            <div class="weather-info">
-              <div class="weather-title">Mưa ngâu Cố Đô • 24.5°C</div>
-              <div class="weather-desc">Mệ Huế gợi ý ưu tiên không gian trong nhà</div>
+          <!-- Map Search Bar & Quick Stats -->
+          <div class="map-search-bar-wrap">
+            <div class="map-search-box">
+              <span class="search-lens">🔍</span>
+              <input type="text" id="mobileMapSearchInput" placeholder="Tìm 4.352 địa điểm Cố Đô, quán ngon, di tích..." autocomplete="off">
+              <button id="clearSearchBtn" class="clear-search-btn" onclick="clearMapSearch()" style="display:none;">✕</button>
             </div>
-            <button class="weather-btn" onclick="filterPlaces('INDOOR')">Đổi hướng</button>
+            <div class="map-stats-badge" id="mapStatsBadge" title="Toàn bộ kho dữ liệu Huế Map">
+              4.352 điểm
+            </div>
           </div>
 
-          <!-- Category Filter Bar (20+ địa danh) -->
+          <!-- Category Filter Bar (Đầy đủ danh mục bản đồ Cố Đô) -->
           <div class="map-filter-bar">
-            <div class="filter-chip active" onclick="filterCategory('ALL', this)">🌟 Tất cả (20+)</div>
-            <div class="filter-chip" onclick="filterCategory('HISTORICAL', this)">🏛️ Di tích Cố Đô</div>
-            <div class="filter-chip" onclick="filterCategory('CAFE', this)">☕ Cà phê sống ảo</div>
-            <div class="filter-chip" onclick="filterCategory('CUISINE', this)">🍜 Món đặc sản</div>
-            <div class="filter-chip" onclick="filterCategory('SCENIC_VIEW', this)">📸 View đêm & hoàng hôn</div>
-            <div class="filter-chip" onclick="filterCategory('OUTSKIRTS_ECO', this)">🌲 Ngoại thành sinh thái</div>
-            <div class="filter-chip" onclick="filterCategory('UTILITY', this)">🚲 Thuê xe & Cây xăng</div>
+            <div class="filter-chip active" onclick="filterCategory('ALL', this)">🌟 Tất cả (4.352)</div>
+            <div class="filter-chip" onclick="filterCategory('HERITAGE_30', this)">👑 30 Di sản UNESCO</div>
+            <div class="filter-chip" onclick="filterCategory('tour', this)">🏛️ Di tích & Tour (513)</div>
+            <div class="filter-chip" onclick="filterCategory('fnb', this)">🍜 Ẩm thực (1.000)</div>
+            <div class="filter-chip" onclick="filterCategory('cafe', this)">☕ Cà phê (714)</div>
+            <div class="filter-chip" onclick="filterCategory('stay', this)">🏨 Khách sạn (897)</div>
+            <div class="filter-chip" onclick="filterCategory('specialty', this)">🎁 Đặc sản (228)</div>
+            <div class="filter-chip" onclick="filterCategory('service', this)">🚗 Dịch vụ (1.000)</div>
           </div>
 
           <!-- Leaflet Map Container -->
@@ -603,6 +888,16 @@ export class MobilePreviewController {
             <span id="mapLayerIcon">🛰️</span> <span id="mapLayerText">Vệ tinh</span>
           </div>
 
+          <!-- Weather Floating Compact Banner -->
+          <div class="weather-banner" id="weatherBanner">
+            <span class="weather-icon">🌧️</span>
+            <div class="weather-info">
+              <div class="weather-title">Mưa ngâu Cố Đô • 24.5°C</div>
+              <div class="weather-desc">Gợi ý địa điểm trong nhà</div>
+            </div>
+            <button class="weather-btn" onclick="filterPlaces('INDOOR')">Đổi hướng</button>
+          </div>
+
           <!-- Bottom Sheet Chi Tiết Điểm Đến -->
           <div class="place-sheet" id="placeSheet">
             <div class="sheet-handle" onclick="closeSheet()"></div>
@@ -611,16 +906,23 @@ export class MobilePreviewController {
             <div class="sheet-address" id="sheetAddress">📍 Địa chỉ</div>
             <div class="sheet-badges">
               <span class="sheet-tag gp" id="sheetGp">+25 GP</span>
+              <span class="sheet-tag" id="sheetRating" style="background:#FEF3C7; color:#92400E; font-weight:800;">⭐ 4.8</span>
               <span class="sheet-tag" id="sheetEnv">OUTDOOR</span>
               <span class="sheet-tag" id="sheetPrice">Miễn phí</span>
             </div>
             <p id="sheetDesc" style="font-size: 12px; color: #4B5563; line-height: 1.4; margin-bottom: 12px;"></p>
-            <div class="sheet-actions">
+            <div class="sheet-actions" style="grid-template-columns: 1fr 1fr; gap: 8px;">
               <button class="btn-action btn-ai-voice" onclick="playAiNarration()">
-                <span>🎙️</span> Nghe AI Thuyết Minh
+                <span>🎙️</span> AI Thuyết Minh
               </button>
               <button class="btn-action btn-add-route" onclick="addToItineraryFromSheet()">
-                <span>➕</span> Thêm Vào Lộ Trình
+                <span>➕</span> Lộ Trình
+              </button>
+              <button class="btn-action" onclick="openGoogleMapsDirection()" style="background:#1E6B7B; color:white;">
+                <span>🧭</span> Chỉ Đường
+              </button>
+              <button class="btn-action" id="sheet3dBtn" onclick="open3dMuseumFromSheet()" style="background:var(--imperial-gold); color:#000; font-weight:800; display:none;">
+                <span>🏛️</span> 3D Cung Đình
               </button>
             </div>
           </div>
@@ -791,6 +1093,90 @@ export class MobilePreviewController {
         </div>
       </div>
 
+      <!-- Audio Guide Royal Player Overlay -->
+      <div class="audio-overlay" id="audioOverlay">
+        <div class="audio-header">
+          <div class="audio-header-title">
+            <span>🎙️</span> THUYẾT MINH DI SẢN HUẾ
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="audio-speed-btn" id="audioLangBtn" onclick="switchAudioLang()">🇻🇳 Tiếng Việt</button>
+            <button class="audio-close-btn" onclick="closeAudioGuide(true)" title="Thu nhỏ lại thanh mini">✕</button>
+          </div>
+        </div>
+
+        <!-- Disc / Card Section -->
+        <div class="audio-disc-card">
+          <img id="audioCover" class="audio-cover-img" src="" alt="Di tích" />
+          <div class="audio-place-name" id="audioPlaceTitle">Đại Nội Huế</div>
+          <div class="audio-speaker-sub">Giọng đọc Mệ Huế AI • Cố Đô Thuyết Minh</div>
+
+          <!-- Animated Waveform -->
+          <div class="audio-wave-wrap" id="audioWaveWrap">
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+            <div class="audio-wave-bar"></div>
+          </div>
+
+          <!-- Timeline Slider -->
+          <div class="audio-timeline-wrap">
+            <span id="audioCurrentTime">00:00</span>
+            <input type="range" class="audio-timeline-slider" id="audioSlider" min="0" max="100" value="0" oninput="seekAudio(this.value)">
+            <span id="audioTotalTime">02:15</span>
+          </div>
+
+          <!-- Controls Row -->
+          <div class="audio-controls-row">
+            <button class="audio-ctrl-btn" onclick="rewindAudio(10)" title="Lùi 10 giây">⏪</button>
+            <button class="audio-play-main-btn" id="audioMainPlayBtn" onclick="toggleAudioPlay()">▶</button>
+            <button class="audio-ctrl-btn" onclick="forwardAudio(10)" title="Tiến 10 giây">⏩</button>
+            <button class="audio-speed-btn" id="audioSpeedBtn" onclick="changeAudioSpeed()">1.0x</button>
+          </div>
+        </div>
+
+        <!-- Rich Story Section -->
+        <div class="audio-info-card" style="border-color: rgba(212,175,55,0.4); background: rgba(88,44,131,0.25);">
+          <h5><span>📜</span> Kịch Bản Thuyết Minh Di Sản</h5>
+          <p id="audioScriptText" style="line-height: 1.6; color: #F1F5F9; font-size: 12.5px;"></p>
+        </div>
+
+        <div class="audio-info-card" id="audioSecretFactCard">
+          <h5 style="color: #FBBF24;"><span>👑</span> Giai Thoại & Bí Mật Triều Nguyễn</h5>
+          <p id="audioSecretText" style="color: #E2E8F0;"></p>
+        </div>
+
+        <div class="audio-info-card" id="audioPhotoSpotCard">
+          <h5 style="color: #38BDF8;"><span>📸</span> Góc Chụp Ảnh Sống Ảo Đẹp Nhất</h5>
+          <p id="audioPhotoText" style="color: #E2E8F0;"></p>
+        </div>
+
+        <div class="audio-info-card" id="audioFoodCard">
+          <h5 style="color: #F87171;"><span>🍲</span> Đặc Sản Huế Ghép Đôi</h5>
+          <p id="audioFoodText" style="color: #E2E8F0;"></p>
+        </div>
+
+        <div class="audio-info-card" id="audioEcoCard">
+          <h5 style="color: #4ADE80;"><span>🌿</span> Du Lịch Xanh Bảo Vệ Cố Đô</h5>
+          <p id="audioEcoText" style="color: #E2E8F0;"></p>
+        </div>
+      </div>
+
+      <!-- Mini Floating Player Bar -->
+      <div class="audio-mini-bar" id="miniAudioBar" onclick="openAudioGuideFromMini()">
+        <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+          <button style="background: var(--imperial-gold); border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 13px; cursor: pointer; color: black; display: flex; align-items: center; justify-content: center;" onclick="event.stopPropagation(); toggleAudioPlay();" id="miniPlayBtn">▶</button>
+          <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+            <div id="miniTitle" style="font-size: 11px; font-weight: 700; color: #FFF;">Đại Nội Huế</div>
+            <div style="font-size: 9px; color: var(--imperial-gold);">🎙️ Đang phát thuyết minh AI</div>
+          </div>
+        </div>
+        <button style="background: none; border: none; color: #94A3B8; font-size: 14px; cursor: pointer;" onclick="event.stopPropagation(); stopAudioGuide();">✕</button>
+      </div>
+
     </div>
   </div>
 
@@ -809,54 +1195,91 @@ export class MobilePreviewController {
       document.body.classList.toggle('fullscreen-mode');
     }
 
-    // 20+ Iconic Hue Places Database
     const huePlaces = [
-      { id: '1', name: 'Đại Nội Huế (Hoàng Thành)', cat: 'HISTORICAL', lat: 16.4697, lng: 107.5779, points: 30, env: 'OUTDOOR', price: '200.000đ', img: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375', desc: 'Kinh thành triều Nguyễn, di sản văn hóa thế giới UNESCO với kiến trúc cung điện tráng lệ.' },
-      { id: '2', name: 'Chùa Thiên Mụ (Linh Mụ Tự)', cat: 'HISTORICAL', lat: 16.4529, lng: 107.5451, points: 25, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1596401057633-54a8fe8ef647', desc: 'Ngôi chùa cổ kính hơn 400 năm tuổi soi bóng bên dòng sông Hương thơ mộng.' },
-      { id: '3', name: 'Bảo tàng Cổ vật Cung đình', cat: 'HISTORICAL', lat: 16.4715, lng: 107.5812, points: 25, env: 'INDOOR', price: '50.000đ', img: 'https://images.unsplash.com/photo-1582560475093-ba66accbc424', desc: 'Điện Long An lưu giữ ngàn bảo vật vàng son triều Nguyễn, không gian trong nhà mát mẻ.' },
-      { id: '4', name: 'Lăng Khải Định (Ứng Lăng)', cat: 'HISTORICAL', lat: 16.3991, lng: 107.5905, points: 25, env: 'SEMI_OUTDOOR', price: '150.000đ', img: 'https://images.unsplash.com/photo-1548013146-72479768bada', desc: 'Tuyệt tác kiến trúc khảm sành sứ đỉnh cao Đông - Tây.' },
-      { id: '5', name: 'Lăng Tự Đức (Khiêm Lăng)', cat: 'HISTORICAL', lat: 16.4328, lng: 107.5658, points: 25, env: 'SEMI_OUTDOOR', price: '150.000đ', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93', desc: 'Lăng tẩm thi vị bậc nhất với hồ Lưu Khiêm và đảo Tịnh Khiêm.' },
-      { id: '6', name: 'Cầu Tràng Tiền', cat: 'SCENIC_VIEW', lat: 16.4683, lng: 107.5947, points: 20, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1528127269322-539801943592', desc: 'Cây cầu biểu tượng 6 vài 12 nhịp bắc qua sông Hương, đổi màu lung linh về đêm.' },
-      { id: '7', name: 'Cầu Dã Viên (Hoàng Hôn)', cat: 'SCENIC_VIEW', lat: 16.4592, lng: 107.5721, points: 20, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb', desc: 'Góc ngắm hoàng hôn đỏ rực buông xuống cồn Dã Viên yên bình.' },
-      { id: '8', name: 'Đồi Vọng Cảnh', cat: 'OUTSKIRTS_ECO', lat: 16.4258, lng: 107.5512, points: 30, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb', desc: 'Nơi ngắm khúc uốn dòng sông Hương đẹp nhất từ trên cao thông reo lộng gió.' },
-      { id: '9', name: 'Đồi Thiên An & Hồ Thủy Tiên', cat: 'OUTSKIRTS_ECO', lat: 16.4087, lng: 107.5756, points: 30, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23', desc: 'Đồi thông lãng mạn và tượng Rồng khổng lồ nổi tiếng trên truyền thông thế giới.' },
-      { id: '10', name: 'Rừng Ngập Mặn Rú Chá', cat: 'OUTSKIRTS_ECO', lat: 16.5512, lng: 107.6189, points: 35, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1448375240586-882707db888b', desc: 'Khu rừng ngập mặn nguyên sinh duy nhất trên đầm phá Tam Giang rực rỡ mùa thu.' },
-      { id: '11', name: 'Làng Hương Trầm Thủy Xuân', cat: 'HISTORICAL', lat: 16.4358, lng: 107.5647, points: 25, env: 'SEMI_OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93', desc: 'Làng nghề hương trầm rực rỡ sắc màu, góc sống ảo áo dài quốc dân.' },
-      { id: '12', name: 'Cà Phê Muối Gốc Nguyễn Huệ', cat: 'CAFE', lat: 16.4589, lng: 107.5898, points: 20, env: 'INDOOR', price: '25.000đ', img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd', desc: 'Nơi khởi nguồn món cà phê muối béo mặn gây nghiện đất Cố Đô.' },
-      { id: '13', name: 'Tân Cafe Vintage Cố Đô', cat: 'CAFE', lat: 16.4635, lng: 107.5882, points: 20, env: 'INDOOR', price: '35.000đ', img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24', desc: 'Không gian gạch thô hoài niệm thập niên 80s chụp ảnh cực chất.' },
-      { id: '14', name: 'Không Gian Trà Cung Đình Kim Long', cat: 'CUISINE', lat: 16.4608, lng: 107.5601, points: 20, env: 'INDOOR', price: '60.000đ', img: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3', desc: 'Thưởng trà thảo mộc 26 vị tiến vua trong nhà rường cổ kính ngày mưa.' },
-      { id: '15', name: 'Bún Bò Huế Mụ Rơi', cat: 'CUISINE', lat: 16.4745, lng: 107.5862, points: 20, env: 'INDOOR', price: '45.000đ', img: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43', desc: 'Bún bò chuẩn vị Huế nước hầm sả ruốc ngọt thanh thơm lừng.' },
-      { id: '16', name: 'Cơm Hến Hoa Đông Cồn Hến', cat: 'CUISINE', lat: 16.4789, lng: 107.6012, points: 20, env: 'SEMI_OUTDOOR', price: '25.000đ', img: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624', desc: 'Tô cơm hến cay nồng tóp mỡ giòn rụm giữa dòng sông Hương.' },
-      { id: '17', name: 'Bánh Bèo Nậm Lọc Bà Đỏ', cat: 'CUISINE', lat: 16.4615, lng: 107.5998, points: 20, env: 'INDOOR', price: '50.000đ', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8', desc: 'Các món bánh Huế gia truyền tôm chấy đỏ au nức tiếng.' },
-      { id: '18', name: 'Chè Hẻm 20 Món Hùng Vương', cat: 'CUISINE', lat: 16.4621, lng: 107.5932, points: 15, env: 'INDOOR', price: '15.000đ', img: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc', desc: '20 nồi chè ngọt mát: chè bắp, chè hạt sen long nhãn, chè khoai môn.' },
-      { id: '19', name: 'Trạm Xe Đạp Xanh Hiển Nhơn', cat: 'UTILITY', lat: 16.4705, lng: 107.5815, points: 15, env: 'OUTDOOR', price: '10.000đ/h', img: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e', desc: 'Trạm xe đạp công cộng quét mã QR thông minh ngay cổng Đại Nội.' },
-      { id: '20', name: 'Cây Xăng Petrolimex Lê Lợi', cat: 'UTILITY', lat: 16.4632, lng: 107.5862, points: 5, env: 'OUTDOOR', price: '24/7', img: 'https://images.unsplash.com/photo-1545459720-aac8509eb02c', desc: 'Trạm cấp nhiên liệu tiêu chuẩn trung tâm bờ Nam sông Hương.' }
+      { id: '1', name: 'Đại Nội Huế (Hoàng Thành)', cat: 'HISTORICAL', lat: 16.4697, lng: 107.5779, points: 30, env: 'OUTDOOR', price: '200.000đ', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Ngomon2.jpg/960px-Ngomon2.jpg', desc: 'Kinh thành triều Nguyễn, di sản văn hóa thế giới UNESCO với kiến trúc cung điện tráng lệ.' },
+      { id: '2', name: 'Chùa Thiên Mụ (Linh Mụ Tự)', cat: 'HISTORICAL', lat: 16.4529, lng: 107.5451, points: 25, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/ThienMuPagoda.jpg/960px-ThienMuPagoda.jpg', desc: 'Ngôi chùa cổ kính hơn 400 năm tuổi soi bóng bên dòng sông Hương thơ mộng.' },
+      { id: '3', name: 'Bảo tàng Cổ vật Cung đình', cat: 'HISTORICAL', lat: 16.4715, lng: 107.5812, points: 25, env: 'INDOOR', price: '50.000đ', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/B%E1%BA%A3o_t%C3%A0ng_C%E1%BB%95_v%E1%BA%ADt_Cung_%C4%91%C3%ACnh_Hu%E1%BA%BF_%2815245479432%29.jpg/960px-B%E1%BA%A3o_t%C3%A0ng_C%E1%BB%95_v%E1%BA%ADt_Cung_%C4%91%C3%ACnh_Hu%E1%BA%BF_%2815245479432%29.jpg', desc: 'Điện Long An lưu giữ ngàn bảo vật vàng son triều Nguyễn, không gian trong nhà mát mẻ.' },
+      { id: '4', name: 'Lăng Khải Định (Ứng Lăng)', cat: 'HISTORICAL', lat: 16.3991, lng: 107.5905, points: 25, env: 'SEMI_OUTDOOR', price: '150.000đ', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/L%C4%83ng_Kh%E1%BA%A3i_%C4%90%E1%BB%8Bnh_-_NKS.jpg/960px-L%C4%83ng_Kh%E1%BA%A3i_%C4%90%E1%BB%8Bnh_-_NKS.jpg', desc: 'Tuyệt tác kiến trúc khảm sành sứ đỉnh cao Đông - Tây.' },
+      { id: '5', name: 'Lăng Tự Đức (Khiêm Lăng)', cat: 'HISTORICAL', lat: 16.4328, lng: 107.5658, points: 25, env: 'SEMI_OUTDOOR', price: '150.000đ', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Annam_-_Hu%C3%A9_-_Pavillons_sur_le_bassin_fleuri_au_Tombeau_de_Tu-Duc.jpg/960px-Annam_-_Hu%C3%A9_-_Pavillons_sur_le_bassin_fleuri_au_Tombeau_de_Tu-Duc.jpg', desc: 'Lăng tẩm thi vị bậc nhất với hồ Lưu Khiêm và đảo Tịnh Khiêm.' },
+      { id: '6', name: 'Cầu Tràng Tiền', cat: 'SCENIC_VIEW', lat: 16.4683, lng: 107.5947, points: 20, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Hue%2C_le_pont_Trang_Tien.jpg/960px-Hue%2C_le_pont_Trang_Tien.jpg', desc: 'Cây cầu biểu tượng 6 vài 12 nhịp bắc qua sông Hương, đổi màu lung linh về đêm.' },
+      { id: '7', name: 'Cầu Dã Viên (Hoàng Hôn)', cat: 'SCENIC_VIEW', lat: 16.4592, lng: 107.5721, points: 20, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/C%E1%BA%A7u_D%C3%A3_Vi%C3%AAn.jpg/960px-C%E1%BA%A7u_D%C3%A3_Vi%C3%AAn.jpg', desc: 'Góc ngắm hoàng hôn đỏ rực buông xuống cồn Dã Viên yên bình.' },
+      { id: '8', name: 'Đồi Vọng Cảnh', cat: 'OUTSKIRTS_ECO', lat: 16.4258, lng: 107.5512, points: 30, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800', desc: 'Nơi ngắm khúc uốn dòng sông Hương đẹp nhất từ trên cao thông reo lộng gió.' },
+      { id: '9', name: 'Đồi Thiên An & Hồ Thủy Tiên', cat: 'OUTSKIRTS_ECO', lat: 16.4087, lng: 107.5756, points: 30, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800', desc: 'Đồi thông lãng mạn và tượng Rồng khổng lồ nổi tiếng trên truyền thông thế giới.' },
+      { id: '10', name: 'Rừng Ngập Mặn Rú Chá', cat: 'OUTSKIRTS_ECO', lat: 16.5512, lng: 107.6189, points: 35, env: 'OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800', desc: 'Khu rừng ngập mặn nguyên sinh duy nhất trên đầm phá Tam Giang rực rỡ mùa thu.' },
+      { id: '11', name: 'Làng Hương Trầm Thủy Xuân', cat: 'HISTORICAL', lat: 16.4358, lng: 107.5647, points: 25, env: 'SEMI_OUTDOOR', price: 'Miễn phí', img: 'https://images.unsplash.com/photo-1559825481-12a05cc00344?auto=format&fit=crop&w=800', desc: 'Làng nghề hương trầm rực rỡ sắc màu, góc sống ảo áo dài quốc dân.' },
+      { id: '12', name: 'Cà Phê Muối Gốc Nguyễn Huệ', cat: 'CAFE', lat: 16.4589, lng: 107.5898, points: 20, env: 'INDOOR', price: '25.000đ', img: 'https://images.unsplash.com/photo-1572286258217-106ea4a0709b?auto=format&fit=crop&w=800', desc: 'Nơi khởi nguồn món cà phê muối béo mặn gây nghiện đất Cố Đô.' },
+      { id: '13', name: 'Tân Cafe Vintage Cố Đô', cat: 'CAFE', lat: 16.4635, lng: 107.5882, points: 20, env: 'INDOOR', price: '35.000đ', img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800', desc: 'Không gian gạch thô hoài niệm thập niên 80s chụp ảnh cực chất.' },
+      { id: '14', name: 'Không Gian Trà Cung Đình Kim Long', cat: 'CUISINE', lat: 16.4608, lng: 107.5601, points: 20, env: 'INDOOR', price: '60.000đ', img: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800', desc: 'Thưởng trà thảo mộc 26 vị tiến vua trong nhà rường cổ kính ngày mưa.' },
+      { id: '15', name: 'Bún Bò Huế Mụ Rơi', cat: 'CUISINE', lat: 16.4745, lng: 107.5862, points: 20, env: 'INDOOR', price: '45.000đ', img: 'https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=800', desc: 'Bún bò chuẩn vị Huế nước hầm sả ruốc ngọt thanh thơm lừng.' },
+      { id: '16', name: 'Cơm Hến Hoa Đông Cồn Hến', cat: 'CUISINE', lat: 16.4789, lng: 107.6012, points: 20, env: 'SEMI_OUTDOOR', price: '25.000đ', img: 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800', desc: 'Tô cơm hến cay nồng tóp mỡ giòn rụm giữa dòng sông Hương.' },
+      { id: '17', name: 'Bánh Bèo Nậm Lọc Bà Đỏ', cat: 'CUISINE', lat: 16.4615, lng: 107.5998, points: 20, env: 'INDOOR', price: '50.000đ', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800', desc: 'Các món bánh Huế gia truyền tôm chấy đỏ au nức tiếng.' },
+      { id: '18', name: 'Chè Hẻm 20 Món Hùng Vương', cat: 'CUISINE', lat: 16.4621, lng: 107.5932, points: 15, env: 'INDOOR', price: '15.000đ', img: 'https://images.unsplash.com/photo-1553530666-ba11a90a02f8?auto=format&fit=crop&w=800', desc: '20 nồi chè ngọt mát: chè bắp, chè hạt sen long nhãn, chè khoai môn.' },
+      { id: '19', name: 'Trạm Xe Đạp Xanh Hiển Nhơn', cat: 'UTILITY', lat: 16.4705, lng: 107.5815, points: 15, env: 'OUTDOOR', price: '10.000đ/h', img: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800', desc: 'Trạm xe đạp công cộng quét mã QR thông minh ngay cổng Đại Nội.' },
+      { id: '20', name: 'Cây Xăng Petrolimex Lê Lợi', cat: 'UTILITY', lat: 16.4632, lng: 107.5862, points: 5, env: 'OUTDOOR', price: '24/7', img: 'https://images.unsplash.com/photo-1545459720-aac8509eb02c?auto=format&fit=crop&w=800', desc: 'Trạm cấp nhiên liệu tiêu chuẩn trung tâm bờ Nam sông Hương.' }
     ];
 
-    // Initialize Leaflet Map with Google Maps & Esri Basemaps (100% Free, No Watermarks)
-    let map, markersLayer;
+    // Initialize Leaflet Map with Google Maps & Esri Basemaps + Full 4,352 Hue Map Places
+    let map, markersClusterGroup;
     let currentTileLayer;
     let tileLayerIndex = 0;
     let tileLayers = [];
+    let allHueMapPoints = [];
+    let allHeritageSites = [];
+    let currentMapFilter = 'ALL';
+    let userLocation = { lat: 16.4697, lng: 107.5779 };
+
+    function removeVietnameseTones(str) {
+      if (!str) return '';
+      return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
+        .toLowerCase();
+    }
+
+    function getDistanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function getPinStyle(vertical) {
+      switch(vertical) {
+        case 'tour': return { color: '#582C83', icon: '🏛️', tag: 'Di tích' };
+        case 'fnb': return { color: '#DC2626', icon: '🍜', tag: 'Ẩm thực' };
+        case 'cafe': return { color: '#D97706', icon: '☕', tag: 'Cà phê' };
+        case 'stay': return { color: '#2563EB', icon: '🏨', tag: 'Khách sạn' };
+        case 'specialty': return { color: '#0D9488', icon: '🎁', tag: 'Đặc sản' };
+        case 'nature': return { color: '#15803D', icon: '🌲', tag: 'Sinh thái' };
+        case 'service': return { color: '#475569', icon: '🚗', tag: 'Dịch vụ' };
+        default: return { color: '#582C83', icon: '📍', tag: 'Địa điểm' };
+      }
+    }
 
     function initMap() {
-      map = L.map('map', { zoomControl: false }).setView([16.4697, 107.5779], 14);
+      map = L.map('map', { zoomControl: false }).setView([16.4697, 107.5779], 13);
 
-      // 1. Google Maps Road (Tên đường tiếng Việt, sông Hương, cầu Tràng Tiền)
+      // 1. Google Maps Road
       const googleStreets = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
         attribution: '&copy; Google Maps',
         subdomains: ['0', '1', '2', '3'],
         maxZoom: 20
       });
 
-      // 2. Google Maps Hybrid (Ảnh vệ tinh chi tiết kèm tên đường & địa danh)
+      // 2. Google Maps Hybrid
       const googleHybrid = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
         attribution: '&copy; Google Maps Vệ Tinh',
         subdomains: ['0', '1', '2', '3'],
         maxZoom: 20
       });
 
-      // 3. Esri World Street Map (Hệ thống bản đồ địa lý mở Esri ArcGIS)
+      // 3. Esri World Street Map
       const esriStreets = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri ArcGIS',
         maxZoom: 19
@@ -873,8 +1296,49 @@ export class MobilePreviewController {
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-      markersLayer = L.layerGroup().addTo(map);
+      // Marker Cluster Group cho 4.352 điểm mượt mà
+      markersClusterGroup = L.markerClusterGroup({
+        chunkedLoading: true,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        maxClusterRadius: 45
+      }).addTo(map);
+
+      // Render 20 điểm mẫu ban đầu trong lúc fetch
       renderMapMarkers(huePlaces);
+
+      // Cho phép ấn ra ngoài bản đồ để đóng thông tin địa điểm
+      map.on('click', closeSheet);
+
+      // Tải kho dữ liệu Huế Map 4.352 điểm và 30 di sản
+      loadHueMapData();
+      setupMobileMapSearch();
+    }
+
+    async function loadHueMapData() {
+      try {
+        const [pointsRes, heritageRes] = await Promise.all([
+          fetch('/api/map-points'),
+          fetch('/api/heritage-sites')
+        ]);
+
+        if (pointsRes.ok) {
+          allHueMapPoints = await pointsRes.json();
+        }
+        if (heritageRes.ok) {
+          allHeritageSites = await heritageRes.json();
+        }
+
+        const countBadge = document.getElementById('mapStatsBadge');
+        if (countBadge && allHueMapPoints.length > 0) {
+          countBadge.textContent = allHueMapPoints.length.toLocaleString() + ' điểm';
+        }
+
+        applyCurrentMapFilter();
+      } catch (err) {
+        console.warn('Lỗi nạp dữ liệu Huế Map đầy đủ:', err);
+      }
     }
 
     function toggleMapType() {
@@ -907,74 +1371,543 @@ export class MobilePreviewController {
     }
 
     function renderMapMarkers(places) {
-      markersLayer.clearLayers();
-      places.forEach(p => {
-        let pinColor = '#582C83';
-        let pinIcon = '🏛️';
-        if (p.cat === 'CAFE') { pinColor = '#D97706'; pinIcon = '☕'; }
-        if (p.cat === 'CUISINE') { pinColor = '#DC2626'; pinIcon = '🍜'; }
-        if (p.cat === 'SCENIC_VIEW') { pinColor = '#1E6B7B'; pinIcon = '📸'; }
-        if (p.cat === 'OUTSKIRTS_ECO') { pinColor = '#15803D'; pinIcon = '🌲'; }
-        if (p.cat === 'UTILITY') { pinColor = '#2563EB'; pinIcon = '🚲'; }
+      if (!markersClusterGroup) return;
+      markersClusterGroup.clearLayers();
 
+      const markers = [];
+      places.forEach(p => {
+        const style = getPinStyle(p.v || p.cat);
         const customIcon = L.divIcon({
           className: 'custom-pin',
-          html: \`<div style="background:\${pinColor}; width:34px; height:34px; border-radius:50%; border:2.5px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:16px;">\${pinIcon}</div>\`,
-          iconSize: [34, 34],
-          iconAnchor: [17, 17]
+          html: \`<div style="background:\${style.color}; width:28px; height:28px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(0,0,0,0.3); font-size:13px; color:white;">\${style.icon}</div>\`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
         });
 
-        const marker = L.marker([p.lat, p.lng], { icon: customIcon }).addTo(markersLayer);
+        const marker = L.marker([p.lat, p.lng], { icon: customIcon });
         marker.on('click', () => showPlaceDetails(p));
-
-        // Radar Geofence circle
-        L.circle([p.lat, p.lng], {
-          radius: 40,
-          color: '#D4AF37',
-          fillColor: '#D4AF37',
-          fillOpacity: 0.18,
-          weight: 1.5
-        }).addTo(markersLayer);
+        markers.push(marker);
       });
+
+      markersClusterGroup.addLayers(markers);
     }
 
     let activePlace = null;
-    function showPlaceDetails(place) {
-      activePlace = place;
-      document.getElementById('sheetImg').src = place.img;
-      document.getElementById('sheetTitle').innerText = place.name;
-      document.getElementById('sheetAddress').innerText = '📍 ' + (place.lat.toFixed(4) + ', ' + place.lng.toFixed(4));
-      document.getElementById('sheetGp').innerText = '+' + place.points + ' GP';
-      document.getElementById('sheetEnv').innerText = place.env;
-      document.getElementById('sheetPrice').innerText = place.price;
-      document.getElementById('sheetDesc').innerText = place.desc;
+    async function showPlaceDetails(place) {
+      activePlace = {
+        id: place.id,
+        name: place.name || place.name_vi,
+        lat: place.lat,
+        lng: place.lng,
+        cat: place.v || place.cat || 'tour',
+        img: place.img || place.coverPhotoUrl || 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp',
+        points: place.points || 25,
+        price: place.price || (place.v === 'tour' ? 'Vé tham quan' : 'Tùy chọn'),
+        env: place.env || (place.v === 'tour' || place.v === 'service' ? 'OUTDOOR' : 'INDOOR'),
+        desc: place.desc || \`Địa danh \${place.name || place.name_vi} thuộc hệ thống du lịch Cố Đô Huế.\`
+      };
+
+      const imgEl = document.getElementById('sheetImg');
+      imgEl.src = activePlace.img;
+      imgEl.onerror = function() {
+        this.src = 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp';
+      };
+
+      document.getElementById('sheetTitle').innerText = activePlace.name;
+
+      const rating = place.r ? Number(place.r).toFixed(1) : (place.googleRating ? Number(place.googleRating).toFixed(1) : '4.8');
+      const ratingEl = document.getElementById('sheetRating');
+      if (ratingEl) ratingEl.innerText = '⭐ ' + rating;
+
+      // Tính cự ly từ vị trí người dùng
+      let distText = place.lat.toFixed(4) + ', ' + place.lng.toFixed(4);
+      if (userLocation) {
+        const d = getDistanceKm(userLocation.lat, userLocation.lng, place.lat, place.lng);
+        distText = (d < 1 ? Math.round(d * 1000) + ' m' : d.toFixed(1) + ' km') + ' • ' + (place.address || 'TP Huế');
+      }
+      document.getElementById('sheetAddress').innerText = '📍 ' + distText;
+      document.getElementById('sheetGp').innerText = '+' + activePlace.points + ' GP';
+      document.getElementById('sheetEnv').innerText = activePlace.env;
+      document.getElementById('sheetPrice').innerText = activePlace.price;
+      document.getElementById('sheetDesc').innerText = activePlace.desc;
+
+      // Nút xem Bảo Tàng 3D Cung Đình
+      const btn3d = document.getElementById('sheet3dBtn');
+      if (btn3d) {
+        const isHeritageOrMuseum = (place.v === 'tour' || place.cat === 'HISTORICAL' || (place.name && place.name.includes('Bảo tàng')));
+        btn3d.style.display = isHeritageOrMuseum ? 'flex' : 'none';
+      }
+
       document.getElementById('placeSheet').classList.add('open');
+
+      // Tự động tải thêm mô tả nếu có
+      if (place.id && !place.desc) {
+        try {
+          const detailRes = await fetch(\`/api/places/\${place.id}\`);
+          if (detailRes.ok) {
+            const full = await detailRes.json();
+            if (full.address || full.address_vi) {
+              document.getElementById('sheetAddress').innerText = '📍 ' + (full.address_vi || full.address);
+            }
+            if (full.description || full.description_vi) {
+              document.getElementById('sheetDesc').innerText = full.description_vi || full.description;
+              activePlace.desc = full.description_vi || full.description;
+            }
+          }
+        } catch (_) {}
+      }
     }
 
     function closeSheet() {
       document.getElementById('placeSheet').classList.remove('open');
     }
 
+    function openGoogleMapsDirection() {
+      if (!activePlace) return;
+      const url = \`https://www.google.com/maps/dir/?api=1&destination=\${activePlace.lat},\${activePlace.lng}\`;
+      window.open(url, '_blank');
+    }
+
+    function open3dMuseumFromSheet() {
+      window.open('/museum.html', '_blank');
+    }
+
     function filterCategory(cat, el) {
       document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
-      if (cat === 'ALL') {
-        renderMapMarkers(huePlaces);
+      currentMapFilter = cat;
+      applyCurrentMapFilter();
+    }
+
+    function applyCurrentMapFilter() {
+      const badge = document.getElementById('mapStatsBadge');
+      if (currentMapFilter === 'ALL') {
+        const pts = allHueMapPoints.length > 0 ? allHueMapPoints : huePlaces;
+        renderMapMarkers(pts);
+        if (badge) badge.textContent = (allHueMapPoints.length || huePlaces.length) + ' điểm';
+      } else if (currentMapFilter === 'HERITAGE_30') {
+        let heritagePoints = [];
+        allHeritageSites.forEach(zone => {
+          if (zone.places) {
+            zone.places.forEach(hp => {
+              heritagePoints.push({
+                id: hp.id,
+                name: hp.name,
+                lat: hp.lat,
+                lng: hp.lng,
+                v: 'tour',
+                cat: 'Di sản UNESCO',
+                r: 4.9,
+                img: 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp'
+              });
+            });
+          }
+        });
+        renderMapMarkers(heritagePoints);
+        if (badge) badge.textContent = \`\${heritagePoints.length} di sản\`;
+        if (heritagePoints.length > 0 && map) {
+          map.setView([16.4697, 107.5779], 13);
+        }
       } else {
-        const filtered = huePlaces.filter(p => p.cat === cat);
+        const filtered = allHueMapPoints.filter(p => p.v === currentMapFilter);
         renderMapMarkers(filtered);
+        if (badge) badge.textContent = \`\${filtered.length} điểm\`;
       }
     }
 
     function filterPlaces(env) {
-      const filtered = huePlaces.filter(p => p.env === env);
+      const filtered = (allHueMapPoints.length > 0 ? allHueMapPoints : huePlaces).filter(p => {
+        if (env === 'INDOOR') {
+          return p.v === 'fnb' || p.v === 'cafe' || p.v === 'specialty' || (p.cat && p.cat.includes('museum'));
+        }
+        return true;
+      });
       renderMapMarkers(filtered);
-      alert('AI đã chuyển sang các điểm tham quan trong nhà ngày mưa!');
+      showToast('AI đã chuyển sang ' + filtered.length + ' điểm trong nhà ngày mưa!');
     }
+
+    function setupMobileMapSearch() {
+      const input = document.getElementById('mobileMapSearchInput');
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (!input) return;
+
+      input.addEventListener('input', (e) => {
+        const q = e.target.value.trim().toLowerCase();
+        if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+
+        if (!q) {
+          applyCurrentMapFilter();
+          return;
+        }
+
+        const cleanQ = removeVietnameseTones(q);
+        const source = allHueMapPoints.length > 0 ? allHueMapPoints : huePlaces;
+        const matched = source.filter(p => {
+          const nameNorm = removeVietnameseTones(p.name || p.name_vi || '');
+          const catNorm = removeVietnameseTones(p.cat || p.v || '');
+          return nameNorm.includes(cleanQ) || catNorm.includes(cleanQ);
+        });
+
+        renderMapMarkers(matched.slice(0, 150));
+        const badge = document.getElementById('mapStatsBadge');
+        if (badge) badge.textContent = \`\${matched.length} kết quả\`;
+
+        if (matched.length > 0 && map) {
+          map.panTo([matched[0].lat, matched[0].lng], { animate: true });
+        }
+      });
+    }
+
+    function clearMapSearch() {
+      const input = document.getElementById('mobileMapSearchInput');
+      if (input) {
+        input.value = '';
+        input.dispatchEvent(new Event('input'));
+      }
+    }
+
+    // ==========================================
+    // AUDIO GUIDE SYSTEM (MỆ HUẾ AI TOUR GUIDE)
+    // ==========================================
+    let audioState = {
+      isPlaying: false,
+      currentTime: 0,
+      duration: 120,
+      speed: 1.0,
+      lang: 'vi',
+      timer: null,
+      place: null,
+      scriptText: ''
+    };
 
     function playAiNarration() {
       if (!activePlace) return;
-      alert('🎙️ Mệ Huế: "Dạ thưa quý khách, chào mừng người ghé thăm ' + activePlace.name + '. ' + activePlace.desc + '"');
+      openAudioGuide(activePlace);
+    }
+
+    async function openAudioGuide(place) {
+      if (!place) return;
+      audioState.place = place;
+
+      const overlay = document.getElementById('audioOverlay');
+      overlay.style.display = 'flex';
+      document.getElementById('miniAudioBar').style.display = 'none';
+
+      document.getElementById('audioCover').src = place.img;
+      document.getElementById('audioPlaceTitle').innerText = place.name;
+      document.getElementById('miniTitle').innerText = place.name;
+      document.getElementById('audioScriptText').innerText = 'Đang kết nối Mệ Huế để lấy thuyết minh di sản...';
+      document.getElementById('audioSecretText').innerText = 'Đang tải giai thoại triều Nguyễn...';
+      document.getElementById('audioPhotoText').innerText = 'Đang tính toán góc ảnh hoàng hôn...';
+      document.getElementById('audioFoodText').innerText = 'Đang tìm kiếm món ngon ghép đôi...';
+      document.getElementById('audioEcoText').innerText = 'Đang chuẩn bị mẹo du lịch xanh...';
+
+      // Reset controls
+      audioState.currentTime = 0;
+      updateAudioTimelineUI();
+
+      // Fetch Place Story from backend API
+      try {
+        const token = localStorage.getItem('huego_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        const res = await fetch('/api/v1/ai-guide/place-story', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            placeId: place.id,
+            visitingContext: 'AFTERNOON',
+            tone: 'DEEP_CULTURE',
+            language: audioState.lang
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const nar = data.narration || data;
+          audioState.scriptText = nar.audioNarrationScript || place.desc;
+          document.getElementById('audioScriptText').innerText = audioState.scriptText;
+          document.getElementById('audioSecretText').innerText = nar.secretHistoricalFact || 'Các bậc thầy phong thủy triều Nguyễn đã chọn thế núi Ngự Bình làm tiền án che chắn cho kinh thành.';
+          document.getElementById('audioPhotoText').innerText = nar.photoSpotAdvice || 'Đứng ở góc chếch 45 độ đón ánh hoàng hôn rọi bóng di tích.';
+          document.getElementById('audioFoodText').innerText = nar.localSpecialtyPairing || 'Thưởng thức tô bún bò Huế bốc khói hoặc tách trà sen Kim Long.';
+          document.getElementById('audioEcoText').innerText = nar.ecoGreenTip || 'Di chuyển bằng xe đạp xanh quanh bờ sông Hương và không để lại rác thải.';
+        } else {
+          useLocalAudioFallback(place);
+        }
+      } catch (err) {
+        useLocalAudioFallback(place);
+      }
+
+      // Auto-start playback
+      startAudioPlayback();
+    }
+
+    const LOCAL_HERITAGE_STORIES = {
+      '1': {
+        name: 'Đại Nội Huế (Hoàng Thành & Tử Cấm Thành)',
+        script: 'Dạ, kính chào quý khách đã đến với Đại Nội Huế – trái tim của vương triều nhà Nguyễn suốt 143 năm từ năm 1802 đến 1945. Công trình được vua Gia Long khởi công khảo sát vị trí phong thủy vào năm 1804 và hoàn thành quy mô bề thế dưới triều vua Minh Mạng vào năm 1833. Trước mắt quý khách là Ngọ Môn tráng lệ được xây dựng năm 1833 mang kiến trúc ngũ phụng tề phi với năm cửa chín nóc. Cửa chính giữa lợp ngói hoàng lưu ly xưa kia chỉ dành riêng cho Hoàng đế ngự giá, hai cổng giáp bên dành cho quan văn quan võ, còn hai cửa ngoài cùng dành cho binh lính và voi ngựa. Bước qua cầu Trung Đạo bắc qua hồ Thái Dịch, quý khách sẽ chiêm ngưỡng Điện Thái Hòa – nơi đặt ngai vàng uy nghiêm của 13 vị hoàng đế triều Nguyễn với 80 cột gỗ lim thếp vàng rồng vờn mây theo thức trùng thiềm điệp ốc.',
+        secret: 'Sân Đại Triều Nghi trước điện Thái Hòa được lát bằng đá Thanh đẽo gọt độ nghiêng mai rùa thoát nước tức thì. Đặc biệt, nghệ thuật âm học độc đáo giúp giọng xướng truyền chỉ của quan tán truyền vang rền khắp khoảng sân rộng mà không cần bất kỳ công cụ trợ âm nào.',
+        photo: 'Từ 16h15 đến 17h15 chiều, hãy đứng từ lầu Tứ Phương Vô Sự nhìn sang Điện Kiến Trung hoặc đứng tại bậc thềm Ngọ Môn đón ánh hoàng hôn rực rỡ.',
+        food: 'Rời Đại Nội, mời bạn ghé đường Mai Thúc Loan thưởng thức đĩa bánh bèo nậm lọc nóng hổi hoặc chén chè hạt sen long nhãn thanh mát.',
+        eco: 'Khuôn viên Đại Nội rộng hơn 36 hecta, bạn nên sử dụng xe đạp xanh tại trạm Cửa Hiển Nhơn và mang theo bình nước cá nhân để bảo vệ môi trường di sản.'
+      },
+      '2': {
+        name: 'Chùa Thiên Mụ (Linh Mụ Tự)',
+        script: 'Dạ thưa quý khách, chào mừng người ghé thăm Chùa Thiên Mụ – đệ nhất cổ tự xứ Huế tọa lạc trên đồi Hà Khê soi bóng xuống dòng sông Hương thơ mộng. Chùa được chúa Tiên Nguyễn Hoàng khởi lập vào năm Tân Sửu 1601, sau khi nghe người dân địa phương kể về điềm lành bà tiên áo đỏ báo mộng tụ linh khí cho non nước. Điểm nhấn nổi bật nhất trước sân chùa là Tháp Phước Duyên hình bát giác 7 tầng cao 21 mét, được vua Thiệu Trị cho xây dựng vào năm 1844 nhân dịp mừng đại thọ bà nội; mỗi tầng tháp thờ một đức Phật bằng đồng. Phía sau tháp là quả Đại Hồng Chung đúc năm 1710 thời chúa Nguyễn Phúc Chu nặng hơn hai tấn, mà mỗi hồi chuông ngân nga sớm tối đều vọng xa hàng chục dặm qua màn sương sông Hương.',
+        secret: 'Phía sau hoa viên chùa còn lưu giữ di vật lịch sử vô giá: chiếc xe ô tô Austin màu xanh lam cổ kính mang biển số DBA-008 đã đưa cố Hòa thượng Thích Quảng Đức thực hiện cuộc tự thiêu vì hòa bình và tự do tín ngưỡng năm 1963.',
+        photo: 'Đứng từ dưới bậc thềm bến thuyền sông Hương chụp ngược lên, lấy trọn vẹn tam quan cổ kính, tháp Phước Duyên vươn cao giữa hai hàng thông reo đón gió.',
+        food: 'Dưới chân dốc chùa Thiên Mụ có gánh tàu hũ hoa sen nước đường gừng thơm phức và quán bánh canh cá lóc Kim Long bốc khói cay nồng.',
+        eco: 'Đây là chốn thiền môn thanh tịnh và di tích tâm linh linh thiêng, xin quý khách giữ yên lặng và mặc trang phục lịch sự khi vào lễ Phật.'
+      },
+      '3': {
+        name: 'Bảo tàng Cổ vật Cung đình Huế (Điện Long An)',
+        script: 'Dạ thưa quý khách, hiện bạn đang dừng chân trước Điện Long An – nơi lưu giữ Bảo tàng Cổ vật Cung đình Huế tại số 3 đường Lê Trực. Ngôi điện được xây dựng vào năm 1845 dưới triều vua Thiệu Trị, nguyên là biệt cung trong cung Bảo Định để nhà vua nghỉ ngơi, đọc sách và làm thơ. Điện Long An là kiệt tác kiến trúc cung đình trùng thiềm điệp ốc tráng lệ bậc nhất Việt Nam với 128 cột gỗ lim bề thế, vách gỗ chạm trổ hoa văn lưỡng long tranh châu và khắc chạm trực tiếp 448 bài thơ chữ Hán thếp vàng ròng của vua Thiệu Trị. Nơi đây lưu giữ chiếc Ngai vàng triều Nguyễn, áo long bào đại triều thêu rồng chỉ vàng và bộ sưu tập đồ sứ ký kiểu Bleu de Hue trứ danh.',
+        secret: 'Trên vách gỗ gian giữa Điện Long An có bài thơ hồi văn 56 chữ sắp xếp hình bát quái mang tên "Vũ trung sơn thủy" của vua Thiệu Trị, có thể đọc xuôi, đọc ngược hay tách câu thành 64 bài thơ thất ngôn và ngũ ngôn hoàn chỉnh.',
+        photo: 'Hành lang gỗ phía ngoài điện Long An với dàn hoa cúc và hàng cột gỗ lim chạm trổ rồng mây là góc chụp ảnh cổ phục hoàng gia chuẩn mực nhất.',
+        food: 'Rời bảo tàng, mời bạn đi bộ sang đường Đinh Tiên Hoàng thưởng thức món chè bột lọc bọc heo quay mặn ngọt béo giòn trứ danh.',
+        eco: 'Không gian bảo tồn cổ vật quý trong nhà, vui lòng tắt đèn flash máy ảnh để bảo vệ màu men gốm và sợi chỉ vàng trên long bào hoàng tộc.'
+      },
+      '4': {
+        name: 'Lăng Khải Định (Ứng Lăng)',
+        script: 'Dạ thưa quý khách, chúng ta đang đứng trước Lăng Khải Định – lăng tẩm có phong cách kiến trúc độc nhất vô nhị trong quần thể di tích Cố đô Huế, tọa lạc trên triền núi Châu Chữ. Lăng được khởi công ngày 4 tháng 9 năm 1920 và phải mất 11 năm ròng rã đến năm 1931 dưới thời vua Bảo Đại mới hoàn tất. Công trình là đỉnh cao giao thoa táo bạo giữa kiến trúc cung đình truyền thống phương Đông với các trường phái Baroque, Roman và Gothic phương Tây. Cung Thiên Định ở tầng cao nhất là tuyệt tác của nghệ thuật khảm hàng triệu mảnh sành sứ và pha lê ghép nổi thành các bức tranh tứ thời, bát bửu sống động như gấm vóc.',
+        secret: 'Bức đại bích họa khổng lồ "Cửu Long Ẩn Vân" trên trần Cung Thiên Định do nghệ nhân bậc thầy Phan Văn Tánh dùng cả hai tay và mười đầu ngón chân kẹp cọ vẽ nên, bền màu suốt hơn một thế kỷ. Phía dưới là pho tượng đồng mạ vàng vua Khải Định tỉ lệ 1:1 đúc tại Paris năm 1920.',
+        photo: 'Đứng tại sân Bái Đình với hai hàng tượng quan văn võ, voi ngựa tạc bằng đá hiếm, chụp góc máy hất lên đỉnh tháp lăng uy nghi giữa rừng thông.',
+        food: 'Sau khi vượt 127 bậc đá lăng Khải Định, trên đường về bạn có thể ghé quán cà phê muối đường Nguyễn Huệ hoặc thưởng thức gà đồi nướng cơm lam.',
+        eco: 'Lăng có độ dốc cao và bậc thang đá ngoài trời, hãy đi giày thể thao đế mềm và không chạm tay trực tiếp vào các bức tranh sành sứ.'
+      },
+      '5': {
+        name: 'Lăng Tự Đức (Khiêm Lăng)',
+        script: 'Dạ thưa quý khách, chào mừng người ghé thăm Khiêm Lăng – nơi an nghỉ ngàn thu của vua Tự Đức, vị vua thi sĩ tài hoa của triều Nguyễn. Được khởi công từ năm 1864 và hoàn thành năm 1867 giữa một thung lũng thôn Thượng Ba, lăng tẩm mang vẻ đẹp hữu tình, lãng mạn như một bức tranh thủy mặc với gần 50 công trình đều mang chữ Khiêm trong tên gọi. Mặt hồ Lưu Khiêm phẳng lặng thả đầy hoa sen ngát hương, bên bờ có Xung Khiêm Tạ và Dũ Khiêm Tạ là hai nhà tạ bằng gỗ lim soi bóng mặt nước nơi nhà vua thường lui tới ngâm thơ, câu cá, thưởng thức nhã nhạc và xem diễn tuồng.',
+        secret: 'Trong Bi Đình có tấm bia đá Thanh "Khiêm Cung Ký" khổng lồ nặng hơn 20 tấn, tấm bia lớn nhất Việt Nam, khắc bài văn dài tới 4.935 chữ do chính vua Tự Đức tự tay soạn thảo tự nhận lỗi lầm và trần tình nỗi niềm trước vận nước suy vong.',
+        photo: 'Đứng tại Xung Khiêm Tạ nhìn ra hồ sen Lưu Khiêm vào buổi sáng sớm khi làn sương mỏng giăng trên mặt nước, ánh nắng xuyên qua kẽ lá rủ bóng xuống đình tạ.',
+        food: 'Trục đường Huyền Trân Công Chúa ngay ngoài cổng lăng có các gánh bánh ram ít, bánh bèo chén tôm cháy đỏ au thơm ngọt.',
+        eco: 'Hồ Lưu Khiêm có hệ sinh thái hoa sen bản địa quý hiếm, quý khách tuyệt đối không thả thức ăn thừa hoặc rác nhựa xuống lòng hồ.'
+      },
+      '6': {
+        name: 'Cầu Tràng Tiền',
+        script: 'Dạ thưa quý khách, đứng trước dòng sông Hương thơ mộng, không ai có thể bỏ qua cây cầu Tràng Tiền – chứng nhân lịch sử hơn 125 năm gắn liền với từng nhịp thở của Cố Đô Huế. Cầu được khởi công xây dựng vào năm 1897 dưới thời vua Thành Thái do hãng Eiffel (Pháp) thiết kế, khánh thành vào năm 1899 với 6 vài 12 nhịp thép hình vành lược duyên dáng vắt qua dòng sông Hương, dài 402,6 mét. Cây cầu đã kiên cường vượt qua cơn bão năm Giáp Thìn 1904 xô đổ 4 nhịp xuống đáy sông, cùng hai lần bị chiến tranh gián đoạn, để rồi hôm nay vẫn uyển chuyển như dải lụa bạc vắt ngang làn nước xanh ngắt.',
+        secret: 'Ban đầu mặt cầu lát ván gỗ lim và không có lối đi bộ riêng biệt. Đến đợt đại trùng tu năm 1937 dưới thời vua Bảo Đại, người ta mới mở rộng thêm các ban-công ngắm cảnh hình bán nguyệt chìa ra lòng sông Hương thi vị như ngày nay.',
+        photo: 'Chập tối (18h30 - 19h30) khi hệ thống đèn nghệ thuật trên cầu đổi màu lung linh tím, vàng, xanh phản chiếu xuống dòng Hương Giang là góc máy đẹp nhất.',
+        food: 'Ngay dưới chân cầu phía bờ Nam có món bánh mì bột lọc giòn rụm chỉ 15.000đ và các quán chè hẻm 20 món ngọt bùi.',
+        eco: 'Vào các tối cuối tuần, khu vực cầu Tràng Tiền là phố đi bộ; bạn hãy tản bộ hoặc thuê xe đạp công cộng để tận hưởng không khí trong lành.'
+      },
+      '8': {
+        name: 'Đồi Vọng Cảnh',
+        script: 'Dạ thưa quý khách, đồi Vọng Cảnh cao 43 mét nằm thoai thoải bên bờ Nam sông Hương, cách trung tâm thành phố chừng 7km. Đúng như tên gọi Vọng Cảnh – nghĩa là ngắm nhìn cảnh sắc từ trên cao – đây được mệnh danh là điểm ngắm khúc uốn dòng sông Hương ngoạn mục và thơ mộng nhất xứ Huế. Từ đỉnh đồi lộng gió rợp bóng thông xanh, bạn sẽ thấy dòng Hương Giang uốn mình mềm mại ôm lấy chân đồi, hai bên là vườn thanh trà Nguyệt Biều xanh biếc và mái ngói rêu phong của các lăng tẩm hoàng gia.',
+        secret: 'Trên đỉnh đồi hiện đã được phục dựng thành đài vọng cảnh sinh thái với sàn gỗ 360 độ trên nền lô cốt cũ, bao quát trọn vẹn cảnh sắc núi Ngự sông Hương.',
+        photo: 'Hãy đến đây vào khoảng 17h00 khi ánh hoàng hôn buông nhuộm đỏ khúc quanh sông Hương, bóng rặng thông in hằn lên nền trời tạo bức ảnh ngược sáng tuyệt mỹ.',
+        food: 'Dưới chân đồi là vùng đất Nguyệt Biều nức tiếng với trái thanh trà tiến vua mọng nước ngọt thanh và món gỏi gà bóp thanh trà.',
+        eco: 'Đồi thông Vọng Cảnh là khu vực sinh thái tự nhiên, quý khách tuyệt đối không đốt lửa và dọn sạch rác trước khi rời đi.'
+      },
+      '11': {
+        name: 'Làng Hương Trầm Thủy Xuân',
+        script: 'Dạ thưa quý khách, bước chân vào đường Huyền Trân Công Chúa, khứu giác của bạn sẽ được đánh thức bởi mùi hương trầm mộc mạc của Làng hương Thủy Xuân – làng nghề truyền thống hơn 700 năm tuổi. Xưa kia dưới triều Nguyễn, làng chuyên cung cấp các loại hương trầm thượng hạng phục vụ các nghi lễ trong Hoàng cung, đền miếu và phủ đệ. Người thợ Thủy Xuân làm hương hoàn toàn từ nguyên liệu tự nhiên: trầm kiến, quế chi, hoa hồi, đinh hương và vỏ bưởi giã mịn. Những bó que hương xòe hoa ngũ sắc rực rỡ dưới nắng vàng là biểu tượng văn hóa check-in nổi tiếng xứ Huế.',
+        secret: 'Hương trầm Thủy Xuân chính gốc cháy rất đượm, tàn uốn cong mềm mại và tỏa ra làn khói mỏng thơm dịu giúp thanh lọc không khí, an định tinh thần ngày mưa dầm Cố Đô.',
+        photo: 'Thuê một bộ áo dài cổ phục ngũ thân hoặc nhật bình truyền thống, đứng giữa những kệ phơi hương xòe hoa để có bức ảnh đậm chất thơ.',
+        food: 'Trong làng có các quán bánh bèo chén tôm cháy và chè ngô non ngọt mát.',
+        eco: 'Mỗi bó hương thủ công mua làm quà là sự tiếp sức trực tiếp cho các nghệ nhân gìn giữ làng nghề di sản truyền thống hơn 7 thế kỷ.'
+      }
+    };
+
+    function useLocalAudioFallback(place) {
+      const match = LOCAL_HERITAGE_STORIES[String(place.id)] || 
+                    Object.values(LOCAL_HERITAGE_STORIES).find(s => place.name.includes(s.name.split(' ')[0])) || {
+        name: place.name,
+        script: 'Dạ thưa quý khách, chào mừng người ghé thăm ' + place.name + '. Mảnh đất Cố Đô Huế trải qua hơn một thế kỷ là kinh đô của triều đại nhà Nguyễn, nơi mỗi bờ thành, bến nước đều gắn liền với những thăng trầm của tiền nhân. Đứng trước di tích trong không gian trầm mặc của xứ Huế, lòng người như được lắng đọng để cảm nhận hồn thiêng non nước ngàn năm.',
+        secret: 'Các bậc thầy phong thủy triều Nguyễn khi quy hoạch các công trình kinh thành và lăng tẩm đều tuân thủ nghiêm ngặt thuyết âm dương ngũ hành, lấy núi Ngự Bình làm tiền án, cồn Hến và cồn Dã Viên làm tả thanh long hữu bạch hổ để tụ khí trường tồn.',
+        photo: 'Hãy chọn góc chụp chếch 45 độ đón ánh sáng hoàng hôn dịu nhẹ của buổi chiều Cố Đô, lấy trọn vẹn mái ngói lưu ly và không gian cây xanh cổ thụ làm tiền cảnh.',
+        food: 'Sau chuyến tản bộ tham quan, mời quý khách thưởng thức tô bún bò Huế bốc khói cay nồng hoặc chén chè hạt sen long nhãn thanh tao.',
+        eco: 'Hãy giữ gìn nét thanh tịnh nơi di sản bằng việc đi bộ, sử dụng xe đạp xanh và tuyệt đối không để lại rác thải nhựa bạn nhé!'
+      };
+
+      audioState.scriptText = match.script;
+      document.getElementById('audioScriptText').innerText = match.script;
+      document.getElementById('audioSecretText').innerText = match.secret;
+      document.getElementById('audioPhotoText').innerText = match.photo;
+      document.getElementById('audioFoodText').innerText = match.food;
+      document.getElementById('audioEcoText').innerText = match.eco;
+    }
+
+    let ttsAudioPlayer = null;
+
+    function getAudioPlayer() {
+      if (!ttsAudioPlayer) {
+        ttsAudioPlayer = new Audio();
+        ttsAudioPlayer.addEventListener('timeupdate', () => {
+          if (!isNaN(ttsAudioPlayer.currentTime) && !isNaN(ttsAudioPlayer.duration) && ttsAudioPlayer.duration > 0) {
+            audioState.currentTime = Math.floor(ttsAudioPlayer.currentTime);
+            audioState.duration = Math.floor(ttsAudioPlayer.duration);
+            updateAudioTimelineUI();
+          }
+        });
+        ttsAudioPlayer.addEventListener('ended', () => {
+          stopAudioGuide();
+        });
+        ttsAudioPlayer.addEventListener('pause', () => {
+          audioState.isPlaying = false;
+          updatePlayButtonUI();
+        });
+        ttsAudioPlayer.addEventListener('play', () => {
+          audioState.isPlaying = true;
+          updatePlayButtonUI();
+        });
+        ttsAudioPlayer.addEventListener('error', (e) => {
+          console.warn('Lỗi luồng âm thanh HTML5, chuyển sang Web Speech:', e);
+          fallbackWebSpeech();
+        });
+      }
+      return ttsAudioPlayer;
+    }
+
+    function startAudioPlayback() {
+      audioState.isPlaying = true;
+      updatePlayButtonUI();
+
+      // Sử dụng luồng âm thanh tiếng Việt thực thụ từ máy chủ HUEGO
+      const player = getAudioPlayer();
+      const streamUrl = '/api/v1/ai-guide/tts?lang=' + (audioState.lang || 'vi') + '&text=' + encodeURIComponent(audioState.scriptText);
+      player.src = streamUrl;
+      player.playbackRate = audioState.speed || 1.0;
+      player.play().catch(err => {
+        console.warn('Trình duyệt yêu cầu người dùng chạm để phát âm thanh:', err);
+        audioState.isPlaying = false;
+        updatePlayButtonUI();
+      });
+    }
+
+    function fallbackWebSpeech() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(audioState.scriptText);
+        utterance.rate = audioState.speed || 1.0;
+        utterance.lang = audioState.lang === 'vi' ? 'vi-VN' : 'en-US';
+        const voices = window.speechSynthesis.getVoices();
+        const viVoice = voices.find(v => v.lang.startsWith('vi') || v.name.includes('Vietnamese') || v.name.includes('HoaiMy') || v.name.includes('NamMinh'));
+        if (audioState.lang === 'vi' && viVoice) utterance.voice = viVoice;
+        utterance.onend = () => stopAudioGuide();
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function toggleAudioPlay() {
+      const player = getAudioPlayer();
+      if (player.src && !player.paused) {
+        player.pause();
+        audioState.isPlaying = false;
+        if ('speechSynthesis' in window) window.speechSynthesis.pause();
+      } else if (player.src) {
+        player.playbackRate = audioState.speed || 1.0;
+        player.play().catch(console.error);
+        audioState.isPlaying = true;
+      } else {
+        startAudioPlayback();
+      }
+      updatePlayButtonUI();
+    }
+
+    function updatePlayButtonUI() {
+      const mainBtn = document.getElementById('audioMainPlayBtn');
+      const miniBtn = document.getElementById('miniPlayBtn');
+      const wave = document.getElementById('audioWaveWrap');
+      const cover = document.getElementById('audioCover');
+
+      if (audioState.isPlaying) {
+        mainBtn.innerText = '⏸';
+        miniBtn.innerText = '⏸';
+        wave.classList.add('active');
+        cover.classList.add('spinning');
+      } else {
+        mainBtn.innerText = '▶';
+        miniBtn.innerText = '▶';
+        wave.classList.remove('active');
+        cover.classList.remove('spinning');
+      }
+    }
+
+    function rewindAudio(sec) {
+      const player = getAudioPlayer();
+      if (player.src) {
+        player.currentTime = Math.max(0, player.currentTime - sec);
+      }
+    }
+
+    function forwardAudio(sec) {
+      const player = getAudioPlayer();
+      if (player.src) {
+        player.currentTime = Math.min(player.duration || 120, player.currentTime + sec);
+      }
+    }
+
+    function seekAudio(val) {
+      const player = getAudioPlayer();
+      if (player.src && player.duration) {
+        player.currentTime = (val / 100) * player.duration;
+      }
+    }
+
+    function changeAudioSpeed() {
+      if (audioState.speed === 1.0) audioState.speed = 1.25;
+      else if (audioState.speed === 1.25) audioState.speed = 1.5;
+      else if (audioState.speed === 1.5) audioState.speed = 0.8;
+      else audioState.speed = 1.0;
+
+      document.getElementById('audioSpeedBtn').innerText = audioState.speed + 'x';
+      const player = getAudioPlayer();
+      if (player.src) {
+        player.playbackRate = audioState.speed;
+      }
+    }
+
+    function switchAudioLang() {
+      audioState.lang = audioState.lang === 'vi' ? 'en' : 'vi';
+      document.getElementById('audioLangBtn').innerText = audioState.lang === 'vi' ? '🇻🇳 Tiếng Việt' : '🇬🇧 English';
+      if (audioState.place) {
+        openAudioGuide(audioState.place);
+      }
+    }
+
+    function updateAudioTimelineUI() {
+      const cur = formatTime(audioState.currentTime);
+      const tot = formatTime(audioState.duration);
+      document.getElementById('audioCurrentTime').innerText = cur;
+      document.getElementById('audioTotalTime').innerText = tot;
+      if (audioState.duration > 0) {
+        document.getElementById('audioSlider').value = (audioState.currentTime / audioState.duration) * 100;
+      }
+    }
+
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      return m + ':' + s;
+    }
+
+    function closeAudioGuide(keepPlaying) {
+      document.getElementById('audioOverlay').style.display = 'none';
+      if (keepPlaying && audioState.isPlaying) {
+        document.getElementById('miniAudioBar').style.display = 'flex';
+      } else {
+        stopAudioGuide();
+      }
+    }
+
+    function openAudioGuideFromMini() {
+      document.getElementById('audioOverlay').style.display = 'flex';
+      document.getElementById('miniAudioBar').style.display = 'none';
+    }
+
+    function stopAudioGuide() {
+      audioState.isPlaying = false;
+      audioState.currentTime = 0;
+      if (ttsAudioPlayer) {
+        ttsAudioPlayer.pause();
+        ttsAudioPlayer.currentTime = 0;
+      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      updatePlayButtonUI();
+      updateAudioTimelineUI();
+      document.getElementById('miniAudioBar').style.display = 'none';
     }
 
     // TAB 2: ITINERARY LOGIC
@@ -1087,9 +2020,16 @@ export class MobilePreviewController {
       isSpinning = true;
       const winningIdx = Math.floor(Math.random() * wheelLabels.length);
       const sliceAngle = 360 / wheelLabels.length;
+      
+      // Góc tuyệt đối để điểm giữa của phần thưởng nằm ở góc 270 độ (kim chỉ hướng 12 giờ)
+      const absoluteTarget = 270 - (winningIdx * sliceAngle + sliceAngle / 2);
+      
+      // Tính toán góc cần quay thêm
+      let diff = absoluteTarget - (currentDeg % 360);
+      if (diff <= 0) diff += 360; // Đảm bảo luôn quay tới trước
+      
       const extraSpins = 360 * 5;
-      const targetAngle = extraSpins + (360 - (winningIdx * sliceAngle + sliceAngle / 2));
-      currentDeg += targetAngle;
+      currentDeg += diff + extraSpins;
 
       wheelCanvas.style.transform = 'rotate(' + currentDeg + 'deg)';
 
@@ -1105,8 +2045,8 @@ export class MobilePreviewController {
       el.classList.add('active');
     }
 
-    // TAB 4: CHAT AI LOGIC
-    function sendUserMessage() {
+    // TAB 4: CHAT AI LOGIC (MỆ HUẾ AI 24/7)
+    async function sendUserMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       if (!text) return;
@@ -1114,28 +2054,98 @@ export class MobilePreviewController {
       appendChat('msg-user', text);
       input.value = '';
 
-      setTimeout(() => {
-        let aiReply = 'Dạ thưa quý khách, mệ đã ghi nhận! Huế mùa ni rất đẹp, người nhớ ghé thử ly cà phê muối hoặc dạo bước ngắm hoàng hôn trên cầu Tràng Tiền nhen.';
-        if (text.toLowerCase().includes('cầu tràng tiền')) {
-          aiReply = 'Dạ, Cầu Tràng Tiền được hãng Eiffel thiết kế gồm 6 vài 12 nhịp thép duyên dáng soi bóng sông Hương. Buổi tối người ghé phố đi bộ chân cầu ăn bánh mì bột lọc giòn rụm là tuyệt nhất!';
-        } else if (text.toLowerCase().includes('mưa')) {
-          aiReply = 'Mưa Huế nổi tiếng lãng mạn nhưng se lạnh. Mệ khuyên người ghé Bảo tàng Cổ vật Cung đình hoặc vào nhà rường Kim Long uống tách trà sen nóng nhen!';
+      const typingId = 'typing-' + Date.now();
+      appendTypingIndicator(typingId);
+
+      try {
+        const token = localStorage.getItem('huego_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        const res = await fetch('/api/v1/ai-guide/chat', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            question: text,
+            language: 'vi',
+            currentNearbyPlace: activePlace ? activePlace.name : 'Hoàng Thành Huế'
+          })
+        });
+
+        removeTypingIndicator(typingId);
+
+        if (res.ok) {
+          const data = await res.json();
+          appendChat('msg-ai', data.answer || data.reply || data);
+        } else {
+          const fallbackAns = getLocalAiReply(text);
+          appendChat('msg-ai', fallbackAns);
         }
-        appendChat('msg-ai', aiReply);
-      }, 800);
+      } catch (err) {
+        removeTypingIndicator(typingId);
+        const fallbackAns = getLocalAiReply(text);
+        appendChat('msg-ai', fallbackAns);
+      }
+    }
+
+    function appendTypingIndicator(id) {
+      const container = document.getElementById('chatMessages');
+      if (!container) return;
+      const bubble = document.createElement('div');
+      bubble.id = id;
+      bubble.className = 'chat-bubble msg-ai';
+      bubble.style.opacity = '0.7';
+      bubble.innerHTML = '<div class="ai-avatar-row"><div class="ai-avatar">👑</div><strong>Mệ Huế</strong></div><em>Mệ đang suy nghĩ câu trả lời cho người nghe... ✍️</em>';
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function removeTypingIndicator(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function formatAiText(text) {
+      if (!text) return '';
+      let formatted = String(text)
+        .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')
+        .replace(/\\n/g, '<br/>');
+      return formatted;
     }
 
     function appendChat(cls, text) {
       const container = document.getElementById('chatMessages');
+      if (!container) return;
       const bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + cls;
       if (cls === 'msg-ai') {
-        bubble.innerHTML = \`<div class="ai-avatar-row"><div class="ai-avatar">👑</div><strong>Mệ Huế (AI Guide)</strong></div>\${text}\`;
+        const formatted = formatAiText(text);
+        bubble.innerHTML = \`<div class="ai-avatar-row"><div class="ai-avatar">👑</div><strong>Mệ Huế (AI Guide)</strong></div><div>\${formatted}</div>\`;
       } else {
         bubble.innerText = text;
       }
       container.appendChild(bubble);
       container.scrollTop = container.scrollHeight;
+    }
+
+    function getLocalAiReply(question) {
+      const q = (question || '').toLowerCase();
+      if (q.includes('ăn vặt') || q.includes('hoàng thành') || q.includes('đại nội') || q.includes('bánh ép') || q.includes('chè')) {
+        return 'Dạ thưa người, quanh khu vực Hoàng Thành (Đại Nội Huế) có nhiều món ăn vặt trứ danh lắm nhen:\\n\\n1. **Bánh ép Huế**: Ghé đường Nhật Lệ (Bánh ép Cây Dừa hoặc Cây Điệp), bánh ép dẻo dai nóng hổi kẹp rau răm chấm mắm chua ngọt cay tê lưỡi!\\n2. **Chè bột lọc bọc heo quay**: Quán Mợ Tôn Đích trước cổng Thương Bạc — vị ngọt thanh của chè quyện với viên heo quay mằn mặn giòn rụm siêu độc đáo.\\n3. **Bánh tráng nướng & bánh tráng kẹp**: Dọc bờ hồ Lê Huân mát rượi, ngồi ngắm thành nội ăn vặt rất chill.\\n4. **Bánh bèo, nậm, lọc**: Ghé kiệt Kim Long hoặc đường Đinh Tiên Hoàng để thưởng thức dĩa bánh nóng hổi tôm cháy thơm phức nhen!';
+      }
+      if (q.includes('cà phê') || q.includes('cà phê muối') || q.includes('uống')) {
+        return 'Dạ, người muốn uống cà phê muối chuẩn gốc thì ghé số 10 Nguyễn Lương Định hoặc số 142 Đặng Thái Thân (ngay sát Thành Nội) nghe! Cà phê thơm ngát, lớp bọt kem muối beo béo mặn mặn đậm đà khó quên!';
+      }
+      if (q.includes('tràng tiền') || q.includes('sông hương')) {
+        return 'Cầu Tràng Tiền là biểu tượng 6 vài 12 nhịp của xứ Huế. Buổi chiều tà tầm 17h dạo cầu ngắm hoàng hôn sông Hương rồi tạt qua phố đi bộ Nguyễn Đình Chiểu ăn bánh mì chân cầu Tràng Tiền là tuyệt hảo nhen!';
+      }
+      if (q.includes('bún bò')) {
+        return 'Dạ, bún bò Huế chuẩn vị nước dùng phải thơm mùi ruốc sả, có giò heo béo mềm, chả cua giòn ngọt và chút ớt sa tế cay nồng. Người ghé thử Bún bò Mụ Rơi (Nguyễn Du) hoặc Bún bò Bà Tuyết (Nguyễn Công Trứ) nhen!';
+      }
+      if (q.includes('mưa') || q.includes('thời tiết')) {
+        return 'Mưa Huế có cái trầm mặc rất riêng. Ngày mưa, người ghé lăng Tự Đức ngắm hồ sen, nhâm nhi tách trà Cung Đình ấm nồng hoặc ngồi một quán cà phê bên sông ngắm mưa giăng mắc là đúng điệu Huế thương!';
+      }
+      return 'Dạ mệ nghe người hỏi rồi nhen! Huế mình mỗi tấc đất một tích sử thi vị, người muốn mệ dẫn đường đi đâu, ăn gì ngon hay nghe giai thoại cứ hỏi mệ nghe!';
     }
 
     function sendPrompt(text) {

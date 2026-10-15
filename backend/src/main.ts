@@ -9,11 +9,20 @@ async function bootstrap() {
   const logger = new Logger('HUEGO_Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  // Cho phép gọi API từ Flutter Mobile và Web
   app.enableCors({
-    origin: '*',
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+  });
+
+  app.setGlobalPrefix('api/v1', {
+    exclude: [
+      'admin/(.*)', 'admin',
+      'app/(.*)', 'app',
+      'flutter/(.*)', 'flutter',
+      'random-wheel/(.*)', 'random-wheel',
+      'api/(.*)', 'api',
+    ],
   });
 
   // Tự động validate DTO cho mọi request
@@ -25,9 +34,7 @@ async function bootstrap() {
     }),
   );
 
-  // Phục vụ ứng dụng Flutter đã biên dịch tại /flutter
-  const flutterWebPath = path.resolve(__dirname, '..', '..', 'mobile', 'build', 'web');
-  app.use('/flutter', express.static(flutterWebPath));
+  // Phục vụ ứng dụng Flutter đã biên dịch bằng ServeStaticModule trong app.module.ts
 
   // Thiết lập Swagger UI tài liệu hóa API
   const config = new DocumentBuilder()
@@ -45,7 +52,11 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
   logger.log(`=======================================================`);
-  logger.log(` HUEGO Backend Server chạy tại: http://localhost:${port}`);
+  logger.log(` 🚀 HUEGO Backend Server chạy tại: http://localhost:${port}`);
+  logger.log(` 🌐 Web Portal Khám phá Cố Đô: http://localhost:${port}`);
+  logger.log(` 🏛️ Bảo tàng số Cổ vật Hoàng Cung 3D: http://localhost:${port}/museum.html`);
+  logger.log(` 🗺️ Bản đồ số Du lịch Huế: http://localhost:${port}/map.html`);
+  logger.log(` 📖 Cẩm nang Du lịch Cố Đô: http://localhost:${port}/hue.html`);
   logger.log(` 📱 Ứng dụng Flutter Web: http://localhost:${port}/flutter`);
   logger.log(` 📲 Trình giả lập Mobile Phone: http://localhost:${port}/app`);
   logger.log(` 👑 Cổng Quản Trị Admin: http://localhost:${port}/admin`);

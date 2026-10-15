@@ -4,6 +4,12 @@ class ApiEndpoints {
   // Thay đổi sang IP máy chủ thực tế hoặc localhost khi chạy emulator (10.0.2.2 cho Android Emulator)
   static final String baseUrl = AppConfig.apiBaseUrl;
 
+  // Auth
+  static final String login = '$baseUrl/auth/login';
+  static final String register = '$baseUrl/auth/register';
+  static final String refresh = '$baseUrl/auth/refresh';
+  static final String me = '$baseUrl/auth/me';
+
   // Geofencing & Itinerary Check-in
   static final String unlockGeofence = '$baseUrl/geofencing/unlock';
   static final String checkInItinerary = '$baseUrl/geofencing/check-in-itinerary';
@@ -32,4 +38,8 @@ class ApiEndpoints {
   // Crowdsourcing & Affiliate
   static final String crowdsourceSubmit = '$baseUrl/crowdsource/submit';
   static final String affiliatePartners = '$baseUrl/affiliate/partners';
+
+  // Itinerary
+  static final String itinerary = '$baseUrl/itinerary';
+  static final String itineraryOptimize = '$baseUrl/itinerary/optimize';
 }

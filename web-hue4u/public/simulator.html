@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mô phỏng 1 ngày ở Huế · Hue4U — Trải nghiệm Tương tác</title>
+  <meta name="description" content="Bạn không trả lời câu hỏi. Bạn sống thử một ngày Huế — tương tác lựa chọn từng khoảnh khắc và tạo lịch trình riêng.">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .sim-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    .sim-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .sim-title {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+    .sim-sub {
+      color: var(--primary);
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .sim-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 2.25rem;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 2rem;
+    }
+    .sim-step-badge {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      margin-bottom: 1rem;
+    }
+    .sim-step-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 640px) {
+      .options-grid { grid-template-columns: 1fr; }
+    }
+    .option-btn {
+      background: var(--bg-page);
+      border: 2px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.5rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .option-btn:hover {
+      border-color: var(--primary);
+      background: var(--bg-surface);
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-hover);
+    }
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .option-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .option-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+    .option-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .result-box {
+      display: none;
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.1), rgba(88, 28, 135, 0.1));
+      border: 2px solid var(--primary);
+      border-radius: 24px;
+      padding: 2.5rem;
+      text-align: center;
+    }
+    .result-box.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <a href="/" class="brand-logo">
+          <span>Hue</span><span class="brand-badge">4U</span>
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="/" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
+          <span>Khám phá Huế</span>
+        </a>
+        <a href="/hue.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path></svg>
+          <span>Cẩm nang Huế</span>
+        </a>
+        <a href="/map.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+          <span>Bản đồ số Du lịch</span>
+        </a>
+        <a href="/museum.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
+          <span>Bảo tàng số 3D</span>
+        </a>
+        <a href="/simulator.html" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+          <span>Mô phỏng 1 ngày</span>
+        </a>
+        <a href="/essentials.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>Khẩn cấp & Hỗ trợ</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Simulator Main Content -->
+    <main class="main-wrapper">
+      <div class="sim-container">
+        <div class="sim-header">
+          <h1 class="sim-title">Bạn không trả lời câu hỏi.</h1>
+          <div class="sim-sub">Bạn sống thử một ngày Huế.</div>
+        </div>
+
+        <div id="sim-wizard">
+          <!-- Bước 1: Buổi sáng -->
+          <div class="sim-card" id="step-1">
+            <span class="sim-step-badge">Khoảnh khắc 1 / 4 · Sáng sớm</span>
+            <h2 class="sim-step-title">Bạn muốn thức giấc như thế nào tại Huế?</h2>
+            <div class="options-grid">
+              <button class="option-btn" onclick="selectChoice(1, 'A')">
+                <div class="option-icon">🌅</div>
+                <div class="option-title">Đón sương sớm sông Hương</div>
+                <div class="option-desc">Thức dậy lúc 5:30 sáng, dạo cầu Gỗ Lim ngắm sương bảng lảng và ăn tô bún bò Huế bốc khói nghi ngút.</div>
+              </button>
+              <button class="option-btn" onclick="selectChoice(1, 'B')">
+                <div class="option-icon">☕</div>
+                <div class="option-title">Ngủ nướng & Cà phê Muối</div>
+                <div class="option-desc">Thức dậy thong thả lúc 8:00, ngồi quán cà phê muối góc đường Đặng Thái Thân ngắm lá vàng rơi rụng bên bờ tường rêu.</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bước 2: Buổi trưa -->
+          <div class="sim-card" id="step-2" style="display: none;">
+            <span class="sim-step-badge">Khoảnh khắc 2 / 4 · Trưa hè</span>
+            <h2 class="sim-step-title">Bạn chọn bước vào không gian nào?</h2>
+            <div class="options-grid">
+              <button class="option-btn" onclick="selectChoice(2, 'A')">
+                <div class="option-icon">🏛️</div>
+                <div class="option-title">Dạo bước trong Đại Nội</div>
+                <div class="option-desc">Vào Ngọ Môn, chiêm ngưỡng Điện Thái Hòa, Thế Miếu và Cung Diên Thọ đậm dấu ấn vương triều.</div>
+              </button>
+              <button class="option-btn" onclick="selectChoice(2, 'B')">
+                <div class="option-icon">🎨</div>
+                <div class="option-title">Làng cổ Thủy Xuân</div>
+                <div class="option-desc">Ghé làng hương trầm rực rỡ sắc màu, thử làm một nén hương và đội chiếc nón bài thơ xứ Huế.</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bước 3: Buổi chiều -->
+          <div class="sim-card" id="step-3" style="display: none;">
+            <span class="sim-step-badge">Khoảnh khắc 3 / 4 · Chiều tà</span>
+            <h2 class="sim-step-title">Ánh hoàng hôn buông xuống, bạn sẽ ở đâu?</h2>
+            <div class="options-grid">
+              <button class="option-btn" onclick="selectChoice(3, 'A')">
+                <div class="option-icon">🌲</div>
+                <div class="option-title">Hoàng hôn Đồi Vọng Cảnh</div>
+                <div class="option-desc">Đứng giữa đồi thông lộng gió, ngắm khúc quanh sông Hương êm đềm chuyển sang màu vàng cam rực rỡ.</div>
+              </button>
+              <button class="option-btn" onclick="selectChoice(3, 'B')">
+                <div class="option-icon">🏯</div>
+                <div class="option-title">Lăng Khải Định kỳ vĩ</div>
+                <div class="option-desc">Leo bậc thang rồng đá, ngắm tuyệt tác tranh 'Cửu Long Ẩn Vân' và nghệ thuật ghép sành sứ tráng lệ.</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bước 4: Buổi tối -->
+          <div class="sim-card" id="step-4" style="display: none;">
+            <span class="sim-step-badge">Khoảnh khắc 4 / 4 · Đêm huyền ảo</span>
+            <h2 class="sim-step-title">Kết thúc một ngày, bạn thưởng thức Huế ra sao?</h2>
+            <div class="options-grid">
+              <button class="option-btn" onclick="selectChoice(4, 'A')">
+                <div class="option-icon">🚣</div>
+                <div class="option-title">Thuyền rồng & Ca Huế</div>
+                <div class="option-desc">Lên thuyền rồng nghe điệu Nam ai Nam bình da diết, tự tay thả ngọn đèn hoa đăng gửi gắm ước nguyện.</div>
+              </button>
+              <button class="option-btn" onclick="selectChoice(4, 'B')">
+                <div class="option-icon">🍧</div>
+                <div class="option-title">Phố đêm & Chè hẻm</div>
+                <div class="option-desc">Lạc vào phố đi bộ náo nhiệt, thưởng thức ly chè bột lọc heo quay độc nhất vô nhị của xứ cố đô.</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Kết quả hành trình -->
+          <div class="result-box" id="result-box">
+            <h2 style="font-family: var(--font-serif); font-size: 2rem; margin-bottom: 0.5rem; color: var(--text-main);">
+              🎉 Hành trình Huế của bạn đã sẵn sàng!
+            </h2>
+            <p id="result-summary" style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.5rem;"></p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+              <a href="/" class="btn-primary">Xem thêm 4.350 địa điểm</a>
+              <a href="/map.html" class="btn-secondary">Mở bản đồ số du lịch</a>
+              <button class="btn-secondary" onclick="resetSim()">Thử lựa chọn khác ↻</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const choices = {};
+
+    function selectChoice(step, opt) {
+      choices[step] = opt;
+      document.getElementById(`step-${step}`).style.display = 'none';
+
+      if (step < 4) {
+        document.getElementById(`step-${step + 1}`).style.display = 'block';
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      const box = document.getElementById('result-box');
+      const sum = document.getElementById('result-summary');
+      box.classList.add('active');
+
+      const isHeritage = choices[2] === 'A' || choices[3] === 'B';
+      const isChill = choices[1] === 'B' || choices[3] === 'A';
+
+      if (isHeritage && !isChill) {
+        sum.textContent = "Bạn mang tâm hồn 'Người Khám Phá Di Sản' — Yêu chiều sâu lịch sử, trầm trồ trước kiến trúc triều Nguyễn và tinh hoa văn hóa cố đô.";
+      } else if (isChill) {
+        sum.textContent = "Bạn mang phong cách 'Người Lãng Mạn Tự Do' — Thích nhịp sống chậm, tách cà phê muối, hoàng hôn đồi thông và những góc phố bình yên xứ Huế.";
+      } else {
+        sum.textContent = "Bạn mang phong cách 'Du Khách Đa Trải Nghiệm' — Kết hợp hài hòa giữa ẩm thực truyền thống, cảnh quan sông Hương và nét đẹp huyền ảo của xứ Huế về đêm.";
+      }
+    }
+
+    function resetSim() {
+      document.getElementById('result-box').classList.remove('active');
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`step-${i}`).style.display = i === 1 ? 'block' : 'none';
+      }
+    }
+  </script>
+</body>
+</html>

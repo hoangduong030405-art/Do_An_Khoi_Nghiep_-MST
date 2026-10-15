@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlacesController } from './places.controller';
 import { PlacesService } from './places.service';
-import { InMemoryDbService } from '../../database/in-memory-db.service';
+import { Place } from './entities/place.entity';
+import { PortalModule } from '../portal/portal.module';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Place]), PortalModule],
   controllers: [PlacesController],
-  providers: [PlacesService, InMemoryDbService],
+  providers: [PlacesService],
   exports: [PlacesService],
 })
 export class PlacesModule {}

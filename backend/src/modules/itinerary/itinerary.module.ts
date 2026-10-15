@@ -1,13 +1,19 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItineraryController } from './itinerary.controller';
 import { ItineraryService } from './itinerary.service';
-import { InMemoryDbService } from '../../database/in-memory-db.service';
 import { WeatherModule } from '../weather/weather.module';
+import { Itinerary } from './entities/itinerary.entity';
+import { ItineraryStop } from './entities/itinerary-stop.entity';
+import { Place } from '../places/entities/place.entity';
 
 @Module({
-  imports: [WeatherModule],
+  imports: [
+    TypeOrmModule.forFeature([Itinerary, ItineraryStop, Place]),
+    WeatherModule
+  ],
   controllers: [ItineraryController],
-  providers: [ItineraryService, InMemoryDbService],
+  providers: [ItineraryService],
   exports: [ItineraryService],
 })
 export class ItineraryModule {}

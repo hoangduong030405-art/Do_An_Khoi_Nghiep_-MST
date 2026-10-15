@@ -9,7 +9,8 @@ export class UserProfileDto {
 
 export class AuthResponseDto {
   accessToken: string;
-  tokenType: string;
+  refreshToken?: string;
+  tokenType?: string;
   expiresIn: number;
-  user: UserProfileDto;
+  user?: UserProfileDto;
 }

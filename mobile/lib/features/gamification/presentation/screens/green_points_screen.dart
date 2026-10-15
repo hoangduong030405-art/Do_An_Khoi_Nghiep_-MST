@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../features/auth/data/auth_service.dart';
 
 class GreenPointsScreen extends StatefulWidget {
   const GreenPointsScreen({Key? key}) : super(key: key);
@@ -11,7 +12,6 @@ class GreenPointsScreen extends StatefulWidget {
 }
 
 class _GreenPointsScreenState extends State<GreenPointsScreen> {
-  static const String _demoUserId = 'e7b0e774-7243-41bb-9be4-8a4b868e82ef';
   late Future<Map<String, dynamic>> _profileFuture;
 
   @override
@@ -21,7 +21,9 @@ class _GreenPointsScreenState extends State<GreenPointsScreen> {
   }
 
   Future<Map<String, dynamic>> _fetchProfile() async {
-    final url = '${ApiEndpoints.gamificationProfile}/$_demoUserId';
+    final me = await AuthService.instance.getMe();
+    final userId = me?['id'] ?? '';
+    final url = '${ApiEndpoints.gamificationProfile}/$userId';
     final response = await ApiClient.instance.dio.get(url);
     return response.data as Map<String, dynamic>;
   }
@@ -271,7 +273,8 @@ class _GreenPointsScreenState extends State<GreenPointsScreen> {
                             return;
                           }
                           try {
-                            final certUrl = '${ApiEndpoints.certificate}/$_demoUserId';
+                            final me = await AuthService.instance.getMe();
+                            final certUrl = '${ApiEndpoints.certificate}/${me?['id']}';
                             final res = await ApiClient.instance.dio.post(certUrl);
                             final certCode = res.data['certificateCode'] ?? 'HUEGO-GREEN-CERT';
                             // TODO Phase 7: xuất PDF

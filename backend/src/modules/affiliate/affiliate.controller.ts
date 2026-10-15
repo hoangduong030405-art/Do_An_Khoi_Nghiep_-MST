@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AffiliateService } from './affiliate.service';
 
 @ApiTags('Affiliate Partners (Đối tác Doanh thu)')
-@Controller('api/v1/affiliate')
+@Controller('affiliate')
 export class AffiliateController {
   constructor(private readonly affiliateService: AffiliateService) {}
 

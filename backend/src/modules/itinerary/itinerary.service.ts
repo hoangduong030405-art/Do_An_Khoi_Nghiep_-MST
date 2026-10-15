@@ -1,240 +1,263 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InMemoryDbService, HuePlace } from '../../database/in-memory-db.service';
+import { Injectable, NotFoundException, BadRequestException, Logger, ForbiddenException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Itinerary } from './entities/itinerary.entity';
+import { ItineraryStop } from './entities/itinerary-stop.entity';
+import { Place } from '../places/entities/place.entity';
 import { WeatherService } from '../weather/weather.service';
-import { GenerateItineraryDto } from './dto/generate-itinerary.dto';
-
-export interface ItinerarySlot {
-  timeSlot: string;
-  placeId: string;
-  placeName: string;
-  address: string;
-  environmentType: 'INDOOR' | 'OUTDOOR' | 'SEMI_OUTDOOR';
-  activityDescription: string;
-  estimatedCostVnd: number;
-  greenPointsEarnable: number;
-  carbonSavedKg: number;
-  transportAdvice: string;
-}
-
-export interface ItineraryDay {
-  dayNumber: number;
-  clusterTheme: string;
-  slots: ItinerarySlot[];
-  dayGreenPointsTotal: number;
-}
+import { CreateItineraryDto } from './dto/create-itinerary.dto';
 
 @Injectable()
 export class ItineraryService {
   private readonly logger = new Logger(ItineraryService.name);
 
   constructor(
-    private readonly inMemoryDb: InMemoryDbService,
+    @InjectRepository(Itinerary) private readonly itineraryRepo: Repository<Itinerary>,
+    @InjectRepository(ItineraryStop) private readonly stopRepo: Repository<ItineraryStop>,
+    @InjectRepository(Place) private readonly placeRepo: Repository<Place>,
     private readonly weatherService: WeatherService,
   ) {}
 
-  /**
-   * Thuật toán AI Lập Lịch Trình Tối Ưu Hóa Tuyến Đường (Cluster-based Route Optimization)
-   * Phân bổ theo cụm địa lý:
-   * - Cụm 1 (Bờ Bắc sông Hương): Kinh Thành Huế, Đại Nội, Bảo tàng Cổ vật, Chợ Đông Ba.
-   * - Cụm 2 (Vùng đồi Tây Nam): Chùa Thiên Mụ, Lăng Khải Định, Lăng Tự Đức, Làng hương Thủy Xuân, Đồi Vọng Cảnh.
-   * - Cụm 3 (Bờ Nam & Dọc sông Hương): Cầu Tràng Tiền, Phố đi bộ Nguyễn Đình Chiểu, Nhà rường Kim Long.
-   */
-  async generatePersonalizedItinerary(dto: GenerateItineraryDto) {
-    const { durationDays, budget, preference, transportMode = 'BICYCLE' } = dto;
-    const weather = await this.weatherService.getCurrentHueWeather();
-
-    this.logger.log(`Tạo lịch trình: Số ngày=${durationDays}, Budget=${budget}, Sở thích=${preference}, Xe=${transportMode}`);
-
-    const days: ItineraryDay[] = [];
-    let totalEstimatedCost = 0;
-    let totalGreenPoints = 0;
-    let totalCarbonSaved = 0;
-
-    // Ngày 1: Cụm Trái Tim Di Sản Cố Đô (Bờ Bắc sông Hương)
-    const day1Slots: ItinerarySlot[] = [
-      {
-        timeSlot: '07:30 - 08:30',
-        placeId: 'food-bun-bo-01',
-        placeName: 'Bún Bò Huế Mụ Rơi (Chuẩn Vị Cố Đô)',
-        address: 'Đường Nguyễn Du, Phường Phú Cát, TP Huế',
-        environmentType: 'INDOOR',
-        activityDescription: 'Nạp năng lượng bữa sáng với tô bún bò giò heo nước dùng ngọt thanh từ xương hầm và mắm ruốc sả ớt đậm đà.',
-        estimatedCostVnd: budget === 'BUDGET' ? 35000 : 50000,
-        greenPointsEarnable: 15,
-        carbonSavedKg: 0.8,
-        transportAdvice: 'Đi bộ hoặc tản bộ qua cầu Gia Hội đón gió sớm',
-      },
-      {
-        timeSlot: '08:45 - 11:45',
-        placeId: '8f8b0596-f5ee-449e-8c31-9cb6be62b662',
-        placeName: 'Đại Nội Huế (Hoàng Thành & Tử Cấm Thành)',
-        address: 'Đường 23/8, Phường Thuận Hòa, TP Huế',
-        environmentType: 'OUTDOOR',
-        activityDescription: 'Khám phá Ngọ Môn, Điện Thái Hòa, Thế Miếu. Lắng nghe trợ lý AI Mệ Huế thuyết minh về nghi thức tế lễ và đời sống hoàng tộc.',
-        estimatedCostVnd: 200000,
-        greenPointsEarnable: 30,
-        carbonSavedKg: 2.1,
-        transportAdvice: 'Sử dụng xe đạp công cộng Eco-Bike có trạm trả xe ngay tại Cửa Hiển Nhơn',
-      },
-      {
-        timeSlot: '12:00 - 13:30',
-        placeId: 'food-com-hen-02',
-        placeName: 'Cơm Hến & Chè Bắp Cồn Hến',
-        address: 'Cồn Hến, Phường Vĩ Dạ, TP Huế',
-        environmentType: 'SEMI_OUTDOOR',
-        activityDescription: 'Thưởng thức cơm hến cay nồng đặc trưng cùng chè bắp Cồn Hến ngọt mát giữa dòng sông Hương thơ mộng.',
-        estimatedCostVnd: budget === 'BUDGET' ? 30000 : 45000,
-        greenPointsEarnable: 15,
-        carbonSavedKg: 1.2,
-        transportAdvice: 'Đạp xe dọc đường bờ sông Hàn Thuyên và qua cầu Đập Đá',
-      },
-      {
-        timeSlot: '14:30 - 16:30',
-        placeId: '1b34ad29-2342-49cf-91ba-00c71a39fbc4',
-        placeName: 'Bảo tàng Cổ vật Cung đình Huế (Điện Long An)',
-        address: 'Số 3 Lê Trực, Phường Đông Ba, TP Huế',
-        environmentType: 'INDOOR',
-        activityDescription: 'Chiêm ngưỡng bảo vật tiến vua, ngai vàng, trang phục hoàng thất trong không gian nhà rường gỗ lim lộng lẫy (Điểm trong nhà tối ưu khi thời tiết thay đổi).',
-        estimatedCostVnd: 50000,
-        greenPointsEarnable: 25,
-        carbonSavedKg: 0.9,
-        transportAdvice: 'Đi dạo bộ bóng râm 400m từ Hoàng Thành',
-      },
-      {
-        timeSlot: '17:00 - 18:30',
-        placeId: '5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d',
-        placeName: 'Cầu Tràng Tiền & Bến Thuyền Tòa Khâm',
-        address: 'Cầu Tràng Tiền, TP Huế',
-        environmentType: 'OUTDOOR',
-        activityDescription: 'Ngắm hoàng hôn nhuộm tím sông Hương trên cầu Tràng Tiền 6 vài 12 nhịp, hóng gió và chụp ảnh lưu niệm.',
-        estimatedCostVnd: 0,
-        greenPointsEarnable: 20,
-        carbonSavedKg: 1.5,
-        transportAdvice: 'Tản bộ trên làn đường dành riêng cho người đi bộ của cầu',
-      },
-      {
-        timeSlot: '19:30 - 21:30',
-        placeId: 'ca-hue-song-huong',
-        placeName: 'Du Thuyền Nghe Ca Huế Thả Đèn Hoa Đăng',
-        address: 'Bến thuyền Du lịch Sông Hương, TP Huế',
-        environmentType: 'SEMI_OUTDOOR',
-        activityDescription: 'Lắng nghe những làn điệu Nam ai, Nam bình truyền thống và thả đèn hoa đăng cầu an lành trên sông Hương.',
-        estimatedCostVnd: budget === 'LUXURY' ? 250000 : 120000,
-        greenPointsEarnable: 25,
-        carbonSavedKg: 1.1,
-        transportAdvice: 'Đi bộ từ phố đi bộ Chu Văn An ra bến thuyền',
-      },
-    ];
-
-    days.push({
-      dayNumber: 1,
-      clusterTheme: 'Hương Sắc Kinh Thành & Di Sản Triều Nguyễn',
-      slots: day1Slots,
-      dayGreenPointsTotal: day1Slots.reduce((sum, s) => sum + s.greenPointsEarnable, 0),
+  async createItinerary(userId: string, dto: CreateItineraryDto) {
+    if (dto.placeIds.length > 12) {
+      throw new BadRequestException('Một lộ trình chỉ được phép tối đa 12 địa điểm.');
+    }
+    
+    const itinerary = this.itineraryRepo.create({
+      userId,
+      title: dto.title,
+      date: new Date(dto.date),
     });
+    const savedItinerary = await this.itineraryRepo.save(itinerary);
 
-    // Ngày 2: Cụm Sinh Thái & Lăng Tẩm Thiền Định (Tây Nam Cố Đô)
-    if (durationDays >= 2) {
-      const day2Slots: ItinerarySlot[] = [
-        {
-          timeSlot: '07:30 - 09:00',
-          placeId: '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
-          placeName: 'Chùa Thiên Mụ (Linh Mụ Tự)',
-          address: 'Đồi Hà Khê, Đường Kim Long, TP Huế',
-          environmentType: 'OUTDOOR',
-          activityDescription: 'Viếng cảnh ngôi chùa hơn 400 năm tuổi trong sớm mai thanh tịnh, chiêm bái tháp Phước Duyên 7 tầng và chuông Đại Hồng Chung.',
-          estimatedCostVnd: 0,
-          greenPointsEarnable: 25,
-          carbonSavedKg: 2.5,
-          transportAdvice: 'Đạp xe dọc cung đường rợp bóng cây Kim Long ven sông Hương',
-        },
-        {
-          timeSlot: '09:30 - 11:30',
-          placeId: 'craft-thuy-xuan',
-          placeName: 'Làng Hương Trầm Thủy Xuân & Đồi Vọng Cảnh',
-          address: 'Đường Huyền Trân Công Chúa, TP Huế',
-          environmentType: 'SEMI_OUTDOOR',
-          activityDescription: 'Trải nghiệm tự tay xe que hương trầm thơm ngát, chụp ảnh tại các búp hương rực rỡ sắc màu và ngắm ngã ba sông Hương từ Đồi Vọng Cảnh.',
-          estimatedCostVnd: 40000,
-          greenPointsEarnable: 30,
-          carbonSavedKg: 1.8,
-          transportAdvice: 'Xe đạp điện hoặc đạp xe rèn luyện thể lực xanh',
-        },
-        {
-          timeSlot: '12:00 - 13:30',
-          placeId: 'food-chay-tinh-tam',
-          placeName: 'Ẩm Thực Chay Cung Đình (Nhà Rường Tịnh Quán)',
-          address: 'Phường Thủy Xuân, TP Huế',
-          environmentType: 'INDOOR',
-          activityDescription: 'Bữa trưa chay thực dưỡng thanh tao chế biến từ nông sản hữu cơ bản địa Huế, giảm thiểu tối đa phát thải môi trường.',
-          estimatedCostVnd: budget === 'BUDGET' ? 45000 : 90000,
-          greenPointsEarnable: 25,
-          carbonSavedKg: 3.2, // Bữa ăn chay giảm carbon footprint đáng kể
-          transportAdvice: 'Ghé vào nhà hàng ngay chân đồi Vọng Cảnh',
-        },
-        {
-          timeSlot: '14:00 - 16:30',
-          placeId: '4f5e6d7c-8b9a-0123-4567-89abcdef0123',
-          placeName: 'Lăng Khải Định (Ứng Lăng Kiến Trúc Sành Sứ)',
-          address: 'Xã Thủy Bằng, TP Huế',
-          environmentType: 'SEMI_OUTDOOR',
-          activityDescription: 'Kinh ngạc trước nghệ thuật khảm sành sứ và thủy tinh tinh xảo đỉnh cao của cung Thiên Định và bức họa Cửu Long Ẩn Vân trên trần lăng.',
-          estimatedCostVnd: 150000,
-          greenPointsEarnable: 25,
-          carbonSavedKg: 1.5,
-          transportAdvice: 'Xe điện du lịch xanh hoặc xe đạp cơ bắp',
-        },
-        {
-          timeSlot: '17:00 - 18:30',
-          placeId: '6b7c8d9e-0f1a-2b3c-4d5e-6f7a8b9c0d1e',
-          placeName: 'Không Gian Trà Cung Đình Kim Long',
-          address: 'Đường Kim Long, Phường Kim Long, TP Huế',
-          environmentType: 'INDOOR',
-          activityDescription: 'Thưởng trà thảo mộc 26 vị tiến vua, ăn mứt sen trần trong không gian nhà rường cổ kính, thư giãn đôi chân sau một ngày vận động.',
-          estimatedCostVnd: 60000,
-          greenPointsEarnable: 20,
-          carbonSavedKg: 0.8,
-          transportAdvice: 'Nghỉ chân tại vườn cổ Kim Long trên đường quay về trung tâm',
-        },
-      ];
-
-      days.push({
-        dayNumber: 2,
-        clusterTheme: 'Hơi Thở Thiền Môn, Làng Nghề & Nghệ Thuật Lăng Tẩm',
-        slots: day2Slots,
-        dayGreenPointsTotal: day2Slots.reduce((sum, s) => sum + s.greenPointsEarnable, 0),
+    if (dto.placeIds && dto.placeIds.length > 0) {
+      const stops = dto.placeIds.map((placeId, index) => {
+        return this.stopRepo.create({
+          itineraryId: savedItinerary.id,
+          placeId,
+          orderIndex: index
+        });
       });
+      await this.stopRepo.save(stops);
+    }
+    return this.getItinerary(userId, savedItinerary.id);
+  }
+
+  async getMyItineraries(userId: string) {
+    return this.itineraryRepo.find({
+      where: { userId },
+      order: { date: 'DESC' },
+      relations: ['stops', 'stops.place']
+    });
+  }
+
+  async getItinerary(userId: string, id: string) {
+    const itinerary = await this.itineraryRepo.findOne({
+      where: { id },
+      relations: ['stops', 'stops.place']
+    });
+    if (!itinerary) throw new NotFoundException('Không tìm thấy lộ trình');
+    if (itinerary.userId !== userId) throw new ForbiddenException('Bạn không có quyền truy cập lộ trình này');
+    
+    // Sắp xếp stops
+    itinerary.stops.sort((a, b) => a.orderIndex - b.orderIndex);
+    return itinerary;
+  }
+
+  async updateStops(userId: string, itineraryId: string, placeIds: string[]) {
+    if (placeIds.length > 12) {
+      throw new BadRequestException('Một lộ trình chỉ được phép tối đa 12 địa điểm.');
+    }
+    const itinerary = await this.getItinerary(userId, itineraryId);
+    
+    // Xóa tất cả stops cũ
+    await this.stopRepo.delete({ itineraryId });
+    
+    // Tạo stops mới
+    const stops = placeIds.map((placeId, index) => {
+      return this.stopRepo.create({
+        itineraryId,
+        placeId,
+        orderIndex: index
+      });
+    });
+    await this.stopRepo.save(stops);
+    return this.getItinerary(userId, itineraryId);
+  }
+
+  async deleteItinerary(userId: string, itineraryId: string) {
+    const itinerary = await this.getItinerary(userId, itineraryId);
+    await this.itineraryRepo.remove(itinerary);
+    return { success: true };
+  }
+
+  // Tối ưu hóa thứ tự
+  async optimizeRoute(placeIds: string[], startLat?: number, startLng?: number) {
+    if (placeIds.length === 0) return [];
+    if (placeIds.length > 12) throw new BadRequestException('Không thể tối ưu quá 12 địa điểm cùng lúc.');
+
+    const places = await this.placeRepo.findByIds(placeIds);
+    if (places.length !== placeIds.length) {
+      throw new BadRequestException('Một hoặc nhiều placeId không hợp lệ.');
     }
 
-    // Tính toán tổng số liệu toàn chuyến
-    days.forEach((day) => {
-      day.slots.forEach((slot) => {
-        totalEstimatedCost += slot.estimatedCostVnd;
-        totalGreenPoints += slot.greenPointsEarnable;
-        totalCarbonSaved += slot.carbonSavedKg;
+    // Nearest Neighbor
+    let unvisited = [...places];
+    let currentLat = startLat ?? places[0].latitude;
+    let currentLng = startLng ?? places[0].longitude;
+    
+    const optimized: Place[] = [];
+    
+    while(unvisited.length > 0) {
+      let nearestIdx = 0;
+      let minDistance = Infinity;
+      for(let i=0; i<unvisited.length; i++) {
+        const d = this.haversine(currentLat, currentLng, unvisited[i].latitude, unvisited[i].longitude);
+        if (d < minDistance) {
+          minDistance = d;
+          nearestIdx = i;
+        }
+      }
+      const nearest = unvisited[nearestIdx];
+      optimized.push(nearest);
+      currentLat = nearest.latitude;
+      currentLng = nearest.longitude;
+      unvisited.splice(nearestIdx, 1);
+    }
+
+    // 2-Opt Cải thiện
+    let improved = true;
+    while (improved) {
+      improved = false;
+      for (let i = 0; i < optimized.length - 1; i++) {
+        for (let k = i + 1; k < optimized.length; k++) {
+          const dBefore = this.calculateTotalDistance(optimized);
+          // Swap and reverse the sub-array
+          const newRoute = [
+            ...optimized.slice(0, i),
+            ...optimized.slice(i, k + 1).reverse(),
+            ...optimized.slice(k + 1)
+          ];
+          const dAfter = this.calculateTotalDistance(newRoute);
+          if (dAfter < dBefore) {
+            optimized.splice(0, optimized.length, ...newRoute);
+            improved = true;
+          }
+        }
+      }
+    }
+
+    // Tính toán số liệu
+    let totalDistanceKm = 0;
+    const routeData = [];
+    currentLat = startLat ?? optimized[0].latitude;
+    currentLng = startLng ?? optimized[0].longitude;
+
+    for (const place of optimized) {
+      const d = this.haversine(currentLat, currentLng, place.latitude, place.longitude);
+      totalDistanceKm += d;
+      routeData.push({
+        place,
+        distanceFromPrevKm: Math.round(d * 100) / 100
       });
-    });
+      currentLat = place.latitude;
+      currentLng = place.longitude;
+    }
+
+    const walkSpeed = 5; // km/h
+    const bikeSpeed = 15; // km/h
+    const co2SavedPerKm = parseFloat(process.env.CO2_SAVED_PER_KM || '0.12'); // kg/km (Ước lượng so với đi xe máy)
 
     return {
-      itineraryTitle: `Hành Trình Khám Phá Huế Thông Minh ${durationDays}N${durationDays - 1}Đ`,
-      tagline: 'Tối ưu hóa năng lượng • Di sản nguyên bản • Du lịch không rác thải',
-      metadata: {
-        durationDays,
-        budgetTier: budget,
-        preference,
-        transportMode,
-        weatherStatus: `${weather.condition} (${weather.description}) - ${weather.tempCelsius}°C`,
-        weatherNotice: weather.isRaining
-          ? 'Hệ thống đã tự động chèn các bảo tàng, không gian thưởng trà trong nhà để đảm bảo chuyến đi luôn thuận tiện.'
-          : 'Thời tiết mát mẻ, rất lý tưởng để di chuyển xanh!',
-      },
-      summaryStats: {
-        totalEstimatedCostVnd: totalEstimatedCost,
-        totalGreenPointsEarnable: totalGreenPoints,
-        totalCarbonSavedKg: Math.round(totalCarbonSaved * 10) / 10,
-        eCertificateEligibility: totalGreenPoints >= 100,
-      },
-      scheduleDays: days,
+      optimizedRoute: routeData.map(r => r.place.id),
+      routeDetails: routeData,
+      totalDistanceKm: Math.round(totalDistanceKm * 100) / 100,
+      estimatedTimeWalkMinutes: Math.round((totalDistanceKm / walkSpeed) * 60),
+      estimatedTimeBikeMinutes: Math.round((totalDistanceKm / bikeSpeed) * 60),
+      co2SavedKg: Math.round(totalDistanceKm * co2SavedPerKm * 100) / 100,
+      note: 'CO2 tiết kiệm là ước lượng dựa trên việc thay thế phương tiện cá nhân (xe máy) bằng đi bộ hoặc xe đạp.'
     };
+  }
+
+  // Gợi ý thời tiết
+  async getWeatherSuggestions(userId: string, itineraryId: string) {
+    const itinerary = await this.getItinerary(userId, itineraryId);
+    const weather = await this.weatherService.getCurrentHueWeather();
+
+    if (!weather.isRaining && !weather.isExtremelyHot) {
+      return {
+        weather,
+        suggestions: [],
+        message: 'Thời tiết đẹp, không cần thay đổi lịch trình.'
+      };
+    }
+
+    const suggestions = [];
+    const allPlaces = await this.placeRepo.find();
+    const indoorPlaces = allPlaces.filter(p => p.environmentType === 'INDOOR' || p.environmentType === 'SEMI_OUTDOOR');
+
+    for (const stop of itinerary.stops) {
+      const place = stop.place;
+      if (place && place.environmentType === 'OUTDOOR') {
+        // Tìm 3 điểm indoor gần nhất
+        const nearestIndoors = [...indoorPlaces]
+          .filter(p => !itinerary.stops.find(s => s.placeId === p.id)) // không nằm sẵn trong lộ trình
+          .sort((a, b) => this.haversine(place.latitude, place.longitude, a.latitude, a.longitude) 
+                        - this.haversine(place.latitude, place.longitude, b.latitude, b.longitude))
+          .slice(0, 3);
+        
+        if (nearestIndoors.length > 0) {
+          suggestions.push({
+            originalStop: { id: stop.id, placeId: place.id, name: place.name },
+            reason: weather.isRaining ? 'Trời đang mưa, điểm này ở ngoài trời.' : 'Trời nắng gắt, điểm này thiếu bóng râm.',
+            alternatives: nearestIndoors.map(p => ({
+              placeId: p.id,
+              name: p.name,
+              distanceKm: Math.round(this.haversine(place.latitude, place.longitude, p.latitude, p.longitude) * 100) / 100
+            }))
+          });
+        }
+      }
+    }
+
+    return {
+      weather,
+      suggestions,
+      message: 'Thời tiết bất lợi, có một số điểm đến ngoài trời nên được thay thế.'
+    };
+  }
+
+  async swapStop(userId: string, itineraryId: string, oldPlaceId: string, newPlaceId: string) {
+    const itinerary = await this.getItinerary(userId, itineraryId);
+    const stop = itinerary.stops.find(s => s.placeId === oldPlaceId);
+    if (!stop) throw new BadRequestException('Không tìm thấy địa điểm cũ trong lộ trình');
+
+    const newPlace = await this.placeRepo.findOne({ where: { id: newPlaceId } });
+    if (!newPlace) throw new BadRequestException('Địa điểm mới không tồn tại');
+
+    stop.placeId = newPlaceId;
+    await this.stopRepo.save(stop);
+    
+    return this.getItinerary(userId, itineraryId);
+  }
+
+  // Tiện ích: Haversine
+  private haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  private calculateTotalDistance(route: Place[]): number {
+    let dist = 0;
+    for (let i = 0; i < route.length - 1; i++) {
+      dist += this.haversine(route[i].latitude, route[i].longitude, route[i+1].latitude, route[i+1].longitude);
+    }
+    return dist;
   }
 }
