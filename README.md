@@ -104,8 +104,13 @@ flutter run
 3. **POST** `/api/v1/ai-guide/adapt-itinerary`
 
 
-https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/
    - Phân tích thời tiết thực tế từ trạm khí tượng Huế. Nếu trời mưa ngâu hoặc nắng gắt (>37°C), tự động thay thế các địa điểm `OUTDOOR` thành `INDOOR` (nhà rường thưởng trà, bảo tàng cổ vật cung đình).
 
 4. **GET** `/api/v1/weather/hue-current`
    - Trả về nhiệt độ, độ ẩm và khuyến nghị hành vi du lịch thời gian thực.
+
+
+ WEB  
+https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/
+APP
+https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/app/
