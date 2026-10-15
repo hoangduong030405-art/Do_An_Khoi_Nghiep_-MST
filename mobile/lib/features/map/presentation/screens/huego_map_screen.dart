@@ -36,11 +36,147 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
   }
 
   Future<List<PlaceDto>> _fetchPlaces() async {
-    final response = await ApiClient.instance.dio.get(ApiEndpoints.places);
-    final data = response.data as List<dynamic>;
-    return data
-        .map((e) => PlaceDto.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final response = await ApiClient.instance.dio.get(ApiEndpoints.places);
+      if (response.statusCode == 200 && response.data is List) {
+        final data = response.data as List<dynamic>;
+        return data
+            .map((e) => PlaceDto.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('HUEGO: Dùng danh sách di tích Cố Đô mặc định cho Web/Offline: $e');
+    }
+    return const [
+      PlaceDto(
+        id: 'dai-noi-hue',
+        name: 'Đại Nội Huế (Hoàng Thành)',
+        categoryCode: 'HISTORICAL',
+        categoryName: 'Di Tích Cố Đô',
+        descriptionVi: 'Quần thể hoàng cung của 13 vị vua triều Nguyễn, Di sản Văn hóa Thế giới UNESCO.',
+        descriptionEn: 'Imperial City of Hue, UNESCO World Heritage Site.',
+        address: 'Đường 23 Tháng 8, Thuận Hòa, TP Huế',
+        latitude: 16.4697,
+        longitude: 107.5779,
+        geofenceRadiusMeters: 150,
+        environmentType: 'OUTDOOR',
+        ticketPriceVnd: 200000,
+        greenRewardPoints: 50,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1599827552599-eadf5e0fd712',
+      ),
+      PlaceDto(
+        id: 'chua-thien-mu',
+        name: 'Chùa Thiên Mụ (Linh Mụ)',
+        categoryCode: 'HISTORICAL',
+        categoryName: 'Chùa Cổ',
+        descriptionVi: 'Ngôi chùa cổ kính hơn 400 năm tuổi soi bóng bên bờ Bắc sông Hương êm đềm.',
+        descriptionEn: 'Historic pagoda by the Perfume River.',
+        address: 'Đồi Hà Khê, Kim Long, TP Huế',
+        latitude: 16.4528,
+        longitude: 107.5452,
+        geofenceRadiusMeters: 80,
+        environmentType: 'OUTDOOR',
+        ticketPriceVnd: 0,
+        greenRewardPoints: 40,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482',
+      ),
+      PlaceDto(
+        id: 'lang-khai-dinh',
+        name: 'Lăng Khải Định (Ứng Lăng)',
+        categoryCode: 'HISTORICAL',
+        categoryName: 'Lăng Tẩm',
+        descriptionVi: 'Tuyệt tác kiến trúc giao thoa Đông - Tây độc đáo với nghệ thuật ghép sành sứ đỉnh cao.',
+        descriptionEn: 'Tomb of Emperor Khai Dinh.',
+        address: 'Thủy Bằng, Hương Thủy, Thừa Thiên Huế',
+        latitude: 16.3989,
+        longitude: 107.5904,
+        geofenceRadiusMeters: 100,
+        environmentType: 'OUTDOOR',
+        ticketPriceVnd: 150000,
+        greenRewardPoints: 45,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1528127269322-539801943592',
+      ),
+      PlaceDto(
+        id: 'lang-tu-duc',
+        name: 'Lăng Tự Đức (Khiêm Lăng)',
+        categoryCode: 'HISTORICAL',
+        categoryName: 'Lăng Tẩm',
+        descriptionVi: 'Một trong những lăng tẩm đẹp nhất triều Nguyễn, mang đậm nét thi vị và hài hòa non nước.',
+        descriptionEn: 'Tomb of Emperor Tu Duc.',
+        address: 'Thủy Xuân, TP Huế',
+        latitude: 16.4328,
+        longitude: 107.5658,
+        geofenceRadiusMeters: 120,
+        environmentType: 'OUTDOOR',
+        ticketPriceVnd: 150000,
+        greenRewardPoints: 45,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef',
+      ),
+      PlaceDto(
+        id: 'cau-trang-tien',
+        name: 'Cầu Tràng Tiền',
+        categoryCode: 'SCENIC_VIEW',
+        categoryName: 'Biểu Tượng Cố Đô',
+        descriptionVi: 'Cây cầu thép lịch sử 6 nhịp 12 vài bắc qua sông Hương, biểu tượng thơ mộng xứ Huế.',
+        descriptionEn: 'Trang Tien Bridge spanning Perfume River.',
+        address: 'Phú Nhuận, TP Huế',
+        latitude: 16.4678,
+        longitude: 107.5925,
+        geofenceRadiusMeters: 60,
+        environmentType: 'OUTDOOR',
+        ticketPriceVnd: 0,
+        greenRewardPoints: 30,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93',
+      ),
+      PlaceDto(
+        id: 'cho-dong-ba',
+        name: 'Chợ Đông Ba',
+        categoryCode: 'CUISINE',
+        categoryName: 'Chợ & Ẩm Thực',
+        descriptionVi: 'Ngôi chợ sầm uất trăm năm tuổi, thiên đường của hàng trăm món ăn đặc sản Huế.',
+        descriptionEn: 'Dong Ba Market - Hue culinary paradise.',
+        address: 'Trần Hưng Đạo, Phú Hòa, TP Huế',
+        latitude: 16.4722,
+        longitude: 107.5878,
+        geofenceRadiusMeters: 70,
+        environmentType: 'INDOOR',
+        ticketPriceVnd: 0,
+        greenRewardPoints: 25,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+      ),
+      PlaceDto(
+        id: 'ca-phe-muoi-dang-thai-than',
+        name: 'Cà Phê Muối Góc Phố Cổ',
+        categoryCode: 'CAFE',
+        categoryName: 'Cà Phê',
+        descriptionVi: 'Hương vị cà phê muối đậm đà béo ngậy khởi nguồn từ con đường rợp bóng cây Cố Đô.',
+        descriptionEn: 'Famous Hue Salt Coffee.',
+        address: '10 Đặng Thái Thân, Thuận Hòa, TP Huế',
+        latitude: 16.4715,
+        longitude: 107.5752,
+        geofenceRadiusMeters: 40,
+        environmentType: 'INDOOR',
+        ticketPriceVnd: 25000,
+        greenRewardPoints: 20,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd',
+      ),
+      PlaceDto(
+        id: 'lang-huong-thuy-xuan',
+        name: 'Làng Hương Trầm Thủy Xuân',
+        categoryCode: 'HISTORICAL',
+        categoryName: 'Làng Nghề',
+        descriptionVi: 'Làng nghề làm hương truyền thống rực rỡ sắc màu bên chân đồi Vọng Cảnh.',
+        descriptionEn: 'Thuy Xuan Incense Making Village.',
+        address: 'Huyền Trân Công Chúa, Thủy Xuân, TP Huế',
+        latitude: 16.4385,
+        longitude: 107.5622,
+        geofenceRadiusMeters: 50,
+        environmentType: 'OUTDOOR',
+        ticketPriceVnd: 0,
+        greenRewardPoints: 35,
+        thumbnailUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f',
+      ),
+    ];
   }
 
   Future<Map<String, dynamic>?> _fetchWeather() async {
@@ -49,10 +185,14 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
       if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
         return response.data as Map<String, dynamic>;
       }
-    } catch (_) {
-      // Giữ fallback text cũ nếu lỗi mạng
-    }
-    return null;
+    } catch (_) {}
+    return {
+      'temperature': 27,
+      'condition': 'CLOUDY',
+      'conditionText': 'Dịu mát, gió nhẹ sông Hương',
+      'humidity': 75,
+      'windSpeed': 12,
+    };
   }
 
   /// Chuẩn hóa categoryCode từ backend về mã ngắn mà switch bên dưới đang dùng.
