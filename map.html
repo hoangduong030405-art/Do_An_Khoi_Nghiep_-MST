@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bản đồ số Du lịch Huế · HUEGO — 30 Di Tích Di Sản & 4.350 Tọa Độ Cố Đô</title>
   <meta name="description" content="Bản đồ số du lịch Huế tương tác HUEGO: 30 di sản cố đô, 6 cụm di tích và hơn 4.350 địa điểm ẩm thực, cà phê, lưu trú.">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
   
   <!-- Leaflet CSS & MarkerCluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
   <style>
+    svg { max-width: 100%; }
+    .city-back-link svg { width: 18px; height: 18px; flex-shrink: 0; }
     body {
       overflow: hidden;
       height: 100vh;
@@ -391,7 +393,7 @@
     <!-- Left Sidebar: 30 Heritage Sites & 6 Zones -->
     <aside class="map-sidebar-left">
       <div class="sidebar-header-bar">
-        <a href="/" class="city-back-link">
+        <a href="./index.html" class="city-back-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
           Huế
         </a>
@@ -512,8 +514,8 @@
     // Tải 30 Di sản và 6 Cụm Di tích
     async function loadHeritageSites() {
       try {
-        let res = await fetch('/api/heritage-sites');
-        if (!res.ok) res = await fetch('./data/heritage_30_sites.json');
+        let res = await fetch('./data/heritage_30_sites.json').catch(() => null);
+        if (!res || !res.ok) res = await fetch('/api/heritage-sites');
         allHeritageZones = await res.json();
         renderZonesList();
       } catch (e) {
@@ -524,8 +526,8 @@
     // Tải toàn bộ 4.352 điểm toạ độ và marker cluster
     async function loadAllMapPoints() {
       try {
-        let res = await fetch('/api/map-points');
-        if (!res.ok) res = await fetch('./data/places_all.json');
+        let res = await fetch('./data/places_all.json').catch(() => null);
+        if (!res || !res.ok) res = await fetch('/api/map-points');
         const raw = await res.json();
         if (raw.length > 0 && raw[0].address !== undefined) {
           allMapPoints = raw.filter(p => p.lat && p.lng).map(p => ({
