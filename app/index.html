@@ -6,8 +6,22 @@
   <meta name="description" content="HUEGO - Bản Đồ Số Du Lịch Huế">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-  <!-- Dynamic Base HREF for Localhost & GitHub Pages compatibility -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Dynamic Base HREF & Cache Busting for Service Worker -->
   <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        for (let r of regs) { r.unregister(); }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(keys) {
+        for (let k of keys) { caches.delete(k); }
+      });
+    }
     if (!window.location.pathname.endsWith('/') && !window.location.pathname.endsWith('.html')) {
       window.location.replace(window.location.pathname + '/' + window.location.search + window.location.hash);
     }
@@ -87,6 +101,6 @@
     <div class="loading-sub">Khám Phá Cố Đô Huế Thông Minh · Đang tải ứng dụng...</div>
     <div class="spinner"></div>
   </div>
-  <script src="flutter_bootstrap.js?v=2" async></script>
+  <script src="flutter_bootstrap.js?v=20261015c" async></script>
 </body>
 </html>
