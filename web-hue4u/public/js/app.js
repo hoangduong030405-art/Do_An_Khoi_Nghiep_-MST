@@ -93,13 +93,24 @@ function closeModal() {
   if (modal) modal.classList.remove('active');
 }
 
+let staticAllPlaces = null;
+
+function removeVietnameseTones(str) {
+  if (!str) return '';
+  return str.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+    .toLowerCase();
+}
+
 // Tải bộ sưu tập nổi bật
 async function loadCollections() {
   const container = document.getElementById('collections-grid');
   if (!container) return;
 
   try {
-    const res = await fetch('/api/collections');
+    let res = await fetch('/api/collections');
+    if (!res.ok) res = await fetch('./data/collections.json');
     const list = await res.json();
     container.innerHTML = list.map(c => `
       <div class="collection-card" onclick="filterByCollection('${c.vertical}')">
@@ -145,8 +156,56 @@ async function loadPlaces() {
       sortBy: currentSort
     });
 
-    const res = await fetch(`/api/places?${params.toString()}`);
-    const data = await res.json();
+    let data = null;
+    try {
+      const res = await fetch(`/api/places?${params.toString()}`);
+      if (res.ok) data = await res.json();
+    } catch (apiErr) {}
+
+    // Fallback static JSON cho GitHub Pages
+    if (!data || !data.items) {
+      if (!staticAllPlaces) {
+        const res = await fetch('./data/places_all.json');
+        staticAllPlaces = await res.json();
+      }
+
+      let items = currentVertical !== 'all' 
+        ? staticAllPlaces.filter(p => p.vertical === currentVertical)
+        : staticAllPlaces;
+
+      if (currentSearch) {
+        const q = removeVietnameseTones(currentSearch);
+        items = items.filter(p => {
+          const nameNorm = removeVietnameseTones(p.name || p.name_vi || '');
+          const addrNorm = removeVietnameseTones(p.address || p.address_vi || '');
+          const subNorm = Array.isArray(p.subcategory) ? removeVietnameseTones(p.subcategory.join(' ')) : '';
+          return nameNorm.includes(q) || addrNorm.includes(q) || subNorm.includes(q);
+        });
+      }
+
+      if (currentSort === 'rating') {
+        items = [...items].sort((a, b) => (b.googleRating || 0) - (a.googleRating || 0));
+      } else if (currentSort === 'reviews') {
+        items = [...items].sort((a, b) => (b.googleReviewCount || 0) - (a.googleReviewCount || 0));
+      } else if (currentSort === 'name') {
+        items = [...items].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+      }
+
+      const limit = 24;
+      const total = items.length;
+      const totalPages = Math.ceil(total / limit);
+      const startIndex = (currentPage - 1) * limit;
+      const pagedItems = items.slice(startIndex, startIndex + limit);
+
+      data = {
+        page: currentPage,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: currentPage < totalPages,
+        items: pagedItems
+      };
+    }
 
     if (countLabel) {
       countLabel.textContent = `Tìm thấy ${data.total.toLocaleString()} địa điểm`;
@@ -227,8 +286,20 @@ window.openPlaceDetail = async function(id) {
   container.innerHTML = `<div style="text-align: center; padding: 3rem;"><p>Đang tải thông tin chi tiết...</p></div>`;
 
   try {
-    const res = await fetch(`/api/places/${id}`);
-    const p = await res.json();
+    let p = null;
+    try {
+      const res = await fetch(`/api/places/${id}`);
+      if (res.ok) p = await res.json();
+    } catch (e) {}
+
+    if (!p) {
+      if (!staticAllPlaces) {
+        const res = await fetch('./data/places_all.json');
+        staticAllPlaces = await res.json();
+      }
+      p = staticAllPlaces.find(item => item.id === id);
+    }
+    if (!p) throw new Error('Không tìm thấy thông tin địa điểm');
 
     const photo = p.coverPhotoUrl || 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp';
     const mapsLink = p.lat && p.lng 

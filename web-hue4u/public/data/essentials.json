@@ -1,0 +1,51 @@
+{
+  "emergency": [
+    {
+      "name": "Cảnh sát phản ứng nhanh",
+      "number": "113",
+      "icon": "shield-alert"
+    },
+    {
+      "name": "Cứu hỏa & Cứu nạn",
+      "number": "114",
+      "icon": "flame"
+    },
+    {
+      "name": "Cấp cứu y tế",
+      "number": "115",
+      "icon": "ambulance"
+    }
+  ],
+  "medical": [
+    {
+      "name": "Bệnh viện Trung ương Huế",
+      "address": "16 Lê Lợi, Vĩnh Ninh, TP Huế",
+      "phone": "+84 234 3822 325",
+      "type": "Bệnh viện đa khoa hạng đặc biệt",
+      "open": "24/7"
+    },
+    {
+      "name": "Bệnh viện Trường Đại học Y Dược Huế",
+      "address": "41-51 Nguyễn Huệ, Vĩnh Ninh, TP Huế",
+      "phone": "+84 234 3847 146",
+      "type": "Bệnh viện đa khoa trường đại học",
+      "open": "24/7"
+    }
+  ],
+  "tourism_support": [
+    {
+      "name": "Trung tâm Hỗ trợ Du khách TP Huế",
+      "address": "Số 4 Hoàng Hoa Thám, TP Huế",
+      "hotline": "+84 234 3828 288",
+      "email": "dulichhue@thuathienhue.gov.vn",
+      "description": "Tiếp nhận phản ánh, hỗ trợ tra cứu thông tin, chỉ đường và giải quyết khiếu nại dịch vụ du lịch."
+    },
+    {
+      "name": "Trung tâm Bảo tồn Di tích Cố đô Huế",
+      "address": "Tam Tòa, 23 Tống Duy Tân, TP Huế",
+      "phone": "+84 234 3523 237",
+      "website": "https://hueworldheritage.org.vn",
+      "description": "Quản lý vé tham quan Đại Nội, các lăng tẩm và di tích triều Nguyễn."
+    }
+  ]
+}

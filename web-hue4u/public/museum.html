@@ -209,7 +209,8 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        const res = await fetch('/api/museum');
+        let res = await fetch('/api/museum');
+        if (!res.ok) res = await fetch('./data/museum_artifacts.json');
         artifactsList = await res.json();
         renderArtifactButtons();
       } catch (err) {
@@ -239,7 +240,7 @@
       const title = document.getElementById('art-title');
       const desc = document.getElementById('art-desc');
 
-      viewer.src = `/models/${art.slug}.glb`;
+      viewer.src = `./models/${art.slug}.glb`;
       title.textContent = art.title;
       desc.textContent = art.description || 'Bảo vật hoàng cung triều Nguyễn lưu giữ tại Bảo tàng Cổ vật Cung đình Huế.';
     };
