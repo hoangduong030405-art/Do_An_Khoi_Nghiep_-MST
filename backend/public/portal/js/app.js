@@ -275,14 +275,35 @@ window.openPlaceDetail = async function(id) {
           </div>
         ` : ''}
 
+        <!-- HUEGO Audio Guide Player -->
+        <div class="audio-guide-box">
+          <div class="audio-guide-header">
+            <span class="audio-guide-title">
+              <span>👑</span>
+              <span>Audio Guide Cố Đô (Thuyết minh AI)</span>
+            </span>
+            <button class="audio-guide-btn" id="modalAudioBtn" onclick="toggleAudioGuide('${encodeURIComponent(p.name_vi || p.name)}', '${encodeURIComponent(p.address_vi || p.address || '')}', '${p.vertical}')">
+              <span>🔊</span>
+              <span id="audioBtnText">Nghe Thuyết Minh</span>
+            </button>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
+            Giọng đọc Cố Đô truyền cảm, tự động thuyết minh lịch sử, nét độc đáo và gợi ý trải nghiệm khi ghé ${p.name_vi || p.name}.
+          </p>
+        </div>
+
         <div class="modal-actions">
+          <button class="btn-save-itinerary" id="saveItineraryBtn" onclick="toggleSaveItinerary('${p.id}', '${encodeURIComponent(p.name_vi || p.name)}', '${p.vertical}', '${photo}')">
+            <span>🔖</span>
+            <span id="saveItineraryText">Lưu Lịch Trình</span>
+          </button>
           <a class="btn-primary" href="${mapsLink}" target="_blank" rel="noopener noreferrer">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-            Chỉ đường trên Google Maps
+            Chỉ đường Google Maps
           </a>
           <a class="btn-secondary" href="/map.html?lat=${p.lat || 16.4691}&lng=${p.lng || 107.5775}&id=${p.id}">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-            Xem trên Bản đồ số
+            Bản đồ số
           </a>
         </div>
       </div>
@@ -339,3 +360,226 @@ window.changePage = function(page) {
   loadPlaces();
   window.scrollTo({ top: 380, behavior: 'smooth' });
 };
+
+// ==========================================================
+// HUEGO PRODUCTION WEB LOGIC (Weather, Audio Guide, AI, Itinerary)
+// ==========================================================
+
+// 1. Live Weather Loader
+async function loadLiveWeather() {
+  const badge = document.getElementById('liveWeatherBadge');
+  if (!badge) return;
+
+  try {
+    const res = await fetch('/api/v1/weather/hue-current');
+    if (res.ok) {
+      const data = await res.json();
+      badge.innerHTML = `
+        <span class="weather-icon">${data.isRaining ? '🌧️' : '⛅'}</span>
+        <span>Huế ${data.tempCelsius}°C · ${data.description.split(',')[0]}</span>
+      `;
+      badge.title = data.description;
+    }
+  } catch (err) {
+    badge.innerHTML = `<span>⛅ Huế 27°C · Dịu mát</span>`;
+  }
+}
+
+// 2. Audio Guide Player
+let isAudioPlaying = false;
+let currentUtterance = null;
+
+window.toggleAudioGuide = function(encodedName, encodedAddr, vertical) {
+  const name = decodeURIComponent(encodedName);
+  const addr = decodeURIComponent(encodedAddr);
+  const btn = document.getElementById('modalAudioBtn');
+  const btnText = document.getElementById('audioBtnText');
+
+  if (isAudioPlaying) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    isAudioPlaying = false;
+    if (btn) btn.classList.remove('playing');
+    if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+    return;
+  }
+
+  let textToSpeak = `Chào mừng quý khách đến với ${name}. `;
+  if (vertical === 'tour') {
+    textToSpeak += `Đây là một trong những di tích lịch sử và danh lam thắng cảnh tiêu biểu của Cố Đô Huế, tọa lạc tại ${addr || 'trung tâm thành phố Huế'}. Đến đây, quý khách sẽ được chiêm ngưỡng nét kiến trúc cung đình triều Nguyễn độc đáo và cảm nhận chiều sâu văn hóa trầm mặc của đất kinh kỳ.`;
+  } else if (vertical === 'fnb') {
+    textToSpeak += `Một địa chỉ ẩm thực đặc sản nức tiếng xứ Huế tại ${addr || 'Thành phố Huế'}. Món ăn tại đây được chế biến đậm đà, giữ trọn phong vị ẩm thực Cố Đô khó quên.`;
+  } else if (vertical === 'cafe') {
+    textToSpeak += `Một không gian cà phê thư thái tuyệt vời tại ${addr || 'xứ Huế'}. Quý khách có thể thưởng thức ly cà phê muối đặc sản và ngắm nhìn nhịp sống êm đềm của Cố Đô.`;
+  } else {
+    textToSpeak += `Tọa lạc tại ${addr || 'Thành phố Huế'}, đây là điểm dừng chân lý tưởng trong hành trình khám phá di sản Cố Đô Huế của quý khách.`;
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+    currentUtterance.lang = 'vi-VN';
+    currentUtterance.rate = 0.95;
+
+    // Tìm giọng tiếng Việt nếu có
+    const voices = window.speechSynthesis.getVoices();
+    const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VIE'));
+    if (viVoice) currentUtterance.voice = viVoice;
+
+    currentUtterance.onstart = () => {
+      isAudioPlaying = true;
+      if (btn) btn.classList.add('playing');
+      if (btnText) btnText.textContent = 'Dừng Thuyết Minh';
+    };
+
+    currentUtterance.onend = () => {
+      isAudioPlaying = false;
+      if (btn) btn.classList.remove('playing');
+      if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+    };
+
+    currentUtterance.onerror = () => {
+      isAudioPlaying = false;
+      if (btn) btn.classList.remove('playing');
+      if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+    };
+
+    window.speechSynthesis.speak(currentUtterance);
+  } else {
+    alert('Trình duyệt của bạn chưa hỗ trợ phát âm thanh trực tiếp.');
+  }
+};
+
+// 3. Itinerary / Save Place
+window.toggleSaveItinerary = function(id, encodedName, vertical, photo) {
+  const name = decodeURIComponent(encodedName);
+  const btn = document.getElementById('saveItineraryBtn');
+  const btnText = document.getElementById('saveItineraryText');
+
+  let saved = JSON.parse(localStorage.getItem('huego_itinerary') || '[]');
+  const idx = saved.findIndex(item => item.id === id);
+
+  if (idx >= 0) {
+    saved.splice(idx, 1);
+    localStorage.setItem('huego_itinerary', JSON.stringify(saved));
+    if (btn) btn.classList.remove('saved');
+    if (btnText) btnText.textContent = 'Lưu Lịch Trình';
+  } else {
+    saved.push({ id, name, vertical, photo, savedAt: Date.now() });
+    localStorage.setItem('huego_itinerary', JSON.stringify(saved));
+    if (btn) btn.classList.add('saved');
+    if (btnText) btnText.textContent = '✓ Đã Lưu Lịch Trình';
+  }
+
+  updateItineraryBadge();
+};
+
+function updateItineraryBadge() {
+  const badge = document.getElementById('itineraryBadge');
+  if (!badge) return;
+  const saved = JSON.parse(localStorage.getItem('huego_itinerary') || '[]');
+  badge.textContent = saved.length > 0 ? saved.length : '';
+}
+
+// 4. Floating AI Guide (Mệ Huế)
+window.toggleAiChat = function() {
+  const drawer = document.getElementById('aiChatDrawer');
+  if (!drawer) return;
+  drawer.classList.toggle('active');
+  if (drawer.classList.contains('active')) {
+    const input = document.getElementById('aiChatInput');
+    if (input) input.focus();
+  }
+};
+
+window.sendQuickPrompt = function(text) {
+  const input = document.getElementById('aiChatInput');
+  if (input) input.value = text;
+  sendAiMessage();
+};
+
+window.sendAiMessage = async function() {
+  const input = document.getElementById('aiChatInput');
+  const text = (input ? input.value : '').trim();
+  if (!text) return;
+
+  appendWebChatMsg('msg-user', text);
+  input.value = '';
+
+  const typingId = 'typing-' + Date.now();
+  appendTypingWebMsg(typingId);
+
+  try {
+    const res = await fetch('/api/v1/ai-guide/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: text, language: 'vi' })
+    });
+
+    removeTypingWebMsg(typingId);
+
+    if (res.ok) {
+      const data = await res.json();
+      appendWebChatMsg('msg-ai', data.answer || data.reply || 'Dạ Mệ đã ghi nhận lời người rồi nhen!');
+    } else {
+      appendWebChatMsg('msg-ai', 'Dạ Mệ nghe rồi nhen! Huế mình mùa này rất thơ, người muốn ghé quán cà phê muối hay đi dạo ngắm hoàng hôn trên cầu Tràng Tiền thì nói Mệ chỉ lối nghe!');
+    }
+  } catch (err) {
+    removeTypingWebMsg(typingId);
+    appendWebChatMsg('msg-ai', 'Dạ Mệ nghe rồi nhen! Huế mình mỗi tấc đất một tích sử thi vị, người muốn Mệ dẫn đường đi đâu hay ăn gì ngon cứ hỏi Mệ nghe!');
+  }
+};
+
+function appendWebChatMsg(cls, text) {
+  const container = document.getElementById('aiChatMessages');
+  if (!container) return;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-msg ' + cls;
+  
+  if (cls === 'msg-ai') {
+    // format bold & newline
+    let formatted = String(text)
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\\n/g, '<br/>')
+      .replace(/\n/g, '<br/>');
+    bubble.innerHTML = `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--primary);font-weight:800;font-size:0.8rem;"><span>👑</span><span>Mệ Huế AI Guide</span></div><div>${formatted}</div>`;
+  } else {
+    bubble.textContent = text;
+  }
+
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendTypingWebMsg(id) {
+  const container = document.getElementById('aiChatMessages');
+  if (!container) return;
+  const bubble = document.createElement('div');
+  bubble.id = id;
+  bubble.className = 'chat-msg msg-ai';
+  bubble.style.opacity = '0.7';
+  bubble.innerHTML = '<em>Mệ Huế đang soạn câu trả lời cho người nghe... ✍️</em>';
+  container.appendChild(bubble);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTypingWebMsg(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+// Khởi chạy bổ sung khi tải trang
+document.addEventListener('DOMContentLoaded', () => {
+  loadLiveWeather();
+  updateItineraryBadge();
+
+  // Enter trong ô input chat AI
+  const chatInput = document.getElementById('aiChatInput');
+  if (chatInput) {
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendAiMessage();
+    });
+  }
+});

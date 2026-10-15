@@ -97,6 +97,56 @@ const server = http.createServer((req, res) => {
   if (pathname.startsWith('/api/')) {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
+    // GET /api/v1/weather/hue-current
+    if (pathname === '/api/v1/weather/hue-current' || pathname === '/api/weather') {
+      res.writeHead(200);
+      res.end(JSON.stringify({
+        tempCelsius: 27,
+        condition: 'Clouds',
+        description: 'Trời thu Cố Đô dịu mát, thoáng đãng, rất thích hợp tham quan Đại Nội và ngắm sông Hương',
+        isRaining: false,
+        humidity: 75,
+        windSpeedKm: 12
+      }));
+      return;
+    }
+
+    // POST /api/v1/ai-guide/chat
+    if ((pathname === '/api/v1/ai-guide/chat' || pathname === '/api/chat') && req.method === 'POST') {
+      let bodyData = '';
+      req.on('data', chunk => { bodyData += chunk; });
+      req.on('end', () => {
+        try {
+          const parsed = JSON.parse(bodyData || '{}');
+          const q = (parsed.question || '').toLowerCase();
+          let answer = '';
+
+          if (q.includes('ăn vặt') || q.includes('hoàng thành') || q.includes('đại nội') || q.includes('bánh ép') || q.includes('chè')) {
+            answer = 'Dạ Mệ chào người nhen! Quanh khu vực Hoàng Thành (Đại Nội) là cả một thiên đường ăn vặt nổi tiếng của Cố Đô:\\n\\n1. **Bánh ép dẻo Nhật Lệ**: Ghé quán Bánh ép Cây Dừa (73 Nhật Lệ) hoặc quán Cây Điệp, bánh ép nóng hổi cuộn rau răm chấm mắm ớt tỏi chua ngọt siêu dính!\\n2. **Chè bột lọc bọc heo quay**: Quán Mợ Tôn Đích (20 Đinh Tiên Hoàng ngay cửa Thượng Tứ) — viên chè dai giòn bọc thịt heo quay mằn mặn ngọt bùi độc nhất vô nhị.\\n3. **Bánh tráng nướng bờ hồ Lê Huân**: Ngồi mát rượi ngắm hồ sen và tường thành rêu phong.\\n4. **Khay bánh bèo - nậm - lọc**: Ghé đường Đinh Tiên Hoàng hoặc kiệt 104 Kim Long dĩa bánh tôm cháy thơm phức nhen!';
+          } else if (q.includes('cà phê') || q.includes('cà phê muối') || q.includes('uống')) {
+            answer = 'Dạ, người muốn uống cà phê muối chuẩn vị thì ghé ngay số 10 Nguyễn Lương Định hoặc số 142 Đặng Thái Thân (sát vách Thành Nội) nghe! Lớp bọt kem mặn béo ngậy quyện cà phê đậm đà thơm ngát!';
+          } else if (q.includes('lăng') || q.includes('chiều') || q.includes('tham quan')) {
+            answer = 'Dạ nếu có 1 buổi chiều, Mệ khuyên người nên ghé **Lăng Tự Đức (Khiêm Lăng)** trước tiên! Nơi đây mang đúng hồn cốt trầm mặc, thi ca của xứ Huế với hồ sen Lưu Khiêm và rừng thông reo vi vu. Trên đường về, người tiện ghé check-in làng hương Thủy Xuân và ngắm hoàng hôn buông xuống trên Đồi Vọng Cảnh nhen!';
+          } else if (q.includes('tràng tiền') || q.includes('sông hương')) {
+            answer = 'Cầu Tràng Tiền 6 vài 12 nhịp bắc qua dòng Hương Giang thơ mộng. Tầm 17h chiều người dạo bước trên cầu ngắm hoàng hôn, rồi ghé phố đi bộ Nguyễn Đình Chiểu ăn bánh mì bột lọc Tràng Tiền thì tuyệt vời không chi bằng!';
+          } else {
+            answer = 'Dạ Mệ nghe người hỏi rồi nhen! Cố Đô Huế mỗi tấc đất một câu chuyện lịch sử, người muốn Mệ chỉ đường đi đâu, tìm quán ngon hay nghe giai thoại lăng tẩm cứ nhắn Mệ nghe!';
+          }
+
+          res.writeHead(200);
+          res.end(JSON.stringify({
+            answer,
+            source: 'huego-gemini',
+            timestamp: new Date().toISOString()
+          }));
+        } catch (e) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ error: 'Dữ liệu không hợp lệ' }));
+        }
+      });
+      return;
+    }
+
     // GET /api/heritage-sites
     if (pathname === '/api/heritage-sites') {
       res.writeHead(200);

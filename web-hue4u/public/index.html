@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khám phá Huế · Hue4U — Nền tảng Du lịch Thông minh Cố đô</title>
-  <meta name="description" content="Khám phá địa điểm du lịch Huế — di tích lịch sử, lăng tẩm hoàng gia, ẩm thực cố đô, lưu trú và quà lưu niệm.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d97706'><circle cx='12' cy='12' r='10'/></svg>">
+  <title>HUEGO — Nền tảng Du lịch Thông minh Cố Đô Huế · Di sản, AI & Bản đồ số</title>
+  <meta name="description" content="HUEGO - Nền tảng du lịch Cố Đô Huế thông minh: hơn 4.350 địa điểm di tích, ẩm thực, bảo tàng 3D và Trợ lý AI Mệ Huế bản địa.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23582c83'><circle cx='12' cy='12' r='10'/></svg>">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -14,8 +14,9 @@
     <!-- Sidebar Máy tính -->
     <aside class="sidebar" id="sidebar">
       <div class="brand-header">
-        <a href="/" class="brand-logo">
-          <span>Hue</span><span class="brand-badge">4U</span>
+        <a href="/" class="brand-logo" style="display:flex;align-items:center;gap:4px;text-decoration:none;">
+          <span style="font-size:1.6rem;font-weight:900;color:var(--primary);letter-spacing:1px;font-family:'Playfair Display',serif;">HUE</span>
+          <span class="brand-badge" style="background:var(--accent-gold);color:#1e1b4b;font-weight:900;padding:2px 8px;border-radius:8px;">GO</span>
         </a>
       </div>
 
@@ -65,17 +66,30 @@
           <input type="text" class="search-input" id="search-input" placeholder="Tìm kiếm địa điểm, di tích, món ngon, quán cà phê Huế..." autocomplete="off">
         </div>
 
-        <div class="top-bar-actions">
-          <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary); background: var(--primary-light); padding: 0.4rem 0.85rem; border-radius: 9999px;">
-            📍 Huế, Việt Nam
+        <div class="top-bar-actions" style="display:flex;align-items:center;gap:10px;">
+          <!-- Live Weather Badge -->
+          <div class="weather-badge" id="liveWeatherBadge">
+            <span class="weather-icon">⛅</span>
+            <span>Huế 27°C · Dịu mát</span>
           </div>
+
+          <!-- Lịch trình đã lưu -->
+          <a href="/simulator.html" class="btn-save-itinerary" style="text-decoration:none;" title="Xem các điểm trong lịch trình cá nhân">
+            <span>🔖 Lịch trình</span>
+            <span id="itineraryBadge" style="background:var(--primary);color:white;border-radius:9999px;padding:1px 6px;font-size:11px;font-weight:800;"></span>
+          </a>
+
+          <!-- App Mobile Shortcut -->
+          <a href="/simulator.html" style="font-size: 0.85rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 0.45rem 0.95rem; border-radius: 9999px; text-decoration:none; display:flex; align-items:center; gap:4px;">
+            <span>📱</span> <span>Mở App</span>
+          </a>
         </div>
       </header>
 
       <!-- Hero Banner -->
       <section class="hero-banner">
-        <h1 class="hero-title">Khám phá <span>Huế di sản</span> theo cách của bạn</h1>
-        <p class="hero-subtitle">Hơn 4.350 địa điểm được tuyển chọn: từ lăng tẩm hoàng gia triều Nguyễn, chùa cổ thiền môn, ẩm thực cung đình đến quán cà phê bờ sông Hương thơ mộng.</p>
+        <h1 class="hero-title">Khám phá <span>Cố Đô Huế</span> cùng Trợ lý HUEGO</h1>
+        <p class="hero-subtitle">Nền tảng du lịch thông minh kết hợp bản đồ số, bảo tàng 3D, thuyết minh audio và Trợ lý AI Mệ Huế bản địa am hiểu sâu sắc ẩm thực & lịch sử Cố Đô.</p>
       </section>
 
       <!-- Bộ lọc Danh mục Tabs -->
@@ -113,6 +127,49 @@
           <!-- Render tự động từ pagination -->
         </div>
       </section>
+
+      <!-- HUEGO Site Footer -->
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
+              <span style="font-size:1.6rem;font-weight:900;color:var(--accent-gold);font-family:'Playfair Display',serif;">HUE</span>
+              <span style="background:var(--accent-gold);color:#1E1B4B;font-weight:900;padding:2px 8px;border-radius:6px;font-size:14px;">GO</span>
+            </div>
+            <p>HUEGO — Nền tảng Du lịch Thông minh Cố Đô Huế. Kết nối di sản văn hóa ngàn năm với công nghệ Bản đồ số Geofencing, Bảo tàng 3D và Trợ lý AI Mệ Huế bản địa.</p>
+            <p style="color:var(--accent-gold);font-weight:700;font-size:0.85rem;">📞 Đường dây nóng du lịch Huế: 0234.3822288</p>
+          </div>
+          <div class="footer-col">
+            <h4>Khám Phá Di Sản</h4>
+            <ul class="footer-links">
+              <li><a href="/map.html">Bản đồ số 4.352 điểm</a></li>
+              <li><a href="/museum.html">Bảo tàng 10 cổ vật 3D</a></li>
+              <li><a href="/hue.html">Cẩm nang lịch trình Cố Đô</a></li>
+              <li><a href="/simulator.html">Mô phỏng 1 ngày ở Huế</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Dịch Vụ & Hỗ Trợ</h4>
+            <ul class="footer-links">
+              <li><a href="/essentials.html">Cứu hộ khẩn cấp 113/114/115</a></li>
+              <li><a href="/essentials.html#hospitals">Bệnh viện TW Huế</a></li>
+              <li><a href="/simulator.html">Tải Ứng dụng di động Huế Go</a></li>
+              <li><a href="https://github.com/hoangduong030405-art/Do_An_Khoi_Nghiep_-MST" target="_blank">Mã nguồn dự án GitHub</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Trợ Lý Du Lịch AI</h4>
+            <p>Trò chuyện 24/7 với Mệ Huế AI để được tư vấn quán ăn ngon, lộ trình di chuyển và giai thoại lịch sử theo thời tiết thực tế.</p>
+            <button onclick="toggleAiChat()" class="btn-primary" style="margin-top:8px;font-size:0.85rem;padding:0.6rem 1.2rem;">
+              <span>👑 Trò chuyện với Mệ Huế</span>
+            </button>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 HUEGO — Dự Án Khởi Nghiệp Đổi Mới Sáng Tạo Du Lịch Cố Đô Huế.</span>
+          <span>Bảo lưu mọi quyền · Phát triển vì Di sản Việt Nam</span>
+        </div>
+      </footer>
     </main>
   </div>
 
@@ -149,6 +206,53 @@
       <div id="modal-dynamic-content">
         <!-- Render nội dung chi tiết -->
       </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       HUEGO FLOATING AI GUIDE WIDGET (MỆ HUẾ 24/7)
+       ========================================================== -->
+  <button class="ai-fab-btn" onclick="toggleAiChat()" title="Hỏi Trợ lý Mệ Huế AI 24/7" aria-label="Trợ lý AI Mệ Huế">
+    <span>👑</span>
+    <span class="ai-fab-badge">AI</span>
+  </button>
+
+  <div class="ai-chat-drawer" id="aiChatDrawer">
+    <div class="ai-chat-header">
+      <div class="ai-header-info">
+        <div class="ai-header-avatar">👑</div>
+        <div>
+          <div class="ai-header-title">Mệ Huế (AI Guide)</div>
+          <div class="ai-header-sub">Trợ lý Cố Đô thông minh 24/7</div>
+        </div>
+      </div>
+      <button class="ai-chat-close-btn" onclick="toggleAiChat()" aria-label="Đóng chat">✕</button>
+    </div>
+
+    <div class="ai-chat-messages" id="aiChatMessages">
+      <div class="chat-msg msg-ai">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--primary);font-weight:800;font-size:0.8rem;">
+          <span>👑</span><span>Mệ Huế AI Guide</span>
+        </div>
+        <div>
+          Dạ Mệ chào quý khách nhen! Mệ là Trợ lý bản địa của <strong>HUEGO</strong>. Người muốn hỏi đường đi, tìm quán ăn ngon hay nghe giai thoại lịch sử chi ở Cố Đô cứ nói Mệ nghe!
+        </div>
+      </div>
+    </div>
+
+    <!-- Gợi ý câu hỏi nhanh -->
+    <div class="ai-quick-prompts">
+      <button class="quick-prompt-chip" onclick="sendQuickPrompt('Món ăn vặt nào ngon nhất quanh Hoàng Thành?')">🍜 Ăn vặt Đại Nội</button>
+      <button class="quick-prompt-chip" onclick="sendQuickPrompt('Nên đi lăng vua nào trước nếu chỉ có 1 buổi chiều?')">🏛️ Lăng tẩm 1 buổi</button>
+      <button class="quick-prompt-chip" onclick="sendQuickPrompt('Quán cà phê muối nào ngon và chuẩn vị nhất?')">☕ Cà phê muối</button>
+      <button class="quick-prompt-chip" onclick="sendQuickPrompt('Trời mưa Huế thì nên đi đâu chơi?')">🌧️ Lịch trình ngày mưa</button>
+    </div>
+
+    <div class="ai-chat-input-bar">
+      <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Hỏi Mệ Huế bất kỳ điều gì..." autocomplete="off">
+      <button class="ai-chat-send-btn" onclick="sendAiMessage()" aria-label="Gửi tin nhắn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
     </div>
   </div>
 
