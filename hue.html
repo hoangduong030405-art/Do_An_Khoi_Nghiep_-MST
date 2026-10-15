@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cẩm nang Du lịch Huế · Hue4U — Lịch trình 1-2-3 Ngày & Kinh nghiệm</title>
+  <meta name="description" content="Cẩm nang du lịch Huế toàn diện: gợi ý lịch trình 1, 2, 3 ngày chi tiết, các trải nghiệm ẩm thực, thời điểm lý tưởng và lưu ý khi tham quan Cố đô.">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .guide-page-layout {
+      padding: 2.5rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .guide-hero {
+      margin-bottom: 2.5rem;
+    }
+    .guide-hero-title {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .guide-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+    }
+    .itinerary-timeline {
+      position: relative;
+      padding-left: 24px;
+      margin-top: 1.25rem;
+      border-left: 2px solid var(--primary);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -31px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid var(--bg-surface);
+    }
+    .timeline-time {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+    .timeline-act {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+    .timeline-place {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1rem 0;
+      cursor: pointer;
+    }
+    .faq-q {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .faq-a {
+      margin-top: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .faq-item.open .faq-a {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <a href="/" class="brand-logo">
+          <span>Hue</span><span class="brand-badge">4U</span>
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="/" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
+          <span>Khám phá Huế</span>
+        </a>
+        <a href="/hue.html" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path></svg>
+          <span>Cẩm nang Huế</span>
+        </a>
+        <a href="/map.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+          <span>Bản đồ số Du lịch</span>
+        </a>
+        <a href="/museum.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
+          <span>Bảo tàng số 3D</span>
+        </a>
+        <a href="/simulator.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+          <span>Mô phỏng 1 ngày</span>
+        </a>
+        <a href="/essentials.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>Khẩn cấp & Hỗ trợ</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Guide Main Content -->
+    <main class="main-wrapper guide-page-layout">
+      <div class="guide-hero">
+        <h1 class="guide-hero-title">Cẩm nang Du lịch <span style="color: var(--primary);">Cố Đô Huế</span></h1>
+        <p style="color: var(--text-muted); font-size: 1.15rem; line-height: 1.6;">
+          Trọn bộ kinh nghiệm và lộ trình thiết kế tối ưu giúp bạn tận hưởng trọn vẹn văn hoá, ẩm thực và nhịp sống thanh bình xứ Huế.
+        </p>
+      </div>
+
+      <!-- Lịch trình 1 - 2 - 3 ngày -->
+      <h2 style="font-family: var(--font-serif); font-size: 1.75rem; margin-bottom: 1.25rem;">Nếu bạn có 1, 2 hoặc 3 ngày</h2>
+      <div id="itineraries-container">
+        <!-- Render động từ API /api/guides -->
+      </div>
+
+      <!-- Bí quyết du lịch -->
+      <h2 style="font-family: var(--font-serif); font-size: 1.75rem; margin-top: 2rem; margin-bottom: 1.25rem;">Trước khi lên đường</h2>
+      <div class="guide-card" id="tips-container">
+        <!-- Render tips -->
+      </div>
+
+      <!-- FAQ -->
+      <h2 style="font-family: var(--font-serif); font-size: 1.75rem; margin-top: 2rem; margin-bottom: 1.25rem;">Hỏi nhanh trước chuyến đi</h2>
+      <div class="guide-card">
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">
+            <span>Vé tham quan các di tích Huế mua ở đâu?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-a">
+            Bạn có thể mua vé trực tiếp tại quầy vé cổng Ngọ Môn (Đại Nội) hoặc quầy vé tại các lăng tẩm. Có bán vé tuyến gộp (Đại Nội + 3 lăng lớn: Khải Định, Tự Đức, Minh Mạng) với giá ưu đãi hơn mua lẻ.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">
+            <span>Nên đi Huế vào mùa nào đẹp nhất trong năm?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-a">
+            Thời điểm đẹp nhất là từ tháng 1 đến tháng 4 (mùa xuân nắng dịu mát, cây cối xanh tươi) và tháng 5 đến tháng 8 (mùa hè nắng rực rỡ, thích hợp tắm biển Thuận An, ngắm phá Tam Giang).
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">
+            <span>Đặc sản nào ở Huế mua về làm quà biếu ngon nhất?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-a">
+            Mè xửng Thiên Hương, kẹo cau, trà cung đình Huế, nem chả tré Huế, dầu tràm Lộc Thủy và tôm chua Trọng Tín.
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Bar -->
+  <nav class="mobile-nav">
+    <a href="/" class="mobile-nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
+      <span>Khám phá</span>
+    </a>
+    <a href="/map.html" class="mobile-nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon></svg>
+      <span>Bản đồ</span>
+    </a>
+    <a href="/museum.html" class="mobile-nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
+      <span>Bảo tàng 3D</span>
+    </a>
+    <a href="/hue.html" class="mobile-nav-item active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path></svg>
+      <span>Cẩm nang</span>
+    </a>
+  </nav>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/guides');
+        const data = await res.json();
+
+        // Render lịch trình
+        const itinContainer = document.getElementById('itineraries-container');
+        if (itinContainer && data.itineraries) {
+          itinContainer.innerHTML = data.itineraries.map(it => `
+            <div class="guide-card">
+              <h3 style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--primary); margin-bottom: 0.35rem;">${it.title}</h3>
+              <p style="color: var(--text-muted); font-size: 0.95rem;">${it.description}</p>
+              <div class="itinerary-timeline">
+                ${it.schedule.map(s => `
+                  <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-time">${s.time}</div>
+                    <div class="timeline-act">${s.activity}</div>
+                    <div class="timeline-place">📍 ${s.place}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // Render tips
+        const tipsContainer = document.getElementById('tips-container');
+        if (tipsContainer && data.tips) {
+          tipsContainer.innerHTML = data.tips.map(t => `
+            <div style="margin-bottom: 1.25rem;">
+              <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-main);">✨ ${t.title}</h4>
+              <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">${t.content}</p>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error('Error loading guides:', e);
+      }
+    });
+  </script>
+</body>
+</html>
