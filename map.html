@@ -512,7 +512,8 @@
     // Tải 30 Di sản và 6 Cụm Di tích
     async function loadHeritageSites() {
       try {
-        const res = await fetch('/api/heritage-sites');
+        let res = await fetch('/api/heritage-sites');
+        if (!res.ok) res = await fetch('./data/heritage_30_sites.json');
         allHeritageZones = await res.json();
         renderZonesList();
       } catch (e) {
@@ -523,8 +524,23 @@
     // Tải toàn bộ 4.352 điểm toạ độ và marker cluster
     async function loadAllMapPoints() {
       try {
-        const res = await fetch('/api/map-points');
-        allMapPoints = await res.json();
+        let res = await fetch('/api/map-points');
+        if (!res.ok) res = await fetch('./data/places_all.json');
+        const raw = await res.json();
+        if (raw.length > 0 && raw[0].address !== undefined) {
+          allMapPoints = raw.filter(p => p.lat && p.lng).map(p => ({
+            id: p.id,
+            name: p.name_vi || p.name,
+            lat: p.lat,
+            lng: p.lng,
+            v: p.vertical,
+            cat: Array.isArray(p.subcategory) ? p.subcategory[0] : (p.category || p.vertical),
+            r: p.googleRating,
+            img: p.coverPhotoUrl
+          }));
+        } else {
+          allMapPoints = raw;
+        }
         renderMapMarkers();
       } catch (e) {
         console.error('Error loading map points:', e);

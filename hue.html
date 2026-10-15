@@ -207,7 +207,8 @@
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        const res = await fetch('/api/guides');
+        let res = await fetch('/api/guides');
+        if (!res.ok) res = await fetch('./data/travel_guides.json');
         const data = await res.json();
 
         // Render lịch trình
