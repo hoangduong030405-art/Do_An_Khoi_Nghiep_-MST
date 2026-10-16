@@ -98,14 +98,15 @@ export class WeatherService implements OnModuleInit, OnModuleDestroy {
     }
 
     const apiKey = process.env.OPENWEATHER_API_KEY;
-    const isKeyMissing = !apiKey || apiKey === 'your_openweather_api_key_here';
+    const isKeyMissing = !apiKey || apiKey.trim() === '' || apiKey === 'your_openweather_api_key_here';
 
     let newData: WeatherCondition | null = null;
+    let apiErrorCode: number | string | null = null;
 
     if (!isKeyMissing) {
       try {
         const url = `https://api.openweathermap.org/data/2.5/weather?lat=${roundedLat}&lon=${roundedLng}&appid=${apiKey}&units=metric&lang=vi`;
-        const response = await axios.get(url);
+        const response = await axios.get(url, { timeout: 5000 });
         const data = response.data;
 
         const mainCondition = data.weather[0].main;
@@ -129,32 +130,46 @@ export class WeatherService implements OnModuleInit, OnModuleDestroy {
           humidity: data.main.humidity,
           recommendation,
         };
-      } catch (error) {
-        this.logger.warn(`Lỗi lấy thời tiết live: ${error.message}`);
+      } catch (error: any) {
+        apiErrorCode = error.response?.status || 'NETWORK_ERROR';
+        this.logger.warn(`Lỗi gọi OpenWeatherMap API: HTTP status ${apiErrorCode} - ${error.response?.data?.message || error.message}`);
       }
     } else {
-      this.logger.warn(`Thiếu API Key OpenWeatherMap. Không thể lấy dữ liệu live.`);
+      this.logger.warn('Chưa cấu hình OPENWEATHER_API_KEY trong file .env hoặc biến môi trường.');
     }
 
     if (newData) {
       await this.setCache(cacheKey, newData, now);
-      return { ...newData, source: 'live' };
+      return { ...newData, source: 'live', stale: false };
     }
 
-    // Fallback: nếu lỗi hoặc thiếu khóa
+    // Fallback: nếu lỗi hoặc thiếu khóa nhưng có cache cũ
     if (cached) {
       return { ...cached.data, source: 'stale', stale: true };
     }
 
-    // Không có cache, báo "không rõ"
+    if (isKeyMissing) {
+      return {
+        condition: 'no_key',
+        description: 'Chưa kết nối dữ liệu thời tiết',
+        tempCelsius: 0,
+        isRaining: false,
+        isExtremelyHot: false,
+        humidity: 0,
+        recommendation: 'Chưa cấu hình OPENWEATHER_API_KEY trong file backend/.env để kích hoạt dữ liệu thời tiết trạm khí tượng Huế theo thời gian thực.',
+        source: 'stale',
+        stale: true,
+      };
+    }
+
     return {
       condition: 'Unknown',
-      description: 'Trạng thái không rõ',
+      description: `Lỗi kết nối trạm thời tiết (${apiErrorCode})`,
       tempCelsius: 0,
       isRaining: false,
       isExtremelyHot: false,
       humidity: 0,
-      recommendation: 'Không thể lấy thông tin thời tiết lúc này.',
+      recommendation: `Không thể kết nối đến trạm khí tượng OpenWeatherMap (${apiErrorCode}).`,
       source: 'stale',
       stale: true,
     };

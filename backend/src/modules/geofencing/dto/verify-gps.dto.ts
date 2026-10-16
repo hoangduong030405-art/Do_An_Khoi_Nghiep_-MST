@@ -44,4 +44,13 @@ export class VerifyGpsDto {
     required: false,
   })
   itineraryId?: string;
+
+  @ApiProperty({
+    description: 'ID hoặc slug của địa danh cụ thể muốn mở khóa khi đứng trong vùng chồng lấn (Tùy chọn)',
+    example: 'dai-noi-hue',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  placeId?: string;
 }

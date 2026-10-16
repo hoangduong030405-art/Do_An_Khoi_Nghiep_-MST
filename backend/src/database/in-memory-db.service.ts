@@ -463,7 +463,7 @@ export class InMemoryDbService {
       geofenceRadiusMeters: 20,
       environmentType: 'OUTDOOR',
       ticketPriceVnd: 0,
-      greenRewardPoints: 10,
+      greenRewardPoints: 0,
       thumbnailUrl: 'https://images.unsplash.com/photo-1545459720-aac8509eb02c',
     },
   ];

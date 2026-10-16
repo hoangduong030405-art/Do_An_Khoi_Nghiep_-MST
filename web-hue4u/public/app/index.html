@@ -2630,27 +2630,35 @@
       const simBtn = document.getElementById('rainSimBtn');
       if (!banner) return;
 
+      const isNoKey = liveWeather && liveWeather.condition === 'no_key';
       const isRaining = isSimulatingRain || (liveWeather && liveWeather.isRaining);
       const isHot = liveWeather && liveWeather.isExtremelyHot;
-      const isStale = liveWeather && (liveWeather.stale || liveWeather.source === 'stale');
+      const isStale = liveWeather && (liveWeather.stale || liveWeather.source === 'stale') && !isNoKey;
 
       if (simBtn) {
-        simBtn.innerText = isSimulatingRain ? '🌧️ Mưa: BẬT' : '🌧️ Mưa: TẮT';
+        simBtn.innerText = isSimulatingRain ? '🌧️ Giả lập Mưa (Demo): BẬT' : '🌧️ Giả lập Mưa (Demo): TẮT';
         simBtn.style.background = isSimulatingRain ? '#0284C7' : '#475569';
+      }
+
+      if (isNoKey && !isSimulatingRain) {
+        if (icon) icon.innerText = '📡';
+        if (title) title.innerText = 'Chưa kết nối dữ liệu thời tiết';
+        if (desc) desc.innerText = 'Cần cấu hình OPENWEATHER_API_KEY để lấy thời tiết trạm thật. Dùng nút Giả lập Mưa để xem demo thích ứng.';
+        return;
       }
 
       const staleTag = isStale ? ' (Dữ liệu cũ)' : '';
       if (isRaining) {
         if (icon) icon.innerText = '🌧️';
-        if (title) title.innerText = `Mưa Cố Đô • ${liveWeather ? liveWeather.tempCelsius : 24.5}°C${staleTag}`;
-        if (desc) desc.innerText = 'Gợi ý: Tránh ướt, chuyển sang tham quan không gian Trong Nhà';
+        if (title) title.innerText = `Mưa Cố Đô • ${liveWeather && liveWeather.tempCelsius ? liveWeather.tempCelsius : 24.5}°C${staleTag}`;
+        if (desc) desc.innerText = isSimulatingRain ? '[Đang chạy giả lập trình diễn] Khuyến nghị chuyển sang tham quan không gian Trong Nhà' : 'Gợi ý: Tránh ướt, chuyển sang tham quan không gian Trong Nhà';
       } else if (isHot) {
         if (icon) icon.innerText = '☀️';
-        if (title) title.innerText = `Nắng nóng gay gắt • ${liveWeather ? liveWeather.tempCelsius : 38}°C${staleTag}`;
+        if (title) title.innerText = `Nắng nóng gay gắt • ${liveWeather && liveWeather.tempCelsius ? liveWeather.tempCelsius : 38}°C${staleTag}`;
         if (desc) desc.innerText = 'Gợi ý: Tránh nắng, chuyển sang không gian Trong Nhà & Cafe';
       } else {
         if (icon) icon.innerText = '⛅';
-        if (title) title.innerText = `Huế ${liveWeather ? liveWeather.tempCelsius : 27}°C • Dịu mát${staleTag}`;
+        if (title) title.innerText = `Huế ${liveWeather && liveWeather.tempCelsius ? liveWeather.tempCelsius : 27}°C • Dịu mát${staleTag}`;
         if (desc) desc.innerText = 'Thời tiết thuận lợi cho các hoạt động di sản ngoài trời';
       }
     }

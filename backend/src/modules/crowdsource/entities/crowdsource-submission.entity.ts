@@ -26,6 +26,15 @@ export class CrowdsourceSubmission {
   @Column({ default: 'PENDING' })
   status: string;
 
+  @Column({ nullable: true })
+  imageUrl?: string;
+
+  @Column({ nullable: true })
+  environmentType?: string;
+
+  @Column({ nullable: true, type: 'int' })
+  pointsAwarded?: number;
+
   @CreateDateColumn()
   submittedAt: Date;
 }

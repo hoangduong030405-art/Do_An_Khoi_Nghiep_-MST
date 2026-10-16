@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Place } from '../places/entities/place.entity';
@@ -37,7 +37,7 @@ export class GamificationService {
       stats: { totalUnlockedPlaces: unlocked, totalSystemPlaces: totalPlaces, progressPercent },
       badges,
       unlockedPlaces: unlockedList,
-      canGenerateCertificate: unlocked >= 3 || points >= 60,
+      canGenerateCertificate: unlocked >= 3 && points >= 60,
       pointsToNextCertificate: Math.max(0, 60 - points),
     };
   }
@@ -47,8 +47,8 @@ export class GamificationService {
     let userPoints = await this.pointsRepo.findOne({ where: { userId } });
     const points = userPoints ? userPoints.points : 0;
 
-    if (unlockedList.length < 3 && points < 60) {
-      throw new BadRequestException('Bạn cần mở khóa tối thiểu 3 địa danh hoặc đạt 60 Green Points để nhận Chứng nhận E-Certificate Du Lịch Xanh.');
+    if (unlockedList.length < 3 || points < 60) {
+      throw new BadRequestException('Bạn cần mở khóa tối thiểu 3 địa danh VÀ đạt ít nhất 60 Green Points để nhận Chứng nhận E-Certificate Du Lịch Xanh.');
     }
 
     let existingCert = await this.certRepo.findOne({ where: { userId } });
@@ -61,12 +61,13 @@ export class GamificationService {
         greenPoints: existingCert.greenPoints,
         issuedDate: existingCert.issuedAt ? existingCert.issuedAt.toISOString() : new Date().toISOString(),
         verificationUrl: `/verify/${existingCert.code}`,
+        pdfUrl: `/api/v1/gamification/certificate/${existingCert.code}/pdf`,
         isExisting: true,
       };
     }
 
     const secret = process.env.JWT_SECRET || 'huego_secure_secret_cert_2026';
-    const randPart = crypto.randomBytes(4).toString('hex').toUpperCase();
+    const randPart = crypto.randomBytes(8).toString('hex').toUpperCase(); // 16 ký tự hex ngẫu nhiên
     const hmacSig = crypto.createHmac('sha256', secret).update(userId + ':' + Date.now()).digest('hex');
     const certCode = `HUEGO-CERT-${randPart}-${hmacSig.substring(0, 8).toUpperCase()}`;
 
@@ -89,6 +90,7 @@ export class GamificationService {
       greenPoints: newCert.greenPoints,
       issuedDate: newCert.issuedAt ? newCert.issuedAt.toISOString() : new Date().toISOString(),
       verificationUrl: `/verify/${certCode}`,
+      pdfUrl: `/api/v1/gamification/certificate/${certCode}/pdf`,
       message: 'Chúc mừng bạn đã nhận Chứng nhận E-Certificate Du Lịch Xanh!',
     };
   }
@@ -101,14 +103,29 @@ export class GamificationService {
     return {
       valid: true,
       certificateCode: cert.code,
+      code: cert.code,
       recipientName: cert.recipientName,
       title: cert.title,
-      unlockedCount: cert.unlockedCount,
-      greenPoints: cert.greenPoints,
       issuedDate: cert.issuedAt,
-      verifiedAt: new Date().toISOString(),
-      issuer: 'Sở Du Lịch & Nền Tảng HUEGO Cố Đô',
     };
+  }
+
+  async generateCertificatePdfBuffer(code: string): Promise<Buffer> {
+    const { generateCertificatePdf } = require('./pdf-certificate.helper');
+    const cert = await this.certRepo.findOne({ where: { code } });
+    if (!cert) {
+      throw new NotFoundException('Không tìm thấy chứng nhận tương ứng.');
+    }
+    const unlocks = await this.unlockRepo.find({ where: { userId: cert.userId } });
+    return generateCertificatePdf({
+      recipientName: cert.recipientName,
+      title: cert.title,
+      certCode: cert.code,
+      points: cert.greenPoints,
+      unlockedCount: cert.unlockedCount,
+      places: unlocks.map(u => ({ name: u.placeId, pointsAwarded: u.pointsAwarded })),
+      issuedDate: cert.issuedAt ? cert.issuedAt.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    });
   }
 }
 

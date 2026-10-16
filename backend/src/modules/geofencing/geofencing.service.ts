@@ -132,7 +132,24 @@ export class GeofencingService {
     this.logger.log(`Tín hiệu GPS nhận được: User=${userId}, Lat=${latitude}, Lng=${longitude}, Acc=${accuracy}`);
 
     const places = await this.placeRepo.find();
-    
+
+    // 1. Nếu client chỉ định rõ placeId (người dùng chọn từ danh sách hoặc chỉ định cụ thể)
+    if (dto.placeId) {
+      const targetPlace = places.find(p => p.id === dto.placeId || p.slug === dto.placeId);
+      if (!targetPlace) {
+        return { unlocked: false, message: 'Địa danh yêu cầu không tồn tại trong hệ thống.' };
+      }
+      const distance = this.calculateDistanceMeters(latitude, longitude, targetPlace.latitude, targetPlace.longitude);
+      const distRounded = Math.round(distance * 10) / 10;
+      if (distRounded > targetPlace.geofenceRadiusMeters) {
+        const msg = `Bạn đang cách [${targetPlace.name}] ${Math.round(distance)}m, nằm ngoài bán kính mở khóa (${targetPlace.geofenceRadiusMeters}m).`;
+        await this.recordAudit(userId, targetPlace.id, 'OUT_OF_RANGE', msg, latitude, longitude, accuracy);
+        return { unlocked: false, message: msg };
+      }
+      return this.processUnlock(userId, targetPlace, distRounded, latitude, longitude, accuracy);
+    }
+
+    // 2. Nếu không truyền placeId: tìm tất cả địa danh trong bán kính
     const matchedPlaces = places.map((p) => {
       const distance = this.calculateDistanceMeters(latitude, longitude, p.latitude, p.longitude);
       return { ...p, distanceMeters: Math.round(distance * 10) / 10 };
@@ -141,13 +158,52 @@ export class GeofencingService {
     .sort((a, b) => a.distanceMeters - b.distanceMeters);
 
     if (matchedPlaces.length === 0) {
-      const msg = 'Bạn chưa vào đủ gần bán kính mở khóa của bất kỳ di tích nào (yêu cầu <= 35m).';
+      const msg = 'Bạn chưa vào đủ gần bán kính mở khóa của bất kỳ di tích nào.';
       await this.recordAudit(userId, null, 'OUT_OF_RANGE', msg, latitude, longitude, accuracy);
       return { unlocked: false, message: msg };
     }
 
-    const place = matchedPlaces[0];
-    return this.processUnlock(userId, place, place.distanceMeters, latitude, longitude, accuracy);
+    // Lọc bỏ các địa danh người dùng đã mở khóa trước đó
+    let userUnlocks: UserUnlock[] = [];
+    if (this.unlockRepo && typeof this.unlockRepo.find === 'function') {
+      userUnlocks = await this.unlockRepo.find({ where: { userId } });
+    }
+    const unlockedIds = new Set(userUnlocks.map(u => u.placeId));
+    const availablePlaces = matchedPlaces.filter(p => !unlockedIds.has(p.id) && !unlockedIds.has(p.slug));
+
+    if (availablePlaces.length === 0) {
+      const msg = matchedPlaces.length === 1
+        ? `Bạn đã từng mở khóa và nhận điểm tại [${matchedPlaces[0].name}] trước đó rồi.`
+        : `Bạn đã từng mở khóa tất cả các địa danh [${matchedPlaces.map(p => p.name).join(', ')}] trong khu vực này trước đó rồi.`;
+      return {
+        unlocked: false,
+        message: msg,
+        alreadyUnlocked: matchedPlaces.map(p => ({ id: p.id, name: p.name })),
+      };
+    }
+
+    // Nếu chỉ có đúng 1 địa danh chưa mở khóa trong bán kính: tự động mở khóa
+    if (availablePlaces.length === 1) {
+      const place = availablePlaces[0];
+      return this.processUnlock(userId, place, place.distanceMeters, latitude, longitude, accuracy);
+    }
+
+    // Nếu có từ 2 địa danh chưa mở khóa trở lên (vùng chồng lấn như Đại Nội và Điện Thái Hòa):
+    // Trả về danh sách để client hiển thị cho người dùng chọn, KHÔNG tự ý chọn
+    return {
+      unlocked: false,
+      requiresSelection: true,
+      message: `Phát hiện ${availablePlaces.length} địa danh đủ điều kiện mở khóa quanh tọa độ của bạn. Vui lòng chọn địa danh muốn check-in.`,
+      eligiblePlaces: availablePlaces.map(p => ({
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        rewardPoints: p.greenRewardPoints,
+        distanceMeters: p.distanceMeters,
+        geofenceRadiusMeters: p.geofenceRadiusMeters,
+        thumbnailUrl: p.thumbnailUrl,
+      })),
+    };
   }
 
   private async unlockByQrToken(userId: string, qrToken: string) {
@@ -262,5 +318,33 @@ export class GeofencingService {
 
   async getUserUnlockedHistory(userId: string) {
     return this.unlockRepo.find({ where: { userId } });
+  }
+
+  async getNearbyPlaces(userId: string, lat: number, lng: number, maxRadiusMeters: number = 1000) {
+    if (isNaN(lat) || isNaN(lng)) return [];
+    const places = await this.placeRepo.find();
+    let unlockedIds = new Set<string>();
+    if (userId && this.unlockRepo && typeof this.unlockRepo.find === 'function') {
+      const unlocks = await this.unlockRepo.find({ where: { userId } });
+      unlockedIds = new Set(unlocks.map(u => u.placeId));
+    }
+    return places.map(p => {
+      const distance = this.calculateDistanceMeters(lat, lng, p.latitude, p.longitude);
+      const distRounded = Math.round(distance * 10) / 10;
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        categoryName: p.categoryName,
+        thumbnailUrl: p.thumbnailUrl,
+        rewardPoints: p.greenRewardPoints,
+        geofenceRadiusMeters: p.geofenceRadiusMeters,
+        distanceMeters: distRounded,
+        canUnlock: distRounded <= p.geofenceRadiusMeters,
+        isUnlocked: unlockedIds.has(p.id) || unlockedIds.has(p.slug),
+      };
+    })
+    .filter(p => p.distanceMeters <= maxRadiusMeters)
+    .sort((a, b) => a.distanceMeters - b.distanceMeters);
   }
 }

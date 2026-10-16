@@ -1,5 +1,7 @@
-import { Controller, Get, Param, Post, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Param, Post, Res, ForbiddenException, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Response } from 'express';
 import { GamificationService } from './gamification.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
@@ -34,9 +36,21 @@ export class GamificationController {
   }
 
   @Public()
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Get('verify/:code')
   @ApiOperation({ summary: 'Tra cứu và xác thực tính hợp lệ của Chứng nhận E-Certificate' })
   async verifyCertificate(@Param('code') code: string) {
     return await this.gamificationService.verifyCertificate(code);
+  }
+
+  @Public()
+  @Get('certificate/:code/pdf')
+  @ApiOperation({ summary: 'Tải Chứng nhận E-Certificate định dạng PDF chính thức' })
+  async downloadCertificatePdf(@Param('code') code: string, @Res() res: Response) {
+    const pdfBuffer = await this.gamificationService.generateCertificatePdfBuffer(code);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${code}.pdf"`);
+    res.send(pdfBuffer);
   }
 }

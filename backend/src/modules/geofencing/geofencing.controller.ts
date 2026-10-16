@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, ForbiddenException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, ForbiddenException, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { UserThrottlerGuard } from './guards/user-throttler.guard';
@@ -11,6 +11,17 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 @UseGuards(UserThrottlerGuard)
 export class GeofencingController {
   constructor(private readonly geofencingService: GeofencingService) {}
+
+  @Get('nearby')
+  @ApiOperation({ summary: 'Lấy danh sách các địa danh quanh tọa độ hiện tại kèm khoảng cách' })
+  async getNearby(
+    @CurrentUser() user: any,
+    @Query('lat') lat: number,
+    @Query('lng') lng: number,
+    @Query('radius') radius?: number,
+  ) {
+    return await this.geofencingService.getNearbyPlaces(user?.id, Number(lat), Number(lng), radius ? Number(radius) : 1000);
+  }
 
   @Post('unlock')
   @Throttle({ default: { limit: 10, ttl: 60000 } })
