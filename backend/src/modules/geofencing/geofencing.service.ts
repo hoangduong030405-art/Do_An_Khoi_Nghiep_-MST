@@ -249,9 +249,12 @@ export class GeofencingService {
     acc?: number,
   ) {
     // Kiểm tra giới hạn điểm cộng tối đa trong ngày (MAX_DAILY_GREEN_POINTS)
-    const MAX_DAILY = parseInt(process.env.MAX_DAILY_GREEN_POINTS || '300', 10);
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
+    // Tính theo múi giờ Asia/Ho_Chi_Minh (UTC+7)
+    const MAX_DAILY = parseInt(process.env.MAX_DAILY_GREEN_POINTS || '500', 10);
+    const VIETNAM_OFFSET_MS = 7 * 60 * 60 * 1000;
+    const now = new Date();
+    const vnTime = new Date(now.getTime() + VIETNAM_OFFSET_MS);
+    const startOfDay = new Date(Date.UTC(vnTime.getUTCFullYear(), vnTime.getUTCMonth(), vnTime.getUTCDate(), 0, 0, 0) - VIETNAM_OFFSET_MS);
 
     let todayUnlocks: UserUnlock[] = [];
     if (this.unlockRepo && typeof this.unlockRepo.createQueryBuilder === 'function') {
@@ -264,7 +267,7 @@ export class GeofencingService {
 
     const currentDailyPoints = todayUnlocks.reduce((sum, u) => sum + (u.pointsAwarded || 0), 0);
     if (currentDailyPoints + place.greenRewardPoints > MAX_DAILY) {
-      const msg = `Bạn đã đạt giới hạn tối đa điểm tích lũy trong ngày (${MAX_DAILY} điểm/ngày). Hôm nay bạn đã nhận ${currentDailyPoints} điểm.`;
+      const msg = `Hôm nay bạn đã nhận ${currentDailyPoints}/${MAX_DAILY} điểm, mở khóa này sẽ vượt giới hạn (${place.greenRewardPoints} điểm).`;
       await this.recordAudit(userId, place.id, 'DAILY_LIMIT_EXCEEDED', msg, lat, lng, acc);
       return { unlocked: false, message: msg };
     }

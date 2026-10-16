@@ -117,13 +117,26 @@ export class GamificationService {
       throw new NotFoundException('Không tìm thấy chứng nhận tương ứng.');
     }
     const unlocks = await this.unlockRepo.find({ where: { userId: cert.userId } });
-    return generateCertificatePdf({
+    const placeIds = unlocks.map(u => u.placeId);
+    let placeMap: Record<string, string> = {};
+    if (this.placeRepo && placeIds.length > 0) {
+      const places = await this.placeRepo.find();
+      places.forEach(p => {
+        placeMap[p.id] = p.name;
+        placeMap[p.slug] = p.name;
+      });
+    }
+
+    return await generateCertificatePdf({
       recipientName: cert.recipientName,
       title: cert.title,
       certCode: cert.code,
       points: cert.greenPoints,
       unlockedCount: cert.unlockedCount,
-      places: unlocks.map(u => ({ name: u.placeId, pointsAwarded: u.pointsAwarded })),
+      places: unlocks.map(u => ({ 
+        name: placeMap[u.placeId] || u.placeId, 
+        pointsAwarded: u.pointsAwarded 
+      })),
       issuedDate: cert.issuedAt ? cert.issuedAt.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     });
   }

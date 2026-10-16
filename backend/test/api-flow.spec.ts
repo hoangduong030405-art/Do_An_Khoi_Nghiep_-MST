@@ -1,16 +1,21 @@
 import axios from 'axios';
 import { Pool } from 'pg';
+import * as FormData from 'form-data';
 
-describe('API Flow Test (Sử dụng DB thật)', () => {
+describe('API Flow Test (Sử dụng PostgreSQL thật)', () => {
   const baseURL = 'http://localhost:3000/api/v1';
   let token = '';
   let pool: Pool;
   let place: any;
+  let placeB: any;
 
   beforeAll(async () => {
     pool = new Pool({ connectionString: 'postgres://postgres:huego_secure_password_2026@localhost:5432/huego_db' });
-    const placeRes = await pool.query(`SELECT id, latitude, longitude, name FROM places WHERE name LIKE '%Thiên Mụ%' LIMIT 1`);
+    const placeRes = await pool.query(`SELECT id, latitude, longitude, name, "geofenceRadiusMeters" FROM places WHERE slug = 'chua-thien-mu' OR name LIKE '%Thiên Mụ%' LIMIT 1`);
     place = placeRes.rows[0];
+
+    const placeBRes = await pool.query(`SELECT id, latitude, longitude, name FROM places WHERE id != $1 LIMIT 1`, [place.id]);
+    placeB = placeBRes.rows[0];
   });
 
   afterAll(async () => {
@@ -29,7 +34,9 @@ describe('API Flow Test (Sử dụng DB thật)', () => {
     const headers = { Authorization: 'Bearer ' + token };
     const unlockRes = await axios.post(`${baseURL}/geofencing/unlock`, {
       latitude: place.latitude + 0.0001,
-      longitude: place.longitude
+      longitude: place.longitude,
+      placeId: place.id,
+      accuracy: 10,
     }, { headers });
     expect(unlockRes.status).toBe(201);
     expect(unlockRes.data.unlocked).toBe(true);
@@ -40,7 +47,9 @@ describe('API Flow Test (Sử dụng DB thật)', () => {
     const headers = { Authorization: 'Bearer ' + token };
     const unlockRes = await axios.post(`${baseURL}/geofencing/unlock`, {
       latitude: place.latitude + 0.0001,
-      longitude: place.longitude
+      longitude: place.longitude,
+      placeId: place.id,
+      accuracy: 10,
     }, { headers });
     expect(unlockRes.status).toBe(201);
     expect(unlockRes.data.unlocked).toBe(false);
@@ -66,16 +75,13 @@ describe('API Flow Test (Sử dụng DB thật)', () => {
   });
 
   it('6. Bảo vệ IDOR: User B không đọc được hồ sơ của User A qua /gamification/profile/:userId', async () => {
-    // 1. Get User A's ID
     const userARes = await axios.get(`${baseURL}/auth/me`, { headers: { Authorization: 'Bearer ' + token } });
     const userAId = userARes.data.id;
 
-    // 2. Register User B
     const emailB = 'test.userb.' + Date.now() + '@huego.vn';
     const resB = await axios.post(`${baseURL}/auth/register`, { email: emailB, password: 'Password123!', fullName: 'User B' });
     const tokenB = resB.data.accessToken;
 
-    // 3. User B tries to read User A's gamification profile -> Expect 403 Forbidden
     try {
       await axios.get(`${baseURL}/gamification/profile/${userAId}`, {
         headers: { Authorization: 'Bearer ' + tokenB }
@@ -117,21 +123,37 @@ describe('API Flow Test (Sử dụng DB thật)', () => {
     }
   });
 
-  it('8. Kiểm tra trần tối đa 300 điểm/ngày: Mở khóa vượt trần bị từ chối', async () => {
-    // 1. Tạo user riêng để test trần điểm
+  it('8. Ranh giới múi giờ Việt Nam (Asia/Ho_Chi_Minh) & Trần 500 điểm/ngày', async () => {
     const emailCap = 'test.dailycap.' + Date.now() + '@huego.vn';
     const resCap = await axios.post(`${baseURL}/auth/register`, { email: emailCap, password: 'Password123!', fullName: 'User Cap' });
     const tokenCap = resCap.data.accessToken;
     const userIdCap = resCap.data.user.id;
     const headers = { Authorization: 'Bearer ' + tokenCap };
 
-    // 2. Chèn sẵn 290 điểm hôm nay vào bảng user_unlocks
+    // Điểm ngày hôm qua (23:30 giờ VN) không được tính vào trần hôm nay
+    const VIETNAM_OFFSET_MS = 7 * 60 * 60 * 1000;
+    const now = new Date();
+    const vnNow = new Date(now.getTime() + VIETNAM_OFFSET_MS);
+    // Hôm qua 23:30 giờ VN
+    const yesterdayVN = new Date(Date.UTC(vnNow.getUTCFullYear(), vnNow.getUTCMonth(), vnNow.getUTCDate() - 1, 16, 30, 0)); // 16:30 UTC = 23:30 VN
+
+    const dummyPlaceRes = await pool.query(`SELECT id, latitude, longitude, "greenRewardPoints" FROM places WHERE id != $1 AND id != $2 LIMIT 2`, [place.id, placeB.id]);
+    const placeC = dummyPlaceRes.rows[0];
+    const placeD = dummyPlaceRes.rows[1];
+
     await pool.query(`
       INSERT INTO user_unlocks ("id", "userId", "placeId", "pointsAwarded", "distanceMeters", "unlockedAt")
-      VALUES (uuid_generate_v4(), $1, 'mock-cap-place-1', 290, 10, NOW());
-    `, [userIdCap]);
+      VALUES (uuid_generate_v4(), $1, $2, 450, 10, $3);
+    `, [userIdCap, placeC.id, yesterdayVN]);
 
-    // 3. Cố gắng mở khóa một địa danh 50 điểm -> Tổng vượt 300 điểm -> Bị từ chối
+    // Chèn 480 điểm vào hôm nay (01:00 sáng giờ VN)
+    const todayVN = new Date(Date.UTC(vnNow.getUTCFullYear(), vnNow.getUTCMonth(), vnNow.getUTCDate(), 1, 0, 0) - VIETNAM_OFFSET_MS);
+    await pool.query(`
+      INSERT INTO user_unlocks ("id", "userId", "placeId", "pointsAwarded", "distanceMeters", "unlockedAt")
+      VALUES (uuid_generate_v4(), $1, $2, 480, 10, $3);
+    `, [userIdCap, placeD.id, todayVN]);
+
+    // Mở khóa địa danh 50 điểm -> Vượt quá 500 điểm/ngày
     const resUnlock = await axios.post(`${baseURL}/geofencing/unlock`, {
       latitude: place.latitude + 0.0001,
       longitude: place.longitude,
@@ -141,6 +163,38 @@ describe('API Flow Test (Sử dụng DB thật)', () => {
 
     expect(resUnlock.status).toBe(201);
     expect(resUnlock.data.unlocked).toBe(false);
-    expect(resUnlock.data.message).toContain('giới hạn tối đa điểm tích lũy trong ngày');
+    expect(resUnlock.data.message).toContain('Hôm nay bạn đã nhận 480/500 điểm, mở khóa này sẽ vượt giới hạn');
+  });
+
+  it('9. Ràng buộc Khóa ngoại (Foreign Key) trên PostgreSQL thật: Chèn placeId không tồn tại bị từ chối', async () => {
+    try {
+      await pool.query(`
+        INSERT INTO user_unlocks ("id", "userId", "placeId", "pointsAwarded", "distanceMeters", "unlockedAt")
+        VALUES (uuid_generate_v4(), '00000000-0000-0000-0000-000000000001', 'non-existent-place-id-999', 50, 10, NOW());
+      `);
+      throw new Error('Chèn thành công bản ghi không tồn tại - Thất bại');
+    } catch (err: any) {
+      expect(err.code).toBe('23503'); // foreign_key_violation
+      expect(err.constraint).toBe('FK_user_unlocks_placeId');
+    }
+  });
+
+  it('10. Upload ảnh minh chứng: File giả mạo (Text mạo danh .png) bị từ chối bởi Magic Bytes', async () => {
+    const form = new FormData();
+    const fakePngBuffer = Buffer.from('This is fake text, not a PNG image file');
+    form.append('file', fakePngBuffer, { filename: 'fake_image.png', contentType: 'image/png' });
+
+    try {
+      await axios.post(`${baseURL}/crowdsource/upload`, form, {
+        headers: {
+          ...form.getHeaders(),
+          Authorization: 'Bearer ' + token,
+        },
+      });
+      throw new Error('Should have failed with 400 Bad Request');
+    } catch (err: any) {
+      expect(err.response?.status).toBe(400);
+      expect(err.response?.data?.message).toContain('magic bytes không đúng');
+    }
   });
 });

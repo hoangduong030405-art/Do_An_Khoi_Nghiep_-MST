@@ -26,11 +26,10 @@ Tài liệu này công bố minh bạch nguồn gốc dữ liệu theo yêu cầ
 
 ---
 
-## 3. DANH SÁCH 53 ĐỊA DANH MỞ KHÓA TRONG POSTGRESQL (`places`)
+## 3. DANH SÁCH 46 ĐỊA DANH MỞ KHÓA TRONG POSTGRESQL (`places`)
 
 - **Nguồn gốc**:
-  - 23 địa danh cốt lõi từ bảng seed PostGIS ban đầu (`backend/database/seeds/01_init_postgis_and_seed.sql`).
-  - 30 di tích di sản Huế UNESCO từ `web-hue4u/data/heritage_30_sites.json` được chuẩn hóa toạ độ, bán kính geofence (20m - 50m) và điểm thưởng Green Points (50 / 30 / 20 / 10).
+  - Dữ liệu địa danh cốt lõi và di tích di sản Huế UNESCO được chuẩn hóa, khử trùng lặp (từ 53 điểm gộp 7 cặp trùng lặp xuống còn đúng **46 địa danh** độc nhất), có toạ độ chuẩn xác, bán kính geofence (20m - 150m) và điểm thưởng Green Points (50 / 30 / 20 / 0 GP).
 - **Mục đích**: Đây là **nguồn sự thật duy nhất (Single Source of Truth)** cho toàn bộ quy trình mở khóa GPS Geofencing, cấp thẻ chứng nhận, quét mã QR và cộng điểm xanh Green Points trên server backend NestJS.
 
 ---

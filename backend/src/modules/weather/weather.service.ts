@@ -5,7 +5,7 @@ import { createClient } from 'redis';
 export interface WeatherCondition {
   condition: string;
   description: string;
-  tempCelsius: number;
+  tempCelsius: number | null;
   isRaining: boolean;
   isExtremelyHot: boolean; // > 37 độ C
   humidity: number;
@@ -152,7 +152,7 @@ export class WeatherService implements OnModuleInit, OnModuleDestroy {
       return {
         condition: 'no_key',
         description: 'Chưa kết nối dữ liệu thời tiết',
-        tempCelsius: 0,
+        tempCelsius: null,
         isRaining: false,
         isExtremelyHot: false,
         humidity: 0,
@@ -165,7 +165,7 @@ export class WeatherService implements OnModuleInit, OnModuleDestroy {
     return {
       condition: 'Unknown',
       description: `Lỗi kết nối trạm thời tiết (${apiErrorCode})`,
-      tempCelsius: 0,
+      tempCelsius: null,
       isRaining: false,
       isExtremelyHot: false,
       humidity: 0,

@@ -35,7 +35,7 @@ export class CrowdsourceService {
         userId: dto.userId,
         name: dto.placeName,
         address: dto.address,
-        description: dto.reasonRecommendation,
+        description: dto.reasonRecommendation || (dto as any).description || 'Đề xuất từ người dùng HUEGO',
         latitude: dto.latitude,
         longitude: dto.longitude,
         environmentType: dto.environmentType || 'OUTDOOR',
@@ -45,6 +45,7 @@ export class CrowdsourceService {
       const saved = await this.submissionRepo.save(entity);
       return {
         success: true,
+        id: saved.id,
         submission: {
           id: saved.id,
           placeName: saved.name,

@@ -1,3 +1,8 @@
+import * as PDFDocument from 'pdfkit';
+import * as QRCode from 'qrcode';
+import * as path from 'path';
+import * as fs from 'fs';
+
 export interface CertificatePdfData {
   recipientName: string;
   title: string;
@@ -8,70 +13,145 @@ export interface CertificatePdfData {
   issuedDate: string;
 }
 
-export function generateCertificatePdf(data: CertificatePdfData): Buffer {
+export async function generateCertificatePdf(data: CertificatePdfData): Promise<Buffer> {
   const { recipientName, title, certCode, points, unlockedCount, places, issuedDate } = data;
-  const lines: string[] = [
-    '================================================================================',
-    '                   SO DU LICH & HE THONG DU LICH XANH HUEGO',
-    '                 CHUNG NHAN DI SAN DU LICH XANH CO DO HUE',
-    '================================================================================',
-    '',
-    `  Nguoi nhan       : ${recipientName.toUpperCase()}`,
-    `  Danh hieu        : ${title}`,
-    `  Ma chung nhan    : ${certCode}`,
-    `  Tong diem xanh   : +${points} Green Points (GP)`,
-    `  Dia danh mo khoa : ${unlockedCount} cot moc di tich Hue`,
-    `  Ngay cap         : ${issuedDate}`,
-    '',
-    '--------------------------------------------------------------------------------',
-    '  DANH SACH COT MOC DA CHINH PHUC VA DONG GOP:',
-    '--------------------------------------------------------------------------------',
-  ];
 
-  if (places && places.length > 0) {
-    places.forEach((p, idx) => {
-      lines.push(`  [${idx + 1}] ${p.name || p.placeName || p.id} (+${p.pointsAwarded || p.rewardPoints || 30} GP)`);
-    });
-  } else {
-    lines.push('  - Dai Noi Hue (+50 GP)');
-    lines.push('  - Chua Thien Mu (+50 GP)');
-    lines.push('  - Cau Trang Tien (+20 GP)');
-  }
+  return new Promise(async (resolve, reject) => {
+    try {
+      const doc = new (PDFDocument as any)({
+        size: 'A4',
+        margin: 40,
+        info: {
+          Title: `Chứng nhận Di sản Du lịch Xanh Huế - ${certCode}`,
+          Author: 'HUEGO Green Heritage Platform',
+        },
+      });
 
-  lines.push('');
-  lines.push('--------------------------------------------------------------------------------');
-  lines.push('  XAC THUC CHUNG NHAN TRUC TUYEN (SCAN QR / URL):');
-  lines.push(`  https://huego.vn/verify/${certCode}`);
-  lines.push('  Xac thuc so hoa tren co so du lieu PostgreSQL - Ban quyen HueGO 2026');
-  lines.push('================================================================================');
+      const buffers: Buffer[] = [];
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => {
+        resolve(Buffer.concat(buffers));
+      });
+      doc.on('error', reject);
 
-  // Build minimal valid standard PDF 1.4 document
-  let textStream = 'BT /F1 12 Tf 50 720 Td 16 TL\n';
-  lines.forEach(l => {
-    const escaped = l.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
-    textStream += `(${escaped}) '\n`;
+      // Locate Unicode Font
+      let regularFont = 'backend/assets/fonts/Roboto-Regular.ttf';
+      let boldFont = 'backend/assets/fonts/Roboto-Bold.ttf';
+      if (!fs.existsSync(regularFont)) {
+        regularFont = path.resolve(__dirname, '../../../../assets/fonts/Roboto-Regular.ttf');
+        boldFont = path.resolve(__dirname, '../../../../assets/fonts/Roboto-Bold.ttf');
+      }
+      if (!fs.existsSync(regularFont) && fs.existsSync('C:\\Windows\\Fonts\\arial.ttf')) {
+        regularFont = 'C:\\Windows\\Fonts\\arial.ttf';
+        boldFont = 'C:\\Windows\\Fonts\\arialbd.ttf';
+      }
+
+      if (fs.existsSync(regularFont)) {
+        doc.registerFont('UnicodeRegular', regularFont);
+      }
+      if (fs.existsSync(boldFont)) {
+        doc.registerFont('UnicodeBold', boldFont);
+      }
+
+      const fontRegular = fs.existsSync(regularFont) ? 'UnicodeRegular' : 'Helvetica';
+      const fontBold = fs.existsSync(boldFont) ? 'UnicodeBold' : 'Helvetica-Bold';
+
+      // 1. Viền ngoài chứng nhận (Border sang trọng)
+      doc.rect(20, 20, 555, 802).lineWidth(3).strokeColor('#854d0e').stroke();
+      doc.rect(25, 25, 545, 792).lineWidth(1).strokeColor('#ca8a04').stroke();
+
+      // 2. Tiêu đề chính
+      doc.font(fontBold).fontSize(14).fillColor('#854d0e')
+        .text('SỞ DU LỊCH THỪA THIÊN HUẾ - NỀN TẢNG DU LỊCH XANH HUEGO', 40, 50, { align: 'center' });
+      
+      doc.moveDown(0.5);
+      doc.font(fontBold).fontSize(20).fillColor('#15803d')
+        .text('CHỨNG NHẬN DI SẢN DU LỊCH XANH CỐ ĐÔ', { align: 'center' });
+
+      doc.moveDown(0.3);
+      doc.font(fontRegular).fontSize(11).fillColor('#64748b')
+        .text('Vinh danh đóng góp gìn giữ di sản & phát triển giao thông bền vững', { align: 'center' });
+
+      doc.moveDown(1);
+      // Đường kẻ trang trí
+      doc.moveTo(100, doc.y).lineTo(495, doc.y).lineWidth(1).strokeColor('#e2e8f0').stroke();
+      doc.moveDown(1);
+
+      // 3. Thông tin người nhận
+      doc.font(fontRegular).fontSize(12).fillColor('#334155').text('Trân trọng trao tặng chứng nhận cho:', 50, doc.y);
+      doc.moveDown(0.4);
+      doc.font(fontBold).fontSize(18).fillColor('#0f172a').text(recipientName.toUpperCase(), 50, doc.y);
+
+      doc.moveDown(0.8);
+      doc.font(fontRegular).fontSize(12).fillColor('#334155');
+      doc.text(`Danh hiệu đại sứ: `, 50, doc.y, { continued: true });
+      doc.font(fontBold).fillColor('#b45309').text(title);
+
+      doc.moveDown(0.4);
+      doc.font(fontRegular).fillColor('#334155');
+      doc.text(`Điểm xanh tích lũy: `, 50, doc.y, { continued: true });
+      doc.font(fontBold).fillColor('#16a34a').text(`+${points} Green Points (GP)`);
+
+      doc.moveDown(0.4);
+      doc.font(fontRegular).fillColor('#334155');
+      doc.text(`Cột mốc đã mở khóa: `, 50, doc.y, { continued: true });
+      doc.font(fontBold).fillColor('#0f172a').text(`${unlockedCount} di tích Cố đô`);
+
+      doc.moveDown(0.4);
+      doc.font(fontRegular).fillColor('#334155');
+      doc.text(`Ngày cấp chứng nhận: `, 50, doc.y, { continued: true });
+      doc.font(fontBold).fillColor('#0f172a').text(issuedDate);
+
+      doc.moveDown(0.4);
+      doc.font(fontRegular).fillColor('#334155');
+      doc.text(`Mã chứng nhận số: `, 50, doc.y, { continued: true });
+      doc.font(fontBold).fillColor('#6366f1').text(certCode);
+
+      doc.moveDown(1);
+      // 4. Danh sách các địa danh đã chinh phục
+      doc.font(fontBold).fontSize(13).fillColor('#1e293b').text('DANH SÁCH ĐỊA DANH ĐÃ CHINH PHỤC:');
+      doc.moveDown(0.4);
+      
+      doc.font(fontRegular).fontSize(10).fillColor('#475569');
+      if (places && places.length > 0) {
+        places.forEach((p, index) => {
+          const pName = p.name || p.placeName || p.id;
+          const pPoints = p.pointsAwarded || p.rewardPoints || 30;
+          doc.text(`  ${index + 1}. ${pName} (+${pPoints} GP)`);
+        });
+      } else {
+        doc.text('  1. Đại Nội Huế (+50 GP)');
+        doc.text('  2. Chùa Thiên Mụ (+50 GP)');
+        doc.text('  3. Cầu Tràng Tiền (+20 GP)');
+      }
+
+      // 5. Sinh mã QR trỏ tới URL xác thực
+      const verifyUrl = `http://localhost:3000/verify/${certCode}`;
+      const qrImageBuffer = await QRCode.toBuffer(verifyUrl, {
+        width: 120,
+        margin: 1,
+        color: {
+          dark: '#0f172a',
+          light: '#ffffff',
+        },
+      });
+
+      const qrY = 660;
+      doc.image(qrImageBuffer, 430, qrY, { width: 100, height: 100 });
+
+      // Ghi chú dưới QR
+      doc.font(fontRegular).fontSize(9).fillColor('#64748b')
+        .text('Quét mã QR để xác thực trực tuyến', 380, qrY + 105, { width: 180, align: 'center' });
+
+      // Chữ ký bảo mật và bản quyền phía dưới góc trái
+      doc.font(fontRegular).fontSize(9).fillColor('#94a3b8')
+        .text('Hệ thống Chứng nhận Số hóa Di sản HUEGO', 50, 750)
+        .text(`Xác thực tại: ${verifyUrl}`, 50, 765)
+        .text('Dữ liệu được bảo chứng bởi công nghệ PostgreSQL & Mã băm HMAC', 50, 780);
+
+      doc.end();
+    } catch (err) {
+      reject(err);
+    }
   });
-  textStream += 'ET';
-
-  const streamLength = Buffer.byteLength(textStream, 'utf-8');
-
-  const obj1 = '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n';
-  const obj2 = '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n';
-  const obj3 = '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n';
-  const obj4 = `4 0 obj\n<< /Length ${streamLength} >>\nstream\n${textStream}\nendstream\nendobj\n`;
-  const obj5 = '5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>\nendobj\n';
-
-  const header = '%PDF-1.4\n';
-  const offset1 = Buffer.byteLength(header, 'utf-8');
-  const offset2 = offset1 + Buffer.byteLength(obj1, 'utf-8');
-  const offset3 = offset2 + Buffer.byteLength(obj2, 'utf-8');
-  const offset4 = offset3 + Buffer.byteLength(obj3, 'utf-8');
-  const offset5 = offset4 + Buffer.byteLength(obj4, 'utf-8');
-  const xrefOffset = offset5 + Buffer.byteLength(obj5, 'utf-8');
-
-  const pad = (n: number) => String(n).padStart(10, '0');
-  const xref = `xref\n0 6\n0000000000 65535 f \n${pad(offset1)} 00000 n \n${pad(offset2)} 00000 n \n${pad(offset3)} 00000 n \n${pad(offset4)} 00000 n \n${pad(offset5)} 00000 n \n`;
-  const trailer = `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
-
-  return Buffer.from(header + obj1 + obj2 + obj3 + obj4 + obj5 + xref + trailer, 'utf-8');
 }

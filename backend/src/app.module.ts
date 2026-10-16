@@ -54,7 +54,7 @@ import { InMemoryDbService } from './database/in-memory-db.service';
     // Rate limiting
     ThrottlerModule.forRoot([{
       ttl: 60000,
-      limit: 5,
+      limit: 100,
     }]),
 
     // Các Modules Nghiệp Vụ Toàn Diện của HUEGO

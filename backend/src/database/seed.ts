@@ -8,13 +8,15 @@ import { User } from '../modules/auth/entities/user.entity';
 import { InMemoryDbService } from './in-memory-db.service';
 import 'dotenv/config';
 import * as crypto from 'crypto';
+import * as path from 'path';
+import * as fs from 'fs';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DATABASE_HOST || 'localhost',
   port: parseInt(process.env.DATABASE_PORT || '5432', 10),
   username: process.env.DATABASE_USER || 'postgres',
-  password: process.env.DATABASE_PASSWORD || 'huego_postgres_admin',
+  password: process.env.DATABASE_PASSWORD || 'huego_secure_password_2026',
   database: process.env.DATABASE_NAME || 'huego_db',
   entities: [Place, UserUnlock, UserPoints, CrowdsourceSubmission, Coupon, User],
   synchronize: false,
@@ -22,12 +24,16 @@ const AppDataSource = new DataSource({
 
 async function run() {
   await AppDataSource.initialize();
-  // await AppDataSource.dropDatabase();
-  await AppDataSource.synchronize();
   console.log('Database connected');
 
-  const inMemoryDb = new InMemoryDbService();
-  const places = inMemoryDb.places;
+  let places: any[] = [];
+  const cleanPlacesPath = path.resolve(__dirname, '../../data/clean_46_places.json');
+  if (fs.existsSync(cleanPlacesPath)) {
+    places = JSON.parse(fs.readFileSync(cleanPlacesPath, 'utf8'));
+  } else {
+    const inMemoryDb = new InMemoryDbService();
+    places = inMemoryDb.places;
+  }
 
   const placeRepo = AppDataSource.getRepository(Place);
   

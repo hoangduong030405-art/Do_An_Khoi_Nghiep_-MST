@@ -78,7 +78,19 @@ describe('WeatherService Caching', () => {
     expect(mockedAxios.get).toHaveBeenCalledTimes(2); // Initial success + 1 failure
   });
   
-  it('không có cache và API lỗi -> trả trạng thái không rõ', async () => {
+  it('khi thiếu khóa API -> trả về trạng thái no_key và tempCelsius = null', async () => {
+    delete process.env.OPENWEATHER_API_KEY;
+
+    const res = await service.getWeatherByLocation(16.50, 107.60);
+    expect(res.condition).toBe('no_key');
+    expect(res.tempCelsius).toBeNull();
+    expect(res.source).toBe('stale');
+    expect(res.stale).toBe(true);
+    expect(res.description).toBe('Chưa kết nối dữ liệu thời tiết');
+  });
+
+  it('không có cache và API lỗi -> trả trạng thái Unknown và tempCelsius = null', async () => {
+    process.env.OPENWEATHER_API_KEY = 'test_key';
     mockedAxios.get.mockRejectedValueOnce(new Error('Network error'));
 
     const res = await service.getWeatherByLocation(16.48, 107.60); // Different location, no cache
@@ -86,5 +98,6 @@ describe('WeatherService Caching', () => {
     expect(res.source).toBe('stale');
     expect(res.stale).toBe(true);
     expect(res.condition).toBe('Unknown');
+    expect(res.tempCelsius).toBeNull();
   });
 });

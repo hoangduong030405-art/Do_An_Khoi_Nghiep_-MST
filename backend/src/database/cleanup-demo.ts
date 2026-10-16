@@ -3,6 +3,9 @@ import { User } from '../modules/auth/entities/user.entity';
 import { RefreshToken } from '../modules/auth/entities/refresh-token.entity';
 import { UserUnlock } from '../modules/geofencing/entities/user-unlock.entity';
 import { UserPoints } from '../modules/gamification/entities/user-points.entity';
+import { Itinerary } from '../modules/itinerary/entities/itinerary.entity';
+import { ItineraryStop } from '../modules/itinerary/entities/itinerary-stop.entity';
+import { CrowdsourceSubmission } from '../modules/crowdsource/entities/crowdsource-submission.entity';
 import 'dotenv/config';
 
 const AppDataSource = new DataSource({
@@ -12,7 +15,7 @@ const AppDataSource = new DataSource({
   username: process.env.DATABASE_USER || 'postgres',
   password: process.env.DATABASE_PASSWORD || 'huego_secure_password_2026',
   database: process.env.DATABASE_NAME || 'huego_db',
-  entities: [User, RefreshToken, UserUnlock, UserPoints],
+  entities: [User, 'src/**/*.entity{.ts,.js}'],
   synchronize: false,
 });
 
@@ -24,6 +27,8 @@ async function cleanupDemoAccounts() {
   const tokenRepo = AppDataSource.getRepository(RefreshToken);
   const unlockRepo = AppDataSource.getRepository(UserUnlock);
   const pointsRepo = AppDataSource.getRepository(UserPoints);
+  const itinRepo = AppDataSource.getRepository(Itinerary);
+  const crowdRepo = AppDataSource.getRepository(CrowdsourceSubmission);
 
   const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
@@ -40,6 +45,8 @@ async function cleanupDemoAccounts() {
     await tokenRepo.delete({ user_id: u.id });
     await unlockRepo.delete({ userId: u.id });
     await pointsRepo.delete({ userId: u.id });
+    await itinRepo.delete({ userId: u.id });
+    await crowdRepo.delete({ userId: u.id });
     await userRepo.delete({ id: u.id });
   }
 

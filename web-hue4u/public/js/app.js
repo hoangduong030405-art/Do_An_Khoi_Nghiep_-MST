@@ -460,9 +460,10 @@ async function loadLiveWeather() {
       const isStale = data.stale || data.source === 'stale';
       const staleTag = isStale ? ' <small style="color:#F59E0B;">(Dữ liệu cũ)</small>' : '';
       const isRain = webRainSim || data.isRaining;
+      const tempDisplay = data.tempCelsius != null ? `${data.tempCelsius}°C · ` : '';
       badge.innerHTML = `
         <span class="weather-icon">${isRain ? '🌧️' : '⛅'}</span>
-        <span>Huế ${data.tempCelsius}°C · ${isRain ? 'Mưa ngâu' : data.description.split(',')[0]}${staleTag}</span>
+        <span>Huế ${tempDisplay}${isRain ? 'Mưa ngâu' : data.description.split(',')[0]}${staleTag}</span>
         <button onclick="toggleWebRainSimulation(event)" style="margin-left:6px; background:${webRainSim ? '#0284C7' : 'rgba(255,255,255,0.2)'}; border:none; color:white; border-radius:10px; padding:2px 8px; font-size:10px; cursor:pointer;" title="Mô phỏng trời mưa để kiểm thử trình diễn demo">🌧️ ${webRainSim ? 'Mưa: BẬT' : 'Giả lập mưa (Demo)'}</button>
       `;
       badge.title = data.description + (isStale ? ' (Dữ liệu cache cũ)' : '');
