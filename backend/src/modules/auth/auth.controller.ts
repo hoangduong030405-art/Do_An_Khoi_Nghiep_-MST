@@ -7,7 +7,8 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
+import { CloudflareThrottlerGuard } from '../../common/guards/cloudflare-throttler.guard';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -19,8 +20,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
-  @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @UseGuards(CloudflareThrottlerGuard)
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() registerDto: RegisterDto) {
@@ -28,8 +29,8 @@ export class AuthController {
   }
 
   @Public()
-  @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @UseGuards(CloudflareThrottlerGuard)
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
@@ -56,7 +57,7 @@ export class AuthController {
   }
 
   @Public()
-  @UseGuards(ThrottlerGuard)
+  @UseGuards(CloudflareThrottlerGuard)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('demo')
   @HttpCode(HttpStatus.OK)

@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Post, Res, ForbiddenException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Res, ForbiddenException, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
+import { CloudflareThrottlerGuard } from '../../common/guards/cloudflare-throttler.guard';
 import { Response } from 'express';
 import { GamificationService } from './gamification.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -36,7 +37,7 @@ export class GamificationController {
   }
 
   @Public()
-  @UseGuards(ThrottlerGuard)
+  @UseGuards(CloudflareThrottlerGuard)
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Get('verify/:code')
   @ApiOperation({ summary: 'Tra cứu và xác thực tính hợp lệ của Chứng nhận E-Certificate' })
@@ -47,8 +48,9 @@ export class GamificationController {
   @Public()
   @Get('certificate/:code/pdf')
   @ApiOperation({ summary: 'Tải Chứng nhận E-Certificate định dạng PDF chính thức' })
-  async downloadCertificatePdf(@Param('code') code: string, @Res() res: Response) {
-    const pdfBuffer = await this.gamificationService.generateCertificatePdfBuffer(code);
+  async downloadCertificatePdf(@Param('code') code: string, @Req() req: any, @Res() res: Response) {
+    const baseUrl = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get('host')}`;
+    const pdfBuffer = await this.gamificationService.generateCertificatePdfBuffer(code, baseUrl);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${code}.pdf"`);
     res.send(pdfBuffer);

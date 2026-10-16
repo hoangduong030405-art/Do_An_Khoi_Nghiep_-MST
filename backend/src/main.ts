@@ -9,6 +9,11 @@ async function bootstrap() {
   const logger = new Logger('HUEGO_Bootstrap');
   const app = await NestFactory.create(AppModule);
 
+  if (process.env.TRUST_PROXY === 'true' || process.env.BEHIND_CLOUDFLARE === 'true') {
+    const expressApp = app.getHttpAdapter().getInstance();
+    expressApp.set('trust proxy', true);
+  }
+
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

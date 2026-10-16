@@ -249,20 +249,27 @@ export class GeofencingService {
     acc?: number,
   ) {
     // Kiểm tra giới hạn điểm cộng tối đa trong ngày (MAX_DAILY_GREEN_POINTS)
-    // Tính theo múi giờ Asia/Ho_Chi_Minh (UTC+7)
+    // Tính theo múi giờ Asia/Ho_Chi_Minh (UTC+7) trực tiếp bằng truy vấn SQL
     const MAX_DAILY = parseInt(process.env.MAX_DAILY_GREEN_POINTS || '500', 10);
-    const VIETNAM_OFFSET_MS = 7 * 60 * 60 * 1000;
-    const now = new Date();
-    const vnTime = new Date(now.getTime() + VIETNAM_OFFSET_MS);
-    const startOfDay = new Date(Date.UTC(vnTime.getUTCFullYear(), vnTime.getUTCMonth(), vnTime.getUTCDate(), 0, 0, 0) - VIETNAM_OFFSET_MS);
 
     let todayUnlocks: UserUnlock[] = [];
     if (this.unlockRepo && typeof this.unlockRepo.createQueryBuilder === 'function') {
       todayUnlocks = await this.unlockRepo
         .createQueryBuilder('unlock')
         .where('unlock.userId = :userId', { userId })
-        .andWhere('unlock.unlockedAt >= :startOfDay', { startOfDay })
+        .andWhere(
+          "(timezone('Asia/Ho_Chi_Minh', timezone('UTC', unlock.unlockedAt)))::date = (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh')::date",
+        )
         .getMany();
+    } else if (this.unlockRepo && typeof this.unlockRepo.find === 'function') {
+      // Dự phòng cho môi trường in-memory / unit-test mock
+      const VIETNAM_OFFSET_MS = 7 * 60 * 60 * 1000;
+      const now = new Date();
+      const vnTime = new Date(now.getTime() + VIETNAM_OFFSET_MS);
+      const startOfDay = new Date(Date.UTC(vnTime.getUTCFullYear(), vnTime.getUTCMonth(), vnTime.getUTCDate(), 0, 0, 0) - VIETNAM_OFFSET_MS);
+      todayUnlocks = (await this.unlockRepo.find({ where: { userId } as any })).filter(u => new Date(u.unlockedAt) >= startOfDay);
+    } else {
+      todayUnlocks = [];
     }
 
     const currentDailyPoints = todayUnlocks.reduce((sum, u) => sum + (u.pointsAwarded || 0), 0);

@@ -10,7 +10,8 @@ describe('API Flow Test (Sử dụng PostgreSQL thật)', () => {
   let placeB: any;
 
   beforeAll(async () => {
-    pool = new Pool({ connectionString: 'postgres://postgres:huego_secure_password_2026@localhost:5432/huego_db' });
+    const dbName = process.env.DATABASE_NAME || 'huego_db';
+    pool = new Pool({ connectionString: `postgres://postgres:huego_secure_password_2026@localhost:5432/${dbName}` });
     const placeRes = await pool.query(`SELECT id, latitude, longitude, name, "geofenceRadiusMeters" FROM places WHERE slug = 'chua-thien-mu' OR name LIKE '%Thiên Mụ%' LIMIT 1`);
     place = placeRes.rows[0];
 

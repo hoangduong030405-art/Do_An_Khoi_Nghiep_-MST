@@ -8,7 +8,8 @@ describe('QR Check Test (Sử dụng DB thật)', () => {
   let place: any;
 
   beforeAll(async () => {
-    pool = new Pool({ connectionString: 'postgres://postgres:huego_secure_password_2026@localhost:5432/huego_db' });
+    const dbName = process.env.DATABASE_NAME || 'huego_db';
+    pool = new Pool({ connectionString: `postgres://postgres:huego_secure_password_2026@localhost:5432/${dbName}` });
     const placeRes = await pool.query(`SELECT id, "qrToken", latitude, longitude, name FROM places WHERE name LIKE '%Khải Định%' LIMIT 1`);
     place = placeRes.rows[0];
   });

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards, UseInterceptors, UploadedFile, Res, BadRequestException, NotFoundException } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiConsumes } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
+import { CloudflareThrottlerGuard } from '../../common/guards/cloudflare-throttler.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
@@ -47,7 +48,7 @@ export class CrowdsourceController {
   constructor(private readonly crowdsourceService: CrowdsourceService) {}
 
   @Post('upload')
-  @UseGuards(ThrottlerGuard)
+  @UseGuards(CloudflareThrottlerGuard)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: 'Tải lên ảnh minh chứng địa danh (giới hạn 2MB, chỉ JPG/PNG/WEBP)' })
   @ApiConsumes('multipart/form-data')
@@ -116,7 +117,7 @@ export class CrowdsourceController {
   }
 
   @Post('submit')
-  @UseGuards(ThrottlerGuard)
+  @UseGuards(CloudflareThrottlerGuard)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: 'Người dùng/người dân gửi đề xuất địa điểm, quán ăn Huế mới' })
   async submit(@Body() dto: SubmitPlaceDto) {

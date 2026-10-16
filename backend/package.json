@@ -21,6 +21,7 @@
     "cleanup:demo": "ts-node src/database/cleanup-demo.ts",
     "seed": "ts-node src/database/seed.ts",
     "verify:demo": "node scripts/verify-demo.js",
+    "verify:full": "node scripts/verify-full.js",
     "test": "jest --runInBand"
   },
   "dependencies": {

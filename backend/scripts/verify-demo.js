@@ -185,7 +185,8 @@ async function run() {
   // 9. VƯỢT TRẦN ĐIỂM NGÀY (500 GP)
   console.log('\n--- BƯỚC 9: KIỂM SOÁT GIAN LẬN: TRẦN ĐIỂM NGÀY 500 GP ---');
   const { Client } = require('pg');
-  const pgClient = new Client({ connectionString: 'postgres://postgres:huego_secure_password_2026@localhost:5432/huego_db' });
+  const dbName = process.env.DATABASE_NAME || 'huego_db';
+  const pgClient = new Client({ connectionString: `postgres://postgres:huego_secure_password_2026@localhost:5432/${dbName}` });
   await pgClient.connect();
   
   // Find a valid place to associate mock points with
@@ -232,6 +233,14 @@ async function run() {
   assert(idorItinRes.status === 403, `User B phải bị 403 khi đọc lộ trình User A (Nhận được ${idorItinRes.status})`);
   console.log(`[PASS] Bảo vệ quyền sở hữu lộ trình: User B nhận HTTP 403 Forbidden`);
 
+  // User B đọc hồ sơ Gamification của User A -> Phải bị 403 Forbidden
+  const idorProfileRes = await request({
+    hostname: 'localhost', port: 3000, path: `/api/v1/gamification/profile/${userAId}`, method: 'GET',
+    headers: { 'Authorization': `Bearer ${tokenB}` }
+  });
+  assert(idorProfileRes.status === 403, `User B phải bị 403 khi đọc hồ sơ User A (Nhận được ${idorProfileRes.status})`);
+  console.log(`[PASS] Bảo vệ quyền riêng tư hồ sơ: User B nhận HTTP 403 Forbidden`);
+
   // 11. ĐÓNG GÓP CỘNG ĐỒNG VÀ ADMIN PHÊ DUYỆT CỘNG ĐIỂM
   console.log('\n--- BƯỚC 11: ĐÓNG GÓP CỘNG ĐỒNG VÀO DATABASE & ADMIN DUYỆT ---');
   const submitCrowdRes = await request({
@@ -261,6 +270,14 @@ async function run() {
   const appStatus = approveRes.body?.submission?.status || approveRes.body?.status;
   assert(appStatus === 'APPROVED', 'Trạng thái sau duyệt phải là APPROVED');
   console.log(`[PASS] Admin duyệt đóng góp thành công: Status = ${appStatus}`);
+
+  // Admin duyệt lại lần 2 -> Phải từ chối, không cộng điểm 2 lần
+  const doubleApproveRes = await request({
+    hostname: 'localhost', port: 3000, path: `/api/v1/crowdsource/${submissionId}/approve`, method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` }
+  }, { pointsAwarded: 15 });
+  assert(doubleApproveRes.body?.success === false, 'Duyệt lần 2 phải trả về success: false');
+  console.log(`[PASS] Chống cộng điểm 2 lần: Admin duyệt lại bị từ chối chính xác: "${doubleApproveRes.body?.message}"`);
 
   // 12. UPLOAD ẢNH MINH CHỨNG
   console.log('\n--- BƯỚC 12: UPLOAD ẢNH ĐÓNG GÓP (MULTIPART/FORM-DATA, MAGIC BYTES) ---');

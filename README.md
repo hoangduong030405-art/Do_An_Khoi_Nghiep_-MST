@@ -73,10 +73,18 @@ docker-compose up -d
 ```
 > Lệnh trên sẽ tự động dựng container PostgreSQL tích hợp PostGIS 3.4 và nạp sẵn toàn bộ tọa độ các di tích tiêu biểu: Đại Nội, Chùa Thiên Mụ, Lăng Khải Định, Cầu Tràng Tiền, Bảo tàng Cổ vật Cung đình...
 
-### Bước 2: Khởi chạy Backend NestJS
+### Bước 2: Cấu hình biến môi trường và Khởi chạy Backend NestJS
+Tạo file `backend/.env` từ `backend/.env.example`. Các biến môi trường quan trọng:
+- `PUBLIC_BASE_URL`: Địa chỉ gốc của hệ thống dùng để tạo link xác thực trong mã QR của chứng nhận E-Certificate (mặc định: `http://localhost:3000`).
+- `TRUST_PROXY`: Đặt `true` khi backend chạy sau reverse proxy (Nginx, Traefik, Tunnel) để lấy IP thật từ `X-Forwarded-For`.
+- `BEHIND_CLOUDFLARE`: Đặt `true` khi chạy sau Cloudflare Tunnel để lấy IP từ header `CF-Connecting-IP`.
+- `MAX_DAILY_GREEN_POINTS`: Trần điểm xanh tối đa được nhận trong một ngày theo giờ Việt Nam (mặc định: `500`).
+
 ```bash
 cd backend
 npm install
+npm run migration:run
+npm run seed
 npm run start:dev
 ```
 - Server hoạt động tại: `http://localhost:3000`

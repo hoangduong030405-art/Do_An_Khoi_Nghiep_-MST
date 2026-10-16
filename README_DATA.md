@@ -1,47 +1,49 @@
-# NGUỒN GỐC DỮ LIỆU ĐỊA ĐIỂM & HÌNH ẢNH — DỰ ÁN HUEGO
+# BÁO CÁO NGUỒN GỐC DỮ LIỆU & BẢN QUYỀN — DỰ ÁN HUEGO
 
-Tài liệu này công bố minh bạch nguồn gốc dữ liệu theo yêu cầu quản trị dữ liệu dự án HUEGO (Đồ án khởi nghiệp - MST).
-
----
-
-## 1. KHO DỮ LIỆU 4.352 ĐỊA ĐIỂM (`places_all.json`)
-
-- **Tổng số lượng**: 4.352 điểm toạ độ địa lý phủ kín Thành phố Huế và các khu vực lân cận.
-- **Nguồn gốc dữ liệu**:
-  - Dữ liệu toạ độ (`lat`, `lng`), tên địa danh (`name_vi`, `name_en`), địa chỉ, xếp hạng (`googleRating`), số lượng đánh giá (`googleReviewCount`) được trích xuất (cào / crawled) từ dữ liệu công khai trên Google Places / OpenStreetMap tại khu vực Cố Đô Huế.
-  - Phân loại ngành: Chia làm 7 phân hệ chính (`tour`, `fnb`, `cafe`, `stay`, `specialty`, `nature`, `service`) kết hợp với nhãn điểm tự động `confidence` và `demand_score`.
-- **Mục đích sử dụng**: Phục vụ duyệt bản đồ tĩnh (Leaflet MarkerCluster), tìm kiếm, phân loại và lọc trực quan trên Web Portal và ứng dụng di động. Không dùng trực tiếp cho hệ thống tính điểm thưởng cốt lõi.
+Tài liệu này công bố minh bạch thực trạng nguồn gốc dữ liệu theo yêu cầu quản trị dữ liệu dự án HUEGO. Chỉ ghi nhận những thông tin đã được kiểm chứng thực tế trong repository.
 
 ---
 
-## 2. NGUỒN GỐC HÌNH ẢNH (`coverPhotoUrl`)
+## 1. KHO DỮ LIỆU 4.352 ĐỊA ĐIỂM & HÌNH ẢNH (`places_all.json`)
 
-- **Nơi lưu trữ**:
-  - 4.209 hình ảnh được lưu trữ trên Cloudflare R2 Object Storage tại tên miền:  
-    `https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/...`
-  - Một số ảnh di tích mẫu sử dụng liên kết từ Wikimedia Commons và Unsplash.
-- **Bản quyền & Tác quyền**:
-  - Tác giả cụ thể của từng bức ảnh được cào: **Không xác định** (Unspecified public web assets).
-  - Khuyến nghị thương mại: Khi dự án tiến vào giai đoạn thương mại hóa chính thức (Phase 2), toàn bộ ảnh đại diện của các đối tác và di tích trọng điểm sẽ được thay thế bằng hình ảnh chụp thực tế có ký hợp đồng ủy quyền tác quyền hoặc ảnh do người dùng đóng góp (Crowdsourced Creative Commons).
+- **Số lượng**: 4.352 điểm toạ độ địa lý tại Thừa Thiên Huế.
+- **Nguồn gốc dữ liệu**: Cào từ web (trích xuất tự động từ các nguồn dữ liệu web công khai).
+- **Hình ảnh (`coverPhotoUrl`)**: Cào từ web, nguồn và giấy phép ảnh chưa xác minh.
+- **Mục đích sử dụng**: Phục vụ duyệt bản đồ tĩnh (Leaflet MarkerCluster), tìm kiếm, phân loại và lọc trực quan trên Web Portal và ứng dụng di động. Không dùng cho hệ thống cộng điểm hay luật chơi cốt lõi.
 
 ---
 
-## 3. DANH SÁCH 46 ĐỊA DANH MỞ KHÓA TRONG POSTGRESQL (`places`)
+## 2. BỘ SƯU TẬP HIỆN VẬT SỐ 3D (`.glb`) TRONG BẢO TÀNG SỐ (`museum.html`)
 
-- **Nguồn gốc**:
-  - Dữ liệu địa danh cốt lõi và di tích di sản Huế UNESCO được chuẩn hóa, khử trùng lặp (từ 53 điểm gộp 7 cặp trùng lặp xuống còn đúng **46 địa danh** độc nhất), có toạ độ chuẩn xác, bán kính geofence (20m - 150m) và điểm thưởng Green Points (50 / 30 / 20 / 0 GP).
-- **Mục đích**: Đây là **nguồn sự thật duy nhất (Single Source of Truth)** cho toàn bộ quy trình mở khóa GPS Geofencing, cấp thẻ chứng nhận, quét mã QR và cộng điểm xanh Green Points trên server backend NestJS.
+Dưới đây là danh sách toàn bộ 10 tệp tin mô hình 3D định dạng `.glb` lưu tại `web-hue4u/public/models/` và `backend/public/portal/models/`:
+
+| Tên tệp tin `.glb` | Tiêu đề hiện vật | Tác giả / Người số hóa | Nguồn dữ liệu | Giấy phép |
+| :--- | :--- | :--- | :--- | :--- |
+| `bo-xam-huong.glb` | Bộ Xăm Hường | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `buc-phu-dieu.glb` | Phù điêu thời Minh Mạng | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `chau-canh-vang-la-ngoc.glb` | Cành vàng lá ngọc — chậu cây lựu | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `hop-dung-sach.glb` | Hộp đựng sách sơn thếp | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `kieu-vua.glb` | Kiệu Vua | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `lu-huong.glb` | Lư hương | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `ngai-hoang-de.glb` | Ngai của Hoàng đế | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `qua-cau-cuu-long.glb` | Quả cầu Cửu Long | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `thu-but-tu-huan-luc.glb` | Thủ bút Từ Huấn Lục | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+| `to-su-ky-kieu.glb` | Tô sứ ký kiểu thời Minh Mạng | Không xác định | Trung tâm Bảo tồn Di tích Cố đô Huế (theo chú thích `museum_artifacts.json`) | Không xác định |
+
+*Ghi chú*: Trong metadata nhị phân của các tệp tin `.glb` và trong repository không có tài liệu cấp phép bản quyền chính thức kèm theo. Vì vậy trạng thái giấy phép được ghi nhận chính xác là "Không xác định".
 
 ---
 
-## 4. RỦI RO BẢN QUYỀN & KHUYẾN NGHỊ PHÁP LÝ
+## 3. DANH SÁCH 46 ĐỊA DANH TRONG POSTGRESQL (`places`)
 
-- **Thực trạng**: Toàn bộ tập dữ liệu 4.352 điểm toạ độ và hình ảnh kèm theo được thu thập (cào/scraped) từ các nguồn web công cộng (Google Places, mạng xã hội, các trang blog du lịch). Tác giả gốc và điều khoản giấy phép của phần lớn các bức ảnh này hiện **chưa xác định (Unspecified/Unknown License)**.
-- **Rủi ro**: Việc lưu trữ và phục vụ công khai các hình ảnh này trên CDN/Cloudflare R2 có nguy cơ vi phạm quyền tác giả theo Luật Sở hữu trí tuệ nếu các chủ sở hữu khiếu nại (DMCA / Takedown Request).
-- **Khuyến nghị & Lộ trình xử lý**:
-  1. Trong giai đoạn thử nghiệm/nghiên cứu (Proof of Concept - Demo): Cho phép sử dụng nội bộ để kiểm thử giao diện và thuật toán định vị.
-  2. **Trước khi thương mại hóa (Production Release)**:
-     - Bắt buộc rà soát và thay thế toàn bộ ảnh chưa rõ nguồn gốc bằng ảnh có giấy phép Creative Commons (CC-BY, CC0) hoặc mua bản quyền từ các nhiếp ảnh gia địa phương Huế.
-     - Phát động chương trình Crowdsourcing để cộng đồng du khách và người dân địa phương tự chụp và đăng tải ảnh gốc (kèm điều khoản chia sẻ bản quyền cho nền tảng HUEGO).
-     - Bổ sung cơ chế báo cáo vi phạm bản quyền (Report Copyright) tại chân trang để xử lý kịp thời khi có yêu cầu từ chủ sở hữu.
+- **Nguồn gốc**: Dữ liệu 46 địa danh di tích, văn hóa và tiện ích Cố Đô Huế được chuẩn hóa thủ công, đã khử trùng lặp và lưu trữ trong `backend/data/clean_46_places.json`.
+- **Mục đích**: Nguồn sự thật duy nhất (Single Source of Truth) phục vụ toàn bộ nghiệp vụ kiểm tra tọa độ GPS Geofencing, trần điểm ngày 500 GP, quét mã QR an toàn, cấp chứng nhận E-Certificate và lưu trữ lộ trình trên NestJS + PostgreSQL.
 
+---
+
+## 4. KHUYẾN NGHỊ VỀ MẶT PHÁP LÝ
+
+- Do dữ liệu 4.352 điểm toạ độ và hình ảnh kèm theo được cào từ web mà nguồn và giấy phép ảnh chưa xác minh, việc sử dụng hiện tại chỉ phù hợp trong phạm vi nghiên cứu, trình diễn giải pháp công nghệ (demo đồ án khởi nghiệp).
+- Khi đưa sản phẩm vào hoạt động thương mại hóa chính thức:
+  1. Thay thế toàn bộ hình ảnh cào bằng ảnh chụp thực tế có hợp đồng ủy quyền tác quyền từ các nhiếp ảnh gia hoặc ảnh do cộng đồng tự nguyện chia sẻ qua cổng Crowdsourcing.
+  2. Ký biên bản hợp tác chính thức với Trung tâm Bảo tồn Di tích Cố đô Huế hoặc các đơn vị số hóa di sản để có văn bản cấp phép sử dụng các mô hình 3D hiện vật.

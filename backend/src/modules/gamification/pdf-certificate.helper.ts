@@ -11,6 +11,7 @@ export interface CertificatePdfData {
   unlockedCount: number;
   places?: any[];
   issuedDate: string;
+  baseUrl?: string;
 }
 
 export async function generateCertificatePdf(data: CertificatePdfData): Promise<Buffer> {
@@ -125,8 +126,9 @@ export async function generateCertificatePdf(data: CertificatePdfData): Promise<
         doc.text('  3. Cầu Tràng Tiền (+20 GP)');
       }
 
-      // 5. Sinh mã QR trỏ tới URL xác thực
-      const verifyUrl = `http://localhost:3000/verify/${certCode}`;
+      // 5. Sinh mã QR trỏ tới URL xác thực (đọc từ biến môi trường PUBLIC_BASE_URL hoặc baseUrl)
+      const originUrl = (data.baseUrl || process.env.PUBLIC_BASE_URL || 'http://localhost:3000').replace(/\/+$/, '');
+      const verifyUrl = `${originUrl}/verify/${certCode}`;
       const qrImageBuffer = await QRCode.toBuffer(verifyUrl, {
         width: 120,
         margin: 1,

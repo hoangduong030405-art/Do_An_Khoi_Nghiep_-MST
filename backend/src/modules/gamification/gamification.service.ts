@@ -110,7 +110,7 @@ export class GamificationService {
     };
   }
 
-  async generateCertificatePdfBuffer(code: string): Promise<Buffer> {
+  async generateCertificatePdfBuffer(code: string, baseUrl?: string): Promise<Buffer> {
     const { generateCertificatePdf } = require('./pdf-certificate.helper');
     const cert = await this.certRepo.findOne({ where: { code } });
     if (!cert) {
@@ -138,6 +138,7 @@ export class GamificationService {
         pointsAwarded: u.pointsAwarded 
       })),
       issuedDate: cert.issuedAt ? cert.issuedAt.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      baseUrl,
     });
   }
 }
