@@ -18,7 +18,8 @@
     "migration:revert": "npm run typeorm -- migration:revert -d src/database/data-source.ts",
     "migration:generate": "npm run typeorm -- migration:generate -d src/database/data-source.ts",
     "check:gemini": "ts-node check-gemini.ts",
-    "test": "jest --preset ts-jest"
+    "cleanup:demo": "ts-node src/database/cleanup-demo.ts",
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -66,5 +67,17 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
+  },
+  "jest": {
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "rootDir": ".",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": ["**/*.(t|j)s"],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"]
   }
 }

@@ -13,7 +13,7 @@ const mockPlace = {
   longitude: 107.5779,
   geofenceRadiusMeters: 35,
   greenRewardPoints: 30,
-  qrToken: 'SECRET_QR',
+  qrToken: 'XXXX-XXXX-MOCK-TOKEN-SECRET-TEST',
 };
 
 describe('GeofencingService', () => {
@@ -97,7 +97,7 @@ describe('GeofencingService', () => {
   });
 
   it('should unlock via QR Token correctly', async () => {
-    const result = await service.checkAndUnlockMilestone('user1', { qrToken: 'SECRET_QR' });
+    const result = await service.checkAndUnlockMilestone('user1', { qrToken: 'XXXX-XXXX-MOCK-TOKEN-SECRET-TEST' });
     expect(result.unlocked).toBe(true);
   });
 

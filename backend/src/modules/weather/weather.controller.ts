@@ -1,9 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { WeatherService } from './weather.service';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Smart Weather')
 @Controller('weather')
+@Public()
 export class WeatherController {
   constructor(private readonly weatherService: WeatherService) {}
 

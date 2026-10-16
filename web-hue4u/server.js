@@ -10,7 +10,9 @@ const path = require('path');
 const url = require('url');
 const zlib = require('zlib');
 
-const PORT = process.env.PORT || 3000;
+// Cổng mặc định 3100: NestJS là server chính duy nhất trên cổng 3000.
+// server.js chỉ dùng khi cần chạy giao diện tĩnh độc lập mà không cần database.
+const PORT = process.env.PORT || 3100;
 const DATA_DIR = path.join(__dirname, 'data');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 

@@ -15,6 +15,7 @@ describe('Geofencing (Integration)', () => {
   let dataSource: DataSource;
   let jwtToken: string;
   let placeId: string;
+  let testPlace: Place;
   const demoUserId = 'e7b0e774-7243-41bb-9be4-8a4b868e82ef'; // Use existing seeded user or mock
 
   beforeAll(async () => {
@@ -28,6 +29,7 @@ describe('Geofencing (Integration)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/v1');
     await app.init();
     
     dataSource = app.get<DataSource>(DataSource);
@@ -54,6 +56,7 @@ describe('Geofencing (Integration)', () => {
     const place = await dataSource.getRepository(Place).findOne({ where: { slug: 'dai-noi-hue' } });
     if (place) {
       placeId = place.id;
+      testPlace = place;
     }
   });
 
@@ -69,19 +72,20 @@ describe('Geofencing (Integration)', () => {
       .post('/api/v1/geofencing/unlock')
       .set('Authorization', `Bearer ${jwtToken}`)
       .send({
-        latitude: 16.4697, // Exactly at Dai Noi
-        longitude: 107.5779,
+        latitude: testPlace.latitude,
+        longitude: testPlace.longitude,
         timestamp: new Date().toISOString(),
       });
 
     expect(res.status).toBe(201); // or 200 based on NestJS POST default
     expect(res.body.unlocked).toBe(true);
-    expect(res.body.rewardPoints).toBe(30); // Dynamic point check
-    expect(res.body.totalGreenPoints).toBe(pointsInitial + 30);
+    const expectedPoints = testPlace ? testPlace.greenRewardPoints : 50;
+    expect(res.body.rewardPoints).toBe(expectedPoints);
+    expect(res.body.totalGreenPoints).toBe(pointsInitial + expectedPoints);
 
     // Verify in DB
     const points = await dataSource.getRepository(UserPoints).findOne({ where: { userId: demoUserId } });
-    expect(points.points).toBe(pointsInitial + 30);
+    expect(points.points).toBe(pointsInitial + expectedPoints);
   });
 
   it('2. Should reject simultaneous unlocks (race condition) and enforce UNIQUE constraint', async () => {

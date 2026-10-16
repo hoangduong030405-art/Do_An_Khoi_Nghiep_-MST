@@ -37,7 +37,7 @@ describe('Concurrent Test (Sử dụng DB thật)', () => {
     expect(unlocked.length).toBe(1);
     expect(failed.length).toBe(9);
 
-    const profileRes = await axios.get(`${baseURL}/gamification/profile/${userId}`, { headers });
+    const profileRes = await axios.get(`${baseURL}/gamification/me`, { headers });
     expect(profileRes.data.user.greenPoints).toBe(30); // Đồi Vọng Cảnh is 30 points
   });
 });

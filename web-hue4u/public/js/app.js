@@ -437,6 +437,9 @@ window.changePage = function(page) {
 // ==========================================================
 
 // 1. Live Weather Loader
+let webRainSim = false;
+
+// 1. Live Weather Loader
 async function loadLiveWeather() {
   const badge = document.getElementById('liveWeatherBadge');
   if (!badge) return;
@@ -445,16 +448,31 @@ async function loadLiveWeather() {
     const res = await fetch('/api/v1/weather/hue-current');
     if (res.ok) {
       const data = await res.json();
+      const isStale = data.stale || data.source === 'stale';
+      const staleTag = isStale ? ' <small style="color:#F59E0B;">(Dữ liệu cũ)</small>' : '';
+      const isRain = webRainSim || data.isRaining;
       badge.innerHTML = `
-        <span class="weather-icon">${data.isRaining ? '🌧️' : '⛅'}</span>
-        <span>Huế ${data.tempCelsius}°C · ${data.description.split(',')[0]}</span>
+        <span class="weather-icon">${isRain ? '🌧️' : '⛅'}</span>
+        <span>Huế ${data.tempCelsius}°C · ${isRain ? 'Mưa ngâu' : data.description.split(',')[0]}${staleTag}</span>
+        <button onclick="toggleWebRainSimulation(event)" style="margin-left:6px; background:${webRainSim ? '#0284C7' : 'rgba(255,255,255,0.2)'}; border:none; color:white; border-radius:10px; padding:2px 8px; font-size:10px; cursor:pointer;" title="Mô phỏng trời mưa để kiểm thử gợi ý thích ứng">🌧️ ${webRainSim ? 'Mưa: BẬT' : 'Mô phỏng mưa'}</button>
       `;
-      badge.title = data.description;
+      badge.title = data.description + (isStale ? ' (Dữ liệu cache cũ)' : '');
     }
   } catch (err) {
     badge.innerHTML = `<span>⛅ Huế 27°C · Dịu mát</span>`;
   }
 }
+
+window.toggleWebRainSimulation = function(e) {
+  if (e) e.stopPropagation();
+  webRainSim = !webRainSim;
+  loadLiveWeather();
+  if (webRainSim) {
+    if (typeof filterByVertical === 'function') {
+      filterByVertical('fnb'); // Gợi ý ẩm thực/trong nhà khi trời mưa
+    }
+  }
+};
 
 // 2. Audio Guide Player
 let isAudioPlaying = false;

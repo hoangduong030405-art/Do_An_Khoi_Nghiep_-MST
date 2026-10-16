@@ -35,9 +35,9 @@ import { InMemoryDbService } from './database/in-memory-db.service';
         serveRoot: '/flutter',
       },
       {
-        rootPath: join(__dirname, '..', '..', 'public', 'portal'),
+        rootPath: join(__dirname, '..', '..', '..', 'web-hue4u', 'public'),
         serveRoot: '/',
-        exclude: ['/api/(.*)', '/flutter/(.*)', '/app/(.*)', '/admin/(.*)'],
+        exclude: ['/api/(.*)', '/flutter/(.*)', '/admin/(.*)'],
       },
     ),
 

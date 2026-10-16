@@ -57,4 +57,33 @@ describe('API Flow Test (Sử dụng DB thật)', () => {
     expect(unlockRes.data.unlocked).toBe(false);
     expect(unlockRes.data.message).toContain('chưa vào đủ gần');
   });
+
+  it('5. User đọc hồ sơ của chính mình qua /gamification/me thành công', async () => {
+    const headers = { Authorization: 'Bearer ' + token };
+    const meRes = await axios.get(`${baseURL}/gamification/me`, { headers });
+    expect(meRes.status).toBe(200);
+    expect(meRes.data.points).toBeGreaterThanOrEqual(50);
+  });
+
+  it('6. Bảo vệ IDOR: User B không đọc được hồ sơ của User A qua /gamification/profile/:userId', async () => {
+    // 1. Get User A's ID
+    const userARes = await axios.get(`${baseURL}/auth/me`, { headers: { Authorization: 'Bearer ' + token } });
+    const userAId = userARes.data.id;
+
+    // 2. Register User B
+    const emailB = 'test.userb.' + Date.now() + '@huego.vn';
+    const resB = await axios.post(`${baseURL}/auth/register`, { email: emailB, password: 'Password123!', fullName: 'User B' });
+    const tokenB = resB.data.accessToken;
+
+    // 3. User B tries to read User A's gamification profile -> Expect 403 Forbidden
+    try {
+      await axios.get(`${baseURL}/gamification/profile/${userAId}`, {
+        headers: { Authorization: 'Bearer ' + tokenB }
+      });
+      throw new Error('Should have failed with 403 Forbidden');
+    } catch (err: any) {
+      expect(err.response?.status).toBe(403);
+      expect(err.response?.data?.message).toContain('Bạn không có quyền');
+    }
+  });
 });

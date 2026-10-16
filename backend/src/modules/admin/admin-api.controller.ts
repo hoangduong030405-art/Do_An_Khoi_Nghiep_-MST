@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Place } from '../places/entities/place.entity';
+import { UnlockAuditLog } from '../geofencing/entities/unlock-audit-log.entity';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 
@@ -14,6 +15,8 @@ export class AdminApiController {
   constructor(
     @InjectRepository(Place)
     private readonly placeRepo: Repository<Place>,
+    @InjectRepository(UnlockAuditLog)
+    private readonly auditRepo: Repository<UnlockAuditLog>,
   ) {}
 
   @Get('qr-tokens')
@@ -37,7 +40,7 @@ export class AdminApiController {
       return { success: false, message: 'Địa điểm không tồn tại' };
     }
 
-    const newToken = crypto.randomBytes(16).toString('hex');
+    const newToken = crypto.randomBytes(24).toString('hex');
     await this.placeRepo.update({ id: placeId }, { qrToken: newToken });
 
     return {
@@ -45,5 +48,13 @@ export class AdminApiController {
       message: `Đã tạo lại QR Token cho ${place.name}`,
       qrToken: newToken,
     };
+  }
+
+  @Get('unlock-audit-logs')
+  async getUnlockAuditLogs(@Query('limit') limit?: number) {
+    return await this.auditRepo.find({
+      order: { createdAt: 'DESC' },
+      take: limit ? Math.min(Number(limit), 200) : 50,
+    });
   }
 }

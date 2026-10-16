@@ -55,6 +55,15 @@ export class AuthController {
     await this.authService.logout(user, refreshToken);
   }
 
+  @Public()
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @Post('demo')
+  @HttpCode(HttpStatus.OK)
+  async demo() {
+    return this.authService.loginDemo();
+  }
+
   @Get('health')
   @HttpCode(HttpStatus.OK)
   getHealth() {

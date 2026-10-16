@@ -96,8 +96,13 @@ export class ItineraryService {
     if (placeIds.length === 0) return [];
     if (placeIds.length > 12) throw new BadRequestException('Không thể tối ưu quá 12 địa điểm cùng lúc.');
 
-    const places = await this.placeRepo.findByIds(placeIds);
-    if (places.length !== placeIds.length) {
+    let places = await this.placeRepo.findByIds(placeIds);
+    if ((!places || places.length !== placeIds.length) && typeof this.placeRepo.createQueryBuilder === 'function') {
+      places = await this.placeRepo.createQueryBuilder('place')
+        .where('place.id IN (:...placeIds) OR place.slug IN (:...placeIds)', { placeIds })
+        .getMany();
+    }
+    if (!places || places.length !== placeIds.length) {
       throw new BadRequestException('Một hoặc nhiều placeId không hợp lệ.');
     }
 

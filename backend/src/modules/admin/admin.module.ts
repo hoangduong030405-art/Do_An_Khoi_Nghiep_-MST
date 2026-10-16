@@ -6,9 +6,10 @@ import { InMemoryDbService } from '../../database/in-memory-db.service';
 import { CrowdsourceModule } from '../crowdsource/crowdsource.module';
 import { AuthModule } from '../auth/auth.module';
 import { Place } from '../places/entities/place.entity';
+import { UnlockAuditLog } from '../geofencing/entities/unlock-audit-log.entity';
 
 @Module({
-  imports: [CrowdsourceModule, AuthModule, TypeOrmModule.forFeature([Place])],
+  imports: [CrowdsourceModule, AuthModule, TypeOrmModule.forFeature([Place, UnlockAuditLog])],
   controllers: [AdminController, AdminApiController],
   providers: [InMemoryDbService],
 })

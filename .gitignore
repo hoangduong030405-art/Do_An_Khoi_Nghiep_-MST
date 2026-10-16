@@ -25,6 +25,7 @@ backend/check-gemini.ts
 backend/test-ai.ts
 backend/print-points.*
 backend/print-db-points.*
+scratch/
 
 # Prompt and phase files
 UPGRADE_PROMPT*.md

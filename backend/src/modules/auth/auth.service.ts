@@ -220,4 +220,39 @@ export class AuthService {
        // Actually, the prompt says "Đặt revoked_at cho refresh token của user đó" - which implies revoking their token. We'll require the token in the body.
     }
   }
+
+  async loginDemo(): Promise<AuthResponseDto> {
+    const isDemoEnabled = process.env.DEMO_MODE !== 'false';
+    if (!isDemoEnabled) {
+      throw new UnauthorizedException('Chế độ Demo hiện đang bị tắt trên máy chủ (DEMO_MODE=false)');
+    }
+    const demoRand = Math.floor(1000 + Math.random() * 9000);
+    const demoEmail = `demo.${demoRand}@huego.vn`;
+    const passwordHash = await this.hashPassword('Demo@Huego2026');
+    const demoUser = this.userRepository.create({
+      email: demoEmail,
+      passwordHash,
+      fullName: `Du Khách Demo #${demoRand}`,
+      role: UserRole.TOURIST,
+      greenPoints: 0,
+      currentLevel: 1,
+      isActive: true,
+    });
+    const savedUser = await this.userRepository.save(demoUser);
+    const tokens = await this.generateTokens(savedUser);
+    return {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      tokenType: 'Bearer',
+      expiresIn: tokens.expiresIn,
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        fullName: savedUser.fullName,
+        role: savedUser.role,
+        greenPoints: savedUser.greenPoints,
+        currentLevel: savedUser.currentLevel,
+      },
+    };
+  }
 }
