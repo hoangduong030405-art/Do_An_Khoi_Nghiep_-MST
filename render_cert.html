@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Certificate PDF</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #525659; display: flex; justify-content: center; padding: 20px; }
+    canvas { box-shadow: 0 4px 15px rgba(0,0,0,0.3); background: #ffffff; }
+  </style>
+</head>
+<body>
+  <canvas id="pdf-canvas"></canvas>
+  <script>
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    fetch('/test_certificate.pdf')
+      .then(res => res.arrayBuffer())
+      .then(data => pdfjsLib.getDocument({ data }).promise)
+      .then(pdf => pdf.getPage(1))
+      .then(page => {
+        const scale = 1.5;
+        const viewport = page.getViewport({ scale });
+        const canvas = document.getElementById('pdf-canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        return page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+      })
+      .then(() => {
+        const marker = document.createElement('div');
+        marker.id = 'render-done';
+        document.body.appendChild(marker);
+      })
+      .catch(err => {
+        console.error(err);
+        document.body.innerHTML = '<div style="color:red; background:white; padding:20px;">' + err.message + '</div>';
+      });
+  </script>
+</body>
+</html>
