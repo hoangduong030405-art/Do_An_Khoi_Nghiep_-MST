@@ -1,5 +1,6 @@
-const http = require('http');
 const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+const http = require('http');
 const fs = require('fs');
 
 function request(options, data = null, isBinary = false) {

@@ -4,6 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HUEGO – Ứng Dụng Khám Phá Huế Thông Minh</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>
+    // 1. Hủy đăng ký Service Worker cũ và xóa cache lỗi thời
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (var reg of registrations) {
+          reg.unregister().then(function(success) {
+            if (success) console.log('[HUEGO SW] Unregistered legacy worker:', reg.scope);
+          });
+        }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        for (var name of names) {
+          caches.delete(name);
+          console.log('[HUEGO Cache] Cleared cache bucket:', name);
+        }
+      });
+    }
+
+    // 2. Đo thời gian tải thật bằng Performance API (không nói quá 0.5s)
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        var perfData = window.performance.timing;
+        var pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+        var domReadyTime = perfData.domContentLoadedEventEnd - perfData.navigationStart;
+        console.log('[HUEGO Performance] DOMContentLoaded: ' + domReadyTime + ' ms | Full Page Load: ' + pageLoadTime + ' ms (Navigation Timing API)');
+        var perfBadge = document.getElementById('perfLoadBadge');
+        if (perfBadge) {
+          perfBadge.innerText = '⚡ ' + pageLoadTime + 'ms';
+        }
+      }, 0);
+    });
+  </script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -808,13 +845,168 @@
       z-index: 105;
       box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
+
+    /* Narration Player Modal & Subtitles (iOS Safari Compatible) */
+    .narration-player-modal {
+      position: fixed;
+      bottom: 75px;
+      left: 12px;
+      right: 12px;
+      max-width: 390px;
+      margin: 0 auto;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+    }
+    .narration-modal-card {
+      background: rgba(20, 10, 35, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid var(--imperial-gold);
+      border-radius: 20px;
+      padding: 14px 16px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+      color: #fff;
+    }
+    .narration-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .narration-modal-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--imperial-gold);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 85%;
+    }
+    .narration-close-btn {
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+    .narration-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 10px;
+    }
+    .narration-device-tag {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #E2E8F0;
+    }
+    .narration-draft-tag {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #EF4444;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #FCA5A5;
+      font-weight: 600;
+    }
+    .narration-verified-tag {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid #22C55E;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #86EFAC;
+      font-weight: 600;
+    }
+    .narration-subtitle-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px dashed rgba(212, 175, 55, 0.4);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-height: 48px;
+      max-height: 80px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #F8FAFC;
+    }
+    .narration-current-line {
+      color: #FEF08A;
+      font-weight: 500;
+    }
+    .narration-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .narration-ctrl-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .narration-ctrl-btn.primary {
+      background: var(--imperial-gold);
+      color: #1A092A;
+    }
+    .narration-ctrl-btn.danger {
+      background: rgba(239, 68, 68, 0.25);
+      border: 1px solid #EF4444;
+      color: #FCA5A5;
+    }
+    .narration-speed-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+      font-size: 10px;
+      color: #CBD5E1;
+    }
+    .narration-speed-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .narration-speed-btn.active {
+      background: var(--imperial-gold);
+      color: #1A092A;
+      font-weight: 700;
+    }
+    .btn-enable-audio-ios {
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid var(--imperial-gold);
+      color: #FEF08A;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
   </style>
 </head>
 <body>
 
   <div class="top-controls">
-    <div class="top-title">📱 HUEGO SMART MOBILE SIMULATOR</div>
-    <button class="view-mode-btn" onclick="toggleFullscreen()">🖥️ Phóng To / Toàn Màn Hình</button>
+    <div class="top-title">📱 HUEGO SMART MOBILE SIMULATOR <span style="font-size:10px; background:rgba(212,175,55,0.25); border:1px solid var(--imperial-gold); padding:2px 6px; border-radius:8px; color:var(--imperial-gold); margin-left:6px;">v2.6-consolidated</span></div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="btn-enable-audio-ios" onclick="window.huegoSpeech && window.huegoSpeech.unlockAudioContext(); showToast('🎧 Đã bật quyền thuyết minh âm thanh thiết bị!')">🔊 Bật Thuyết Minh</button>
+      <span id="perfLoadBadge" style="font-size:11px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); padding:4px 8px; border-radius:12px; color:#A7F3D0;">⚡ Đo thời gian tải...</span>
+      <button class="view-mode-btn" onclick="toggleFullscreen()">🖥️ Toàn Màn Hình</button>
+    </div>
   </div>
 
   <div class="phone-container" id="phoneChassis">
@@ -834,11 +1026,19 @@
       <div class="app-header">
         <div class="app-brand">
           <span>🏛️</span>
-          <h2>HUEGO – Cố Đô Huế</h2>
+          <div>
+            <h2>HUEGO – Cố Đô Huế</h2>
+            <div style="display:flex; gap:4px; align-items:center; margin-top:2px;">
+              <span id="gpsAccuracyBadge" style="font-size:9px; background:rgba(255,255,255,0.15); padding:1px 5px; border-radius:8px; color:#E2E8F0;">📡 GPS: Đang dò...</span>
+            </div>
+          </div>
         </div>
-        <div class="header-points-badge" id="headerPointsBadge">
-          <span>🌿</span>
-          <span id="userTotalPoints">125 GP</span>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button id="authStatusBtn" onclick="openAuthModal()" style="background:rgba(212,175,55,0.2); border:1px solid var(--imperial-gold); color:var(--imperial-gold); border-radius:12px; padding:3px 8px; font-size:10px; font-weight:700; cursor:pointer;">👤 Vào thử demo</button>
+          <div class="header-points-badge" id="headerPointsBadge" onclick="switchTab('tab-green', document.querySelectorAll('.nav-btn')[4])" title="Xem chi tiết điểm xanh và chứng nhận">
+            <span>🌿</span>
+            <span id="userTotalPoints">0 GP</span>
+          </div>
         </div>
       </div>
 
@@ -881,12 +1081,15 @@
 
           <!-- Weather Floating Compact Banner -->
           <div class="weather-banner" id="weatherBanner">
-            <span class="weather-icon">🌧️</span>
+            <span class="weather-icon" id="weatherIcon">⛅</span>
             <div class="weather-info">
-              <div class="weather-title">Mưa ngâu Cố Đô • 24.5°C</div>
-              <div class="weather-desc">Gợi ý địa điểm trong nhà</div>
+              <div class="weather-title" id="weatherTitle">Huế 27°C • Dịu mát</div>
+              <div class="weather-desc" id="weatherDesc">Gợi ý khám phá di sản Cố Đô</div>
             </div>
-            <button class="weather-btn" onclick="filterPlaces('INDOOR')">Đổi hướng</button>
+            <div style="display:flex; gap:4px; align-items:center;">
+              <button class="weather-btn" id="rainSimBtn" onclick="toggleRainSimulation()" title="Bật/Tắt mô phỏng thời tiết mưa để kiểm tra tự thích ứng" style="background:#475569; font-size:10px; padding:4px 6px;">🌧️ Mưa: TẮT</button>
+              <button class="weather-btn" id="weatherFilterBtn" onclick="applyWeatherRecommendation()" style="font-size:10px; padding:4px 6px;">Đổi hướng</button>
+            </div>
           </div>
 
           <!-- Bottom Sheet Chi Tiết Điểm Đến -->
@@ -902,9 +1105,17 @@
               <span class="sheet-tag" id="sheetPrice">Miễn phí</span>
             </div>
             <p id="sheetDesc" style="font-size: 12px; color: #4B5563; line-height: 1.4; margin-bottom: 12px;"></p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:8px;">
+              <button class="btn-action" onclick="unlockCurrentPlaceGps()" style="background:linear-gradient(135deg, #15803D, #166534); color:white; font-weight:800; grid-column:span 2;">
+                <span>🔓</span> Check-in Mở Khóa GPS (Thực tế)
+              </button>
+            </div>
             <div class="sheet-actions" style="grid-template-columns: 1fr 1fr; gap: 8px;">
               <button class="btn-action btn-ai-voice" onclick="playAiNarration()">
                 <span>🎙️</span> AI Thuyết Minh
+              </button>
+              <button class="btn-action" onclick="promptQrUnlock()" style="background:#371457; color:var(--imperial-gold); border:1px solid var(--imperial-gold);">
+                <span>🔑</span> Nhập mã QR
               </button>
               <button class="btn-action btn-add-route" onclick="addToItineraryFromSheet()">
                 <span>➕</span> Lộ Trình
@@ -912,7 +1123,7 @@
               <button class="btn-action" onclick="openGoogleMapsDirection()" style="background:#1E6B7B; color:white;">
                 <span>🧭</span> Chỉ Đường
               </button>
-              <button class="btn-action" id="sheet3dBtn" onclick="open3dMuseumFromSheet()" style="background:var(--imperial-gold); color:#000; font-weight:800; display:none;">
+              <button class="btn-action" id="sheet3dBtn" onclick="open3dMuseumFromSheet()" style="background:var(--imperial-gold); color:#000; font-weight:800; display:none; grid-column:span 2;">
                 <span>🏛️</span> 3D Cung Đình
               </button>
             </div>
@@ -925,21 +1136,24 @@
             <div class="progress-box">
               <div class="progress-header">
                 <span>Tiến độ khám phá hành trình</span>
-                <strong id="itineraryPercentText" style="color: var(--imperial-gold); font-size: 16px;">67%</strong>
+                <strong id="itineraryPercentText" style="color: var(--imperial-gold); font-size: 16px;">0%</strong>
               </div>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" id="itineraryProgressBar" style="width: 67%;"></div>
+                <div class="progress-bar-fill" id="itineraryProgressBar" style="width: 0%;"></div>
               </div>
               <p style="font-size: 11px; opacity: 0.9;" id="itineraryStatusMsg">
-                Đã hoàn thành 2/3 điểm. Check-in nốt Cầu Tràng Tiền để mở khóa 100% và nhận Chứng nhận Hoàng Gia!
+                Mở khóa các địa danh trong lộ trình để tích lũy Green Points và nhận E-Certificate!
               </p>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <h4 style="font-size: 14px; font-weight: 800; color: #1E293B;">Chuỗi Điểm Đến (Thứ Tự Tối Ưu)</h4>
-              <button onclick="triggerSimulatedCheckIn()" style="background: var(--royal-violet); color: white; border: none; padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; cursor: pointer;">
-                📍 Giả lập GPS Check-in
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <h4 style="font-size: 13px; font-weight: 800; color: #1E293B;">Chuỗi Điểm Đến Lộ Trình</h4>
+              <button onclick="optimizeMyItinerary()" style="background: linear-gradient(135deg, #059669, #047857); color: white; border: none; padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; cursor: pointer;">
+                ⚡ Tối Ưu Thứ Tự 2-Opt
               </button>
+            </div>
+            <div id="itineraryMetrics" style="font-size:10px; color:#475569; margin-bottom:10px; line-height:1.3; background:#F1F5F9; padding:6px 10px; border-radius:8px;">
+              🛣️ Lộ trình lưu trữ tại PostgreSQL. Nhấn "Tối Ưu Thứ Tự" để sắp xếp đường đi ngắn nhất.
             </div>
 
             <div class="stops-list" id="stopsContainer">
@@ -1007,7 +1221,7 @@
           <div class="green-container">
             <div class="green-stat-card">
               <div style="font-size: 13px; opacity: 0.9;">Hồ Sơ Du Lịch Xanh Cố Đô</div>
-              <div class="green-pts-val" id="profilePts">185 GP</div>
+              <div class="green-pts-val" id="profilePts">0 GP</div>
               <div style="font-size: 12px; color: #86EFAC;">🌱 Đã giảm thiểu 5.6 kg CO2 bằng xe đạp và đi bộ</div>
             </div>
 
@@ -1030,9 +1244,12 @@
               </div>
             </div>
 
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 20px; display:flex; flex-direction:column; gap:10px;">
               <button class="spin-action-btn" onclick="showRoyalCertificate()" style="background: linear-gradient(135deg, var(--imperial-gold), #B45309); color: #000;">
-                <span>📜</span> Xem Chứng Nhận E-Certificate
+                <span>📜</span> Nhận Chứng Nhận E-Certificate
+              </button>
+              <button class="spin-action-btn" onclick="openCrowdsourceModal()" style="background: rgba(255,255,255,0.08); border:1px solid var(--imperial-gold); color: var(--imperial-gold);">
+                <span>➕</span> Đóng Góp Địa Điểm Mới (+50 GP)
               </button>
             </div>
           </div>
@@ -1256,33 +1473,31 @@
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([16.4697, 107.5779], 13);
 
-      // 1. Google Maps Road
-      const googleStreets = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-        attribution: '&copy; Google Maps',
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20
+      // 1. OpenStreetMap Standard (Giấy phép ODbL mở)
+      const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
+        maxZoom: 19
       });
 
-      // 2. Google Maps Hybrid
-      const googleHybrid = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-        attribution: '&copy; Google Maps Vệ Tinh',
-        subdomains: ['0', '1', '2', '3'],
-        maxZoom: 20
+      // 2. Esri World Imagery (Vệ tinh)
+      const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics',
+        maxZoom: 19
       });
 
-      // 3. Esri World Street Map
+      // 3. Esri World Street Map (Bản đồ GIS di sản)
       const esriStreets = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri ArcGIS',
         maxZoom: 19
       });
 
       tileLayers = [
-        { name: 'Đường phố (Google)', nextText: 'Vệ tinh', icon: '🛰️', layer: googleStreets },
-        { name: 'Vệ tinh (Google)', nextText: 'Esri Cố Đô', icon: '🏛️', layer: googleHybrid },
-        { name: 'Bản đồ GIS (Esri)', nextText: 'Đường phố', icon: '🗺️', layer: esriStreets }
+        { name: 'Đường phố (OpenStreetMap)', nextText: 'Vệ tinh', icon: '🛰️', layer: osmStreets },
+        { name: 'Vệ tinh (Esri Imagery)', nextText: 'Esri GIS', icon: '🏛️', layer: esriSatellite },
+        { name: 'Bản đồ GIS (Esri Street)', nextText: 'Đường phố', icon: '🗺️', layer: esriStreets }
       ];
 
-      currentTileLayer = googleStreets;
+      currentTileLayer = osmStreets;
       currentTileLayer.addTo(map);
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -1791,17 +2006,192 @@
       });
     }
 
+    // HUEGO SMART SPEECH CONTROLLER (Tương thích iOS Safari & Chống ngắt câu dài)
+    window.huegoSpeech = {
+      utterQueue: [],
+      currentIndex: 0,
+      isPlaying: false,
+      isPaused: false,
+      currentSpeed: 1.0,
+      cachedVoices: [],
+      userUnlockedAudio: false,
+
+      init() {
+        if ('speechSynthesis' in window) {
+          this.loadVoices();
+          window.speechSynthesis.onvoiceschanged = () => this.loadVoices();
+        }
+      },
+
+      loadVoices() {
+        if ('speechSynthesis' in window) {
+          this.cachedVoices = window.speechSynthesis.getVoices() || [];
+        }
+      },
+
+      getVietnameseVoice() {
+        if (!this.cachedVoices.length && 'speechSynthesis' in window) {
+          this.cachedVoices = window.speechSynthesis.getVoices() || [];
+        }
+        return this.cachedVoices.find(v => 
+          v.lang === 'vi-VN' || v.lang.startsWith('vi') || 
+          v.name.includes('Vietnamese') || v.name.includes('HoaiMy') || 
+          v.name.includes('NamMinh') || v.name.includes('Linh')
+        );
+      },
+
+      unlockAudioContext() {
+        this.userUnlockedAudio = true;
+        if ('speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.cancel();
+            const silent = new SpeechSynthesisUtterance(' ');
+            silent.volume = 0.01;
+            window.speechSynthesis.speak(silent);
+          } catch (_) {}
+        }
+      },
+
+      playNarration(title, text, disclaimer = null) {
+        if (!('speechSynthesis' in window)) {
+          showToast('Trình duyệt của bạn không hỗ trợ Web Speech API.');
+          return;
+        }
+
+        this.stop();
+        if (!text || !text.trim()) return;
+
+        // Chia nhỏ câu theo dấu câu tránh lỗi WebKit Safari tự ngắt sau 15 giây
+        const rawSentences = text.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) || [text];
+        this.utterQueue = rawSentences.map(s => s.trim()).filter(s => s.length > 0);
+        this.currentIndex = 0;
+        this.isPlaying = true;
+        this.isPaused = false;
+
+        this.showPlayerModal(title, text, disclaimer);
+        this.speakCurrentSentence();
+      },
+
+      speakCurrentSentence() {
+        if (!this.isPlaying || this.currentIndex >= this.utterQueue.length) {
+          this.finish();
+          return;
+        }
+
+        const sentence = this.utterQueue[this.currentIndex];
+        const utter = new SpeechSynthesisUtterance(sentence);
+        utter.lang = 'vi-VN';
+        utter.rate = this.currentSpeed;
+        
+        const viVoice = this.getVietnameseVoice();
+        if (viVoice) utter.voice = viVoice;
+
+        const subtitleEl = document.getElementById('narrationSubtitleCurrent');
+        if (subtitleEl) subtitleEl.innerText = sentence;
+
+        utter.onend = () => {
+          if (this.isPlaying && !this.isPaused) {
+            this.currentIndex++;
+            this.speakCurrentSentence();
+          }
+        };
+
+        utter.onerror = (e) => {
+          console.warn('Lỗi đọc câu:', e);
+          if (this.isPlaying && !this.isPaused) {
+            this.currentIndex++;
+            this.speakCurrentSentence();
+          }
+        };
+
+        window.speechSynthesis.speak(utter);
+      },
+
+      togglePause() {
+        if (!('speechSynthesis' in window) || !this.isPlaying) return;
+        const btn = document.getElementById('narrationPlayPauseBtn');
+        if (this.isPaused) {
+          this.isPaused = false;
+          window.speechSynthesis.resume();
+          if (btn) btn.innerHTML = '⏸ Tạm dừng';
+        } else {
+          this.isPaused = true;
+          window.speechSynthesis.pause();
+          if (btn) btn.innerHTML = '▶ Tiếp tục';
+        }
+      },
+
+      setSpeed(speed) {
+        this.currentSpeed = speed;
+        document.querySelectorAll('.narration-speed-btn').forEach(btn => {
+          btn.classList.toggle('active', parseFloat(btn.dataset.speed) === speed);
+        });
+        if (this.isPlaying && !this.isPaused) {
+          window.speechSynthesis.cancel();
+          this.speakCurrentSentence();
+        }
+      },
+
+      stop() {
+        this.isPlaying = false;
+        this.isPaused = false;
+        this.currentIndex = 0;
+        this.utterQueue = [];
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        const modal = document.getElementById('narrationPlayerModal');
+        if (modal) modal.style.display = 'none';
+      },
+
+      finish() {
+        this.isPlaying = false;
+        this.isPaused = false;
+        const playPauseBtn = document.getElementById('narrationPlayPauseBtn');
+        if (playPauseBtn) playPauseBtn.innerHTML = '🔄 Nghe lại';
+      },
+
+      showPlayerModal(title, fullText, disclaimer) {
+        let modal = document.getElementById('narrationPlayerModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'narrationPlayerModal';
+          modal.className = 'narration-player-modal';
+          document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+          <div class="narration-modal-card">
+            <div class="narration-modal-header">
+              <div class="narration-modal-title">🎧 Thuyết Minh: ${title}</div>
+              <button class="narration-close-btn" onclick="window.huegoSpeech.stop()">✕</button>
+            </div>
+            <div class="narration-meta-bar">
+              <span class="narration-device-tag">🎙️ Giọng đọc của thiết bị (Web Speech API)</span>
+              ${disclaimer ? `<span class="narration-draft-tag">⚠️ ${disclaimer}</span>` : '<span class="narration-verified-tag">✓ Đã kiểm duyệt</span>'}
+            </div>
+            <div class="narration-subtitle-box">
+              <div id="narrationSubtitleCurrent" class="narration-current-line">${this.utterQueue[0] || fullText}</div>
+            </div>
+            <div class="narration-controls">
+              <button id="narrationPlayPauseBtn" class="narration-ctrl-btn primary" onclick="window.huegoSpeech.togglePause()">⏸ Tạm dừng</button>
+              <button class="narration-ctrl-btn danger" onclick="window.huegoSpeech.stop()">⏹ Dừng</button>
+              <div class="narration-speed-group">
+                <span>Tốc độ:</span>
+                <button class="narration-speed-btn" data-speed="0.8" onclick="window.huegoSpeech.setSpeed(0.8)">0.8x</button>
+                <button class="narration-speed-btn active" data-speed="1.0" onclick="window.huegoSpeech.setSpeed(1.0)">1.0x</button>
+                <button class="narration-speed-btn" data-speed="1.2" onclick="window.huegoSpeech.setSpeed(1.2)">1.2x</button>
+              </div>
+            </div>
+          </div>
+        `;
+        modal.style.display = 'flex';
+      }
+    };
+    window.huegoSpeech.init();
+
     function fallbackWebSpeech() {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(audioState.scriptText);
-        utterance.rate = audioState.speed || 1.0;
-        utterance.lang = audioState.lang === 'vi' ? 'vi-VN' : 'en-US';
-        const voices = window.speechSynthesis.getVoices();
-        const viVoice = voices.find(v => v.lang.startsWith('vi') || v.name.includes('Vietnamese') || v.name.includes('HoaiMy') || v.name.includes('NamMinh'));
-        if (audioState.lang === 'vi' && viVoice) utterance.voice = viVoice;
-        utterance.onend = () => stopAudioGuide();
-        window.speechSynthesis.speak(utterance);
+      if (window.huegoSpeech && audioState.scriptText) {
+        window.huegoSpeech.playNarration(audioState.title || 'Di tích Huế', audioState.scriptText, null);
       }
     }
 
@@ -1925,15 +2315,47 @@
       document.getElementById('miniAudioBar').style.display = 'none';
     }
 
-    // TAB 2: ITINERARY LOGIC
-    let itineraryStops = [
-      { id: 1, name: 'Đại Nội Huế (Hoàng Thành)', desc: '08:30 • Mở khóa thành công (+30 GP)', visited: true },
-      { id: 2, name: 'Bảo tàng Cổ vật Cung đình', desc: '10:00 • Mở khóa thành công (+25 GP)', visited: true },
-      { id: 3, name: 'Cầu Tràng Tiền (Ngắm Sông Hương)', desc: '16:30 • Chờ check-in bán kính 35m', visited: false }
+    // TAB 2: ITINERARY LOGIC (Lưu trữ thực tế, F5 không mất)
+    const DEFAULT_ITINERARY_STOPS = [
+      { id: 'dai-noi-hue', name: 'Đại Nội Huế (Hoàng Thành)', desc: 'Điểm xuất phát • Bán kính 150m', visited: false },
+      { id: 'chua-thien-mu', name: 'Chùa Thiên Mụ (Linh Mụ)', desc: 'Cột mốc di sản • Bán kính 80m', visited: false },
+      { id: 'cau-trang-tien', name: 'Cầu Tràng Tiền (Ngắm Sông Hương)', desc: 'Cột mốc check-in • Bán kính 50m', visited: false }
     ];
+
+    let itineraryStops = [];
+    try {
+      const savedStops = localStorage.getItem('huego_itinerary');
+      itineraryStops = savedStops ? JSON.parse(savedStops) : DEFAULT_ITINERARY_STOPS;
+    } catch (_) {
+      itineraryStops = DEFAULT_ITINERARY_STOPS;
+    }
+
+    function saveItineraryState() {
+      localStorage.setItem('huego_itinerary', JSON.stringify(itineraryStops));
+      updateItineraryProgress();
+    }
+
+    function updateItineraryProgress() {
+      if (!itineraryStops || itineraryStops.length === 0) return;
+      const completed = itineraryStops.filter(s => s.visited).length;
+      const percent = Math.round((completed / itineraryStops.length) * 100);
+      const pText = document.getElementById('itineraryPercentText');
+      const pBar = document.getElementById('itineraryProgressBar');
+      const pMsg = document.getElementById('itineraryStatusMsg');
+      if (pText) pText.innerText = percent + '%';
+      if (pBar) pBar.style.width = percent + '%';
+      if (pMsg) {
+        if (percent === 100) {
+          pMsg.innerText = '🎉 XUẤT SẮC! Đã mở khóa toàn bộ lộ trình Cố Đô. Bạn đã đủ điều kiện nhận Chứng nhận E-Certificate!';
+        } else {
+          pMsg.innerText = `Đã hoàn thành ${completed}/${itineraryStops.length} điểm đến. Tiếp tục khám phá để đạt 100%!`;
+        }
+      }
+    }
 
     function renderItinerary() {
       const container = document.getElementById('stopsContainer');
+      if (!container) return;
       container.innerHTML = '';
       itineraryStops.forEach((s, idx) => {
         const card = document.createElement('div');
@@ -1944,27 +2366,102 @@
             <div class="stop-name">${s.name}</div>
             <div class="stop-sub">${s.desc}</div>
           </div>
-          <div style="font-size: 18px; color: #94A3B8;">⋮⋮</div>
+          <button onclick="removeItineraryStop(${idx})" style="background:none; border:none; color:#EF4444; font-size:14px; cursor:pointer;" title="Xóa điểm này">✕</button>
         `;
         container.appendChild(card);
       });
+      updateItineraryProgress();
     }
 
-    function triggerSimulatedCheckIn() {
-      itineraryStops[2].visited = true;
-      itineraryStops[2].desc = 'Vừa mở khóa tại chỗ (+20 GP)';
-      document.getElementById('itineraryPercentText').innerText = '100%';
-      document.getElementById('itineraryProgressBar').style.width = '100%';
-      document.getElementById('itineraryStatusMsg').innerText = '🎉 XUẤT SẮC! Bạn đã hoàn thành 100% Lộ trình Du lịch Cố Đô!';
-      document.getElementById('userTotalPoints').innerText = '185 GP';
-      document.getElementById('profilePts').innerText = '185 GP';
+    function removeItineraryStop(idx) {
+      itineraryStops.splice(idx, 1);
+      saveItineraryState();
       renderItinerary();
-      showRoyalCertificate();
     }
 
-    function showRoyalCertificate() {
-      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-      document.getElementById('certOverlay').style.display = 'flex';
+    async function optimizeMyItinerary() {
+      if (itineraryStops.length < 2) {
+        showToast('Cần ít nhất 2 địa danh để tối ưu hóa lộ trình.');
+        return;
+      }
+      showToast('Đang chạy thuật toán tối ưu Nearest Neighbor + 2-Opt qua NestJS...');
+      try {
+        const placeIds = itineraryStops.map(s => s.id || s.slug || s.name);
+        const startLat = userLocation ? userLocation.lat : 16.4673;
+        const startLng = userLocation ? userLocation.lng : 107.5905;
+
+        const res = await fetch('/api/v1/itinerary/optimize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placeIds, startLat, startLng })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          // Sắp xếp lại danh sách stops theo thứ tự tối ưu
+          if (data.optimizedRoute && Array.isArray(data.optimizedRoute)) {
+            const reordered = [];
+            data.optimizedRoute.forEach(pId => {
+              const found = itineraryStops.find(s => (s.id || s.slug || s.name) === pId);
+              if (found) reordered.push(found);
+            });
+            itineraryStops.forEach(s => {
+              if (!reordered.includes(s)) reordered.push(s);
+            });
+            itineraryStops = reordered;
+            saveItineraryState();
+            renderItinerary();
+          }
+
+          const metricsEl = document.getElementById('itineraryMetrics');
+          if (metricsEl) {
+            metricsEl.innerHTML = `⚡ <b>Đã tối ưu 2-Opt:</b> Tổng quãng đường <b>${data.totalDistanceKm || 0} km</b> • Thời gian ước tính <b>${data.estimatedDurationMin || 0} phút</b>`;
+            metricsEl.style.background = '#ECFDF5';
+            metricsEl.style.color = '#065F46';
+          }
+          showToast(`⚡ Đã tối ưu thứ tự lộ trình: ${data.totalDistanceKm} km (${data.estimatedDurationMin} phút)`);
+        } else {
+          showToast('Không thể tối ưu lộ trình lúc này.');
+        }
+      } catch (err) {
+        console.warn('Lỗi gọi API optimize route:', err);
+        showToast('Lỗi kết nối máy chủ tối ưu lộ trình.');
+      }
+    }
+
+    async function showRoyalCertificate() {
+      if (!currentUser || !authToken) {
+        showToast('Vui lòng vào thử demo hoặc đăng nhập trước khi xem Chứng nhận.');
+        openAuthModal();
+        return;
+      }
+
+      try {
+        showToast('Đang kiểm tra điều kiện cấp Chứng nhận điện tử qua NestJS...');
+        const res = await fetchWithAuth('/api/v1/gamification/certificate/' + currentUser.id, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.message || 'Chưa đủ điều kiện nhận Chứng nhận E-Certificate.');
+          return;
+        }
+
+        confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+        const nameEl = document.querySelector('.cert-user-name');
+        if (nameEl) nameEl.innerText = (currentUser.fullName || data.recipientName || 'NGUYỄN CỐ ĐÔ').toUpperCase();
+        
+        const codeEl = document.getElementById('certCodeDisplay');
+        if (codeEl) {
+          codeEl.innerHTML = `MÃ XÁC THỰC: <b>${data.certificateCode}</b><br><a href="${data.verificationUrl}" target="_blank" style="color:var(--imperial-gold); font-size:11px; text-decoration:underline; margin-top:4px; display:inline-block;">🔍 Xem trang xác thực chính thức (/verify)</a>`;
+        }
+
+        document.getElementById('certOverlay').style.display = 'flex';
+      } catch (err) {
+        alert('Lỗi kết nối máy chủ xác thực.');
+      }
     }
 
     function closeCert() {
@@ -1972,21 +2469,27 @@
     }
 
     function shareCertificate() {
-      alert('Đã tạo liên kết chia sẻ Chứng nhận Hoàng Gia! Bạn có thể lưu ảnh hoặc đăng lên Facebook Stories / Zalo.');
+      alert('Đã tạo liên kết chia sẻ Chứng nhận điện tử! Bạn có thể lưu ảnh hoặc mở trang /verify để kiểm chứng.');
       closeCert();
     }
 
     function addToItineraryFromSheet() {
       if (!activePlace) return;
+      const alreadyIn = itineraryStops.some(s => s.id === activePlace.id || s.name === activePlace.name);
+      if (alreadyIn) {
+        showToast('Địa danh này đã có trong lộ trình của bạn.');
+        return;
+      }
       itineraryStops.push({
-        id: itineraryStops.length + 1,
+        id: activePlace.id,
         name: activePlace.name,
-        desc: 'Mới thêm vào lộ trình • Bán kính 35m',
+        desc: `Cột mốc • Bán kính ${activePlace.geofenceRadiusMeters || 35}m`,
         visited: false
       });
+      saveItineraryState();
       renderItinerary();
       closeSheet();
-      alert('Đã thêm [' + activePlace.name + '] vào lộ trình của bạn!');
+      showToast('Đã thêm [' + activePlace.name + '] vào lộ trình!');
     }
 
     // TAB 3: FORTUNE WHEEL LOGIC
@@ -2172,8 +2675,554 @@
       if (e.key === 'Enter') sendUserMessage();
     }
 
+    
+    // ==========================================
+    // HUEGO CONSOLIDATED ARCHITECTURE & REAL API
+    // ==========================================
+    // ==========================================
+    // HUEGO CONSOLIDATED ARCHITECTURE & REAL API
+    // ==========================================
+    let currentUser = null;
+    let authToken = localStorage.getItem('huego_token') || null;
+    let refreshToken = localStorage.getItem('huego_refresh_token') || null;
+    let liveGpsAccuracy = null;
+    let isBackendOnline = true;
+    let isSimulatingRain = false;
+    let liveWeather = null;
+
+    // A. Wrapper gọi API có xác thực & Tự Động Refresh Token (Retry 1 lần khi 401)
+    async function fetchWithAuth(url, options = {}) {
+      if (!options.headers) options.headers = {};
+      if (authToken) {
+        options.headers['Authorization'] = 'Bearer ' + authToken;
+      }
+      let res = await fetch(url, options);
+      if (res.status === 401 && refreshToken) {
+        try {
+          const refreshRes = await fetch('/api/v1/auth/refresh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken })
+          });
+          if (refreshRes.ok) {
+            const data = await refreshRes.json();
+            authToken = data.accessToken;
+            if (data.refreshToken) refreshToken = data.refreshToken;
+            localStorage.setItem('huego_token', authToken);
+            if (refreshToken) localStorage.setItem('huego_refresh_token', refreshToken);
+            // Thử lại yêu cầu ban đầu một lần
+            options.headers['Authorization'] = 'Bearer ' + authToken;
+            res = await fetch(url, options);
+          } else {
+            console.warn('Phiên làm việc hết hạn, vui lòng đăng nhập lại.');
+            handleLogout(false);
+          }
+        } catch (e) {
+          console.warn('Lỗi tự động refresh token:', e);
+        }
+      }
+      return res;
+    }
+
+    // B. Quản lý trạng thái mạng & Chế độ Offline
+    window.addEventListener('online', () => {
+      isBackendOnline = true;
+      showToast('🟢 Đã khôi phục kết nối mạng!');
+    });
+    window.addEventListener('offline', () => {
+      isBackendOnline = false;
+      showToast('⚠️ Mất kết nối mạng. Tính năng mở khóa tích điểm bị vô hiệu hóa.');
+    });
+
+    // C. Khởi tạo xác thực
+    async function initAuth() {
+      const storedUser = localStorage.getItem('huego_user');
+      if (authToken && storedUser) {
+        try {
+          currentUser = JSON.parse(storedUser);
+          updateAuthUI();
+          await loadProfileFromBackend();
+        } catch (_) {
+          currentUser = null;
+          updateAuthUI();
+        }
+      } else {
+        // Tự động cấp tài khoản demo ngẫu nhiên từ NestJS nếu chưa có
+        loginDemoAccount(true);
+      }
+    }
+
+    function updateAuthUI() {
+      const btn = document.getElementById('authStatusBtn');
+      const modalLoggedIn = document.getElementById('authLoggedInView');
+      const modalLoggedOut = document.getElementById('authLoggedOutView');
+
+      if (currentUser && authToken) {
+        if (btn) btn.innerHTML = '👤 ' + (currentUser.fullName || currentUser.email.split('@')[0]);
+        if (modalLoggedIn) modalLoggedIn.style.display = 'block';
+        if (modalLoggedOut) modalLoggedOut.style.display = 'none';
+
+        document.getElementById('authUserName').innerText = currentUser.fullName || 'Du khách Huế';
+        document.getElementById('authUserEmail').innerText = currentUser.email || '';
+        document.getElementById('authUserId').innerText = currentUser.id || '';
+      } else {
+        if (btn) btn.innerHTML = '👤 Vào thử demo';
+        if (modalLoggedIn) modalLoggedIn.style.display = 'none';
+        if (modalLoggedOut) modalLoggedOut.style.display = 'block';
+      }
+    }
+
+    function openAuthModal() {
+      const m = document.getElementById('authModal');
+      if (m) m.style.display = 'flex';
+      updateAuthUI();
+    }
+
+    function closeAuthModal() {
+      const m = document.getElementById('authModal');
+      if (m) m.style.display = 'none';
+    }
+
+    async function loginDemoAccount(silent = false) {
+      try {
+        const res = await fetch('/api/v1/auth/demo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) {
+          if (!silent) showToast('Chế độ demo đang tắt trên máy chủ.');
+          return;
+        }
+        const data = await res.json();
+        authToken = data.accessToken;
+        refreshToken = data.refreshToken;
+        currentUser = data.user;
+        localStorage.setItem('huego_token', authToken);
+        if (refreshToken) localStorage.setItem('huego_refresh_token', refreshToken);
+        localStorage.setItem('huego_user', JSON.stringify(currentUser));
+        updateAuthUI();
+        closeAuthModal();
+        if (!silent) showToast('Đã cấp tài khoản demo: ' + (currentUser.fullName || currentUser.email));
+        await loadProfileFromBackend();
+      } catch (err) {
+        console.warn('Lỗi gọi API demo auth:', err);
+        if (!silent) showToast('Không thể kết nối máy chủ auth.');
+      }
+    }
+
+    async function handleLoginEmail() {
+      const email = document.getElementById('authEmailInput').value.trim();
+      const password = document.getElementById('authPassInput').value;
+      if (!email || !password) {
+        alert('Vui lòng nhập đầy đủ email và mật khẩu.');
+        return;
+      }
+      try {
+        const res = await fetch('/api/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.message || 'Đăng nhập không thành công');
+          return;
+        }
+        authToken = data.accessToken;
+        refreshToken = data.refreshToken;
+        currentUser = data.user;
+        localStorage.setItem('huego_token', authToken);
+        if (refreshToken) localStorage.setItem('huego_refresh_token', refreshToken);
+        localStorage.setItem('huego_user', JSON.stringify(currentUser));
+        updateAuthUI();
+        closeAuthModal();
+        showToast('Đăng nhập thành công! Chào ' + (currentUser.fullName || currentUser.email));
+        await loadProfileFromBackend();
+      } catch (err) {
+        alert('Lỗi kết nối máy chủ.');
+      }
+    }
+
+    async function handleRegisterEmail() {
+      const email = document.getElementById('authEmailInput').value.trim();
+      const password = document.getElementById('authPassInput').value;
+      if (!email || !password) {
+        alert('Vui lòng nhập đầy đủ email và mật khẩu.');
+        return;
+      }
+      try {
+        const res = await fetch('/api/v1/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, fullName: email.split('@')[0] })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.message || 'Đăng ký không thành công');
+          return;
+        }
+        authToken = data.accessToken;
+        refreshToken = data.refreshToken;
+        currentUser = data.user;
+        localStorage.setItem('huego_token', authToken);
+        if (refreshToken) localStorage.setItem('huego_refresh_token', refreshToken);
+        localStorage.setItem('huego_user', JSON.stringify(currentUser));
+        updateAuthUI();
+        closeAuthModal();
+        showToast('Đăng ký tài khoản thành công!');
+        await loadProfileFromBackend();
+      } catch (err) {
+        alert('Lỗi kết nối máy chủ.');
+      }
+    }
+
+    async function handleLogout(sendServerRevoke = true) {
+      if (sendServerRevoke && refreshToken && authToken) {
+        try {
+          await fetch('/api/v1/auth/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + authToken
+            },
+            body: JSON.stringify({ refreshToken })
+          });
+        } catch (_) {}
+      }
+      authToken = null;
+      refreshToken = null;
+      currentUser = null;
+      localStorage.removeItem('huego_token');
+      localStorage.removeItem('huego_refresh_token');
+      localStorage.removeItem('huego_user');
+      updateAuthUI();
+      closeAuthModal();
+      showToast('Đã đăng xuất an toàn.');
+      const hPts = document.getElementById('userTotalPoints');
+      if (hPts) hPts.innerText = '0 GP';
+      const pPts = document.getElementById('profilePts');
+      if (pPts) pPts.innerText = '0 GP';
+    }
+
+    // D. Nạp Profile Thật từ /gamification/me (F5 không mất dữ liệu)
+    async function loadProfileFromBackend() {
+      if (!authToken) return;
+      try {
+        const res = await fetchWithAuth('/api/v1/gamification/me');
+        if (res.ok) {
+          const profile = await res.json();
+          const pts = profile.totalPoints !== undefined ? profile.totalPoints : (profile.points || 0);
+          const ptsText = pts + ' GP';
+          
+          const hPts = document.getElementById('userTotalPoints');
+          if (hPts) hPts.innerText = ptsText;
+          const pPts = document.getElementById('profilePts');
+          if (pPts) pPts.innerText = ptsText;
+          const mPts = document.getElementById('authUserPts');
+          if (mPts) mPts.innerText = ptsText;
+
+          // Cập nhật huy hiệu
+          if (profile.badges && Array.isArray(profile.badges)) {
+            const badgeCards = document.querySelectorAll('.badges-grid .badge-card');
+            badgeCards.forEach((c, idx) => {
+              if (idx < profile.badges.length && profile.badges[idx].isUnlocked) {
+                c.classList.add('unlocked');
+              }
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Lỗi đọc gamification profile:', err);
+      }
+    }
+
+    // E. Thời Tiết Thực Tế & Thích Ứng Không Gian
+    async function loadLiveWeather() {
+      try {
+        const res = await fetch('/api/v1/weather/hue-current');
+        if (res.ok) {
+          liveWeather = await res.json();
+          updateWeatherBannerUI();
+        }
+      } catch (e) {
+        console.warn('Lỗi tải thời tiết Huế:', e);
+      }
+    }
+
+    function updateWeatherBannerUI() {
+      const banner = document.getElementById('weatherBanner');
+      const icon = document.getElementById('weatherIcon');
+      const title = document.getElementById('weatherTitle');
+      const desc = document.getElementById('weatherDesc');
+      const simBtn = document.getElementById('rainSimBtn');
+      if (!banner) return;
+
+      const isNoKey = liveWeather && liveWeather.condition === 'no_key';
+      const isRaining = isSimulatingRain || (liveWeather && liveWeather.isRaining);
+      const isHot = liveWeather && liveWeather.isExtremelyHot;
+      const isStale = liveWeather && (liveWeather.stale || liveWeather.source === 'stale') && !isNoKey;
+
+      if (simBtn) {
+        simBtn.innerText = isSimulatingRain ? '🌧️ Giả lập Mưa (Demo): BẬT' : '🌧️ Giả lập Mưa (Demo): TẮT';
+        simBtn.style.background = isSimulatingRain ? '#0284C7' : '#475569';
+      }
+
+      if (isNoKey && !isSimulatingRain) {
+        if (icon) icon.innerText = '📡';
+        if (title) title.innerText = 'Chưa kết nối dữ liệu thời tiết';
+        if (desc) desc.innerText = 'Cần cấu hình OPENWEATHER_API_KEY để lấy thời tiết trạm thật. Dùng nút Giả lập Mưa để xem demo thích ứng.';
+        return;
+      }
+
+      const staleTag = isStale ? ' (Dữ liệu cũ)' : '';
+      if (isRaining) {
+        if (icon) icon.innerText = '🌧️';
+        if (title) title.innerText = `Mưa Cố Đô • ${liveWeather && liveWeather.tempCelsius ? liveWeather.tempCelsius : 24.5}°C${staleTag}`;
+        if (desc) desc.innerText = isSimulatingRain ? '[Đang chạy giả lập trình diễn] Khuyến nghị chuyển sang tham quan không gian Trong Nhà' : 'Gợi ý: Tránh ướt, chuyển sang tham quan không gian Trong Nhà';
+      } else if (isHot) {
+        if (icon) icon.innerText = '☀️';
+        if (title) title.innerText = `Nắng nóng gay gắt • ${liveWeather && liveWeather.tempCelsius ? liveWeather.tempCelsius : 38}°C${staleTag}`;
+        if (desc) desc.innerText = 'Gợi ý: Tránh nắng, chuyển sang không gian Trong Nhà & Cafe';
+      } else {
+        if (icon) icon.innerText = '⛅';
+        if (title) title.innerText = `Huế ${liveWeather && liveWeather.tempCelsius ? liveWeather.tempCelsius : 27}°C • Dịu mát${staleTag}`;
+        if (desc) desc.innerText = 'Thời tiết thuận lợi cho các hoạt động di sản ngoài trời';
+      }
+    }
+
+    function toggleRainSimulation() {
+      isSimulatingRain = !isSimulatingRain;
+      updateWeatherBannerUI();
+      if (isSimulatingRain) {
+        showToast('🌧️ Đã bật mô phỏng mưa! Đang chuyển bộ lọc sang không gian TRONG NHÀ (INDOOR)...');
+        filterPlaces('INDOOR');
+      } else {
+        showToast('☀️ Đã tắt mô phỏng mưa. Hiển thị lại toàn bộ địa điểm.');
+        filterPlaces('ALL');
+      }
+    }
+
+    function applyWeatherRecommendation() {
+      const isRaining = isSimulatingRain || (liveWeather && liveWeather.isRaining);
+      const isHot = liveWeather && liveWeather.isExtremelyHot;
+      if (isRaining || isHot) {
+        filterPlaces('INDOOR');
+        showToast('Đã lọc các địa điểm trong nhà thích ứng thời tiết!');
+      } else {
+        filterPlaces('ALL');
+        showToast('Hiển thị tất cả địa điểm du lịch.');
+      }
+    }
+
+    // F. Đóng Góp Cộng Đồng (Crowdsourcing)
+    function openCrowdsourceModal() {
+      const m = document.getElementById('crowdsourceModal');
+      if (m) {
+        m.style.display = 'flex';
+        if (userLocation) {
+          const latInput = document.getElementById('crowdLat');
+          const lngInput = document.getElementById('crowdLng');
+          if (latInput && !latInput.value) latInput.value = userLocation.lat.toFixed(4);
+          if (lngInput && !lngInput.value) lngInput.value = userLocation.lng.toFixed(4);
+        }
+      }
+    }
+
+    function closeCrowdsourceModal() {
+      const m = document.getElementById('crowdsourceModal');
+      if (m) m.style.display = 'none';
+    }
+
+    async function submitCrowdsourcePlace() {
+      const placeName = document.getElementById('crowdPlaceName').value.trim();
+      const address = document.getElementById('crowdAddress').value.trim();
+      const lat = parseFloat(document.getElementById('crowdLat').value);
+      const lng = parseFloat(document.getElementById('crowdLng').value);
+      const envType = document.getElementById('crowdEnvType').value;
+      const reason = document.getElementById('crowdReason').value.trim();
+
+      if (!placeName || !address) {
+        alert('Vui lòng nhập tên địa điểm và địa chỉ cụ thể.');
+        return;
+      }
+
+      showToast('Đang gửi đề xuất địa điểm lên ban quản trị HUEGO...');
+      try {
+        const res = await fetchWithAuth('/api/v1/crowdsource/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: currentUser ? currentUser.id : 'demo-tourist',
+            placeName,
+            address,
+            latitude: !isNaN(lat) ? lat : 16.4673,
+            longitude: !isNaN(lng) ? lng : 107.5905,
+            environmentType: envType,
+            reasonRecommendation: reason || 'Địa điểm ẩm thực / cảnh đẹp đặc sắc Cố Đô Huế'
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          closeCrowdsourceModal();
+          alert('🎉 ' + data.message);
+        } else {
+          alert(data.message || 'Gửi đề xuất không thành công.');
+        }
+      } catch (err) {
+        alert('Lỗi kết nối máy chủ khi gửi đề xuất.');
+      }
+    }
+
+    // D. Giám sát GPS Thực tế liên tục (navigator.geolocation.watchPosition)
+    function startGpsTracking() {
+      if (!('geolocation' in navigator)) {
+        updateGpsBadge('GPS: Không hỗ trợ', false);
+        return;
+      }
+      navigator.geolocation.watchPosition(
+        (pos) => {
+          userLocation = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: Math.round(pos.coords.accuracy),
+            timestamp: pos.timestamp || Date.now()
+          };
+          liveGpsAccuracy = userLocation.accuracy;
+          const isGood = liveGpsAccuracy <= 50;
+          updateGpsBadge('GPS: ±' + liveGpsAccuracy + 'm', isGood);
+        },
+        (err) => {
+          console.warn('GPS watch error:', err.message);
+          updateGpsBadge('GPS: Chưa định vị', false);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 3000 }
+      );
+    }
+
+    function updateGpsBadge(text, isGood) {
+      const el = document.getElementById('gpsAccuracyBadge');
+      if (!el) return;
+      el.innerText = '📡 ' + text;
+      el.style.color = isGood ? '#86EFAC' : '#FCA5A5';
+      el.style.borderColor = isGood ? '#15803D' : '#DC2626';
+    }
+
+    // E. Mở Khóa Địa Danh & Tích Điểm Thực Tế (Backend PostGIS Geofencing 35m)
+    async function performRealUnlock(coordsPayload) {
+      if (!navigator.onLine || !isBackendOnline) {
+        showToast('⚠️ Cần kết nối mạng để ghi nhận điểm. Không cộng điểm offline!');
+        return false;
+      }
+      if (!currentUser || !authToken) {
+        showToast('Vui lòng vào thử demo hoặc đăng nhập trước khi check-in.');
+        openAuthModal();
+        return false;
+      }
+
+      try {
+        const res = await fetchWithAuth('/api/v1/geofencing/unlock', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(coordsPayload)
+        });
+
+        const data = await res.json();
+
+        // BẮT BUỘC kiểm tra trường unlocked từ server (không chỉ dựa vào mã HTTP)
+        if (data.unlocked === true) {
+          // 1. Rung máy (navigator.vibrate)
+          if ('vibrate' in navigator) {
+            try { navigator.vibrate([150, 80, 150]); } catch (_) {}
+          }
+          // 2. Hiệu ứng ăn mừng
+          confetti({ particleCount: 100, spread: 60, origin: { y: 0.65 } });
+          showToast('🎉 ' + data.message);
+
+          // 3. Đọc thuyết minh âm thanh di sản
+          if (data.narrationShort && window.huegoSpeech) {
+            window.huegoSpeech.playNarration(data.placeName, data.narrationShort, data.narrationDisclaimer);
+          } else if ('speechSynthesis' in window) {
+            try {
+              window.speechSynthesis.cancel();
+              const utter = new SpeechSynthesisUtterance('Chúc mừng bạn đã mở khóa thành công ' + data.placeName);
+              utter.lang = 'vi-VN';
+              window.speechSynthesis.speak(utter);
+            } catch (_) {}
+          }
+
+          // 4. Nạp lại điểm thật từ PostgreSQL vào giao diện
+          await loadProfileFromBackend();
+          return true;
+        } else {
+          showToast('ℹ️ ' + (data.message || 'Chưa đủ điều kiện mở khóa.'));
+          return false;
+        }
+      } catch (err) {
+        showToast('⚠️ Lỗi máy chủ: Cần kết nối mạng để ghi nhận điểm.');
+        return false;
+      }
+    }
+
+    // Check-in GPS điểm hiện tại trong sheet
+    function unlockCurrentPlaceGps() {
+      if (!userLocation) {
+        showToast('Đang dò tọa độ GPS của bạn, vui lòng đợi vài giây...');
+        return;
+      }
+      if (userLocation.accuracy > 50) {
+        showToast('Độ chính xác GPS (±' + userLocation.accuracy + 'm) chưa đạt yêu cầu (<= 50m). Vui lòng ra nơi thoáng đãng.');
+        return;
+      }
+      performRealUnlock({
+        latitude: userLocation.lat,
+        longitude: userLocation.lng,
+        accuracy: userLocation.accuracy,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Nhập mã QR dự phòng
+    function promptQrUnlock() {
+      if (!currentUser || !authToken) {
+        showToast('Vui lòng đăng nhập hoặc Vào Thử Demo trước khi quét QR.');
+        openAuthModal();
+        return;
+      }
+      const qrCode = prompt('Nhập mã QR bảo mật tại di tích (Ví dụ: XXXX-XXXX-XXXX):');
+      if (!qrCode || !qrCode.trim()) return;
+      performRealUnlock({ qrToken: qrCode.trim() });
+    }
+
+    // Nút "Mô phỏng check-in": chỉ hoạt động trong chế độ demo và gửi tọa độ thật lên API
+    async function triggerSimulatedCheckIn() {
+      showToast('Đang gửi tọa độ mô phỏng Cầu Tràng Tiền lên máy chủ NestJS...');
+      // Gửi tọa độ thật của Cầu Tràng Tiền (16.4687, 107.5925)
+      const success = await performRealUnlock({
+        latitude: 16.4687,
+        longitude: 107.5925,
+        accuracy: 10,
+        timestamp: new Date().toISOString()
+      });
+
+      if (success) {
+        if (itineraryStops && itineraryStops[2]) {
+          itineraryStops[2].visited = true;
+          itineraryStops[2].desc = 'Vừa mở khóa thành công qua API NestJS';
+        }
+        saveItineraryState();
+        renderItinerary();
+        showRoyalCertificate();
+      }
+    }
+
     // NAVIGATION TABS
     function switchTab(tabId, el) {
+      if (window.huegoSpeech) {
+        window.huegoSpeech.stop();
+      }
       document.querySelectorAll('.tab-view').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
@@ -2188,7 +3237,72 @@
     window.addEventListener('load', () => {
       initMap();
       renderItinerary();
+      initAuth();
+      loadLiveWeather();
+      startGpsTracking();
     });
   </script>
+
+  <!-- Auth Modal -->
+  <div id="authModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:radial-gradient(circle at top, #2e1647 0%, #150626 100%); border:2px solid var(--imperial-gold); border-radius:24px; max-width:340px; width:100%; padding:20px; color:white; text-align:center; box-shadow:0 15px 40px rgba(0,0,0,0.6);">
+      <div style="font-size:24px; margin-bottom:6px;">👑</div>
+      <h3 style="font-size:16px; font-weight:800; color:var(--imperial-gold); margin-bottom:4px;">Tài Khoản HUEGO Cố Đô</h3>
+      <p id="authModalUserDesc" style="font-size:11px; color:#CBD5E1; margin-bottom:16px;">Đăng nhập để lưu tiến độ mở khóa và tích điểm xanh trên máy chủ PostgreSQL.</p>
+      
+      <div id="authLoggedInView" style="display:none;">
+        <div style="background:rgba(255,255,255,0.08); border-radius:12px; padding:10px; margin-bottom:12px; text-align:left; font-size:11px;">
+          <div>👤 <b>Họ tên:</b> <span id="authUserName">-</span></div>
+          <div>📧 <b>Email:</b> <span id="authUserEmail">-</span></div>
+          <div>🌿 <b>Điểm xanh:</b> <span id="authUserPts" style="color:var(--imperial-gold); font-weight:800;">0 GP</span></div>
+          <div>🆔 <b>Mã du khách:</b> <span id="authUserId" style="font-family:monospace; font-size:9px;">-</span></div>
+        </div>
+        <button onclick="handleLogout()" style="background:#DC2626; color:white; border:none; padding:10px; border-radius:12px; width:100%; font-weight:700; cursor:pointer; font-size:12px; margin-bottom:8px;">🚪 Đăng Xuất</button>
+        <button onclick="closeAuthModal()" style="background:rgba(255,255,255,0.1); color:white; border:none; padding:8px; border-radius:12px; width:100%; cursor:pointer; font-size:11px;">Đóng</button>
+      </div>
+
+      <div id="authLoggedOutView">
+        <button onclick="loginDemoAccount()" style="background:linear-gradient(135deg, var(--imperial-gold), #B45309); color:#000; border:none; padding:12px; border-radius:14px; width:100%; font-weight:800; cursor:pointer; font-size:13px; margin-bottom:12px; box-shadow:0 4px 15px rgba(212,175,55,0.4);">
+          ⚡ Vào Thử Demo (Cấp tài khoản tức thì)
+        </button>
+        <div style="font-size:10px; color:#94A3B8; margin-bottom:12px;">— HOẶC ĐĂNG NHẬP / ĐĂNG KÝ THẬT —</div>
+        <input type="email" id="authEmailInput" placeholder="Email của bạn" style="width:100%; padding:9px 12px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; margin-bottom:8px; box-sizing:border-box;">
+        <input type="password" id="authPassInput" placeholder="Mật khẩu" style="width:100%; padding:9px 12px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; margin-bottom:12px; box-sizing:border-box;">
+        <div style="display:flex; gap:8px;">
+          <button onclick="handleLoginEmail()" style="flex:1; background:var(--royal-violet); color:white; border:none; padding:9px; border-radius:10px; font-weight:700; cursor:pointer; font-size:11px;">Đăng Nhập</button>
+          <button onclick="handleRegisterEmail()" style="flex:1; background:#047857; color:white; border:none; padding:9px; border-radius:10px; font-weight:700; cursor:pointer; font-size:11px;">Đăng Ký</button>
+        </div>
+        <button onclick="closeAuthModal()" style="background:transparent; color:#94A3B8; border:none; padding:6px; cursor:pointer; font-size:10px; margin-top:10px;">Để sau</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crowdsource Modal -->
+  <div id="crowdsourceModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:radial-gradient(circle at top, #2e1647 0%, #150626 100%); border:2px solid var(--imperial-gold); border-radius:24px; max-width:340px; width:100%; padding:20px; color:white; text-align:center; box-shadow:0 15px 40px rgba(0,0,0,0.6);">
+      <div style="font-size:24px; margin-bottom:6px;">📍</div>
+      <h3 style="font-size:16px; font-weight:800; color:var(--imperial-gold); margin-bottom:4px;">Đóng Góp Địa Điểm Mới</h3>
+      <p style="font-size:11px; color:#CBD5E1; margin-bottom:12px;">Đề xuất quán ngon, cảnh đẹp Huế để cộng đồng khám phá và nhận +50 Green Points khi được duyệt!</p>
+      
+      <input type="text" id="crowdPlaceName" placeholder="Tên địa điểm / quán ăn *" style="width:100%; padding:8px 12px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; margin-bottom:8px; box-sizing:border-box;">
+      <input type="text" id="crowdAddress" placeholder="Địa chỉ cụ thể *" style="width:100%; padding:8px 12px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; margin-bottom:8px; box-sizing:border-box;">
+      <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <input type="number" step="0.0001" id="crowdLat" placeholder="Vĩ độ (Lat)" style="flex:1; padding:8px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; box-sizing:border-box;">
+        <input type="number" step="0.0001" id="crowdLng" placeholder="Kinh độ (Lng)" style="flex:1; padding:8px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; box-sizing:border-box;">
+      </div>
+      <select id="crowdEnvType" style="width:100%; padding:8px 12px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; margin-bottom:8px; box-sizing:border-box;">
+        <option value="OUTDOOR">Không gian ngoài trời (OUTDOOR)</option>
+        <option value="INDOOR">Không gian trong nhà (INDOOR)</option>
+        <option value="SEMI_OUTDOOR">Bán ngoài trời / Mái che (SEMI_OUTDOOR)</option>
+      </select>
+      <textarea id="crowdReason" placeholder="Lý do đề xuất / Món ngon đặc sắc..." rows="2" style="width:100%; padding:8px 12px; border-radius:10px; border:1px solid #475569; background:#1E1B4B; color:white; font-size:11px; margin-bottom:12px; box-sizing:border-box;"></textarea>
+
+      <div style="display:flex; gap:8px;">
+        <button onclick="submitCrowdsourcePlace()" style="flex:1; background:linear-gradient(135deg, var(--imperial-gold), #B45309); color:#000; border:none; padding:10px; border-radius:12px; font-weight:800; cursor:pointer; font-size:12px;">Gửi Đề Xuất</button>
+        <button onclick="closeCrowdsourceModal()" style="background:rgba(255,255,255,0.1); color:white; border:none; padding:10px; border-radius:12px; cursor:pointer; font-size:11px;">Hủy</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

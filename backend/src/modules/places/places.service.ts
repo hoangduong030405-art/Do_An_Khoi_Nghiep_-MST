@@ -1,7 +1,8 @@
-import { Injectable, Optional, Inject } from '@nestjs/common';
+import { Injectable, Optional, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Place } from './entities/place.entity';
+import { PlaceNarration } from './entities/place-narration.entity';
 import { PortalService } from '../portal/portal.service';
 
 @Injectable()
@@ -9,6 +10,8 @@ export class PlacesService {
   constructor(
     @InjectRepository(Place)
     private readonly placeRepo: Repository<Place>,
+    @InjectRepository(PlaceNarration)
+    private readonly narrationRepo: Repository<PlaceNarration>,
     @Optional()
     @Inject(PortalService)
     private readonly portalService?: PortalService,
@@ -85,5 +88,36 @@ export class PlacesService {
       })
       .filter((p) => p.distanceMeters <= radiusMeters)
       .sort((a, b) => a.distanceMeters - b.distanceMeters);
+  }
+
+  async getPlaceNarration(placeId: string, lang: string = 'vi') {
+    const isDemoMode = process.env.DEMO_MODE !== 'false';
+    const narration = await this.narrationRepo.findOne({
+      where: { placeId, lang },
+    });
+
+    if (!narration) {
+      throw new NotFoundException(`Chưa có bản thuyết minh cho địa danh ${placeId}`);
+    }
+
+    if (!isDemoMode && narration.reviewStatus !== 'verified') {
+      return {
+        available: false,
+        message: 'Nội dung thuyết minh đang được thẩm định bởi chuyên gia',
+        reviewStatus: narration.reviewStatus,
+      };
+    }
+
+    return {
+      available: true,
+      id: narration.id,
+      placeId: narration.placeId,
+      lang: narration.lang,
+      shortText: narration.shortText,
+      longText: narration.longText,
+      sources: narration.sources,
+      reviewStatus: narration.reviewStatus,
+      disclaimer: isDemoMode && narration.reviewStatus === 'draft' ? 'Nội dung đang chờ kiểm duyệt' : null,
+    };
   }
 }

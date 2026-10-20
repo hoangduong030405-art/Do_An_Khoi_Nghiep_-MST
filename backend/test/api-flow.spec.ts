@@ -142,17 +142,18 @@ describe('API Flow Test (Sử dụng PostgreSQL thật)', () => {
     const placeC = dummyPlaceRes.rows[0];
     const placeD = dummyPlaceRes.rows[1];
 
-    await pool.query(`
-      INSERT INTO user_unlocks ("id", "userId", "placeId", "pointsAwarded", "distanceMeters", "unlockedAt")
-      VALUES (uuid_generate_v4(), $1, $2, 450, 10, $3);
-    `, [userIdCap, placeC.id, yesterdayVN]);
+    await pool.query(`DELETE FROM user_unlocks WHERE "userId" = $1`, [userIdCap]);
 
-    // Chèn 480 điểm vào hôm nay (01:00 sáng giờ VN)
-    const todayVN = new Date(Date.UTC(vnNow.getUTCFullYear(), vnNow.getUTCMonth(), vnNow.getUTCDate(), 1, 0, 0) - VIETNAM_OFFSET_MS);
     await pool.query(`
       INSERT INTO user_unlocks ("id", "userId", "placeId", "pointsAwarded", "distanceMeters", "unlockedAt")
-      VALUES (uuid_generate_v4(), $1, $2, 480, 10, $3);
-    `, [userIdCap, placeD.id, todayVN]);
+      VALUES (uuid_generate_v4(), $1, $2, 450, 10, NOW() - INTERVAL '2 days');
+    `, [userIdCap, placeC.id]);
+
+    // Chèn 480 điểm vào hôm nay
+    await pool.query(`
+      INSERT INTO user_unlocks ("id", "userId", "placeId", "pointsAwarded", "distanceMeters", "unlockedAt")
+      VALUES (uuid_generate_v4(), $1, $2, 480, 10, NOW() - INTERVAL '30 minutes');
+    `, [userIdCap, placeD.id]);
 
     // Mở khóa địa danh 50 điểm -> Vượt quá 500 điểm/ngày
     const resUnlock = await axios.post(`${baseURL}/geofencing/unlock`, {

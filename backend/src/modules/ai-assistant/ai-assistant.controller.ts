@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query, Res, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { CloudflareThrottlerGuard } from '../../common/guards/cloudflare-throttler.guard';
 import { Response } from 'express';
@@ -30,15 +30,16 @@ export class AiAssistantController {
   }
 
   @Post('chat')
-  @Public()
+  @ApiBearerAuth()
   @UseGuards(CloudflareThrottlerGuard)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
-    summary: 'Trò chuyện hỏi đáp về văn hóa, lịch sử, ẩm thực với Hướng dẫn viên Mệ Huế',
+    summary: 'Trò chuyện hỏi đáp về văn hóa, lịch sử, ẩm thực với Hướng dẫn viên Mệ Huế (Yêu cầu JWT & Rate Limit)',
   })
   @ApiResponse({ status: 200, description: 'Phản hồi thành công từ Trợ lý AI.' })
-  async chat(@Body() dto: AskGuideDto) {
-    return await this.aiAssistantService.chatWithGuide(dto);
+  async chat(@Body() dto: AskGuideDto, @Req() req: any) {
+    const userId = req.user?.id || req.user?.userId || req.headers['x-user-id'] || 'anonymous';
+    return await this.aiAssistantService.chatWithGuide(dto, userId);
   }
 
   @Post('place-story')

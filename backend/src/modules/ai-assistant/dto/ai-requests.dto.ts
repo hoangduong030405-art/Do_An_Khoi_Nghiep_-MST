@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class AskGuideDto {
   @ApiProperty({
-    description: 'Câu hỏi hoặc yêu cầu của du khách gửi cho trợ lý AI',
+    description: 'Câu hỏi hoặc yêu cầu của du khách gửi cho trợ lý AI (tối đa 500 ký tự)',
     example: 'Kể cho tôi nghe về lịch sử Cầu Tràng Tiền và những món ăn vặt ngon nhất quanh chân cầu.',
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(500, { message: 'Câu hỏi không được vượt quá 500 ký tự' })
   question: string;
 
   @ApiProperty({

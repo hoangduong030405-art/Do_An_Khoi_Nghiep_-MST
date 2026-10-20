@@ -1,5 +1,5 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PlacesService } from './places.service';
 import { Public } from '../auth/decorators/public.decorator';
 
@@ -28,5 +28,13 @@ export class PlacesController {
     @Query('radius') radius: number = 3000,
   ) {
     return await this.placesService.getNearbyPlaces(Number(lng), Number(lat), Number(radius));
+  }
+
+  @Get(':id/narration')
+  @ApiOperation({ summary: 'Lấy bản thuyết minh âm thanh văn hóa của địa danh (Place Audio Narration)' })
+  @ApiParam({ name: 'id', description: 'Mã địa danh (placeId)' })
+  @ApiQuery({ name: 'lang', required: false, description: 'Ngôn ngữ: vi hoặc en', example: 'vi' })
+  async getNarration(@Param('id') id: string, @Query('lang') lang?: string) {
+    return await this.placesService.getPlaceNarration(id, lang || 'vi');
   }
 }

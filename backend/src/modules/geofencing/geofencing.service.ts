@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, Logger, Optional } from '@nestjs/commo
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Place } from '../places/entities/place.entity';
+import { PlaceNarration } from '../places/entities/place-narration.entity';
 import { UserUnlock } from './entities/user-unlock.entity';
 import { UserPoints } from '../gamification/entities/user-points.entity';
 import { UnlockAuditLog } from './entities/unlock-audit-log.entity';
@@ -17,6 +18,8 @@ export class GeofencingService {
     @InjectRepository(UserPoints) private readonly pointsRepo: Repository<UserPoints>,
     @Optional()
     @InjectRepository(UnlockAuditLog) private readonly auditRepo?: Repository<UnlockAuditLog>,
+    @Optional()
+    @InjectRepository(PlaceNarration) private readonly narrationRepo?: Repository<PlaceNarration>,
   ) {}
 
   private async recordAudit(
@@ -306,10 +309,39 @@ export class GeofencingService {
         await this.pointsRepo.save(userPoints);
       }
 
+      let narrationShort: string | null = null;
+      let narrationStatus: string | null = null;
+      let narrationDisclaimer: string | null = null;
+
+      if (this.narrationRepo && typeof this.narrationRepo.findOne === 'function') {
+        try {
+          const narration = await this.narrationRepo.findOne({
+            where: { placeId: place.id, lang: 'vi' },
+          });
+          if (narration) {
+            const isDemoMode = process.env.DEMO_MODE !== 'false';
+            if (isDemoMode) {
+              narrationShort = narration.shortText;
+              narrationStatus = narration.reviewStatus;
+              narrationDisclaimer = narration.reviewStatus === 'draft' ? 'Nội dung đang chờ kiểm duyệt' : null;
+            } else if (narration.reviewStatus === 'verified') {
+              narrationShort = narration.shortText;
+              narrationStatus = 'verified';
+              narrationDisclaimer = null;
+            }
+          }
+        } catch (err: any) {
+          this.logger.warn(`Could not load narration for place ${place.id}: ${err.message}`);
+        }
+      }
+
       return {
         unlocked: true, placeId: place.id, placeName: place.name, thumbnailUrl: place.thumbnailUrl,
         distanceMeters, rewardPoints: place.greenRewardPoints,
         totalGreenPoints: userPoints.points,
+        narrationShort,
+        narrationStatus,
+        narrationDisclaimer,
         message: `Chúc mừng bạn đã mở khóa cột mốc [${place.name}] và nhận được +${place.greenRewardPoints} Điểm Du Lịch Xanh!`,
       };
     } catch (error: any) {
