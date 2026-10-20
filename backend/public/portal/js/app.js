@@ -77,6 +77,40 @@ function initEventListeners() {
     });
   });
 
+  
+  // Nút Mở App Desktop vs Mobile handling
+  const qrModal = document.getElementById('app-qr-modal');
+  const qrCloseBtn = document.getElementById('qr-modal-close-btn');
+  const appButtons = document.querySelectorAll('.btn-open-app');
+
+  appButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || window.innerWidth < 768;
+      if (!isMobile) {
+        e.preventDefault();
+        if (qrModal) {
+          const appUrl = (window.HUEGO_CONFIG && window.HUEGO_CONFIG.appUrl) || (function() { try { return new URL('app/', window.location.href).href; } catch(e) { return './app/'; } })();
+          const qrImg = document.getElementById('qr-modal-image');
+          const qrUrlText = document.getElementById('qr-modal-url-text');
+          const qrDirectLink = document.getElementById('qr-direct-link');
+
+          if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(appUrl)}`;
+          if (qrUrlText) qrUrlText.textContent = appUrl;
+          if (qrDirectLink) qrDirectLink.href = appUrl;
+
+          qrModal.classList.add('active');
+        }
+      }
+    });
+  });
+
+  if (qrCloseBtn && qrModal) {
+    qrCloseBtn.addEventListener('click', () => qrModal.classList.remove('active'));
+    qrModal.addEventListener('click', (e) => {
+      if (e.target === qrModal) qrModal.classList.remove('active');
+    });
+  }
+
   // Modal đóng
   const modalClose = document.getElementById('modal-close-btn');
   const modalOverlay = document.getElementById('place-modal');
@@ -112,15 +146,43 @@ async function loadCollections() {
     let res = await fetch('/api/collections');
     if (!res.ok) res = await fetch('./data/collections.json');
     const list = await res.json();
-    container.innerHTML = list.map(c => `
-      <div class="collection-card" onclick="filterByCollection('${c.vertical}')">
-        <img class="collection-img" src="${c.heroImage}" alt="${c.title}" onerror="this.src='https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp'" />
-        <div class="collection-overlay">
-          <h3 class="collection-name">${c.title}</h3>
-          <p class="collection-sub">${c.subtitle}</p>
+
+    container.innerHTML = list.map(item => {
+      const fallbackSvg = window.generateDynamicSvgPlaceholder ? window.generateDynamicSvgPlaceholder(item.vertical, item.title) : item.heroImage;
+      const initialImg = item.heroImage || fallbackSvg;
+
+      return `
+        <div class="collection-card" onclick="filterByCollection('${item.vertical}')">
+          <img class="collection-img" 
+               src="${initialImg}" 
+               alt="${item.title}" 
+               loading="lazy" 
+               decoding="async"
+               data-vertical="${item.vertical}"
+               data-name="${item.title}"
+               onerror="if(window.handleImgError){window.handleImgError(this, '${item.vertical}', '${item.title.replace(/'/g, "\\'")}');}else{this.onerror=null;this.src='${fallbackSvg}';}" />
+          <div class="collection-overlay">
+            <h3 class="collection-name">${item.title}</h3>
+            <p class="collection-sub">${item.subtitle}</p>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    // Pre-verify each heroImage using new Image()
+    list.forEach((item, idx) => {
+      if (item.heroImage && !item.heroImage.startsWith('data:')) {
+        const testImg = new Image();
+        testImg.onload = () => {};
+        testImg.onerror = () => {
+          const cardImgs = container.querySelectorAll('.collection-img');
+          if (cardImgs[idx]) {
+            cardImgs[idx].src = window.generateDynamicSvgPlaceholder(item.vertical, item.title);
+          }
+        };
+        testImg.src = item.heroImage;
+      }
+    });
   } catch (err) {
     console.error('Error loading collections:', err);
   }
@@ -165,8 +227,20 @@ async function loadPlaces() {
     // Fallback static JSON cho GitHub Pages
     if (!data || !data.items) {
       if (!staticAllPlaces) {
-        const res = await fetch('./data/places_all.json');
-        staticAllPlaces = await res.json();
+        const [placesRes, overridesRes] = await Promise.all([
+          fetch('./data/places_all.json'),
+          fetch('./data/image_overrides.json').catch(() => null)
+        ]);
+        staticAllPlaces = await placesRes.json();
+        if (overridesRes && overridesRes.ok) {
+          const overrides = await overridesRes.json();
+          staticAllPlaces.forEach(item => {
+            if (overrides[item.id]) {
+              item.imageStatus = overrides[item.id].status;
+              if (overrides[item.id].url) item.coverPhotoUrl = overrides[item.id].url;
+            }
+          });
+        }
       }
 
       let items = currentVertical !== 'all' 
@@ -243,15 +317,23 @@ function renderPlaces(items) {
   };
 
   grid.innerHTML = items.map(p => {
-    const photo = p.coverPhotoUrl || 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp';
+    const photo = window.resolvePlaceImage ? window.resolvePlaceImage(p) : (p.coverPhotoUrl || '');
     const tag = verticalLabels[p.vertical] || p.vertical;
     const rating = p.googleRating ? p.googleRating.toFixed(1) : 'Mới';
     const reviews = p.googleReviewCount ? `(${p.googleReviewCount})` : '';
+    const safeName = (p.name_vi || p.name || 'Địa danh Huế').replace(/'/g, "\\'");
 
     return `
       <div class="place-card" onclick="openPlaceDetail('${p.id}')">
         <div class="card-img-wrapper">
-          <img class="place-card-img" src="${photo}" alt="${p.name}" loading="lazy" onerror="this.src='https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp'" />
+          <img class="place-card-img" 
+               src="${photo}" 
+               alt="${p.name_vi || p.name || ''}" 
+               loading="lazy" 
+               decoding="async" 
+               data-vertical="${p.vertical || 'tour'}"
+               data-name="${p.name_vi || p.name || ''}"
+               onerror="if(window.handleImgError){window.handleImgError(this, '${p.vertical}', '${safeName}');}else{this.onerror=null;}" />
           <span class="badge-tag">${tag}</span>
           <span class="rating-badge">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
@@ -301,13 +383,13 @@ window.openPlaceDetail = async function(id) {
     }
     if (!p) throw new Error('Không tìm thấy thông tin địa điểm');
 
-    const photo = p.coverPhotoUrl || 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp';
+    const photo = window.resolvePlaceImage ? window.resolvePlaceImage(p) : (p.coverPhotoUrl || '');
     const mapsLink = p.lat && p.lng 
       ? `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((p.name || '') + ' Huế')}`;
 
     container.innerHTML = `
-      <img class="modal-hero-img" src="${photo}" alt="${p.name}" onerror="this.src='https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp'" />
+      <img class="modal-hero-img" src="${photo}" alt="${p.name}" loading="lazy" decoding="async" onerror="if(window.handleImgError){window.handleImgError(this, '${p.vertical}', '${(p.name_vi||p.name||"").replace(/'/g, "\\'")}');}else{this.onerror=null;}" />
       <div class="modal-body">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
           <h2 class="modal-title">${p.name_vi || p.name}</h2>
@@ -437,6 +519,9 @@ window.changePage = function(page) {
 // ==========================================================
 
 // 1. Live Weather Loader
+let webRainSim = false;
+
+// 1. Live Weather Loader
 async function loadLiveWeather() {
   const badge = document.getElementById('liveWeatherBadge');
   if (!badge) return;
@@ -445,16 +530,41 @@ async function loadLiveWeather() {
     const res = await fetch('/api/v1/weather/hue-current');
     if (res.ok) {
       const data = await res.json();
+      if (data.condition === 'no_key' && !webRainSim) {
+        badge.innerHTML = `
+          <span class="weather-icon">📡</span>
+          <span>Chưa kết nối dữ liệu thời tiết</span>
+          <button onclick="toggleWebRainSimulation(event)" style="margin-left:6px; background:rgba(255,255,255,0.2); border:none; color:white; border-radius:10px; padding:2px 8px; font-size:10px; cursor:pointer;" title="Mô phỏng trời mưa để kiểm thử trình diễn">🌧️ Giả lập mưa (Demo)</button>
+        `;
+        badge.title = data.recommendation;
+        return;
+      }
+      const isStale = data.stale || data.source === 'stale';
+      const staleTag = isStale ? ' <small style="color:#F59E0B;">(Dữ liệu cũ)</small>' : '';
+      const isRain = webRainSim || data.isRaining;
+      const tempDisplay = data.tempCelsius != null ? `${data.tempCelsius}°C · ` : '';
       badge.innerHTML = `
-        <span class="weather-icon">${data.isRaining ? '🌧️' : '⛅'}</span>
-        <span>Huế ${data.tempCelsius}°C · ${data.description.split(',')[0]}</span>
+        <span class="weather-icon">${isRain ? '🌧️' : '⛅'}</span>
+        <span>Huế ${tempDisplay}${isRain ? 'Mưa ngâu' : data.description.split(',')[0]}${staleTag}</span>
+        <button onclick="toggleWebRainSimulation(event)" style="margin-left:6px; background:${webRainSim ? '#0284C7' : 'rgba(255,255,255,0.2)'}; border:none; color:white; border-radius:10px; padding:2px 8px; font-size:10px; cursor:pointer;" title="Mô phỏng trời mưa để kiểm thử trình diễn demo">🌧️ ${webRainSim ? 'Mưa: BẬT' : 'Giả lập mưa (Demo)'}</button>
       `;
-      badge.title = data.description;
+      badge.title = data.description + (isStale ? ' (Dữ liệu cache cũ)' : '');
     }
   } catch (err) {
-    badge.innerHTML = `<span>⛅ Huế 27°C · Dịu mát</span>`;
+    badge.innerHTML = `<span>⛅ Chưa kết nối thời tiết</span>`;
   }
 }
+
+window.toggleWebRainSimulation = function(e) {
+  if (e) e.stopPropagation();
+  webRainSim = !webRainSim;
+  loadLiveWeather();
+  if (webRainSim) {
+    if (typeof filterByVertical === 'function') {
+      filterByVertical('fnb'); // Gợi ý ẩm thực/trong nhà khi trời mưa
+    }
+  }
+};
 
 // 2. Audio Guide Player
 let isAudioPlaying = false;
