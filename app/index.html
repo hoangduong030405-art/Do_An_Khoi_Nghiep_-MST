@@ -996,7 +996,33 @@
       align-items: center;
       gap: 4px;
     }
-  </style>
+  
+    html, body {
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+      position: relative !important;
+    }
+    .top-controls {
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .tab-view {
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+    }
+    
+
+    /* Touch targets >= 44px for primary action buttons */
+    .btn-action, .btn-primary, .btn-enable-audio-ios, .view-mode-btn, #authStatusBtn, .weather-btn, .tab-item {
+      min-height: 44px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-sizing: border-box !important;
+    }
+  
+</style>
+  <script src="/js/image-helper.js"></script>
 </head>
 <body>
 
@@ -1095,7 +1121,7 @@
           <!-- Bottom Sheet Chi Tiết Điểm Đến -->
           <div class="place-sheet" id="placeSheet">
             <div class="sheet-handle" onclick="closeSheet()"></div>
-            <img id="sheetImg" class="sheet-img" src="" alt="Thumbnail" />
+            <img id="sheetImg" class="sheet-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Thumbnail" />
             <div class="sheet-title" id="sheetTitle">Tên Địa Danh</div>
             <div class="sheet-address" id="sheetAddress">📍 Địa chỉ</div>
             <div class="sheet-badges">
@@ -1315,7 +1341,7 @@
 
         <!-- Disc / Card Section -->
         <div class="audio-disc-card">
-          <img id="audioCover" class="audio-cover-img" src="" alt="Di tích" />
+          <img id="audioCover" class="audio-cover-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Di tích" />
           <div class="audio-place-name" id="audioPlaceTitle">Đại Nội Huế</div>
           <div class="audio-speaker-sub">Giọng đọc Mệ Huế AI • Cố Đô Thuyết Minh</div>
 
@@ -1638,10 +1664,8 @@
       };
 
       const imgEl = document.getElementById('sheetImg');
-      imgEl.src = activePlace.img;
-      imgEl.onerror = function() {
-        this.src = 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp';
-      };
+      imgEl.src = (window.resolvePlaceImage ? window.resolvePlaceImage(activePlace) : activePlace.img);
+      imgEl.onerror = function() { if(window.handleImgError){ window.handleImgError(this, activePlace.cat, activePlace.name); }else{ this.onerror=null; } };
 
       document.getElementById('sheetTitle').innerText = activePlace.name;
 
@@ -1823,7 +1847,9 @@
       overlay.style.display = 'flex';
       document.getElementById('miniAudioBar').style.display = 'none';
 
-      document.getElementById('audioCover').src = place.img;
+      const audioCover = document.getElementById('audioCover');
+      audioCover.src = (window.resolvePlaceImage ? window.resolvePlaceImage(place) : place.img);
+      audioCover.onerror = function() { if(window.handleImgError){ window.handleImgError(this, place.cat, place.name); }else{ this.onerror=null; } };
       document.getElementById('audioPlaceTitle').innerText = place.name;
       document.getElementById('miniTitle').innerText = place.name;
       document.getElementById('audioScriptText').innerText = 'Đang kết nối Mệ Huế để lấy thuyết minh di sản...';
