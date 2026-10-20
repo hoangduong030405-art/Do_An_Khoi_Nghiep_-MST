@@ -11,7 +11,8 @@
     "mobile": "cd mobile && flutter run -d chrome",
     "backend": "npm --prefix backend run start:dev",
     "audit:images": "node scripts/audit-images.js",
-    "verify:responsive": "node scripts/verify-responsive.js"
+    "verify:responsive": "node scripts/verify-responsive.js",
+    "verify:location": "node scripts/verify-location.js"
   },
   "keywords": [
     "huego",

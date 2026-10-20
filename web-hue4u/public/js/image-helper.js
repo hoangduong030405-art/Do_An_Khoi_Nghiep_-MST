@@ -47,6 +47,17 @@
     service: { name: 'Dịch vụ Tiện ích', icon: '🚗', bg: '#065F46', accent: '#34D399' }
   };
 
+  // 2b. Kho ảnh chụp thực tế Cố Đô Huế theo danh mục (chất lượng cao)
+  const CATEGORY_REAL_PHOTOS = {
+    tour: './images/pois/dai-noi-hue.jpg',
+    fnb: './img/hero/am-thuc-cung-dinh-dan-gian.jpg',
+    cafe: './img/hero/ca-phe-song-huong.jpg',
+    stay: './images/pois/cung-an-dinh.jpg',
+    specialty: './images/pois/cho-dong-ba.jpg',
+    service: './images/pois/cau-trang-tien.jpg',
+    nature: './images/pois/song-huong.jpg'
+  };
+
   // 3. Sinh Data URI SVG trực tiếp dự phòng tuyệt đối (không sợ lỗi 404 mạng)
   window.generateDynamicSvgPlaceholder = function(vertical, name) {
     const meta = CATEGORY_META[vertical] || CATEGORY_META.tour;
@@ -79,43 +90,48 @@
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   };
 
-  // 4. Lấy đường dẫn ảnh an toàn cho thẻ địa danh
+  // 4. Lấy đường dẫn ảnh an toàn cho thẻ địa danh (Ưu tiên ảnh chụp thực tế)
   window.resolvePlaceImage = function(place) {
     if (!place) {
-      return window.generateDynamicSvgPlaceholder('tour', 'Địa danh Huế');
+      return CATEGORY_REAL_PHOTOS.tour;
     }
 
     const v = place.vertical || place.v || 'tour';
     const name = place.name_vi || place.name || '';
+    const fallbackPhoto = CATEGORY_REAL_PHOTOS[v] || CATEGORY_REAL_PHOTOS.tour;
 
-    // Nếu đã bị đánh dấu hidden hoặc missing hoặc broken thì dùng thẳng SVG
+    // Nếu đã bị đánh dấu hidden hoặc missing hoặc broken thì dùng ảnh thật theo danh mục
     if (place.imageStatus === 'hidden' || place.imageStatus === 'missing' || place.imageStatus === 'broken') {
-      return window.generateDynamicSvgPlaceholder(v, name);
+      return fallbackPhoto;
     }
 
     // Nếu có coverPhotoUrl hợp lệ
     const candidate = place.coverPhotoUrl || place.img;
     if (candidate && typeof candidate === 'string' && candidate.trim()) {
-      // Nếu là URL local không tồn tại (/images/...)
+      // Chuẩn hóa đường dẫn tương đối cho local images
       if (candidate.startsWith('/images/pois/')) {
-        return window.generateDynamicSvgPlaceholder(v, name);
+        return '.' + candidate;
       }
       return candidate;
     }
 
-    return window.generateDynamicSvgPlaceholder(v, name);
+    return fallbackPhoto;
   };
 
-  // 5. Trình xử lý onerror cho mọi thẻ <img> trong ứng dụng
+  // 5. Trình xử lý onerror cho mọi thẻ <img> trong ứng dụng (Thay thế bằng ảnh chụp thực tế Cố Đô)
   window.handleImgError = function(img, vertical, name) {
     if (!img) return;
-    img.onerror = null; // Chặn đệ quy vô hạn
+    img.onerror = function() {
+      // Nếu ảnh chụp thực tế fallback bị lỗi mạng thì mới về SVG
+      this.onerror = null;
+      this.src = window.generateDynamicSvgPlaceholder(v, n);
+    };
 
     const v = vertical || img.getAttribute('data-vertical') || 'tour';
     const n = name || img.getAttribute('data-name') || img.alt || '';
+    const realPhoto = CATEGORY_REAL_PHOTOS[v] || CATEGORY_REAL_PHOTOS.tour;
 
-    img.src = window.generateDynamicSvgPlaceholder(v, n);
-    img.classList.add('is-svg-fallback');
+    img.src = realPhoto;
   };
 
   // Khởi động đồng bộ config

@@ -386,6 +386,7 @@
       font-family: var(--font-sans) !important;
     }
   </style>
+  <script src="./js/image-helper.js"></script>
 </head>
 <body>
 
@@ -452,7 +453,7 @@
       <!-- Right Side Detail Drawer Card -->
       <div class="map-right-drawer" id="right-drawer">
         <button onclick="closeDrawer()" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer;">✕</button>
-        <img class="drawer-img" id="drawer-img" src="" alt="" />
+        <img class="drawer-img" id="drawer-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Chi tiết địa danh" />
         <div class="drawer-body">
           <span class="drawer-badge" id="drawer-badge">Imperial & Tombs</span>
           <h3 class="drawer-title" id="drawer-title">Thai Hoa Palace</h3>
@@ -479,6 +480,7 @@
   <!-- Scripts: Leaflet & MarkerCluster -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="./js/location-service.js"></script>
 
   <script>
     let map;
@@ -503,7 +505,7 @@
       }).setView([16.467, 107.590], 13);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap | Protomaps | MapLibre | Hue4U',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
         maxZoom: 19
       }).addTo(map);
 
@@ -514,6 +516,17 @@
         zoomToBoundsOnClick: true,
         maxClusterRadius: 50
       }).addTo(map);
+
+      if (typeof HuegoMapLocationUI !== 'undefined') {
+        window.huegoLocationUI = new HuegoMapLocationUI(map, {
+          getNearbyPlaces: (lat, lng, count) => {
+            return allMapPoints.map(p => ({
+              ...p,
+              distance: window.HuegoLocationService.constructor.calculateDistanceMeters(lat, lng, p.lat, p.lng)
+            })).sort((a, b) => a.distance - b.distance).slice(0, count);
+          }
+        });
+      }
     }
 
     // Tải 30 Di sản và 6 Cụm Di tích
@@ -678,18 +691,42 @@
       drawer.style.display = 'flex';
 
       const img = document.getElementById('drawer-img');
-      img.src = place.img || 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dien-thai-hoa.webp';
-      img.onerror = () => { img.src = 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp'; };
+      img.src = window.resolvePlaceImage ? window.resolvePlaceImage(place) : (place.img || '');
+      img.onerror = () => { if(window.handleImgError){ window.handleImgError(img, place.cat || 'tour', place.name); } };
 
       document.getElementById('drawer-badge').textContent = place.cat || 'Heritage & Sightseeing';
       document.getElementById('drawer-title').textContent = place.name;
       document.getElementById('drawer-rating').textContent = `★ ${place.rating || 4.7} · Google Maps`;
-      document.getElementById('drawer-details-link').href = `https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}`;
+      const dirUrl = window.HuegoLocationService ? window.HuegoLocationService.constructor.getDirectionsUrl(place.lat, place.lng, place.name) : `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+      const dirLink = document.getElementById('drawer-details-link');
+      if (dirLink) {
+        dirLink.href = dirUrl;
+        dirLink.innerText = '🧭 Chỉ đường (Apple / Google Maps) →';
+      }
+      if (window.huegoLocationUI) {
+        window.huegoLocationUI.showPlaceGeofence(place.lat, place.lng, place.name);
+      }
+      if (window.HuegoLocationService && window.HuegoLocationService.lastPosition) {
+        const pos = window.HuegoLocationService.lastPosition;
+        const d = window.HuegoLocationService.constructor.calculateDistanceMeters(pos.lat, pos.lng, place.lat, place.lng);
+        const dText = window.HuegoLocationService.constructor.formatDistance(d);
+        let distPill = document.getElementById('drawer-distance');
+        if (!distPill) {
+          distPill = document.createElement('span');
+          distPill.className = 'meta-pill';
+          distPill.id = 'drawer-distance';
+          distPill.style.fontWeight = '800';
+          distPill.style.color = '#2563EB';
+          document.querySelector('.drawer-meta-pills')?.prepend(distPill);
+        }
+        distPill.innerText = `📍 Cách bạn: ${dText}`;
+      }
     }
 
     window.closeDrawer = function() {
       document.getElementById('right-drawer').style.display = 'none';
       document.getElementById('right-hint').style.display = 'block';
+      if (window.huegoLocationUI) window.huegoLocationUI.clearPlaceGeofence();
     };
 
     window.saveToItinerary = function() {

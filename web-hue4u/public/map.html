@@ -480,6 +480,7 @@
   <!-- Scripts: Leaflet & MarkerCluster -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="./js/location-service.js"></script>
 
   <script>
     let map;
@@ -515,6 +516,17 @@
         zoomToBoundsOnClick: true,
         maxClusterRadius: 50
       }).addTo(map);
+
+      if (typeof HuegoMapLocationUI !== 'undefined') {
+        window.huegoLocationUI = new HuegoMapLocationUI(map, {
+          getNearbyPlaces: (lat, lng, count) => {
+            return allMapPoints.map(p => ({
+              ...p,
+              distance: window.HuegoLocationService.constructor.calculateDistanceMeters(lat, lng, p.lat, p.lng)
+            })).sort((a, b) => a.distance - b.distance).slice(0, count);
+          }
+        });
+      }
     }
 
     // Tải 30 Di sản và 6 Cụm Di tích
@@ -685,12 +697,36 @@
       document.getElementById('drawer-badge').textContent = place.cat || 'Heritage & Sightseeing';
       document.getElementById('drawer-title').textContent = place.name;
       document.getElementById('drawer-rating').textContent = `★ ${place.rating || 4.7} · Google Maps`;
-      document.getElementById('drawer-details-link').href = `https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}`;
+      const dirUrl = window.HuegoLocationService ? window.HuegoLocationService.constructor.getDirectionsUrl(place.lat, place.lng, place.name) : `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+      const dirLink = document.getElementById('drawer-details-link');
+      if (dirLink) {
+        dirLink.href = dirUrl;
+        dirLink.innerText = '🧭 Chỉ đường (Apple / Google Maps) →';
+      }
+      if (window.huegoLocationUI) {
+        window.huegoLocationUI.showPlaceGeofence(place.lat, place.lng, place.name);
+      }
+      if (window.HuegoLocationService && window.HuegoLocationService.lastPosition) {
+        const pos = window.HuegoLocationService.lastPosition;
+        const d = window.HuegoLocationService.constructor.calculateDistanceMeters(pos.lat, pos.lng, place.lat, place.lng);
+        const dText = window.HuegoLocationService.constructor.formatDistance(d);
+        let distPill = document.getElementById('drawer-distance');
+        if (!distPill) {
+          distPill = document.createElement('span');
+          distPill.className = 'meta-pill';
+          distPill.id = 'drawer-distance';
+          distPill.style.fontWeight = '800';
+          distPill.style.color = '#2563EB';
+          document.querySelector('.drawer-meta-pills')?.prepend(distPill);
+        }
+        distPill.innerText = `📍 Cách bạn: ${dText}`;
+      }
     }
 
     window.closeDrawer = function() {
       document.getElementById('right-drawer').style.display = 'none';
       document.getElementById('right-hint').style.display = 'block';
+      if (window.huegoLocationUI) window.huegoLocationUI.clearPlaceGeofence();
     };
 
     window.saveToItinerary = function() {

@@ -5,7 +5,7 @@
     "subtitle": "Dấu ấn 143 năm vương triều phong kiến cuối cùng của Việt Nam",
     "vertical": "tour",
     "targetTab": "heritage",
-    "heroImage": "./img/hero/di-san-trieu-nguyen.svg",
+    "heroImage": "./img/hero/di-san-trieu-nguyen.jpg",
     "poiCount": 15
   },
   {
@@ -14,7 +14,7 @@
     "subtitle": "Hơn 1.000 món ăn tinh tế từ mâm cơm dân dã đến yến tiệc hoàng triều",
     "vertical": "fnb",
     "targetTab": "places",
-    "heroImage": "./img/hero/am-thuc-cung-dinh-dan-gian.svg",
+    "heroImage": "./img/hero/am-thuc-cung-dinh-dan-gian.jpg",
     "poiCount": 28
   },
   {
@@ -23,7 +23,7 @@
     "subtitle": "Những góc quán ven sông, cà phê muối trứ danh và không gian chill hoài niệm",
     "vertical": "cafe",
     "targetTab": "places",
-    "heroImage": "./img/hero/ca-phe-song-huong.svg",
+    "heroImage": "./img/hero/ca-phe-song-huong.jpg",
     "poiCount": 20
   },
   {
@@ -32,7 +32,7 @@
     "subtitle": "Huế - cái nôi Phật giáo với hàng trăm cổ tự thanh tịnh nép mình bên rừng thông",
     "vertical": "tour",
     "targetTab": "heritage",
-    "heroImage": "./img/hero/chua-co-xu-hue.svg",
+    "heroImage": "./img/hero/chua-co-xu-hue.jpg",
     "poiCount": 12
   }
 ]
