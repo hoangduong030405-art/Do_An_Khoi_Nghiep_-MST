@@ -11,7 +11,7 @@
     version: '1.0.0',
     appName: 'HUEGO - Du Lịch Khám Phá Cố Đô Huế',
     publicBaseUrl: window.location.origin || '',
-    appUrl: window.location.origin ? (window.location.origin + '/app/') : './app/',
+    appUrl: (function() { try { return new URL('app/', window.location.href).href; } catch(e) { return './app/'; } })(),
     apiBase: '/api/v1',
     features: {
       demoMode: true,

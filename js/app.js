@@ -89,7 +89,7 @@ function initEventListeners() {
       if (!isMobile) {
         e.preventDefault();
         if (qrModal) {
-          const appUrl = (window.HUEGO_CONFIG && window.HUEGO_CONFIG.appUrl) || (window.location.origin + '/app/');
+          const appUrl = (window.HUEGO_CONFIG && window.HUEGO_CONFIG.appUrl) || (function() { try { return new URL('app/', window.location.href).href; } catch(e) { return './app/'; } })();
           const qrImg = document.getElementById('qr-modal-image');
           const qrUrlText = document.getElementById('qr-modal-url-text');
           const qrDirectLink = document.getElementById('qr-direct-link');
