@@ -1,7 +1,8 @@
-import { Controller, Get, HttpCode, HttpStatus, Param, Res, Optional, Inject } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Get, HttpCode, HttpStatus, Param, Res, Req, Optional, Inject } from '@nestjs/common';
+import { Response, Request } from 'express';
 import { Public } from './modules/auth/decorators/public.decorator';
 import { GamificationService } from './modules/gamification/gamification.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller()
 export class AppController {
@@ -9,6 +10,9 @@ export class AppController {
     @Optional()
     @Inject(GamificationService)
     private readonly gamificationService?: GamificationService,
+    @Optional()
+    @Inject(ConfigService)
+    private readonly configService?: ConfigService,
   ) {}
 
   @Public()
@@ -16,6 +20,42 @@ export class AppController {
   @HttpCode(HttpStatus.OK)
   getHealth() {
     return { status: 'ok', timestamp: new Date().toISOString() };
+  }
+
+  @Public()
+  @Get('config/public')
+  @HttpCode(HttpStatus.OK)
+  getPublicConfig(@Req() req: Request) {
+    const rawPublicBase = this.configService?.get<string>('PUBLIC_BASE_URL') || process.env.PUBLIC_BASE_URL;
+    let publicBaseUrl = rawPublicBase ? rawPublicBase.replace(/\/+$/, '') : '';
+    if (!publicBaseUrl && req) {
+      const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+      const host = req.headers['x-forwarded-host'] || req.get('host') || 'localhost:3000';
+      publicBaseUrl = `${proto}://${host}`;
+    }
+
+    const weatherKey = this.configService?.get<string>('OPENWEATHER_API_KEY') || process.env.OPENWEATHER_API_KEY;
+    const geminiKey = this.configService?.get<string>('GEMINI_API_KEY') || process.env.GEMINI_API_KEY;
+    const demoMode = (this.configService?.get<string>('DEMO_MODE') || process.env.DEMO_MODE) !== 'false';
+
+    return {
+      version: '1.0.0',
+      appName: 'HUEGO - Du Lịch Khám Phá Cố Đô Huế',
+      publicBaseUrl,
+      appUrl: `${publicBaseUrl}/app/`,
+      apiBase: `${publicBaseUrl}/api/v1`,
+      features: {
+        demoMode,
+        weatherEnabled: !!(weatherKey && weatherKey.trim().length > 0),
+        aiEnabled: !!(geminiKey && geminiKey.trim().length > 0),
+      },
+      thresholds: {
+        dailyPointsCap: 500,
+        geofenceRadiusMeters: 35,
+        aiDailyLimit: 50,
+      },
+      buildTime: '2026-10-20T12:00:00Z',
+    };
   }
 
   @Public()

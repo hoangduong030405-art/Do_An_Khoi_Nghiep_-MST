@@ -502,8 +502,11 @@ body {
 .card-img-wrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 58%;
-  background-color: #2a342c;
+  aspect-ratio: 16 / 10;
+  padding-bottom: 0;
+  background: linear-gradient(90deg, var(--bg-card-skeleton, #241634) 25%, var(--bg-card-skeleton-shine, #35214c) 50%, var(--bg-card-skeleton, #241634) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.8s ease-in-out infinite;
   overflow: hidden;
 }
 
@@ -1182,4 +1185,413 @@ body {
   color: #64748B;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+
+/* ==========================================================================
+   HUEGO RESPONSIVE & IMAGE OPTIMIZATIONS (Multi-device & Anti-gray card)
+   ========================================================================== */
+
+/* Skeleton Loading Animation */
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+:root {
+  --bg-card-skeleton: #e4dcee;
+  --bg-card-skeleton-shine: #f2eefa;
+}
+
+[data-theme="dark"] {
+  --bg-card-skeleton: #211235;
+  --bg-card-skeleton-shine: #311c4c;
+}
+
+/* Fallback & Image Component Rules */
+.place-card-img, .collection-img, .modal-hero-img, .drawer-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.place-card-img.is-svg-fallback, .collection-img.is-svg-fallback {
+  object-fit: cover;
+  background-color: #2E1065;
+}
+
+/* Prevent horizontal scroll globally */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Touch targets: min 44x44px for primary interactive elements */
+button, a.nav-item, a.mobile-nav-item, .category-tab-btn, .pill-btn, input, .btn-primary {
+  min-height: 44px;
+}
+
+/* Desktop QR Code Modal */
+#app-qr-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+#app-qr-modal.active {
+  display: flex;
+}
+.qr-modal-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   BREAKPOINTS: <480px, 480-767px, 768-1023px, 1024-1439px, >=1440px
+   ========================================================================== */
+
+/* 1. Mobile hẹp (< 480px - ví dụ iPhone SE) */
+@media (max-width: 479px) {
+  .sidebar {
+    display: none !important;
+  }
+  .main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 16px)) !important;
+  }
+  .mobile-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    z-index: 1000 !important;
+    background: var(--bg-surface) !important;
+    border-top: 1px solid var(--border-subtle) !important;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06) !important;
+  }
+  .mobile-nav-item {
+    flex: 1;
+    min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 11px;
+    text-decoration: none;
+    color: var(--text-muted);
+  }
+  .mobile-nav-item.active {
+    color: var(--primary);
+    font-weight: 700;
+  }
+  /* Sticky top search */
+  .top-bar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 900 !important;
+    background: var(--bg-surface-glass) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    padding: 0.5rem 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+  .search-input {
+    font-size: 16px !important; /* Prevents auto zoom on iOS */
+    height: 44px !important;
+  }
+  .top-bar-actions .btn-save-itinerary span:last-child {
+    display: none;
+  }
+  .weather-badge {
+    display: none !important;
+  }
+  /* Category chips horizontal scroll with snap */
+  .category-tabs-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0.5rem 0.75rem !important;
+    gap: 0.5rem !important;
+    scrollbar-width: none;
+  }
+  .category-tabs-container::-webkit-scrollbar {
+    display: none;
+  }
+  .category-tab-btn {
+    scroll-snap-align: start !important;
+    flex-shrink: 0 !important;
+    min-height: 44px !important;
+    padding: 0 1rem !important;
+    font-size: 13px !important;
+  }
+  /* Collections horizontal scroll with snap */
+  .collections-grid {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0.5rem !important;
+    gap: 0.75rem !important;
+    scrollbar-width: none;
+  }
+  .collections-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .collection-card {
+    scroll-snap-align: start !important;
+    flex: 0 0 82vw !important;
+    min-width: 250px !important;
+    height: 180px !important;
+  }
+  /* 1 column places grid on narrow mobile */
+  .places-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding: 0 0.75rem !important;
+  }
+  /* Floating AI Button */
+  .btn-ai-float, #ai-chat-btn {
+    bottom: calc(68px + env(safe-area-inset-bottom, 12px)) !important;
+    right: 14px !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+}
+
+/* 2. Mobile tiêu chuẩn (480px đến 767px - ví dụ iPhone 11 Pro Max) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .sidebar {
+    display: none !important;
+  }
+  .main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 16px)) !important;
+  }
+  .mobile-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    z-index: 1000 !important;
+    background: var(--bg-surface) !important;
+    border-top: 1px solid var(--border-subtle) !important;
+  }
+  .mobile-nav-item {
+    flex: 1;
+    min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  .top-bar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 900 !important;
+    background: var(--bg-surface-glass) !important;
+    backdrop-filter: blur(12px) !important;
+    padding: 0.6rem 1rem !important;
+  }
+  .search-input {
+    font-size: 16px !important;
+    height: 44px !important;
+  }
+  .category-tabs-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    padding: 0.5rem 1rem !important;
+    gap: 0.5rem !important;
+    scrollbar-width: none;
+  }
+  .category-tab-btn {
+    scroll-snap-align: start !important;
+    flex-shrink: 0 !important;
+    min-height: 44px !important;
+  }
+  .collections-grid {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    padding: 0.5rem 1rem !important;
+    gap: 1rem !important;
+  }
+  .collection-card {
+    scroll-snap-align: start !important;
+    flex: 0 0 280px !important;
+    height: 190px !important;
+  }
+  /* 2 columns on standard mobile */
+  .places-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+    padding: 0 1rem !important;
+  }
+  .btn-ai-float, #ai-chat-btn {
+    bottom: calc(70px + env(safe-area-inset-bottom, 14px)) !important;
+    right: 16px !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+/* 3. Tablet dọc (768px đến 1023px - ví dụ iPad) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sidebar {
+    width: 76px !important;
+    padding: 1.25rem 0.5rem !important;
+  }
+  .brand-header span:first-child {
+    display: none !important;
+  }
+  .nav-item {
+    width: 48px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    margin: 6px auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+  }
+  .nav-item span {
+    display: none !important;
+  }
+  .sidebar-footer button {
+    width: 48px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+  .sidebar-footer button span {
+    display: none !important;
+  }
+  .main-wrapper {
+    margin-left: 76px !important;
+    width: calc(100% - 76px) !important;
+  }
+  .mobile-nav {
+    display: none !important;
+  }
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+  .places-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+}
+
+/* 4. Desktop tiêu chuẩn (1024px đến 1439px - ví dụ Laptop 1366, iPad ngang) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .sidebar {
+    width: 250px !important;
+  }
+  .main-wrapper {
+    margin-left: 250px !important;
+    width: calc(100% - 250px) !important;
+  }
+  .mobile-nav {
+    display: none !important;
+  }
+  .collections-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+  .places-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+}
+
+/* 5. Desktop rộng (>= 1440px - ví dụ màn hình 1920) */
+@media (min-width: 1440px) {
+  .sidebar {
+    width: 280px !important;
+  }
+  .main-wrapper {
+    margin-left: 280px !important;
+    width: calc(100% - 280px) !important;
+  }
+  .mobile-nav {
+    display: none !important;
+  }
+  .collections-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+  .places-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+}
+
+/* Prefers-Reduced-Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Prefers-Color-Scheme Dark Fallback */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-page: #0b110d;
+    --bg-surface: #141c16;
+    --bg-surface-glass: rgba(20, 28, 22, 0.78);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --primary-light: rgba(88, 44, 131, 0.35);
+    --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    --card-shadow-hover: 0 20px 25px -5px rgba(88, 44, 131, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --modal-bg: rgba(0, 0, 0, 0.8);
+    --bg-card-skeleton: #211235;
+    --bg-card-skeleton-shine: #311c4c;
+  }
 }

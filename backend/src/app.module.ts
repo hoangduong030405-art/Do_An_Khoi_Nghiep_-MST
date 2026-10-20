@@ -38,6 +38,15 @@ import { InMemoryDbService } from './database/in-memory-db.service';
         rootPath: join(__dirname, '..', '..', '..', 'web-hue4u', 'public'),
         serveRoot: '/',
         exclude: ['/api/(.*)', '/flutter/(.*)', '/admin/(.*)'],
+        serveStaticOptions: {
+          setHeaders: (res, filePath: string) => {
+            if (filePath.endsWith('.html') || filePath.endsWith('.json')) {
+              res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+            } else if (filePath.match(/\.(css|js|webp|svg|png|jpg|glb|woff2?)$/)) {
+              res.setHeader('Cache-Control', 'public, max-age=86400');
+            }
+          },
+        },
       },
     ),
 

@@ -353,7 +353,7 @@ const server = http.createServer((req, res) => {
 
     res.writeHead(200, {
       'Content-Type': contentType,
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': (ext === '.html' || ext === '.json') ? 'no-cache, must-revalidate' : 'public, max-age=86400'
     });
 
     const readStream = fs.createReadStream(filePath);

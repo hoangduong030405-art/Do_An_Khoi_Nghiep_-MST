@@ -22,7 +22,9 @@
     "seed": "ts-node src/database/seed.ts",
     "verify:demo": "node scripts/verify-demo.js",
     "verify:full": "node scripts/verify-full.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "audit:images": "node ../scripts/audit-images.js",
+    "verify:responsive": "node ../scripts/verify-responsive.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

@@ -1,0 +1,14 @@
+{
+  "service-ve-tranh-tuong-hue": {
+    "status": "hidden",
+    "reason": "Ảnh dịch vụ có chữ nổi và số điện thoại quảng cáo Vẽ Tranh Tường HUE"
+  },
+  "tour-hue-booking-tour": {
+    "status": "hidden",
+    "reason": "Ảnh chụp nhóm phụ nữ mặc áo dài có chữ quảng cáo BOOKING NOW"
+  },
+  "tour-mango-travel-hue-booking-office": {
+    "status": "hidden",
+    "reason": "Văn phòng du lịch chứa biển hiệu quảng cáo Booking"
+  }
+}

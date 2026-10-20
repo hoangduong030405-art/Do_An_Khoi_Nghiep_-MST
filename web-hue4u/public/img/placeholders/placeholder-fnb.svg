@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="100%" height="100%">
+  <defs>
+    <linearGradient id="pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" />
+      <stop offset="60%" stop-color="#7C2D12" />
+      <stop offset="100%" stop-color="#3B125C" />
+    </linearGradient>
+    <radialGradient id="pGlow" cx="50%" cy="40%" r="45%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0" />
+    </radialGradient>
+    <filter id="pShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="250" fill="url(#pGrad)" />
+  <circle cx="200" cy="100" r="120" fill="url(#pGlow)" />
+  <rect x="12" y="12" width="376" height="226" rx="8" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-opacity="0.35" stroke-dasharray="6 4" />
+
+  <g transform="translate(200, 95)" filter="url(#pShadow)">
+    <circle cx="0" cy="0" r="38" fill="#2E1065" stroke="#F59E0B" stroke-width="2" />
+    <text x="0" y="12" font-family="'Segoe UI', Arial, sans-serif" font-size="30" text-anchor="middle" fill="#FFFFFF">🍜</text>
+  </g>
+
+  <text x="200" y="165" font-family="'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#FFFFFF" filter="url(#pShadow)">Ẩm thực Xứ Huế</text>
+  <text x="200" y="190" font-family="'Be Vietnam Pro', Arial, sans-serif" font-size="12" font-weight="500" text-anchor="middle" fill="#F59E0B" letter-spacing="1">HUEGO CỐ ĐÔ HUẾ</text>
+</svg>
