@@ -845,6 +845,157 @@
       z-index: 105;
       box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
+
+    /* Narration Player Modal & Subtitles (iOS Safari Compatible) */
+    .narration-player-modal {
+      position: fixed;
+      bottom: 75px;
+      left: 12px;
+      right: 12px;
+      max-width: 390px;
+      margin: 0 auto;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+    }
+    .narration-modal-card {
+      background: rgba(20, 10, 35, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid var(--imperial-gold);
+      border-radius: 20px;
+      padding: 14px 16px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+      color: #fff;
+    }
+    .narration-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .narration-modal-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--imperial-gold);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 85%;
+    }
+    .narration-close-btn {
+      background: none;
+      border: none;
+      color: #94A3B8;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+    .narration-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 10px;
+    }
+    .narration-device-tag {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #E2E8F0;
+    }
+    .narration-draft-tag {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #EF4444;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #FCA5A5;
+      font-weight: 600;
+    }
+    .narration-verified-tag {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid #22C55E;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #86EFAC;
+      font-weight: 600;
+    }
+    .narration-subtitle-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px dashed rgba(212, 175, 55, 0.4);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-height: 48px;
+      max-height: 80px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #F8FAFC;
+    }
+    .narration-current-line {
+      color: #FEF08A;
+      font-weight: 500;
+    }
+    .narration-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .narration-ctrl-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .narration-ctrl-btn.primary {
+      background: var(--imperial-gold);
+      color: #1A092A;
+    }
+    .narration-ctrl-btn.danger {
+      background: rgba(239, 68, 68, 0.25);
+      border: 1px solid #EF4444;
+      color: #FCA5A5;
+    }
+    .narration-speed-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+      font-size: 10px;
+      color: #CBD5E1;
+    }
+    .narration-speed-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+    .narration-speed-btn.active {
+      background: var(--imperial-gold);
+      color: #1A092A;
+      font-weight: 700;
+    }
+    .btn-enable-audio-ios {
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid var(--imperial-gold);
+      color: #FEF08A;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
   </style>
 </head>
 <body>
@@ -852,6 +1003,7 @@
   <div class="top-controls">
     <div class="top-title">📱 HUEGO SMART MOBILE SIMULATOR <span style="font-size:10px; background:rgba(212,175,55,0.25); border:1px solid var(--imperial-gold); padding:2px 6px; border-radius:8px; color:var(--imperial-gold); margin-left:6px;">v2.6-consolidated</span></div>
     <div style="display:flex; gap:8px; align-items:center;">
+      <button class="btn-enable-audio-ios" onclick="window.huegoSpeech && window.huegoSpeech.unlockAudioContext(); showToast('🎧 Đã bật quyền thuyết minh âm thanh thiết bị!')">🔊 Bật Thuyết Minh</button>
       <span id="perfLoadBadge" style="font-size:11px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); padding:4px 8px; border-radius:12px; color:#A7F3D0;">⚡ Đo thời gian tải...</span>
       <button class="view-mode-btn" onclick="toggleFullscreen()">🖥️ Toàn Màn Hình</button>
     </div>
@@ -1854,17 +2006,192 @@
       });
     }
 
+    // HUEGO SMART SPEECH CONTROLLER (Tương thích iOS Safari & Chống ngắt câu dài)
+    window.huegoSpeech = {
+      utterQueue: [],
+      currentIndex: 0,
+      isPlaying: false,
+      isPaused: false,
+      currentSpeed: 1.0,
+      cachedVoices: [],
+      userUnlockedAudio: false,
+
+      init() {
+        if ('speechSynthesis' in window) {
+          this.loadVoices();
+          window.speechSynthesis.onvoiceschanged = () => this.loadVoices();
+        }
+      },
+
+      loadVoices() {
+        if ('speechSynthesis' in window) {
+          this.cachedVoices = window.speechSynthesis.getVoices() || [];
+        }
+      },
+
+      getVietnameseVoice() {
+        if (!this.cachedVoices.length && 'speechSynthesis' in window) {
+          this.cachedVoices = window.speechSynthesis.getVoices() || [];
+        }
+        return this.cachedVoices.find(v => 
+          v.lang === 'vi-VN' || v.lang.startsWith('vi') || 
+          v.name.includes('Vietnamese') || v.name.includes('HoaiMy') || 
+          v.name.includes('NamMinh') || v.name.includes('Linh')
+        );
+      },
+
+      unlockAudioContext() {
+        this.userUnlockedAudio = true;
+        if ('speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.cancel();
+            const silent = new SpeechSynthesisUtterance(' ');
+            silent.volume = 0.01;
+            window.speechSynthesis.speak(silent);
+          } catch (_) {}
+        }
+      },
+
+      playNarration(title, text, disclaimer = null) {
+        if (!('speechSynthesis' in window)) {
+          showToast('Trình duyệt của bạn không hỗ trợ Web Speech API.');
+          return;
+        }
+
+        this.stop();
+        if (!text || !text.trim()) return;
+
+        // Chia nhỏ câu theo dấu câu tránh lỗi WebKit Safari tự ngắt sau 15 giây
+        const rawSentences = text.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) || [text];
+        this.utterQueue = rawSentences.map(s => s.trim()).filter(s => s.length > 0);
+        this.currentIndex = 0;
+        this.isPlaying = true;
+        this.isPaused = false;
+
+        this.showPlayerModal(title, text, disclaimer);
+        this.speakCurrentSentence();
+      },
+
+      speakCurrentSentence() {
+        if (!this.isPlaying || this.currentIndex >= this.utterQueue.length) {
+          this.finish();
+          return;
+        }
+
+        const sentence = this.utterQueue[this.currentIndex];
+        const utter = new SpeechSynthesisUtterance(sentence);
+        utter.lang = 'vi-VN';
+        utter.rate = this.currentSpeed;
+        
+        const viVoice = this.getVietnameseVoice();
+        if (viVoice) utter.voice = viVoice;
+
+        const subtitleEl = document.getElementById('narrationSubtitleCurrent');
+        if (subtitleEl) subtitleEl.innerText = sentence;
+
+        utter.onend = () => {
+          if (this.isPlaying && !this.isPaused) {
+            this.currentIndex++;
+            this.speakCurrentSentence();
+          }
+        };
+
+        utter.onerror = (e) => {
+          console.warn('Lỗi đọc câu:', e);
+          if (this.isPlaying && !this.isPaused) {
+            this.currentIndex++;
+            this.speakCurrentSentence();
+          }
+        };
+
+        window.speechSynthesis.speak(utter);
+      },
+
+      togglePause() {
+        if (!('speechSynthesis' in window) || !this.isPlaying) return;
+        const btn = document.getElementById('narrationPlayPauseBtn');
+        if (this.isPaused) {
+          this.isPaused = false;
+          window.speechSynthesis.resume();
+          if (btn) btn.innerHTML = '⏸ Tạm dừng';
+        } else {
+          this.isPaused = true;
+          window.speechSynthesis.pause();
+          if (btn) btn.innerHTML = '▶ Tiếp tục';
+        }
+      },
+
+      setSpeed(speed) {
+        this.currentSpeed = speed;
+        document.querySelectorAll('.narration-speed-btn').forEach(btn => {
+          btn.classList.toggle('active', parseFloat(btn.dataset.speed) === speed);
+        });
+        if (this.isPlaying && !this.isPaused) {
+          window.speechSynthesis.cancel();
+          this.speakCurrentSentence();
+        }
+      },
+
+      stop() {
+        this.isPlaying = false;
+        this.isPaused = false;
+        this.currentIndex = 0;
+        this.utterQueue = [];
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        const modal = document.getElementById('narrationPlayerModal');
+        if (modal) modal.style.display = 'none';
+      },
+
+      finish() {
+        this.isPlaying = false;
+        this.isPaused = false;
+        const playPauseBtn = document.getElementById('narrationPlayPauseBtn');
+        if (playPauseBtn) playPauseBtn.innerHTML = '🔄 Nghe lại';
+      },
+
+      showPlayerModal(title, fullText, disclaimer) {
+        let modal = document.getElementById('narrationPlayerModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'narrationPlayerModal';
+          modal.className = 'narration-player-modal';
+          document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+          <div class="narration-modal-card">
+            <div class="narration-modal-header">
+              <div class="narration-modal-title">🎧 Thuyết Minh: ${title}</div>
+              <button class="narration-close-btn" onclick="window.huegoSpeech.stop()">✕</button>
+            </div>
+            <div class="narration-meta-bar">
+              <span class="narration-device-tag">🎙️ Giọng đọc của thiết bị (Web Speech API)</span>
+              ${disclaimer ? `<span class="narration-draft-tag">⚠️ ${disclaimer}</span>` : '<span class="narration-verified-tag">✓ Đã kiểm duyệt</span>'}
+            </div>
+            <div class="narration-subtitle-box">
+              <div id="narrationSubtitleCurrent" class="narration-current-line">${this.utterQueue[0] || fullText}</div>
+            </div>
+            <div class="narration-controls">
+              <button id="narrationPlayPauseBtn" class="narration-ctrl-btn primary" onclick="window.huegoSpeech.togglePause()">⏸ Tạm dừng</button>
+              <button class="narration-ctrl-btn danger" onclick="window.huegoSpeech.stop()">⏹ Dừng</button>
+              <div class="narration-speed-group">
+                <span>Tốc độ:</span>
+                <button class="narration-speed-btn" data-speed="0.8" onclick="window.huegoSpeech.setSpeed(0.8)">0.8x</button>
+                <button class="narration-speed-btn active" data-speed="1.0" onclick="window.huegoSpeech.setSpeed(1.0)">1.0x</button>
+                <button class="narration-speed-btn" data-speed="1.2" onclick="window.huegoSpeech.setSpeed(1.2)">1.2x</button>
+              </div>
+            </div>
+          </div>
+        `;
+        modal.style.display = 'flex';
+      }
+    };
+    window.huegoSpeech.init();
+
     function fallbackWebSpeech() {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(audioState.scriptText);
-        utterance.rate = audioState.speed || 1.0;
-        utterance.lang = audioState.lang === 'vi' ? 'vi-VN' : 'en-US';
-        const voices = window.speechSynthesis.getVoices();
-        const viVoice = voices.find(v => v.lang.startsWith('vi') || v.name.includes('Vietnamese') || v.name.includes('HoaiMy') || v.name.includes('NamMinh'));
-        if (audioState.lang === 'vi' && viVoice) utterance.voice = viVoice;
-        utterance.onend = () => stopAudioGuide();
-        window.speechSynthesis.speak(utterance);
+      if (window.huegoSpeech && audioState.scriptText) {
+        window.huegoSpeech.playNarration(audioState.title || 'Di tích Huế', audioState.scriptText, null);
       }
     }
 
@@ -2814,8 +3141,10 @@
           confetti({ particleCount: 100, spread: 60, origin: { y: 0.65 } });
           showToast('🎉 ' + data.message);
 
-          // 3. Đọc thuyết minh âm thanh (speechSynthesis)
-          if ('speechSynthesis' in window) {
+          // 3. Đọc thuyết minh âm thanh di sản
+          if (data.narrationShort && window.huegoSpeech) {
+            window.huegoSpeech.playNarration(data.placeName, data.narrationShort, data.narrationDisclaimer);
+          } else if ('speechSynthesis' in window) {
             try {
               window.speechSynthesis.cancel();
               const utter = new SpeechSynthesisUtterance('Chúc mừng bạn đã mở khóa thành công ' + data.placeName);
@@ -2891,6 +3220,9 @@
 
     // NAVIGATION TABS
     function switchTab(tabId, el) {
+      if (window.huegoSpeech) {
+        window.huegoSpeech.stop();
+      }
       document.querySelectorAll('.tab-view').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
