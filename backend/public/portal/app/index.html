@@ -165,19 +165,52 @@
         }
 
         if (!shareUrl) {
-          // Fallback giả lập trực quan trên môi trường tĩnh GitHub Pages
-          const demoToken = 'huego-' + Math.random().toString(36).substring(2, 10) + '-' + Date.now().toString(36);
+          // Item (1) & (2) & (4): Chế độ tĩnh trên GitHub Pages - dùng fragment hash #d=..., max 12 điểm, mã hóa gọn
+          if (itineraryStops.length > 12) {
+            showToast('⚡ Chế độ xem nhanh hỗ trợ tối đa 12 điểm dừng đầu tiên.');
+          }
+          const maxStops = itineraryStops.slice(0, 12);
+          const compactStops = maxStops.map(s => {
+            const stop = { i: String(s.id || s.slug || '').trim() };
+            if (s.plannedStart) stop.t = String(s.plannedStart).slice(0, 5);
+            if (includeNotes && s.note) stop.n = String(s.note).slice(0, 60);
+            return stop;
+          }).filter(s => s.i);
+
+          const payload = {
+            v: 1,
+            t: (document.getElementById('itineraryTitleInput') || {}).value || 'Lộ trình Cố Đô HUEGO',
+            c: allowCopy ? 1 : 0,
+            s: compactStops
+          };
+
+          const jsonStr = JSON.stringify(payload);
+          const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(jsonStr))));
           const base = window.location.origin + window.location.pathname.replace(/\/app\/?.*$/, '');
-          shareUrl = base + '/s/' + demoToken;
-          expiresAt = new Date(Date.now() + expiresInDays * 86400000).toISOString();
+          shareUrl = base + '/s/#d=' + encoded;
+          expiresAt = null;
+
+          // Cảnh báo nếu link dài hơn 1800 ký tự (Item 4)
+          const lengthWarnEl = document.getElementById('shareLengthWarning');
+          if (lengthWarnEl) {
+            lengthWarnEl.style.display = shareUrl.length > 1800 ? 'block' : 'none';
+          }
+
+          document.getElementById('shareNoticeText').textContent = '⚡ Link xem nhanh, không thể thu hồi hoặc đặt hạn; ai có link đều xem được.';
+          document.getElementById('revokeArea').style.display = 'none';
+          document.getElementById('shareActiveStatus').style.display = 'block';
+          document.getElementById('shareViewCount').innerText = 'Không theo dõi';
+          document.getElementById('shareExpiresAt').innerText = 'Không giới hạn';
+        } else {
+          document.getElementById('shareNoticeText').textContent = '🔒 Liên kết bảo mật máy chủ HUEGO. Bạn có thể thu hồi bất cứ lúc nào.';
+          document.getElementById('revokeArea').style.display = 'block';
+          document.getElementById('shareActiveStatus').style.display = 'block';
+          document.getElementById('shareViewCount').innerText = 0;
+          document.getElementById('shareExpiresAt').innerText = expiresAt ? new Date(expiresAt).toLocaleDateString('vi-VN') : '30 ngày';
         }
 
         document.getElementById('shareUrlInput').value = shareUrl;
         document.getElementById('shareResultArea').style.display = 'block';
-        document.getElementById('revokeArea').style.display = 'block';
-        document.getElementById('shareActiveStatus').style.display = 'block';
-        document.getElementById('shareViewCount').innerText = 0;
-        document.getElementById('shareExpiresAt').innerText = expiresAt ? new Date(expiresAt).toLocaleDateString('vi-VN') : '30 ngày';
 
         const qrWrap = document.getElementById('qrCodeCanvasWrap');
         qrWrap.innerHTML = '';
@@ -3849,8 +3882,13 @@
           <div style="font-size:10px; color:#64748B;">Quét mã để mở lộ trình trên điện thoại khác</div>
         </div>
 
-        <div style="font-size:10px; color:#64748B; background:#F8FAFC; padding:8px; border-radius:6px; line-height:1.4; margin-bottom:8px;">
-          🔒 <b>Lưu ý:</b> Token chỉ hiển thị <b>đúng một lần</b> này. Nếu đóng hộp thoại, bạn có thể tạo lại link mới (link cũ sẽ tự động được thu hồi).
+        <!-- Cảnh báo độ dài link nếu > 1800 ký tự (Item 4) -->
+        <div id="shareLengthWarning" style="display:none; background:#FEF2F2; border-left:3px solid #EF4444; padding:8px 10px; border-radius:6px; font-size:11px; color:#991B1B; margin-bottom:8px; line-height:1.4;">
+          ⚠️ <b>Liên kết dài hơn 1800 ký tự:</b> Mã QR có thể dày và khó quét trên một số thiết bị máy ảnh cũ.
+        </div>
+
+        <div id="shareNoticeText" style="font-size:10px; color:#475569; background:#F8FAFC; padding:8px 10px; border-radius:6px; line-height:1.4; margin-bottom:8px; border:1px solid #E2E8F0;">
+          ⚡ Link xem nhanh, không thể thu hồi hoặc đặt hạn; ai có link đều xem được.
         </div>
       </div>
 

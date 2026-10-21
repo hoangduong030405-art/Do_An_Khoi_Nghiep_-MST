@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Lộ trình du lịch Huế — HUEGO</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+  <style>
+    :root {
+      --royal-violet: #582C83;
+      --royal-violet-dark: #3F1B63;
+      --imperial-gold: #D4AF37;
+      --bg-color: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-sub: #64748B;
+      --border-color: #E2E8F0;
+      --brand-red: #DC2626;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0F172A;
+        --card-bg: #1E293B;
+        --text-main: #F8FAFC;
+        --text-sub: #94A3B8;
+        --border-color: #334155;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: calc(84px + var(--safe-bottom));
+      -webkit-font-smoothing: antialiased;
+    }
+    .header-bar {
+      background: linear-gradient(135deg, var(--royal-violet) 0%, var(--royal-violet-dark) 100%);
+      color: white;
+      padding: calc(16px + var(--safe-top)) 20px 20px;
+      box-shadow: 0 4px 20px rgba(88, 44, 131, 0.25);
+    }
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--imperial-gold);
+      letter-spacing: 0.5px;
+      text-decoration: none;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+    .hero-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      margin-bottom: 24px;
+    }
+    .route-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+    .route-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--text-sub);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .badge-static-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+      font-weight: 600;
+    }
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+    .metric-item {
+      text-align: center;
+      padding: 10px;
+      background: var(--bg-color);
+      border-radius: 12px;
+    }
+    .metric-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--royal-violet);
+    }
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+    .map-wrap {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    #shareMap {
+      width: 100%;
+      height: 380px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 17px;
+      top: 20px;
+      bottom: 40px;
+      width: 2px;
+      background: #CBD5E1;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+    .timeline-marker {
+      position: absolute;
+      left: -20px;
+      top: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--royal-violet);
+      color: var(--imperial-gold);
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      border: 3px solid var(--bg-color);
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(88, 44, 131, 0.3);
+    }
+    .timeline-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (min-width: 640px) {
+      .timeline-card {
+        flex-direction: row;
+      }
+      .timeline-card-img-wrap {
+        width: 180px;
+        min-width: 180px;
+      }
+    }
+    .timeline-card-img-wrap {
+      position: relative;
+      height: 140px;
+      background: #CBD5E1;
+    }
+    @media (min-width: 640px) {
+      .timeline-card-img-wrap {
+        height: auto;
+      }
+    }
+    .timeline-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .timeline-time-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .timeline-body {
+      padding: 14px 16px;
+      flex: 1;
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .timeline-cat {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--royal-violet);
+      background: rgba(88, 44, 131, 0.08);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .btn-navigate {
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+    .timeline-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .timeline-addr {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+    .timeline-note {
+      font-size: 12px;
+      color: #92400E;
+      background: #FEF3C7;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border-left: 3px solid #D97706;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      word-break: break-word;
+    }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border-color);
+      padding: 12px 16px calc(12px + var(--safe-bottom));
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
+    .bottom-bar-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+    }
+    .btn-action {
+      flex: 1;
+      min-height: 44px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-save {
+      background: var(--royal-violet);
+      color: var(--imperial-gold);
+    }
+    .btn-open-app {
+      background: var(--bg-color);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+    .toast-msg {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      z-index: 2000;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-bar">
+    <div class="header-content">
+      <a href="../app/" class="brand-badge">
+        <span>🏛️</span> HUEGO — CỐ ĐÔ HUẾ
+      </a>
+      <a href="../app/" class="btn-navigate" style="background:rgba(255,255,255,0.15); color:white; border:none;">
+        Mở ứng dụng
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero-card">
+      <h1 class="route-title" id="routeTitle">Lộ trình khám phá Cố Đô</h1>
+      <div class="route-meta">
+        <span class="badge-static-link">⚡ Link xem nhanh (Fragment Hash)</span>
+        <span id="routeDateWrap">📅 Hành trình du lịch Huế</span>
+      </div>
+
+      <div class="metrics-bar">
+        <div class="metric-item">
+          <div class="metric-val" id="metricStopsCount">0</div>
+          <div class="metric-lbl">Điểm đến</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-val" id="metricDistance">0 km</div>
+          <div class="metric-lbl">Quãng đường</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-val" id="metricDuration">0p</div>
+          <div class="metric-lbl">Thời gian ước tính</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="map-wrap">
+      <div id="shareMap"></div>
+    </div>
+
+    <!-- Timeline of Stops -->
+    <h2 class="section-title">📍 Chi tiết hành trình (<span id="timelineCount">0</span> điểm)</h2>
+    <div class="timeline" id="timelineList"></div>
+  </main>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="bottom-bar-inner">
+      <button class="btn-action btn-save" id="btnCopyItinerary" onclick="copyItineraryToApp()">
+        📥 Lưu về lộ trình của tôi
+      </button>
+      <a href="../app/" class="btn-action btn-open-app">
+        🚀 Mở trong HUEGO
+      </a>
+    </div>
+  </div>
+
+  <div id="toast" class="toast-msg"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    // Danh bạ các địa danh chuẩn tại Cố Đô Huế (Dùng validate ID và chống XSS)
+    const KNOWN_PLACES_DICT = {
+      'dai-noi-hue': { name: 'Đại Nội Huế (Hoàng Thành)', cat: 'Di tích Cố Đô', addr: 'Đường 23/8, Phường Thuận Hòa, TP. Huế', lat: 16.4691, lng: 107.5786, photo: '../images/pois/dai-noi-hue.jpg' },
+      'chua-thien-mu': { name: 'Chùa Thiên Mụ', cat: 'Tâm linh & Cảnh quan', addr: 'Đồi Hà Khê, Kim Long, TP. Huế', lat: 16.4529, lng: 107.5451, photo: '../images/pois/chua-thien-mu.jpg' },
+      'cau-trang-tien': { name: 'Cầu Tràng Tiền', cat: 'Biểu tượng Cố Đô', addr: 'Bắc qua Sông Hương, TP. Huế', lat: 16.4682, lng: 107.5947, photo: '../images/pois/cau-trang-tien.jpg' },
+      'lang-tu-duc': { name: 'Lăng Tự Đức (Khiêm Lăng)', cat: 'Di tích Lăng tẩm', addr: 'Thôn Thượng Ba, Thủy Xuân, TP. Huế', lat: 16.4328, lng: 107.5646, photo: '../images/pois/lang-tu-duc.jpg' },
+      'cho-dong-ba': { name: 'Chợ Đông Ba', cat: 'Ẩm thực & Mua sắm', addr: 'Đường Trần Hưng Đạo, Phú Hòa, TP. Huế', lat: 16.4716, lng: 107.5925, photo: '../images/pois/cho-dong-ba.jpg' },
+      'lang-khai-dinh': { name: 'Lăng Khải Định (Ứng Lăng)', cat: 'Di tích Lăng tẩm', addr: 'Xã Thủy Bằng, TP. Huế', lat: 16.3989, lng: 107.5905, photo: '../images/pois/lang-khai-dinh.jpg' },
+      'cung-an-dinh': { name: 'Cung An Định', cat: 'Kiến trúc Cung đình', addr: '179 Phan Đình Phùng, TP. Huế', lat: 16.4578, lng: 107.5932, photo: '../images/pois/cung-an-dinh.jpg' },
+      'song-huong': { name: 'Sông Hương & Bến Thuyền', cat: 'Cảnh quan Tự nhiên', addr: 'Trung tâm TP. Huế', lat: 16.4650, lng: 107.5850, photo: '../images/pois/song-huong.jpg' },
+      'chua-huyen-khong': { name: 'Chùa Huyền Không Sơn Thượng', cat: 'Tâm linh & Thiên nhiên', addr: 'Thôn Chầm, Hương Hồ, TP. Huế', lat: 16.4718, lng: 107.5126, photo: '../images/pois/dai-noi-hue.jpg' },
+      'dien-hon-chen': { name: 'Điện Hòn Chén', cat: 'Di tích Tâm linh', addr: 'Núi Ngọc Trản, Hương Thọ, TP. Huế', lat: 16.4253, lng: 107.5401, photo: '../images/pois/dai-noi-hue.jpg' },
+      'lang-minh-mang': { name: 'Lăng Minh Mạng (Hiếu Lăng)', cat: 'Di tích Lăng tẩm', addr: 'Xã Hương Thọ, TP. Huế', lat: 16.3888, lng: 107.5756, photo: '../images/pois/dai-noi-hue.jpg' },
+      'truong-quoc-hoc': { name: 'Trường Quốc Học Huế', cat: 'Văn hóa & Lịch sử', addr: '12 Lê Lợi, TP. Huế', lat: 16.4604, lng: 107.5843, photo: '../images/pois/dai-noi-hue.jpg' },
+      'doi-vong-canh': { name: 'Đồi Vọng Cảnh', cat: 'Cảnh quan Hoàng hôn', addr: 'Huyền Trân Công Chúa, Thủy Xuân, TP. Huế', lat: 16.4276, lng: 107.5503, photo: '../images/pois/dai-noi-hue.jpg' },
+      'nha-tho-phu-cam': { name: 'Nhà Thờ Phủ Cam', cat: 'Kiến trúc Tôn giáo', addr: '1 Đoàn Hữu Trưng, Phước Vĩnh, TP. Huế', lat: 16.4542, lng: 107.5886, photo: '../images/pois/dai-noi-hue.jpg' },
+      'lang-gia-long': { name: 'Lăng Gia Long (Thiên Thọ Lăng)', cat: 'Di tích Lăng tẩm', addr: 'Hương Thọ, TP. Huế', lat: 16.3533, lng: 107.5700, photo: '../images/pois/dai-noi-hue.jpg' },
+      'lang-thieu-tri': { name: 'Lăng Thiệu Trị (Xương Lăng)', cat: 'Di tích Lăng tẩm', addr: 'Thủy Bằng, TP. Huế', lat: 16.4150, lng: 107.5730, photo: '../images/pois/dai-noi-hue.jpg' },
+      'lang-dong-khanh': { name: 'Lăng Đồng Khánh (Tư Lăng)', cat: 'Di tích Lăng tẩm', addr: 'Thủy Xuân, TP. Huế', lat: 16.4344, lng: 107.5686, photo: '../images/pois/dai-noi-hue.jpg' },
+      'ho-thuy-tien': { name: 'Công Viên Hồ Thủy Tiên', cat: 'Khám phá & Check-in', addr: 'Thủy Bằng, TP. Huế', lat: 16.4061, lng: 107.5744, photo: '../images/pois/dai-noi-hue.jpg' }
+    };
+
+    let resolvedStops = [];
+    let currentAllowCopy = true;
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 2600);
+    }
+
+    function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function navigateStop(lat, lng) {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        window.open('maps://?daddr=' + encodeURIComponent(lat + ',' + lng), '_blank');
+      } else {
+        window.open('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(lat + ',' + lng), '_blank');
+      }
+    }
+
+    // Dựng DOM hoàn toàn bằng textContent và createElement chống XSS
+    function renderSafePage(title, stops, allowCopy) {
+      currentAllowCopy = allowCopy !== false;
+      resolvedStops = stops;
+
+      // 1. Cập nhật tiêu đề
+      const titleEl = document.getElementById('routeTitle');
+      titleEl.textContent = title || 'Lộ trình Cố Đô HUEGO';
+
+      // 2. Metrics
+      document.getElementById('metricStopsCount').textContent = String(stops.length);
+      document.getElementById('timelineCount').textContent = String(stops.length);
+
+      let totalDist = 0;
+      for (let i = 0; i < stops.length - 1; i++) {
+        if (stops[i].lat && stops[i+1].lat) {
+          totalDist += calculateDistanceKm(stops[i].lat, stops[i].lng, stops[i+1].lat, stops[i+1].lng);
+        }
+      }
+      document.getElementById('metricDistance').textContent = totalDist.toFixed(1) + ' km';
+      document.getElementById('metricDuration').textContent = Math.round(totalDist * 4 + stops.length * 35) + 'p';
+
+      // 3. Xử lý nút Copy
+      const copyBtn = document.getElementById('btnCopyItinerary');
+      if (!currentAllowCopy) {
+        copyBtn.disabled = true;
+        copyBtn.textContent = '🔒 Chỉ xem (không sao chép)';
+        copyBtn.style.opacity = '0.6';
+        copyBtn.style.cursor = 'not-allowed';
+      }
+
+      // 4. Dựng Timeline bằng DOM sạch
+      const timelineEl = document.getElementById('timelineList');
+      timelineEl.textContent = ''; // Xóa sạch dữ liệu cũ
+
+      stops.forEach((s, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'timeline-item';
+
+        const markerDiv = document.createElement('div');
+        markerDiv.className = 'timeline-marker';
+        markerDiv.textContent = String(idx + 1);
+        itemDiv.appendChild(markerDiv);
+
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'timeline-card';
+
+        // Ảnh
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'timeline-card-img-wrap';
+        const img = document.createElement('img');
+        img.className = 'timeline-img';
+        img.src = s.photo || '../images/pois/dai-noi-hue.jpg';
+        img.alt = s.name;
+        img.loading = 'lazy';
+        imgWrap.appendChild(img);
+
+        if (s.time) {
+          const timeBadge = document.createElement('div');
+          timeBadge.className = 'timeline-time-badge';
+          timeBadge.textContent = '⏰ ' + s.time;
+          imgWrap.appendChild(timeBadge);
+        }
+        cardDiv.appendChild(imgWrap);
+
+        // Nội dung chi tiết
+        const bodyDiv = document.createElement('div');
+        bodyDiv.className = 'timeline-body';
+
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'timeline-header';
+
+        const catSpan = document.createElement('span');
+        catSpan.className = 'timeline-cat';
+        catSpan.textContent = s.cat || 'Điểm đến';
+        headerDiv.appendChild(catSpan);
+
+        const navBtn = document.createElement('button');
+        navBtn.type = 'button';
+        navBtn.className = 'btn-navigate';
+        navBtn.textContent = '🧭 Chỉ đường';
+        navBtn.onclick = () => navigateStop(s.lat, s.lng);
+        headerDiv.appendChild(navBtn);
+
+        bodyDiv.appendChild(headerDiv);
+
+        const titleH3 = document.createElement('h3');
+        titleH3.className = 'timeline-title';
+        titleH3.textContent = s.name;
+        bodyDiv.appendChild(titleH3);
+
+        const addrP = document.createElement('p');
+        addrP.className = 'timeline-addr';
+        addrP.textContent = '📍 ' + (s.addr || 'Huế, Việt Nam');
+        bodyDiv.appendChild(addrP);
+
+        if (s.note) {
+          const noteDiv = document.createElement('div');
+          noteDiv.className = 'timeline-note';
+          const noteIcon = document.createElement('span');
+          noteIcon.textContent = '📝 ';
+          const noteText = document.createElement('span');
+          noteText.textContent = s.note;
+          noteDiv.appendChild(noteIcon);
+          noteDiv.appendChild(noteText);
+          bodyDiv.appendChild(noteDiv);
+        }
+
+        cardDiv.appendChild(bodyDiv);
+        itemDiv.appendChild(cardDiv);
+        timelineEl.appendChild(itemDiv);
+      });
+
+      // 5. Khởi tạo bản đồ Leaflet
+      try {
+        const map = L.map('shareMap', { scrollWheelZoom: false }).setView([16.4673, 107.5905], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          referrerPolicy: 'strict-origin',
+          attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        const latLngs = [];
+        stops.forEach((s, idx) => {
+          if (s.lat && s.lng) {
+            const pt = [s.lat, s.lng];
+            latLngs.push(pt);
+            const icon = L.divIcon({
+              className: 'custom-map-marker',
+              html: '<div style="background:#582C83; color:#D4AF37; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; border:2px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.3);">' + (idx + 1) + '</div>',
+              iconSize: [28, 28],
+              iconAnchor: [14, 14]
+            });
+            const marker = L.marker(pt, { icon }).addTo(map);
+            const popupDiv = document.createElement('div');
+            const bold = document.createElement('b');
+            bold.textContent = (idx + 1) + '. ' + s.name;
+            const small = document.createElement('small');
+            small.textContent = s.addr || '';
+            popupDiv.appendChild(bold);
+            popupDiv.appendChild(document.createElement('br'));
+            popupDiv.appendChild(small);
+            marker.bindPopup(popupDiv);
+          }
+        });
+
+        if (latLngs.length > 1) {
+          L.polyline(latLngs, { color: '#582C83', weight: 4, dashArray: '6, 8', opacity: 0.8 }).addTo(map);
+          map.fitBounds(L.latLngBounds(latLngs), { padding: [40, 40] });
+        } else if (latLngs.length === 1) {
+          map.setView(latLngs[0], 15);
+        }
+      } catch (err) {
+        console.warn('Lỗi khởi tạo bản đồ Leaflet:', err);
+      }
+    }
+
+    function copyItineraryToApp() {
+      if (!currentAllowCopy) {
+        showToast('Chủ sở hữu đã khóa quyền sao chép lộ trình này.');
+        return;
+      }
+      if (!resolvedStops || resolvedStops.length === 0) {
+        showToast('Không có dữ liệu lộ trình để lưu.');
+        return;
+      }
+      try {
+        const stopsToSave = resolvedStops.map((s, idx) => ({
+          id: s.id || ('stop-' + idx),
+          name: s.name,
+          category: s.cat || 'Điểm đến',
+          address: s.addr || '',
+          latitude: s.lat,
+          longitude: s.lng,
+          photo: s.photo || '',
+          note: s.note || '',
+          plannedStart: s.time || '',
+          visited: false
+        }));
+        localStorage.setItem('huego_itinerary', JSON.stringify(stopsToSave));
+        showToast('🎉 Đã lưu thành công vào Lộ trình của bạn!');
+        setTimeout(() => {
+          window.location.href = '../app/?tab=itinerary';
+        }, 800);
+      } catch (e) {
+        showToast('Lỗi lưu trữ vào trình duyệt.');
+      }
+    }
+
+    // Nạp thêm địa danh từ JSON heritage_30_sites nếu có
+    async function enrichPlacesDictionary() {
+      try {
+        const res = await fetch('../data/heritage_30_sites.json').catch(() => null);
+        if (res && res.ok) {
+          const list = await res.json();
+          if (Array.isArray(list)) {
+            list.forEach(group => {
+              if (group.places && Array.isArray(group.places)) {
+                group.places.forEach(p => {
+                  if (p.id && !KNOWN_PLACES_DICT[p.id]) {
+                    KNOWN_PLACES_DICT[p.id] = {
+                      name: p.name_vi || p.name,
+                      cat: p.cat || 'Di tích & Lăng tẩm',
+                      addr: p.address || 'Huế',
+                      lat: p.lat,
+                      lng: p.lng,
+                      photo: p.img ? ('.' + p.img) : '../images/pois/dai-noi-hue.jpg'
+                    };
+                  }
+                });
+              }
+            });
+          }
+        }
+      } catch (e) {}
+    }
+
+    async function init() {
+      await enrichPlacesDictionary();
+
+      // Đọc fragment hash (#d=...) theo yêu cầu Item (1)
+      const hash = window.location.hash.replace(/^#/, '');
+      let encodedData = '';
+      if (hash) {
+        const hashParams = new URLSearchParams(hash);
+        encodedData = hashParams.get('d') || (hash.startsWith('d=') ? hash.slice(2) : hash);
+      }
+
+      if (encodedData) {
+        try {
+          const jsonStr = decodeURIComponent(escape(atob(decodeURIComponent(encodedData))));
+          const payload = JSON.parse(jsonStr);
+
+          const rawStops = Array.isArray(payload.s) ? payload.s.slice(0, 12) : [];
+          const validStops = [];
+
+          rawStops.forEach(st => {
+            const placeId = String(st.i || '').trim();
+            // Validate: chỉ chấp nhận ID nằm trong danh sách đã biết (Item 5: Chống XSS và bỏ qua ID lạ)
+            if (KNOWN_PLACES_DICT[placeId]) {
+              const known = KNOWN_PLACES_DICT[placeId];
+              validStops.push({
+                id: placeId,
+                name: known.name,
+                cat: known.cat,
+                addr: known.addr,
+                lat: known.lat,
+                lng: known.lng,
+                photo: known.photo,
+                time: st.t ? String(st.t).slice(0, 5) : '',
+                note: st.n ? String(st.n).slice(0, 120) : ''
+              });
+            }
+          });
+
+          if (validStops.length > 0) {
+            renderSafePage(payload.t, validStops, payload.c !== 0);
+            return;
+          }
+        } catch (e) {
+          console.warn('Không thể giải mã payload #d:', e);
+        }
+      }
+
+      // Mặc định: Lộ trình mẫu tiêu biểu
+      renderSafePage('Lộ trình Cố Đô Tiêu Biểu (Mẫu)', [
+        { id: 'dai-noi-hue', name: 'Đại Nội Huế (Hoàng Thành)', cat: 'Di tích Cố Đô', addr: 'Đường 23/8, Phường Thuận Hòa, TP. Huế', lat: 16.4691, lng: 107.5786, photo: '../images/pois/dai-noi-hue.jpg', note: 'Tham quan Ngọ Môn, Điện Thái Hòa, Tử Cấm Thành' },
+        { id: 'chua-thien-mu', name: 'Chùa Thiên Mụ', cat: 'Tâm linh & Cảnh quan', addr: 'Đồi Hà Khê, Kim Long, TP. Huế', lat: 16.4529, lng: 107.5451, photo: '../images/pois/chua-thien-mu.jpg', note: 'Tháp Phước Duyên, ngắm hoàng hôn sông Hương' },
+        { id: 'lang-tu-duc', name: 'Lăng Tự Đức (Khiêm Lăng)', cat: 'Di tích Lăng tẩm', addr: 'Thôn Thượng Ba, Thủy Xuân, TP. Huế', lat: 16.4328, lng: 107.5646, photo: '../images/pois/lang-tu-duc.jpg', note: 'Kiến trúc thơ mộng, hồ Lưu Khiêm' },
+        { id: 'cho-dong-ba', name: 'Chợ Đông Ba', cat: 'Ẩm thực & Mua sắm', addr: 'Đường Trần Hưng Đạo, Phú Hòa, TP. Huế', lat: 16.4716, lng: 107.5925, photo: '../images/pois/cho-dong-ba.jpg', note: 'Thưởng thức bún bò Huế, đặc sản cố đô' }
+      ], true);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
