@@ -24,6 +24,7 @@ async function bootstrap() {
     exclude: [
       'admin/(.*)', 'admin',
       'verify/(.*)', 'verify',
+      's/(.*)', 's',
       'app/(.*)', 'app',
       'flutter/(.*)', 'flutter',
       'random-wheel/(.*)', 'random-wheel',

@@ -1,10 +1,24 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+  BadRequestException,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ItineraryService } from './itinerary.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
 import { UpdateStopsDto } from './dto/update-stops.dto';
 import { OptimizeDto } from './dto/optimize.dto';
+import { CreateShareDto } from './dto/create-share.dto';
+import { UpdateShareDto } from './dto/update-share.dto';
 
 @ApiTags('Itinerary (Lộ Trình)')
 @Controller('itinerary')
@@ -72,5 +86,44 @@ export class ItineraryController {
   async swapStop(@Request() req, @Param('id') id: string, @Body() body: { oldPlaceId: string, newPlaceId: string }) {
     if (!body.oldPlaceId || !body.newPlaceId) throw new BadRequestException('oldPlaceId and newPlaceId are required');
     return this.itineraryService.swapStop(req.user.id, id, body.oldPlaceId, body.newPlaceId);
+  }
+
+  // --- API CHIA SẺ LỘ TRÌNH (YÊU CẦU JWT, CHỈ CHỦ SỞ HỮU) ---
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post(':id/share')
+  @ApiOperation({ summary: 'Bật / Tạo mới liên kết chia sẻ lộ trình (thu hồi link cũ)' })
+  async createShare(@Request() req, @Param('id') id: string, @Body() dto: CreateShareDto) {
+    const rawPublicBase = process.env.PUBLIC_BASE_URL;
+    const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+    const publicBaseUrl = rawPublicBase ? rawPublicBase.replace(/\/+$/, '') : `${proto}://${host}`;
+
+    return this.itineraryService.createShare(req.user.id, id, dto, publicBaseUrl);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get(':id/share')
+  @ApiOperation({ summary: 'Xem trạng thái chia sẻ lộ trình (không trả token thô)' })
+  async getShareStatus(@Request() req, @Param('id') id: string) {
+    return this.itineraryService.getShareStatus(req.user.id, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Patch(':id/share')
+  @ApiOperation({ summary: 'Cập nhật cấu hình liên kết chia sẻ (gia hạn, quyền kèm ghi chú, lưu bản sao)' })
+  async updateShare(@Request() req, @Param('id') id: string, @Body() dto: UpdateShareDto) {
+    return this.itineraryService.updateShare(req.user.id, id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete(':id/share')
+  @ApiOperation({ summary: 'Thu hồi liên kết chia sẻ (vô hiệu hóa tức thì)' })
+  async revokeShare(@Request() req, @Param('id') id: string) {
+    return this.itineraryService.revokeShare(req.user.id, id);
   }
 }

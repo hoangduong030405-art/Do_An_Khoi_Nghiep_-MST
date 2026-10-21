@@ -37,7 +37,7 @@ import { InMemoryDbService } from './database/in-memory-db.service';
       {
         rootPath: join(__dirname, '..', '..', '..', 'web-hue4u', 'public'),
         serveRoot: '/',
-        exclude: ['/api/(.*)', '/flutter/(.*)', '/admin/(.*)'],
+        exclude: ['/api/(.*)', '/flutter/(.*)', '/admin/(.*)', '/s/(.*)', '/s'],
         serveStaticOptions: {
           setHeaders: (res, filePath: string) => {
             if (filePath.endsWith('.html') || filePath.endsWith('.json')) {

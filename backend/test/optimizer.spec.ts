@@ -3,7 +3,9 @@ import { ItineraryService } from '../src/modules/itinerary/itinerary.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Itinerary } from '../src/modules/itinerary/entities/itinerary.entity';
 import { ItineraryStop } from '../src/modules/itinerary/entities/itinerary-stop.entity';
+import { ItineraryShare } from '../src/modules/itinerary/entities/itinerary-share.entity';
 import { Place } from '../src/modules/places/entities/place.entity';
+import { User } from '../src/modules/auth/entities/user.entity';
 import { WeatherService } from '../src/modules/weather/weather.service';
 
 describe('Itinerary Optimizer Test', () => {
@@ -20,7 +22,9 @@ describe('Itinerary Optimizer Test', () => {
         ItineraryService,
         { provide: getRepositoryToken(Itinerary), useValue: {} },
         { provide: getRepositoryToken(ItineraryStop), useValue: {} },
+        { provide: getRepositoryToken(ItineraryShare), useValue: {} },
         { provide: getRepositoryToken(Place), useValue: placeRepoMock },
+        { provide: getRepositoryToken(User), useValue: {} },
         { provide: WeatherService, useValue: {} },
       ],
     }).compile();

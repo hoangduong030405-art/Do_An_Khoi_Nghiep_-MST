@@ -126,6 +126,17 @@ flutter run
 - **Chỉ gửi khi tương tác có chủ đích:** Tọa độ GPS chỉ được gửi về máy chủ khi người dùng chủ động bấm **"Check-in Mở Khóa GPS"** để đối chiếu với vòng địa giới Geofencing 35m của di sản nhằm chống gian lận và cấp điểm Green Points (GP).
 - **Vị trí giả lập (Demo Mode):** Chỉ hỗ trợ cho mục đích kiểm thử giao diện trên máy tính bàn. Vị trí giả lập không được cấp quyền mở khóa nhận điểm di sản thật.
 
+---
+
+## 🛡️ 6. QUYỀN RIÊNG TƯ CỦA CHIA SẺ LỘ TRÌNH (ITINERARY SHARING PRIVACY)
+
+- **Không lưu Token thô:** Khóa token chia sẻ (24 bytes base64url) được băm một chiều bằng chuẩn mật mã **SHA-256** trước khi lưu vào bảng `itinerary_shares`. Máy chủ không lưu trữ token thô; token chỉ được hiển thị một lần duy nhất cho chủ sở hữu khi vừa sinh liên kết.
+- **Ngăn chặn rò rỉ qua Referer & Search Engines:** Trang công khai `/s/:token` được bảo vệ bằng các tiêu đề an toàn nghiêm ngặt: `Referrer-Policy: no-referrer` (ngăn token bị gửi sang các liên kết ngoài như Google Maps, Apple Maps), `X-Robots-Tag: noindex, nofollow`, `<meta name="robots" content="noindex, nofollow">` (chặn công cụ tìm kiếm thu thập chỉ mục), và `Cache-Control: no-store`.
+- **Dữ liệu tối thiểu & Ẩn danh danh tính:** API công khai (`/api/v1/shared/:token`) tuyệt đối **không trả về** email, userId, ID nội bộ cơ sở dữ liệu, điểm thưởng Green Points, vị trí GPS thời gian thực, hay lịch sử check-in của chủ sở hữu. Người chia sẻ chỉ hiển thị tên hiển thị công khai hoặc nhãn ẩn danh "Một du khách HUEGO".
+- **Bảo vệ ghi chú cá nhân:** Ghi chú tại từng điểm dừng (`note`) mặc định **bị ẩn hoàn toàn**. Ghi chú chỉ được gửi ra ngoài khi chủ sở hữu chủ động bật tùy chọn "Kèm ghi chú của tôi" (`includeNotes = true`).
+- **Phản hồi 404 thống nhất & Chống tấn công Timing:** Tất cả các trường hợp liên kết không tồn tại, token sai, liên kết đã bị thu hồi (`revokedAt`), hoặc quá hạn sử dụng (`expiresAt`) đều trả về cùng một phản hồi mã `404 Not Found` với thông điệp đồng nhất "Liên kết không tồn tại hoặc đã hết hạn". Việc so sánh băm token được thực hiện bằng hàm so sánh thời gian cố định `crypto.timingSafeEqual`.
+- **Chính sách vòng đời & Xóa liên kết theo tầng (Cascade):** Mỗi lộ trình chỉ có tối đa 1 liên kết hoạt động tại một thời điểm; khi tạo link mới, link cũ sẽ bị vô hiệu hóa tức thì. Khi người dùng xóa lộ trình hoặc xóa tài khoản, toàn bộ các bản ghi liên kết chia sẻ liên quan tự động bị xóa triệt để nhờ ràng buộc khóa ngoại `ON DELETE CASCADE`.
+
 WEB
 https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/
 APP

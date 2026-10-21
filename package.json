@@ -12,7 +12,8 @@
     "backend": "npm --prefix backend run start:dev",
     "audit:images": "node scripts/audit-images.js",
     "verify:responsive": "node scripts/verify-responsive.js",
-    "verify:location": "node scripts/verify-location.js"
+    "verify:location": "node scripts/verify-location.js",
+    "verify:share": "node scripts/verify-share.js"
   },
   "keywords": [
     "huego",

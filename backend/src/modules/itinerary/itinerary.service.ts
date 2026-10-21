@@ -1,20 +1,32 @@
 import { Injectable, NotFoundException, BadRequestException, Logger, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
+import * as crypto from 'crypto';
 import { Itinerary } from './entities/itinerary.entity';
 import { ItineraryStop } from './entities/itinerary-stop.entity';
+import { ItineraryShare } from './entities/itinerary-share.entity';
 import { Place } from '../places/entities/place.entity';
+import { User } from '../auth/entities/user.entity';
 import { WeatherService } from '../weather/weather.service';
 import { CreateItineraryDto } from './dto/create-itinerary.dto';
+import { CreateShareDto } from './dto/create-share.dto';
+import { UpdateShareDto } from './dto/update-share.dto';
 
 @Injectable()
 export class ItineraryService {
   private readonly logger = new Logger(ItineraryService.name);
 
+  // Giới hạn theo ngày và theo dõi lượt xem chống spam
+  private readonly dailyShareCreates = new Map<string, { date: string; count: number }>();
+  private readonly dailyItineraryCopies = new Map<string, { date: string; count: number }>();
+  private readonly ipShareViews = new Map<string, number>(); // key: `${ip}:${shareId}` -> timestamp
+
   constructor(
     @InjectRepository(Itinerary) private readonly itineraryRepo: Repository<Itinerary>,
     @InjectRepository(ItineraryStop) private readonly stopRepo: Repository<ItineraryStop>,
+    @InjectRepository(ItineraryShare) private readonly shareRepo: Repository<ItineraryShare>,
     @InjectRepository(Place) private readonly placeRepo: Repository<Place>,
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
     private readonly weatherService: WeatherService,
   ) {}
 
@@ -91,7 +103,287 @@ export class ItineraryService {
     return { success: true };
   }
 
-  // Tối ưu hóa thứ tự
+  // --- API CHIA SẺ LỘ TRÌNH (CHO CHỦ SỞ HỮU) ---
+
+  private checkDailyQuota(map: Map<string, { date: string; count: number }>, key: string, max: number, errorMsg: string) {
+    const today = new Date().toISOString().slice(0, 10);
+    const userQuota = map.get(key);
+    if (!userQuota || userQuota.date !== today) {
+      map.set(key, { date: today, count: 1 });
+      return;
+    }
+    if (userQuota.count >= max) {
+      throw new BadRequestException(errorMsg);
+    }
+    userQuota.count++;
+  }
+
+  async createShare(userId: string, itineraryId: string, dto: CreateShareDto, publicBaseUrl: string) {
+    const itinerary = await this.getItinerary(userId, itineraryId);
+
+    // Kiểm tra quota 20 lần tạo link / ngày
+    this.checkDailyQuota(
+      this.dailyShareCreates,
+      userId,
+      20,
+      'Bạn đã đạt giới hạn tối đa 20 lần tạo liên kết chia sẻ mỗi ngày.',
+    );
+
+    // Mỗi lộ trình tối đa 1 link hoạt động: thu hồi link cũ nếu có
+    await this.shareRepo.update(
+      { itineraryId, revokedAt: IsNull() },
+      { revokedAt: new Date() },
+    );
+
+    // Sinh token ngẫu nhiên base64url dài 24 bytes (192 bits entropy)
+    const rawToken = crypto.randomBytes(24).toString('base64url');
+    // Lưu hash SHA-256 (tuyệt đối không lưu token thô vào DB)
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+    const expiresInDays = dto.expiresInDays && dto.expiresInDays > 0 ? Math.min(dto.expiresInDays, 365) : 30;
+    const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+
+    const share = this.shareRepo.create({
+      itineraryId: itinerary.id,
+      ownerId: userId,
+      tokenHash,
+      expiresAt,
+      includeNotes: dto.includeNotes === true,
+      allowCopy: dto.allowCopy !== false,
+      viewCount: 0,
+    });
+
+    await this.shareRepo.save(share);
+
+    const cleanBaseUrl = publicBaseUrl.replace(/\/+$/, '');
+    return {
+      shareUrl: `${cleanBaseUrl}/s/${rawToken}`,
+      expiresAt: share.expiresAt,
+      includeNotes: share.includeNotes,
+      allowCopy: share.allowCopy,
+      note: 'Token này chỉ hiển thị một lần duy nhất vì lý do an toàn bảo mật.',
+    };
+  }
+
+  async getShareStatus(userId: string, itineraryId: string) {
+    await this.getItinerary(userId, itineraryId);
+
+    const share = await this.shareRepo.findOne({
+      where: { itineraryId, revokedAt: IsNull() },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (!share || (share.expiresAt && new Date() > share.expiresAt)) {
+      return { isShared: false };
+    }
+
+    // Tuyệt đối KHÔNG trả lại token thô
+    return {
+      isShared: true,
+      expiresAt: share.expiresAt,
+      viewCount: share.viewCount,
+      lastViewedAt: share.lastViewedAt,
+      includeNotes: share.includeNotes,
+      allowCopy: share.allowCopy,
+      createdAt: share.createdAt,
+    };
+  }
+
+  async updateShare(userId: string, itineraryId: string, dto: UpdateShareDto) {
+    await this.getItinerary(userId, itineraryId);
+
+    const share = await this.shareRepo.findOne({
+      where: { itineraryId, revokedAt: IsNull() },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (!share || (share.expiresAt && new Date() > share.expiresAt)) {
+      throw new NotFoundException('Không tìm thấy liên kết chia sẻ đang hoạt động.');
+    }
+
+    if (typeof dto.includeNotes === 'boolean') {
+      share.includeNotes = dto.includeNotes;
+    }
+    if (typeof dto.allowCopy === 'boolean') {
+      share.allowCopy = dto.allowCopy;
+    }
+    if (dto.expiresInDays && dto.expiresInDays > 0) {
+      const days = Math.min(dto.expiresInDays, 365);
+      share.expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+    }
+
+    await this.shareRepo.save(share);
+
+    return {
+      isShared: true,
+      expiresAt: share.expiresAt,
+      viewCount: share.viewCount,
+      lastViewedAt: share.lastViewedAt,
+      includeNotes: share.includeNotes,
+      allowCopy: share.allowCopy,
+    };
+  }
+
+  async revokeShare(userId: string, itineraryId: string) {
+    await this.getItinerary(userId, itineraryId);
+
+    await this.shareRepo.update(
+      { itineraryId, revokedAt: IsNull() },
+      { revokedAt: new Date() },
+    );
+
+    return { success: true, message: 'Đã thu hồi liên kết chia sẻ.' };
+  }
+
+  // --- API CÔNG KHAI (KHÔNG CẦN JWT) ---
+
+  async getSharedItinerary(rawToken: string, clientIp?: string) {
+    if (!rawToken || typeof rawToken !== 'string') {
+      throw new NotFoundException('Liên kết không tồn tại hoặc đã hết hạn');
+    }
+
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+    const share = await this.shareRepo.findOne({
+      where: { tokenHash },
+      relations: ['itinerary', 'itinerary.stops', 'itinerary.stops.place', 'owner'],
+    });
+
+    if (!share) {
+      throw new NotFoundException('Liên kết không tồn tại hoặc đã hết hạn');
+    }
+
+    // So sánh thời gian cố định (timing-safe)
+    const hashBuf = Buffer.from(share.tokenHash, 'hex');
+    const targetBuf = Buffer.from(tokenHash, 'hex');
+    if (hashBuf.length !== targetBuf.length || !crypto.timingSafeEqual(hashBuf, targetBuf)) {
+      throw new NotFoundException('Liên kết không tồn tại hoặc đã hết hạn');
+    }
+
+    // Kiểm tra thu hồi hoặc hết hạn
+    if (share.revokedAt || (share.expiresAt && new Date() > share.expiresAt)) {
+      throw new NotFoundException('Liên kết không tồn tại hoặc đã hết hạn');
+    }
+
+    if (!share.itinerary) {
+      throw new NotFoundException('Liên kết không tồn tại hoặc đã hết hạn');
+    }
+
+    // Tăng viewCount tối đa 1 lần mỗi IP mỗi giờ
+    const viewKey = `${clientIp || '127.0.0.1'}:${share.id}`;
+    const lastViewTime = this.ipShareViews.get(viewKey) || 0;
+    const now = Date.now();
+    if (now - lastViewTime > 3600000) {
+      this.ipShareViews.set(viewKey, now);
+      share.viewCount = (share.viewCount || 0) + 1;
+      share.lastViewedAt = new Date();
+      await this.shareRepo.save(share);
+    }
+
+    // Sắp xếp thứ tự stops
+    const stops = [...(share.itinerary.stops || [])].sort((a, b) => a.orderIndex - b.orderIndex);
+
+    // Tính tổng quãng đường và thời gian di chuyển
+    let totalDistanceKm = 0;
+    for (let i = 0; i < stops.length - 1; i++) {
+      const p1 = stops[i].place;
+      const p2 = stops[i + 1].place;
+      if (p1 && p2 && p1.latitude && p1.longitude && p2.latitude && p2.longitude) {
+        totalDistanceKm += this.haversine(p1.latitude, p1.longitude, p2.latitude, p2.longitude);
+      }
+    }
+    totalDistanceKm = Math.round(totalDistanceKm * 100) / 100;
+    const estimatedDurationMin = Math.round((totalDistanceKm / 15) * 60) + (stops.length * 45);
+    const co2SavedKg = Math.round(totalDistanceKm * 0.12 * 100) / 100;
+
+    // Chỉ trả dữ liệu công khai tối thiểu: KHÔNG email, KHÔNG userId, KHÔNG qrToken, KHÔNG điểm xanh
+    return {
+      title: share.itinerary.title,
+      date: share.itinerary.date,
+      sharedBy: share.owner?.fullName || 'Một du khách HUEGO',
+      updatedAt: share.itinerary.updatedAt,
+      expiresAt: share.expiresAt,
+      allowCopy: share.allowCopy,
+      includeNotes: share.includeNotes,
+      totalDistanceKm,
+      estimatedDurationMin,
+      estimatedCo2SavedKg: co2SavedKg,
+      stops: stops.map((s, idx) => ({
+        orderIndex: idx + 1,
+        placeId: s.placeId,
+        name: s.place?.name || s.placeId,
+        category: s.place?.categoryName || s.place?.categoryCode || 'Di tích & Thắng cảnh',
+        latitude: s.place?.latitude || 0,
+        longitude: s.place?.longitude || 0,
+        address: s.place?.address || 'Thành phố Huế',
+        plannedStart: s.plannedStart || null,
+        photo: s.place?.thumbnailUrl || '/images/pois/dai-noi-hue.jpg',
+        // Ghi chú CHỈ xuất hiện khi includeNotes = true
+        note: share.includeNotes ? (s.note || null) : undefined,
+      })),
+    };
+  }
+
+  async copySharedItinerary(userId: string, rawToken: string) {
+    if (!rawToken || typeof rawToken !== 'string') {
+      throw new NotFoundException('Liên kết không tồn tại hoặc đã hết hạn');
+    }
+
+    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+    const share = await this.shareRepo.findOne({
+      where: { tokenHash },
+      relations: ['itinerary', 'itinerary.stops'],
+    });
+
+    if (!share || share.revokedAt || (share.expiresAt && new Date() > share.expiresAt) || !share.itinerary) {
+      throw new NotFoundException('Liên kết không tồn tại hoặc đã hết hạn');
+    }
+
+    if (!share.allowCopy) {
+      throw new BadRequestException('Lộ trình này không cho phép sao chép.');
+    }
+
+    // Giới hạn 20 bản sao mỗi ngày mỗi user
+    this.checkDailyQuota(
+      this.dailyItineraryCopies,
+      userId,
+      20,
+      'Bạn đã đạt giới hạn tối đa 20 bản sao lộ trình mỗi ngày.',
+    );
+
+    // Tạo lộ trình mới thuộc tài khoản người sao chép
+    const newItinerary = this.itineraryRepo.create({
+      userId,
+      title: `Bản sao: ${share.itinerary.title}`,
+      date: share.itinerary.date || new Date(),
+    });
+    const savedItinerary = await this.itineraryRepo.save(newItinerary);
+
+    // Sao chép stops (lọc bỏ ghi chú nếu includeNotes = false)
+    const sortedStops = [...share.itinerary.stops].sort((a, b) => a.orderIndex - b.orderIndex);
+    const newStops = sortedStops.map((s, index) => {
+      return this.stopRepo.create({
+        itineraryId: savedItinerary.id,
+        placeId: s.placeId,
+        orderIndex: index,
+        plannedStart: s.plannedStart,
+        note: share.includeNotes ? s.note : null,
+      });
+    });
+
+    await this.stopRepo.save(newStops);
+
+    return {
+      newItineraryId: savedItinerary.id,
+      title: savedItinerary.title,
+      stopsCount: newStops.length,
+      message: 'Đã sao chép thành công vào lộ trình của bạn.',
+    };
+  }
+
+  // --- TIỆN ÍCH TỐI ƯU HÓA THỨ TỰ ---
+
   async optimizeRoute(placeIds: string[], startLat?: number, startLng?: number) {
     if (placeIds.length === 0) return [];
     if (placeIds.length > 12) throw new BadRequestException('Không thể tối ưu quá 12 địa điểm cùng lúc.');
@@ -137,7 +429,6 @@ export class ItineraryService {
       for (let i = 0; i < optimized.length - 1; i++) {
         for (let k = i + 1; k < optimized.length; k++) {
           const dBefore = this.calculateTotalDistance(optimized);
-          // Swap and reverse the sub-array
           const newRoute = [
             ...optimized.slice(0, i),
             ...optimized.slice(i, k + 1).reverse(),
@@ -169,9 +460,9 @@ export class ItineraryService {
       currentLng = place.longitude;
     }
 
-    const walkSpeed = 5; // km/h
-    const bikeSpeed = 15; // km/h
-    const co2SavedPerKm = parseFloat(process.env.CO2_SAVED_PER_KM || '0.12'); // kg/km (Ước lượng so với đi xe máy)
+    const walkSpeed = 5;
+    const bikeSpeed = 15;
+    const co2SavedPerKm = parseFloat(process.env.CO2_SAVED_PER_KM || '0.12');
 
     return {
       optimizedRoute: routeData.map(r => r.place.id),
@@ -184,7 +475,6 @@ export class ItineraryService {
     };
   }
 
-  // Gợi ý thời tiết
   async getWeatherSuggestions(userId: string, itineraryId: string) {
     const itinerary = await this.getItinerary(userId, itineraryId);
     const weather = await this.weatherService.getCurrentHueWeather();
@@ -204,9 +494,8 @@ export class ItineraryService {
     for (const stop of itinerary.stops) {
       const place = stop.place;
       if (place && place.environmentType === 'OUTDOOR') {
-        // Tìm 3 điểm indoor gần nhất
         const nearestIndoors = [...indoorPlaces]
-          .filter(p => !itinerary.stops.find(s => s.placeId === p.id)) // không nằm sẵn trong lộ trình
+          .filter(p => !itinerary.stops.find(s => s.placeId === p.id))
           .sort((a, b) => this.haversine(place.latitude, place.longitude, a.latitude, a.longitude) 
                         - this.haversine(place.latitude, place.longitude, b.latitude, b.longitude))
           .slice(0, 3);
@@ -246,9 +535,8 @@ export class ItineraryService {
     return this.getItinerary(userId, itineraryId);
   }
 
-  // Tiện ích: Haversine
   private haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // km
+    const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
