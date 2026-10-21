@@ -2,6 +2,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 const http = require('http');
 const fs = require('fs');
+const { Client } = require('pg');
 
 function request(options, data = null, isBinary = false) {
   return new Promise((resolve, reject) => {
@@ -49,6 +50,7 @@ async function run() {
   console.log('===============================================================\n');
 
   const ts = Date.now();
+  const dbName = process.env.DATABASE_NAME || 'huego_db_lock_demo';
   const userAEmail = `demo.usera.${ts}@huego.vn`;
   const userBEmail = `demo.userb.${ts}@huego.vn`;
 
@@ -138,7 +140,7 @@ async function run() {
   console.log(`[PASS] Mở khóa trùng bị từ chối chính xác: "${repeatUnlockRes.body?.message}"`);
 
   // 6. MỞ KHÓA TỌA ĐỘ Ở XA
-  console.log('\n--- BƯỚC 6: MỞ KHÓA TỌA ĐỘ Ở XA (HÀ NỘI) ---');
+  console.log('\n--- BƯỚC 6: MỞ KHÓA TỌA ĐỘ Ở XA (HÀ NỘI) & KIỂM TRA GIAN LẬN GPS ---');
   const farUnlockRes = await request({
     hostname: 'localhost', port: 3000, path: '/api/v1/geofencing/unlock', method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${tokenA}` }
@@ -148,6 +150,50 @@ async function run() {
   });
   assert(farUnlockRes.status === 201 && farUnlockRes.body?.unlocked === false, 'Tọa độ xa phải bị từ chối');
   console.log(`[PASS] Mở khóa tọa độ xa bị từ chối: "${farUnlockRes.body?.message}"`);
+
+  // [MỤC BỔ SUNG 6A]: Accuracy > 50m
+  const badAccRes = await request({
+    hostname: 'localhost', port: 3000, path: '/api/v1/geofencing/unlock', method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${tokenA}` }
+  }, {
+    latitude: 16.4697, longitude: 107.5779,
+    accuracy: 75
+  });
+  assert(badAccRes.status === 201 && badAccRes.body?.unlocked === false, 'GPS accuracy > 50m phải bị từ chối');
+  assert(badAccRes.body?.message?.includes('quá thấp'), 'Sai thông báo lỗi độ chính xác GPS');
+  console.log(`[PASS] Chặn tín hiệu GPS accuracy > 50m: "${badAccRes.body?.message}"`);
+
+  // [MỤC BỔ SUNG 6B]: Tốc độ bất thường (> 120 km/h)
+  const speedRes = await request({
+    hostname: 'localhost', port: 3000, path: '/api/v1/geofencing/unlock', method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${tokenA}` }
+  }, {
+    latitude: 16.5500, longitude: 107.6500,
+    accuracy: 10,
+    timestamp: new Date(Date.now() + 10000).toISOString()
+  });
+  assert(speedRes.status === 201 && speedRes.body?.unlocked === false, 'Tốc độ bất thường phải bị từ chối');
+  assert(speedRes.body?.message?.includes('bất thường'), 'Sai thông báo lỗi tốc độ');
+  console.log(`[PASS] Chặn dịch chuyển tức thời (tốc độ > 120km/h): "${speedRes.body?.message}"`);
+
+  // [MỤC BỔ SUNG 6C]: Không rò rỉ qrToken ở places, map-points, heritage-sites
+  const placesPubRes = await request({ hostname: 'localhost', port: 3000, path: '/api/v1/places', method: 'GET' });
+  const mapPointsRes = await request({ hostname: 'localhost', port: 3000, path: '/api/v1/portal/map-points', method: 'GET' });
+  const heritageRes = await request({ hostname: 'localhost', port: 3000, path: '/api/v1/portal/heritage-sites', method: 'GET' });
+  assert(!JSON.stringify(placesPubRes.body).includes('qrToken'), 'Rò rỉ qrToken ở /places');
+  assert(!JSON.stringify(mapPointsRes.body).includes('qrToken'), 'Rò rỉ qrToken ở /portal/map-points');
+  assert(!JSON.stringify(heritageRes.body).includes('qrToken'), 'Rò rỉ qrToken ở /portal/heritage-sites');
+  console.log(`[PASS] Bảo mật mã QR: Không rò rỉ qrToken ở /places, /map-points, /heritage-sites`);
+
+  // [MỤC BỔ SUNG 6D]: 3 cây xăng có 0 điểm thưởng xanh trong CSDL PostgreSQL
+  const pgGasClient = new Client({ connectionString: `postgres://postgres:huego_secure_password_2026@localhost:5432/${dbName}` });
+  await pgGasClient.connect();
+  const gasDbRes = await pgGasClient.query(`SELECT id, name, "categoryCode", "greenRewardPoints" FROM places WHERE "categoryCode" = 'GAS_STATION' OR name ILIKE '%cây xăng%'`);
+  await pgGasClient.end();
+  const gasPlaces = gasDbRes.rows;
+  assert(gasPlaces.length >= 3, `Phải có ít nhất 3 cây xăng (thực tế: ${gasPlaces.length})`);
+  assert(gasPlaces.every(g => (g.greenRewardPoints || 0) === 0), 'Cây xăng không được có điểm thưởng xanh (> 0)');
+  console.log(`[PASS] Kiểm tra cây xăng: Có đúng ${gasPlaces.length} cây xăng trong CSDL và đều được gán 0 GP`);
 
   // 7. QR CODE SAI
   console.log('\n--- BƯỚC 7: MỞ KHÓA BẰNG MÃ QR SAI / ĐOÁN TRƯỚC ---');
@@ -185,8 +231,6 @@ async function run() {
 
   // 9. VƯỢT TRẦN ĐIỂM NGÀY (500 GP)
   console.log('\n--- BƯỚC 9: KIỂM SOÁT GIAN LẬN: TRẦN ĐIỂM NGÀY 500 GP ---');
-  const { Client } = require('pg');
-  const dbName = process.env.DATABASE_NAME || 'huego_db';
   const pgClient = new Client({ connectionString: `postgres://postgres:huego_secure_password_2026@localhost:5432/${dbName}` });
   await pgClient.connect();
   
@@ -196,10 +240,10 @@ async function run() {
 
   await pgClient.query(`
     INSERT INTO user_unlocks ("id", "userId", "placeId", "pointsAwarded", "distanceMeters", "unlockedAt")
-    VALUES (uuid_generate_v4(), $1, $2, 400, 10, NOW());
+    VALUES (uuid_generate_v4(), $1, $2, 350, 10, NOW());
   `, [userAId, freePlaceId]);
 
-  const ngoMonRes = await pgClient.query(`SELECT id, latitude, longitude FROM places WHERE slug = 'cong-ngo-mon' OR id = 'heritage-ngo-mon' LIMIT 1;`);
+  const ngoMonRes = await pgClient.query(`SELECT id, latitude, longitude, "greenRewardPoints" FROM places WHERE slug = 'cong-ngo-mon' OR id = 'heritage-ngo-mon' LIMIT 1;`);
   const ngoMon = ngoMonRes.rows[0];
   await pgClient.end();
 
@@ -209,7 +253,7 @@ async function run() {
   }, { latitude: ngoMon.latitude, longitude: ngoMon.longitude, placeId: ngoMon.id, accuracy: 10 });
   
   assert(unlockCapRes.status === 201 && unlockCapRes.body?.unlocked === false, 'Vượt trần điểm phải trả về unlocked: false');
-  assert(unlockCapRes.body?.message?.includes('vượt giới hạn'), `Thiếu thông báo vượt giới hạn trần điểm ngày (Nhận được: ${unlockCapRes.body?.message})`);
+  assert(unlockCapRes.body?.message?.includes('Hôm nay bạn đã nhận 480/500 điểm, mở khóa này (+30) sẽ vượt giới hạn'), `Sai cấu trúc thông báo vượt giới hạn (Nhận được: ${unlockCapRes.body?.message})`);
   console.log(`[PASS] Vượt trần điểm ngày bị chặn chính xác: "${unlockCapRes.body?.message}"`);
 
   // 10. LỘ TRÌNH LƯU VÀO DB VÀ CÁCH LY CHỦ SỞ HỮU
@@ -300,6 +344,22 @@ async function run() {
   assert(uploadRes.status === 201 && uploadRes.body?.success === true, 'Upload ảnh thật thất bại');
   const uploadedFilename = uploadRes.body?.filename;
   console.log(`[PASS] Upload ảnh minh chứng thành công: File = ${uploadedFilename}, URL = ${uploadRes.body?.imageUrl}`);
+
+  // [MỤC BỔ SUNG 12B]: File text giả mạo đuôi png bị chặn bởi Magic Bytes
+  const fakePngBuffer = Buffer.from('This is a text file pretending to be png');
+  const fakePre = Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="fake.png"\r\nContent-Type: image/png\r\n\r\n`);
+  const fakeMultipart = Buffer.concat([fakePre, fakePngBuffer, post]);
+  const fakeUploadRes = await request({
+    hostname: 'localhost', port: 3000, path: '/api/v1/crowdsource/upload', method: 'POST',
+    headers: {
+      'Content-Type': `multipart/form-data; boundary=${boundary}`,
+      'Content-Length': fakeMultipart.length,
+      'Authorization': `Bearer ${tokenA}`
+    }
+  }, fakeMultipart, false);
+  assert(fakeUploadRes.status === 400, `File text giả đuôi png phải bị 400 Bad Request (Nhận được ${fakeUploadRes.status})`);
+  assert(fakeUploadRes.body?.message?.includes('magic bytes'), 'Thiếu thông báo lỗi magic bytes');
+  console.log(`[PASS] Chặn file giả mạo đuôi ảnh: File text mạo danh .png bị từ chối với HTTP 400 (Magic bytes không đúng)`);
 
   // 13. CẤP CHỨNG NHẬN ĐIỆN TỬ
   console.log('\n--- BƯỚC 13: CẤP CHỨNG NHẬN E-CERTIFICATE (>= 3 ĐỊA DANH VÀ >= 60 GP) ---');

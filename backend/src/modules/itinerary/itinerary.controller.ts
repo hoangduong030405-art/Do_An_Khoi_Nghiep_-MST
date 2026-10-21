@@ -19,6 +19,7 @@ import { UpdateStopsDto } from './dto/update-stops.dto';
 import { OptimizeDto } from './dto/optimize.dto';
 import { CreateShareDto } from './dto/create-share.dto';
 import { UpdateShareDto } from './dto/update-share.dto';
+import { resolvePublicBaseUrl } from './utils/share-url.util';
 
 @ApiTags('Itinerary (Lộ Trình)')
 @Controller('itinerary')
@@ -95,11 +96,7 @@ export class ItineraryController {
   @Post(':id/share')
   @ApiOperation({ summary: 'Bật / Tạo mới liên kết chia sẻ lộ trình (thu hồi link cũ)' })
   async createShare(@Request() req, @Param('id') id: string, @Body() dto: CreateShareDto) {
-    const rawPublicBase = process.env.PUBLIC_BASE_URL;
-    const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
-    const publicBaseUrl = rawPublicBase ? rawPublicBase.replace(/\/+$/, '') : `${proto}://${host}`;
-
+    const publicBaseUrl = resolvePublicBaseUrl(req);
     return this.itineraryService.createShare(req.user.id, id, dto, publicBaseUrl);
   }
 

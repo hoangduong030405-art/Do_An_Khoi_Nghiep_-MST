@@ -165,7 +165,8 @@ describe('API Flow Test (Sử dụng PostgreSQL thật)', () => {
 
     expect(resUnlock.status).toBe(201);
     expect(resUnlock.data.unlocked).toBe(false);
-    expect(resUnlock.data.message).toContain('Hôm nay bạn đã nhận 480/500 điểm, mở khóa này sẽ vượt giới hạn');
+    expect(resUnlock.data.message).toContain('Hôm nay bạn đã nhận 480/500 điểm, mở khóa này');
+    expect(resUnlock.data.message).toContain('sẽ vượt giới hạn');
   });
 
   it('9. Ràng buộc Khóa ngoại (Foreign Key) trên PostgreSQL thật: Chèn placeId không tồn tại bị từ chối', async () => {

@@ -10,6 +10,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { ItineraryService } from './itinerary.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { resolvePublicBaseUrl } from './utils/share-url.util';
 
 function escapeHtml(str: any): string {
   if (str === null || str === undefined) return '';
@@ -37,17 +38,14 @@ export class PublicShareViewController {
     // 1. Tiêu đề bảo mật bắt buộc
     res.setHeader(
       'Content-Security-Policy',
-      "default-src 'self' 'unsafe-inline' https://unpkg.com https://*.tile.openstreetmap.org https://cdn.jsdelivr.net data:; img-src 'self' data: https:;",
+      "default-src 'self' 'unsafe-inline' https://unpkg.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://cdn.jsdelivr.net data:; img-src 'self' data: https: https://*.tile.openstreetmap.org https://tile.openstreetmap.org; connect-src 'self' https:;",
     );
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Referrer-Policy', 'strict-origin');
     res.setHeader('X-Robots-Tag', 'noindex, nofollow');
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
 
-    const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-    const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
-    const rawPublicBase = process.env.PUBLIC_BASE_URL;
-    const publicBaseUrl = rawPublicBase ? rawPublicBase.replace(/\/+$/, '') : `${proto}://${host}`;
+    const publicBaseUrl = resolvePublicBaseUrl(req);
 
     const clientIp = (req.headers['cf-connecting-ip'] as string) ||
       (req.headers['x-forwarded-for'] as string)?.split(',')[0].trim() ||
@@ -74,7 +72,8 @@ export class PublicShareViewController {
       ? new Date(data.updatedAt).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
       : '';
     const ogDesc = `Lộ trình ${data.stops.length} điểm, ${data.totalDistanceKm} km tại Cố Đô Huế`;
-    const ogImageUrl = `${publicBaseUrl}/img/hero/di-san-trieu-nguyen.jpg`;
+    const hostForImg = publicBaseUrl.replace(/^https?:\/\//, '');
+    const ogImageUrl = `https://${hostForImg}/img/hero/di-san-trieu-nguyen.jpg`;
     const canonicalUrl = `${publicBaseUrl}/s/${escapeHtml(token)}`;
 
     // Prepare stops JSON safely for Leaflet JS map
@@ -524,6 +523,7 @@ export class PublicShareViewController {
     const map = L.map('shareMap', { scrollWheelZoom: false }).setView([16.4673, 107.5905], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      referrerPolicy: 'strict-origin',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 

@@ -16,9 +16,7 @@ import { UpdateShareDto } from './dto/update-share.dto';
 export class ItineraryService {
   private readonly logger = new Logger(ItineraryService.name);
 
-  // Giới hạn theo ngày và theo dõi lượt xem chống spam
-  private readonly dailyShareCreates = new Map<string, { date: string; count: number }>();
-  private readonly dailyItineraryCopies = new Map<string, { date: string; count: number }>();
+  // Theo dõi lượt xem chống spam theo IP (1 lần/giờ)
   private readonly ipShareViews = new Map<string, number>(); // key: `${ip}:${shareId}` -> timestamp
 
   constructor(
@@ -105,29 +103,46 @@ export class ItineraryService {
 
   // --- API CHIA SẺ LỘ TRÌNH (CHO CHỦ SỞ HỮU) ---
 
-  private checkDailyQuota(map: Map<string, { date: string; count: number }>, key: string, max: number, errorMsg: string) {
-    const today = new Date().toISOString().slice(0, 10);
-    const userQuota = map.get(key);
-    if (!userQuota || userQuota.date !== today) {
-      map.set(key, { date: today, count: 1 });
-      return;
+  // --- KIỂM SOÁT HẠN MỨC CHIA SẺ VÀ SAO CHÉP TRONG DATABASE (BỀN VỮNG QUA KHỞI ĐỘNG LẠI) ---
+
+  private async checkDailyShareQuota(userId: string) {
+    if (this.shareRepo && typeof this.shareRepo.createQueryBuilder === 'function') {
+      const todayCount = await this.shareRepo
+        .createQueryBuilder('share')
+        .where('share.ownerId = :userId', { userId })
+        .andWhere(
+          "(timezone('Asia/Ho_Chi_Minh', timezone('UTC', share.createdAt)))::date = (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh')::date",
+        )
+        .getCount();
+
+      if (todayCount >= 20) {
+        throw new BadRequestException('Bạn đã đạt giới hạn tối đa 20 lần tạo liên kết chia sẻ mỗi ngày.');
+      }
     }
-    if (userQuota.count >= max) {
-      throw new BadRequestException(errorMsg);
+  }
+
+  private async checkDailyCopyQuota(userId: string) {
+    if (this.itineraryRepo && typeof this.itineraryRepo.createQueryBuilder === 'function') {
+      const todayCount = await this.itineraryRepo
+        .createQueryBuilder('itinerary')
+        .where('itinerary.userId = :userId', { userId })
+        .andWhere("itinerary.title LIKE 'Bản sao:%'")
+        .andWhere(
+          "(timezone('Asia/Ho_Chi_Minh', timezone('UTC', itinerary.createdAt)))::date = (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh')::date",
+        )
+        .getCount();
+
+      if (todayCount >= 20) {
+        throw new BadRequestException('Bạn đã đạt giới hạn tối đa 20 bản sao lộ trình mỗi ngày.');
+      }
     }
-    userQuota.count++;
   }
 
   async createShare(userId: string, itineraryId: string, dto: CreateShareDto, publicBaseUrl: string) {
     const itinerary = await this.getItinerary(userId, itineraryId);
 
-    // Kiểm tra quota 20 lần tạo link / ngày
-    this.checkDailyQuota(
-      this.dailyShareCreates,
-      userId,
-      20,
-      'Bạn đã đạt giới hạn tối đa 20 lần tạo liên kết chia sẻ mỗi ngày.',
-    );
+    // Kiểm tra quota 20 lần tạo link / ngày trực tiếp trong CSDL (theo múi giờ Việt Nam)
+    await this.checkDailyShareQuota(userId);
 
     // Mỗi lộ trình tối đa 1 link hoạt động: thu hồi link cũ nếu có
     await this.shareRepo.update(
@@ -344,13 +359,8 @@ export class ItineraryService {
       throw new BadRequestException('Lộ trình này không cho phép sao chép.');
     }
 
-    // Giới hạn 20 bản sao mỗi ngày mỗi user
-    this.checkDailyQuota(
-      this.dailyItineraryCopies,
-      userId,
-      20,
-      'Bạn đã đạt giới hạn tối đa 20 bản sao lộ trình mỗi ngày.',
-    );
+    // Giới hạn 20 bản sao mỗi ngày mỗi user trực tiếp từ CSDL
+    await this.checkDailyCopyQuota(userId);
 
     // Tạo lộ trình mới thuộc tài khoản người sao chép
     const newItinerary = this.itineraryRepo.create({

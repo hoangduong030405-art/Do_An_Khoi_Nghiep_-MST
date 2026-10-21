@@ -92,6 +92,18 @@ async function run() {
   const guestContext = await browser.newContext();
   const guestPage = await guestContext.newPage();
 
+  // Theo dõi tải các ô nền OpenStreetMap
+  let tileRequests = 0;
+  let tileSuccesses = 0;
+  guestPage.on('response', resp => {
+    if (resp.url().includes('tile.openstreetmap.org')) {
+      tileRequests++;
+      if (resp.status() === 200) {
+        tileSuccesses++;
+      }
+    }
+  });
+
   // Test các độ phân giải: 1366x768, 768x1024, 414x896, 375x667
   const viewports = [
     { name: 'desktop', width: 1366, height: 768 },
@@ -140,6 +152,12 @@ async function run() {
     throw new Error(`Kỳ vọng 4 markers trên bản đồ, thực tế: ${markers.length}`);
   }
 
+  // Kiểm tra tải ô nền OpenStreetMap
+  console.log(` - Ô nền OpenStreetMap: Đã tải ${tileSuccesses}/${tileRequests} ô nền (HTTP 200 OK, không bị chặn thiếu Referer)`);
+  if (tileRequests > 0 && tileSuccesses === 0) {
+    throw new Error('Tất cả các ô nền OpenStreetMap đều bị lỗi tải (HTTP != 200)!');
+  }
+
   // Kiểm tra không lộ email trong toàn bộ HTML
   const fullHtml = await guestPage.content();
   if (fullHtml.includes(userAEmail)) {
@@ -150,10 +168,15 @@ async function run() {
   // Kiểm tra thẻ OpenGraph
   const ogTitle = await guestPage.$eval('meta[property="og:title"]', el => el.getAttribute('content'));
   const ogDesc = await guestPage.$eval('meta[property="og:description"]', el => el.getAttribute('content'));
+  const ogImg = await guestPage.$eval('meta[property="og:image"]', el => el.getAttribute('content'));
   console.log(` - Thẻ og:title: "${ogTitle}"`);
   console.log(` - Thẻ og:description: "${ogDesc}"`);
+  console.log(` - Thẻ og:image: "${ogImg}" (URL tuyệt đối HTTPS)`);
   if (!ogTitle || !ogDesc || !ogDesc.includes('4 điểm')) {
     throw new Error('Thẻ OpenGraph không hợp lệ!');
+  }
+  if (!ogImg || !ogImg.startsWith('https://')) {
+    throw new Error(`Thẻ og:image không phải URL tuyệt đối https: ${ogImg}`);
   }
 
   // 6. Đăng nhập User B và test "Lưu về lộ trình của tôi"

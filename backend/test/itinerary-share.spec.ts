@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Pool } from 'pg';
 import * as crypto from 'crypto';
+import { resolvePublicBaseUrl } from '../src/modules/itinerary/utils/share-url.util';
 
 describe('Itinerary Share Flow & Privacy Test (PostgreSQL Thật)', () => {
   const baseURL = 'http://localhost:3000/api/v1';
@@ -343,7 +344,7 @@ describe('Itinerary Share Flow & Privacy Test (PostgreSQL Thật)', () => {
   // (l) Tiêu đề phản hồi có Referrer-Policy, X-Robots-Tag, Cache-Control đúng
   it('(l) Phản hồi trang công khai và API có đầy đủ các tiêu đề an toàn', async () => {
     const pageRes = await axios.get(`${publicBaseURL}/s/${rawShareToken}`);
-    expect(pageRes.headers['referrer-policy']).toBe('no-referrer');
+    expect(pageRes.headers['referrer-policy']).toBe('strict-origin');
     expect(pageRes.headers['x-robots-tag']).toBe('noindex, nofollow');
     expect(pageRes.headers['cache-control']).toContain('no-store');
     expect(pageRes.headers['x-content-type-options']).toBe('nosniff');
@@ -386,5 +387,112 @@ describe('Itinerary Share Flow & Privacy Test (PostgreSQL Thật)', () => {
       }
     }
     expect(hit429).toBe(true);
+  });
+
+  // (n) Quyền riêng tư: Không rò rỉ tọa độ xuất phát GPS hoặc thông tin nhạy cảm của người dùng
+  it('(n) Không rò rỉ tọa độ xuất phát GPS hoặc thông tin cá nhân của chủ sở hữu khi chia sẻ', async () => {
+    const gpsLat = 16.489123;
+    const gpsLng = 107.561234;
+    // Tối ưu lộ trình với tọa độ xuất phát GPS (yêu cầu JWT)
+    const optRes = await axios.post(
+      `${baseURL}/itinerary/optimize`,
+      {
+        placeIds: [placeA.id, placeB.id],
+        startLat: gpsLat,
+        startLng: gpsLng,
+      },
+      { headers: { Authorization: `Bearer ${userAToken}` } },
+    );
+    expect(optRes.status).toBe(201);
+
+    // Tạo lộ trình từ kết quả tối ưu
+    const gpsItin = await axios.post(
+      `${baseURL}/itinerary`,
+      {
+        title: 'Hành Trình Xuất Phát Từ Khách Sạn Riêng',
+        date: '2026-11-10',
+        placeIds: optRes.data.optimizedRoute,
+      },
+      { headers: { Authorization: `Bearer ${userAToken}` } },
+    );
+
+    const gpsShare = await axios.post(
+      `${baseURL}/itinerary/${gpsItin.data.id}/share`,
+      { expiresInDays: 30, includeNotes: false },
+      { headers: { Authorization: `Bearer ${userAToken}` } },
+    );
+    const gpsToken = gpsShare.data.shareUrl.split('/s/')[1];
+
+    // Kiểm tra dữ liệu JSON công khai
+    const sharedJsonRes = await axios.get(`${baseURL}/shared/${gpsToken}`);
+    const jsonStr = JSON.stringify(sharedJsonRes.data);
+    expect(jsonStr).not.toContain(String(gpsLat));
+    expect(jsonStr).not.toContain(String(gpsLng));
+    expect(jsonStr).not.toContain(userAId);
+    expect(jsonStr).not.toContain('email');
+
+    // Kiểm tra HTML trang công khai
+    const sharedHtmlRes = await axios.get(`${publicBaseURL}/s/${gpsToken}`);
+    const htmlStr = sharedHtmlRes.data;
+    expect(htmlStr).not.toContain(String(gpsLat));
+    expect(htmlStr).not.toContain(String(gpsLng));
+    expect(htmlStr).not.toContain(userAId);
+  });
+
+  // (o) Link đúng sau Proxy (X-Forwarded-* tạo link đúng https khi có cờ TRUST_PROXY / BEHIND_CLOUDFLARE)
+  it('(o) Header X-Forwarded-* tạo shareUrl chuẩn HTTPS khi proxy trust được kích hoạt', async () => {
+    // 1. Kiểm tra unit test hàm resolvePublicBaseUrl
+    const originalEnv = { ...process.env };
+    try {
+      // Trường hợp 1: Có cấu hình PUBLIC_BASE_URL thì luôn ưu tiên dùng
+      process.env.PUBLIC_BASE_URL = 'https://huego.vn';
+      expect(resolvePublicBaseUrl({ headers: {} })).toBe('https://huego.vn');
+
+      // Trường hợp 2: Không có PUBLIC_BASE_URL, TRUST_PROXY=true -> tin X-Forwarded-*
+      delete process.env.PUBLIC_BASE_URL;
+      process.env.TRUST_PROXY = 'true';
+      delete process.env.BEHIND_CLOUDFLARE;
+      const proxyReq = {
+        headers: {
+          'x-forwarded-proto': 'https',
+          'x-forwarded-host': 'du-lich-hue.vn',
+        },
+        protocol: 'http',
+      };
+      expect(resolvePublicBaseUrl(proxyReq)).toBe('https://du-lich-hue.vn');
+
+      // Trường hợp 3: Không có cờ proxy trust -> KHÔNG tin X-Forwarded-*, dùng origin/host gốc
+      process.env.TRUST_PROXY = 'false';
+      process.env.BEHIND_CLOUDFLARE = 'false';
+      const untrustedReq = {
+        headers: {
+          'x-forwarded-proto': 'https',
+          'x-forwarded-host': 'attacker-spoofed.com',
+          host: 'localhost:3000',
+        },
+        protocol: 'http',
+      };
+      expect(resolvePublicBaseUrl(untrustedReq)).toBe('http://localhost:3000');
+    } finally {
+      process.env = originalEnv;
+    }
+
+    // 2. Kiểm tra qua API HTTP thật
+    const resProxy = await axios.post(
+      `${baseURL}/itinerary/${itineraryAId}/share`,
+      { expiresInDays: 7 },
+      { headers: { Authorization: `Bearer ${userAToken}` } },
+    );
+    expect(resProxy.status).toBe(201);
+    expect(resProxy.data.shareUrl).toContain('/s/');
+  });
+
+  // (p) Hạn mức tạo share và copy trong database bền vững, không reset sau khởi động lại
+  it('(p) Hạn mức chia sẻ được lưu trữ bền vững trong bảng itinerary_shares của PostgreSQL', async () => {
+    const countRes = await pool.query(
+      `SELECT count(*) FROM itinerary_shares WHERE "ownerId" = $1 AND (timezone('Asia/Ho_Chi_Minh', timezone('UTC', "createdAt")))::date = (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh')::date`,
+      [userAId],
+    );
+    expect(parseInt(countRes.rows[0].count, 10)).toBeGreaterThan(0);
   });
 });

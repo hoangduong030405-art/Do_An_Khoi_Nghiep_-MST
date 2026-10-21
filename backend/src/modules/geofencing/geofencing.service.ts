@@ -277,7 +277,7 @@ export class GeofencingService {
 
     const currentDailyPoints = todayUnlocks.reduce((sum, u) => sum + (u.pointsAwarded || 0), 0);
     if (currentDailyPoints + place.greenRewardPoints > MAX_DAILY) {
-      const msg = `Hôm nay bạn đã nhận ${currentDailyPoints}/${MAX_DAILY} điểm, mở khóa này sẽ vượt giới hạn (${place.greenRewardPoints} điểm).`;
+      const msg = `Hôm nay bạn đã nhận ${currentDailyPoints}/${MAX_DAILY} điểm, mở khóa này (+${place.greenRewardPoints}) sẽ vượt giới hạn (${MAX_DAILY} điểm).`;
       await this.recordAudit(userId, place.id, 'DAILY_LIMIT_EXCEEDED', msg, lat, lng, acc);
       return { unlocked: false, message: msg };
     }
