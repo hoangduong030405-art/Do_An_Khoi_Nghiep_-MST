@@ -111,6 +111,14 @@
           }
         }
 
+        const titleEl = document.getElementById('itineraryTitleInput') || document.querySelector('.itinerary-title');
+        const currentTitle = titleEl ? (titleEl.value || titleEl.innerText || '') : '';
+        const piiRegex = /(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|(?:\+84|0)\s*\d{8,11})/;
+        const piiWarnEl = document.getElementById('sharePiiWarning');
+        if (piiWarnEl) {
+          piiWarnEl.style.display = piiRegex.test(currentTitle) ? 'block' : 'none';
+        }
+
         document.getElementById('shareResultArea').style.display = 'none';
         document.getElementById('qrCodeContainer').style.display = 'none';
         document.getElementById('shareItineraryModal').style.display = 'flex';
@@ -3737,7 +3745,12 @@
 
       <!-- Cảnh báo quyền riêng tư -->
       <div style="background:#FEF3C7; border-left:3px solid #D97706; padding:10px 12px; border-radius:8px; font-size:11px; color:#92400E; margin-bottom:12px; line-height:1.4;">
-        ⚠️ <b>Quyền riêng tư:</b> Bất kỳ ai có liên kết đều xem được lộ trình này (không cần đăng nhập).
+        ⚠️ <b>Quyền riêng tư:</b> Bất kỳ ai có liên kết đều xem được lộ trình này (không cần đăng nhập). Đừng ghi số điện thoại, địa chỉ nhà hay thông tin cá nhân vào tên lộ trình và ghi chú.
+      </div>
+
+      <!-- Cảnh báo nhẹ khi phát hiện PII trong tên lộ trình (không chặn) -->
+      <div id="sharePiiWarning" style="display:none; background:#FFF1F2; border-left:3px solid #E11D48; padding:10px 12px; border-radius:8px; font-size:11px; color:#9F1239; margin-bottom:12px; line-height:1.4;">
+        ⚠️ <b>Chú ý thông tin cá nhân:</b> Tên lộ trình của bạn có thể chứa số điện thoại hoặc email. Bất kỳ ai có liên kết đều sẽ nhìn thấy tên này.
       </div>
 
       <!-- Trạng thái hiện tại -->
