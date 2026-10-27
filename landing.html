@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>HUEGO — Long Phụng Cung Đình 3D | Cố Đô Ngự Lãm</title>
-  <meta name="description" content="Nền tảng Du lịch Thông minh Cố Đô Huế: Rồng Thời Nguyễn & Phượng Hoàng Lửa 3D, Quả Cầu Cửu Long, Bản đồ số UNESCO, Bảo tàng 3D và Thả Hoa Đăng Sông Hương.">
+  <meta name="description" content="Nền tảng Du lịch Thông minh Cố Đô Huế: Phù Điêu Rồng Thời Nguyễn & Phượng Hoàng Lửa 2.5D, Quả Cầu Cửu Long, Bản đồ số UNESCO, Bảo tàng 3D và Thả Hoa Đăng Sông Hương.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -362,7 +365,7 @@
         <div class="lg:col-span-5 h-[420px] lg:h-[540px] relative pointer-events-auto flex items-center justify-center">
           <div class="text-center p-4 rounded-2xl bg-white/30 backdrop-blur-sm border border-royal-gold/30 shadow-lg pointer-events-none transform -rotate-1">
             <span class="text-xs uppercase font-black text-royal-red tracking-widest block mb-1">Long Phụng Chầu Cung Điện</span>
-            <span class="text-[11px] text-stone-700 font-semibold block">Phù Điêu Vàng 2.5D · Dải Ngân Hà 5.000 Hạt Sáng · Quả Cầu Cửu Long</span>
+            <span class="text-[11px] text-stone-700 font-semibold block">Phù Điêu Vàng 2.5D Dải Lụa Uốn Lượn · Ngân Hà 5.000 Hạt Sáng · Quả Cầu Cửu Long</span>
           </div>
         </div>
 
@@ -688,14 +691,12 @@
     /* ==========================================================================
        2. TẠO TEXTURE PHÙ ĐIÊU VÀNG KIM ĐA LỚP 2048x2048 (RỒNG & PHƯỢNG HOÀNG)
        ========================================================================== */
-    // Vẽ Phù Điêu Rồng Thời Nguyễn Hoàng Gia (2048x2048)
     function createDragonReliefTexture() {
       const cvs = document.createElement('canvas');
       cvs.width = 2048; cvs.height = 2048;
       const ctx = cvs.getContext('2d');
       ctx.clearRect(0, 0, 2048, 2048);
 
-      // Gradient Vàng Kim Hoàng Gia
       const goldGrad = ctx.createLinearGradient(200, 200, 1800, 1800);
       goldGrad.addColorStop(0, '#FFFBEB');
       goldGrad.addColorStop(0.3, '#F59E0B');
@@ -703,7 +704,6 @@
       goldGrad.addColorStop(0.85, '#B45309');
       goldGrad.addColorStop(1, '#FEF3C7');
 
-      // Vầng hào quang mờ phía sau rồng
       const glowGrad = ctx.createRadialGradient(1100, 950, 100, 1100, 950, 850);
       glowGrad.addColorStop(0, 'rgba(217, 119, 6, 0.22)');
       glowGrad.addColorStop(0.6, 'rgba(109, 40, 217, 0.12)');
@@ -717,8 +717,8 @@
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
-      // 1. Thân Rồng Uốn Lượn Hình Chữ S (Đường cong Bezier điêu khắc sắc nét)
-      ctx.lineWidth = 42;
+      // 1. Thân Rồng Uốn Lượn S-Curve
+      ctx.lineWidth = 44;
       ctx.beginPath();
       ctx.moveTo(1450, 520);
       ctx.bezierCurveTo(1150, 280, 750, 480, 820, 850);
@@ -726,15 +726,13 @@
       ctx.bezierCurveTo(1180, 1820, 750, 1750, 520, 1580);
       ctx.stroke();
 
-      // Lớp vảy rồng dát vàng kép
-      ctx.lineWidth = 14;
+      ctx.lineWidth = 16;
       ctx.strokeStyle = '#FEF08A';
       ctx.stroke();
 
-      // 2. Đầu Rồng Triều Nguyễn Uy Nghiêm
-      ctx.lineWidth = 22;
+      // 2. Đầu Rồng Triều Nguyễn
+      ctx.lineWidth = 24;
       ctx.beginPath();
-      // Mõm rồng & Mũi
       ctx.moveTo(1450, 520);
       ctx.lineTo(1680, 440);
       ctx.quadraticCurveTo(1760, 420, 1820, 480);
@@ -742,15 +740,14 @@
       ctx.lineTo(1520, 660);
       ctx.stroke();
 
-      // Hàm dưới mở ngậm ngọc
       ctx.beginPath();
       ctx.moveTo(1560, 640);
       ctx.quadraticCurveTo(1680, 720, 1740, 690);
       ctx.lineTo(1620, 760);
       ctx.stroke();
 
-      // Sừng hươu phân nhánh thếp vàng
-      ctx.lineWidth = 24;
+      // Sừng hươu phân nhánh
+      ctx.lineWidth = 26;
       ctx.beginPath();
       ctx.moveTo(1520, 430);
       ctx.quadraticCurveTo(1620, 260, 1780, 220);
@@ -758,7 +755,7 @@
       ctx.quadraticCurveTo(1750, 320, 1820, 390);
       ctx.stroke();
 
-      // Râu rồng dài uốn lượn bay bổng
+      // Râu rồng
       ctx.lineWidth = 14;
       ctx.beginPath();
       ctx.moveTo(1720, 550);
@@ -766,17 +763,16 @@
       ctx.bezierCurveTo(1550, 1050, 1780, 1200, 1880, 1320);
       ctx.stroke();
 
-      // Mắt rồng sáng rực
+      // Mắt đỏ phát sáng
       ctx.fillStyle = '#EF4444';
       ctx.beginPath(); ctx.arc(1620, 480, 24, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#FFFFFF';
       ctx.beginPath(); ctx.arc(1626, 474, 10, 0, Math.PI * 2); ctx.fill();
 
-      // 3. Bờm Lửa & Vây Lưng Kỳ Lân Tỏa Sáng
-      ctx.lineWidth = 12;
+      // 3. Vây Lưng & Móng Vuốt Ngũ Trảo
+      ctx.lineWidth = 14;
       ctx.strokeStyle = '#F59E0B';
       for (let f = 0; f < 18; f++) {
-        const t = f / 18;
         const fx = 1380 - f * 45;
         const fy = 480 + f * 58 + Math.sin(f * 0.8) * 40;
         ctx.beginPath();
@@ -785,18 +781,16 @@
         ctx.stroke();
       }
 
-      // 4. Móng Vuốt Ngũ Trảo Hoàng Gia (5 Claws)
       ctx.lineWidth = 18;
       ctx.strokeStyle = '#FEF08A';
       ctx.beginPath();
-      ctx.moveTo(1100, 880);
-      ctx.lineTo(1250, 850);
+      ctx.moveTo(1100, 880); ctx.lineTo(1250, 850);
       ctx.moveTo(1250, 850); ctx.lineTo(1320, 800);
       ctx.moveTo(1250, 850); ctx.lineTo(1340, 860);
       ctx.moveTo(1250, 850); ctx.lineTo(1310, 920);
       ctx.stroke();
 
-      // 5. Viên Ngọc Minh Châu Phát Sáng Rực Rỡ
+      // 4. Viên Ngọc Minh Châu Phát Sáng
       const pearlGlow = ctx.createRadialGradient(1860, 680, 15, 1860, 680, 140);
       pearlGlow.addColorStop(0, '#FFFFFF');
       pearlGlow.addColorStop(0.3, '#FEF08A');
@@ -813,7 +807,6 @@
       return tex;
     }
 
-    // Vẽ Phù Điêu Phượng Hoàng Lửa Cung Đình (2048x2048)
     function createPhoenixReliefTexture() {
       const cvs = document.createElement('canvas');
       cvs.width = 2048; cvs.height = 2048;
@@ -839,7 +832,7 @@
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
-      // 1. Thân Chim & Cổ Uốn Lượn Hình Chữ S
+      // Cổ chữ S & Đầu mào 3 nhánh
       ctx.lineWidth = 32;
       ctx.beginPath();
       ctx.moveTo(1024, 600);
@@ -847,18 +840,13 @@
       ctx.quadraticCurveTo(940, 1150, 1024, 1350);
       ctx.stroke();
 
-      // Đầu Phượng & Mào Hoàng Gia 3 Nhánh
       ctx.lineWidth = 20;
-      ctx.beginPath();
-      ctx.arc(1024, 580, 55, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.beginPath(); ctx.arc(1024, 580, 55, 0, Math.PI * 2); ctx.stroke();
 
-      // Mỏ vàng nhọn
       ctx.beginPath();
       ctx.moveTo(1070, 570); ctx.lineTo(1190, 590); ctx.lineTo(1070, 615);
       ctx.fill();
 
-      // Mào 3 nhánh vươn cao
       ctx.lineWidth = 16;
       ctx.beginPath();
       ctx.moveTo(980, 540); ctx.quadraticCurveTo(860, 420, 920, 320);
@@ -866,7 +854,7 @@
       ctx.moveTo(1040, 540); ctx.quadraticCurveTo(1140, 410, 1240, 340);
       ctx.stroke();
 
-      // 2. Đôi Cánh Phượng Hoàng Sải Rộng Nhiều Lớp Lông Vũ
+      // Cánh sải rộng nhiều lớp
       ctx.lineWidth = 14;
       for (let side = -1; side <= 1; side += 2) {
         for (let w = 0; w < 10; w++) {
@@ -881,7 +869,7 @@
         }
       }
 
-      // 3. 5 Dải Đuôi Lụa Ánh Sáng Uốn Lượn (Mắt Phượng Cung Đình)
+      // 5 Dải Đuôi Lụa Ánh Sáng
       ctx.lineWidth = 16;
       for (let r = -2; r <= 2; r++) {
         const startX = 1024 + r * 45;
@@ -890,7 +878,6 @@
         ctx.bezierCurveTo(startX + r * 160, 1550, startX - r * 120, 1780, startX + r * 220, 1980);
         ctx.stroke();
 
-        // Mắt phượng phát sáng ở đuôi
         ctx.fillStyle = '#FEF08A';
         ctx.beginPath(); ctx.arc(startX + r * 220, 1960, 26, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#7C3AED';
@@ -908,14 +895,28 @@
     const dragonReliefTex = createDragonReliefTexture();
     const phoenixReliefTex = createPhoenixReliefTexture();
 
+    // HÀM TẠO DẢI LỤA 3D CONG UỐN LƯỢN (3D CURVED RIBBON MESH)
+    function createCurvedRibbonGeo(w, h, segX, segY, curvature) {
+      const geo = new THREE.PlaneGeometry(w, h, segX, segY);
+      const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const y = pos.getY(i);
+        const z = Math.sin((x / w) * Math.PI * 1.5) * curvature + Math.cos((y / h) * Math.PI) * (curvature * 0.45);
+        pos.setZ(i, z);
+      }
+      geo.computeVertexNormals();
+      return geo;
+    }
+
     /* ==========================================================================
-       3. HỆ THỐNG PHÙ ĐIÊU 2.5D PARALLAX ĐA LỚP & ĐẶT GỌN Ở NỬA PHẢI (X > 1.8)
+       3. HỆ THỐNG PHÙ ĐIÊU 2.5D PARALLAX 5 LỚP (ĐỊNH VỊ GỌN Ở NỬA PHẢI X > 1.8)
        ========================================================================== */
     const rightHeroGroup = new THREE.Group();
-    rightHeroGroup.position.set(5.2, 2.2, 10.5); // Đặt trọn vẹn ở nửa bên phải màn hình
+    rightHeroGroup.position.set(5.2, 2.2, 10.5); // Nằm trọn vẹn ở nửa phải màn hình
     scene.add(rightHeroGroup);
 
-    // --- PHÙ ĐIÊU RỒNG DÁT VÀNG 2.5D 3 LỚP CHIỀU SÂU PARALLAX ---
+    // --- PHÙ ĐIÊU RỒNG DÁT VÀNG 5 LỚP PARALLAX DẢI LỤA CONG ---
     const dragonReliefGroup = new THREE.Group();
     dragonReliefGroup.position.set(1.4, 2.2, -1.5);
 
@@ -927,16 +928,16 @@
       depthWrite: false
     });
 
-    // 3 Lớp Parallax chồng lên nhau tạo độ dày phù điêu
-    for (let l = 0; l < 3; l++) {
-      const plane = new THREE.Mesh(new THREE.PlaneGeometry(9.5, 9.5), reliefMat);
-      plane.position.z = -l * 0.12;
-      plane.scale.setScalar(1.0 - l * 0.02);
-      dragonReliefGroup.add(plane);
+    for (let l = 0; l < 5; l++) {
+      const ribbonGeo = createCurvedRibbonGeo(9.5, 9.5, 24, 24, 0.45 - l * 0.05);
+      const mesh = new THREE.Mesh(ribbonGeo, reliefMat);
+      mesh.position.z = -l * 0.12;
+      mesh.scale.setScalar(1.0 - l * 0.015);
+      dragonReliefGroup.add(mesh);
     }
     rightHeroGroup.add(dragonReliefGroup);
 
-    // --- PHÙ ĐIÊU PHƯỢNG HOÀNG LỬA 2.5D ---
+    // --- PHÙ ĐIÊU PHƯỢNG HOÀNG LỬA 5 LỚP PARALLAX DẢI LỤA CONG ---
     const phoenixReliefGroup = new THREE.Group();
     phoenixReliefGroup.position.set(-1.8, -1.8, 0.5);
 
@@ -948,11 +949,12 @@
       depthWrite: false
     });
 
-    for (let l = 0; l < 3; l++) {
-      const plane = new THREE.Mesh(new THREE.PlaneGeometry(8.5, 8.5), phReliefMat);
-      plane.position.z = -l * 0.12;
-      plane.scale.setScalar(1.0 - l * 0.02);
-      phoenixReliefGroup.add(plane);
+    for (let l = 0; l < 5; l++) {
+      const ribbonGeo = createCurvedRibbonGeo(8.5, 8.5, 24, 24, 0.4 - l * 0.04);
+      const mesh = new THREE.Mesh(ribbonGeo, phReliefMat);
+      mesh.position.z = -l * 0.12;
+      mesh.scale.setScalar(1.0 - l * 0.015);
+      phoenixReliefGroup.add(mesh);
     }
     rightHeroGroup.add(phoenixReliefGroup);
 
@@ -992,7 +994,6 @@
       galaxyPos[p * 3 + 1] = height;
       galaxyPos[p * 3 + 2] = Math.sin(angle) * radius;
 
-      // Pha màu giữa Vàng Kim & Tím Huế
       const mixRatio = Math.random();
       const pColor = mixRatio < 0.65 ? goldColor.clone().lerp(amberColor, Math.random()) : purpleColor;
       galaxyColor[p * 3] = pColor.r;
@@ -1024,19 +1025,17 @@
     rightHeroGroup.add(galaxyPoints);
 
     /* ==========================================================================
-       5. QUẢ CẦU CỬU LONG & ĐÀI SEN VÀNG CHẠM LỘNG THAY THẾ TƯỢNG NGHÊ CẦU
+       5. QUẢ CẦU CỬU LONG & ĐÀI SEN VÀNG CHẠM LỘNG 3D
        ========================================================================== */
     const sacredArtifactGroup = new THREE.Group();
     sacredArtifactGroup.position.set(2.4, -1.2, 0.8);
 
-    // Đài sen chạm lộng nhiều tầng
     const lotusBaseMesh = new THREE.Mesh(
       new THREE.CylinderGeometry(1.4, 1.6, 0.45, 16),
       gold24kMat
     );
     sacredArtifactGroup.add(lotusBaseMesh);
 
-    // Quả Cầu Cửu Long (TorusKnot siêu mảnh dát vàng phản chiếu 24K)
     const cuuLongSphere = new THREE.Mesh(
       new THREE.TorusKnotGeometry(0.85, 0.038, 128, 16, 2, 3),
       gold24kMat
@@ -1044,7 +1043,6 @@
     cuuLongSphere.position.y = 1.1;
     sacredArtifactGroup.add(cuuLongSphere);
 
-    // Lõi ngọc bích phát quang bên trong quả cầu
     const jadeCore = new THREE.Mesh(
       new THREE.SphereGeometry(0.38, 20, 20),
       jadeMat
@@ -1052,7 +1050,6 @@
     jadeCore.position.y = 1.1;
     sacredArtifactGroup.add(jadeCore);
 
-    // Vòng hào quang chữ triện cổ xoay tròn
     const ringTrienMat = new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true, transparent: true, opacity: 0.45 });
     const haloTrien = new THREE.Mesh(new THREE.RingGeometry(1.15, 1.18, 36), ringTrienMat);
     haloTrien.position.y = 1.1;
@@ -1062,7 +1059,7 @@
     rightHeroGroup.add(sacredArtifactGroup);
 
     /* ==========================================================================
-       6. SMARTPHONE 3D RETINA SIÊU SẮC NÉT (GIỮ NGUYÊN 100% NHƯ YÊU CẦU)
+       6. SMARTPHONE 3D RETINA SIÊU SẮC NÉT (GIỮ NGUYÊN 100%)
        ========================================================================== */
     function createPhoneScreenTexture() {
       const cvs = document.createElement('canvas');
@@ -1230,7 +1227,7 @@
     rightHeroGroup.add(phoneGroup);
 
     /* ==========================================================================
-       7. SÔNG HƯƠNG & HOA ĐĂNG HOA SEN 16 CÁNH 3D ĐIÊU KHẮC (CHÂN THẬT)
+       7. SÔNG HƯƠNG & HOA ĐĂNG HOA SEN 16 CÁNH 3 TẦNG ĐIÊU KHẮC CHÂN THẬT
        ========================================================================== */
     const riverSectionGroup = new THREE.Group();
     riverSectionGroup.position.set(0, -18, -12);
@@ -1308,7 +1305,6 @@
         emissiveIntensity: 0.4
       });
 
-      // 7 Cánh ngoài
       for (let i = 0; i < 7; i++) {
         const ang = (i / 7) * Math.PI * 2;
         const p = new THREE.Mesh(petalGeo, petalPinkMat);
@@ -1318,7 +1314,6 @@
         lotus.add(p);
       }
 
-      // 5 Cánh giữa
       for (let i = 0; i < 5; i++) {
         const ang = (i / 5) * Math.PI * 2 + 0.3;
         const p = new THREE.Mesh(petalGeo, petalGoldMat);
@@ -1329,7 +1324,6 @@
         lotus.add(p);
       }
 
-      // 4 Cánh trong
       for (let i = 0; i < 4; i++) {
         const ang = (i / 4) * Math.PI * 2 + 0.5;
         const p = new THREE.Mesh(petalGeo, petalPinkMat);
