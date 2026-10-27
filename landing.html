@@ -909,172 +909,116 @@
     phoneGroup.add(phoneScreen);
 
     /* ==========================================================================
-       E. RỒNG THỜI NGUYỄN 3D UỐN LƯỢN TỰ NHIÊN (ARTICULATED ORIENTAL DRAGON)
+       E. THANH LONG & HỎA PHƯỢNG HOÀNG GIA 3D ĐỒ SỘ (HIGH-DEFINITION MASTER PBR ENTITIES)
+       Chi tiết tinh xảo y hệt tranh lụa Cung Đình: Thanh Long ngọc bích & Hỏa Phượng mắt công
        ========================================================================== */
+    const textureLoader = new THREE.TextureLoader();
+
+    // 1. THANH LONG (JADE IMPERIAL DRAGON - 15m ĐỒ SỘ)
     const dragonEntityGroup = new THREE.Group();
     scene.add(dragonEntityGroup);
 
-    // Chất liệu Vàng Kim Rồng Cung Đình
-    const dragonScaleMat = new THREE.MeshStandardMaterial({
-      color: 0xFFD700,
-      metalness: 0.95,
-      roughness: 0.14,
-      emissive: 0xB8860B,
-      emissiveIntensity: 0.35
+    const dragonTex = textureLoader.load('./images/thanh_long_dragon.png');
+    dragonTex.generateMipmaps = true;
+    dragonTex.minFilter = THREE.LinearMipmapLinearFilter;
+
+    const dragonMat = new THREE.MeshStandardMaterial({
+      map: dragonTex,
+      transparent: true,
+      alphaTest: 0.08,
+      side: THREE.DoubleSide,
+      roughness: 0.22,
+      metalness: 0.55,
+      emissive: 0x1B4D3E,
+      emissiveIntensity: 0.38
     });
-    const dragonFinMat = new THREE.MeshStandardMaterial({
-      color: 0xDC2626,
-      emissive: 0xF59E0B,
-      emissiveIntensity: 0.6,
-      side: THREE.DoubleSide
-    });
 
-    // 1. ĐẦU RỒNG THỜI NGUYỄN (Dragon Head)
-    const dragonHead = new THREE.Group();
-    dragonEntityGroup.add(dragonHead);
+    // Thân rồng Thanh Long đồ sộ
+    const dragonMesh = new THREE.Mesh(new THREE.PlaneGeometry(16.5, 16.5, 8, 8), dragonMat);
+    dragonEntityGroup.add(dragonMesh);
 
-    // Sọ rồng to lớn đồ sộ
-    const dSkull = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.8, 3.2), dragonScaleMat);
-    dragonHead.add(dSkull);
+    // Hào quang ngọc bích phát sáng từ rồng
+    const dragonAuraLight = new THREE.PointLight(0x2A9D8F, 3.5, 25);
+    dragonEntityGroup.add(dragonAuraLight);
 
-    // Mũi rồng vươn dài dũng mãnh
-    const dSnout = new THREE.Mesh(new THREE.ConeGeometry(1.3, 3.2, 8), dragonScaleMat);
-    dSnout.rotation.x = Math.PI / 2;
-    dSnout.position.set(0, -0.2, 2.8);
-    dragonHead.add(dSnout);
-
-    // Ngọc hỏa châu lớn phát sáng rực rỡ trong miệng rồng
-    const dPearl = new THREE.Mesh(
-      new THREE.SphereGeometry(0.72, 16, 16),
-      new THREE.MeshStandardMaterial({ color: 0xFFFDF5, emissive: 0xFFD700, emissiveIntensity: 2.2 })
+    // Dải hạt tinh hoa ngọc bích & vàng kim bay theo rồng
+    const dragonSparkCount = 90;
+    const dragonSparkGeo = new THREE.BufferGeometry();
+    const dragonSparkPos = new Float32Array(dragonSparkCount * 3);
+    for (let p = 0; p < dragonSparkCount * 3; p += 3) {
+      dragonSparkPos[p] = (Math.random() - 0.5) * 8;
+      dragonSparkPos[p + 1] = (Math.random() - 0.5) * 8;
+      dragonSparkPos[p + 2] = (Math.random() - 0.5) * 8;
+    }
+    dragonSparkGeo.setAttribute('position', new THREE.BufferAttribute(dragonSparkPos, 3));
+    const dragonSparkPoints = new THREE.Points(
+      dragonSparkGeo,
+      new THREE.PointsMaterial({
+        size: 0.28,
+        color: 0x58B19F,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending
+      })
     );
-    dPearl.position.set(0, -0.3, 4.0);
-    dragonHead.add(dPearl);
+    dragonEntityGroup.add(dragonSparkPoints);
 
-    // Ánh mắt rồng phát sáng thần uy
-    const eyeLight = new THREE.PointLight(0xFFB800, 3.5, 25);
-    eyeLight.position.set(0, 1.0, 1.5);
-    dragonHead.add(eyeLight);
-
-    // Cặp sừng rồng thời Nguyễn thếp vàng đồ sộ vươn cao
-    for (let h = -1; h <= 1; h += 2) {
-      const horn = new THREE.Mesh(new THREE.ConeGeometry(0.32, 3.6, 8), dragonScaleMat);
-      horn.rotation.x = -0.65;
-      horn.rotation.z = h * 0.45;
-      horn.position.set(h * 0.9, 1.8, -0.4);
-      dragonHead.add(horn);
-
-      // Nhánh sừng phụ
-      const subHorn = new THREE.Mesh(new THREE.ConeGeometry(0.18, 1.8, 6), dragonScaleMat);
-      subHorn.rotation.x = -0.3;
-      subHorn.rotation.z = h * 0.8;
-      subHorn.position.set(h * 1.3, 2.4, -0.6);
-      dragonHead.add(subHorn);
-
-      // Đôi râu rồng uốn lượn dài bồng bềnh
-      const whisker = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.03, 4.8, 8), dragonScaleMat);
-      whisker.rotation.x = 0.55;
-      whisker.rotation.z = h * 0.75;
-      whisker.position.set(h * 1.2, -0.4, 3.2);
-      dragonHead.add(whisker);
-    }
-
-    // Bờm lửa rồng cuồn cuộn
-    for (let m = 0; m < 6; m++) {
-      const mane = new THREE.Mesh(new THREE.ConeGeometry(0.45, 2.0, 5), dragonFinMat);
-      mane.rotation.x = -1.15;
-      mane.position.set(0, 1.2 + m * 0.28, -0.6 - m * 0.4);
-      dragonHead.add(mane);
-    }
-
-    // 2. 48 ĐỐT THÂN RỒNG ĐỒ SỘ UỐN LƯỢN (Articulated Colossal Spine Chain)
-    const dragonSegments = [];
-    const segmentCount = 48;
-    const bodyFinGeo = new THREE.ConeGeometry(0.48, 1.6, 4);
-    bodyFinGeo.scale(0.3, 1, 1);
-
-    for (let s = 0; s < segmentCount; s++) {
-      const segGroup = new THREE.Group();
-      const prog = s / segmentCount;
-      const radius = Math.max(1.65 * (1 - Math.pow(prog, 1.4) * 0.78), 0.35);
-      const segMesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 14, 12), dragonScaleMat);
-      segGroup.add(segMesh);
-
-      // Vây lưng phát sáng
-      const dorsalFin = new THREE.Mesh(bodyFinGeo, dragonFinMat);
-      dorsalFin.position.y = radius * 1.15;
-      dorsalFin.rotation.x = -0.45;
-      segGroup.add(dorsalFin);
-
-      // 4 Chân rồng thếp vàng đồ sộ (Tứ trảo hoàng gia)
-      if (s === 10 || s === 15 || s === 27 || s === 33) {
-        for (let side = -1; side <= 1; side += 2) {
-          const legGroup = new THREE.Group();
-          legGroup.position.set(side * (radius + 0.4), -0.6, 0);
-          legGroup.rotation.z = side * 0.85;
-
-          const upperLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.14, 2.2, 8), dragonScaleMat);
-          legGroup.add(upperLeg);
-
-          for (let c = -1; c <= 2; c++) {
-            const claw = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.8, 6), dragonScaleMat);
-            claw.position.set(c * 0.18, -1.2, 0.3);
-            claw.rotation.x = 0.6;
-            legGroup.add(claw);
-          }
-          segGroup.add(legGroup);
-        }
-      }
-
-      dragonEntityGroup.add(segGroup);
-      dragonSegments.push(segGroup);
-    }
-
-    // Đuôi rồng xòe lửa đồ sộ
-    const tailFan = new THREE.Mesh(new THREE.ConeGeometry(0.9, 3.4, 6), dragonFinMat);
-    tailFan.rotation.x = -Math.PI / 2;
-    tailFan.position.z = -1.6;
-    dragonSegments[segmentCount - 1].add(tailFan);
-
-    // Buffer lưu vết đường bay dài của Rồng (History Position Buffer)
-    const dragonHistoryLength = 600;
-    const dragonHistory = [];
-    for (let h = 0; h < dragonHistoryLength; h++) {
-      dragonHistory.push(new THREE.Vector3(0, 8, -90));
-    }
-
-    /* ==========================================================================
-       F. PHƯỢNG HOÀNG LỬA HOÀNG KIM (GLTF + WINGS + TAIL FEATHERS)
-       ========================================================================== */
-    let phoenixMesh = null;
+    // 2. HỎA PHƯỢNG HOÀNG KIM (VERMILION FIRE PHOENIX - 15m ĐỒ SỘ)
     const phoenixGroup = new THREE.Group();
     scene.add(phoenixGroup);
 
-    // Đuôi phượng lụa 3 dải phát sáng
-    const phoenixTailGroup = new THREE.Group();
-    phoenixGroup.add(phoenixTailGroup);
-    for (let f = -1; f <= 1; f++) {
-      const feather = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.9, 9.0),
-        new THREE.MeshStandardMaterial({
-          color: 0xFFD700,
-          emissive: 0xFF4500,
-          emissiveIntensity: 0.9,
-          side: THREE.DoubleSide
-        })
-      );
-      feather.position.set(f * 0.7, -1.0, -5.2);
-      feather.rotation.x = 0.55;
-      feather.rotation.y = f * 0.25;
-      phoenixTailGroup.add(feather);
-    }
+    const phoenixTex = textureLoader.load('./images/hoa_phuong_phoenix.png');
+    phoenixTex.generateMipmaps = true;
+    phoenixTex.minFilter = THREE.LinearMipmapLinearFilter;
 
-    const phoenixUrls = [
-      './models/birds/Flamingo.glb',
-      'https://threejs.org/examples/models/gltf/Flamingo.glb'
-    ];
+    const phoenixMat = new THREE.MeshStandardMaterial({
+      map: phoenixTex,
+      transparent: true,
+      alphaTest: 0.08,
+      side: THREE.DoubleSide,
+      roughness: 0.18,
+      metalness: 0.65,
+      emissive: 0xDC2626,
+      emissiveIntensity: 0.45
+    });
+
+    // Cánh phượng và đuôi mắt công đồ sộ
+    const phoenixMesh = new THREE.Mesh(new THREE.PlaneGeometry(16.0, 16.0, 8, 8), phoenixMat);
+    phoenixGroup.add(phoenixMesh);
+
+    // Hào quang lửa hỏa phượng phát sáng
+    const phoenixFireLight = new THREE.PointLight(0xFF4500, 3.8, 28);
+    phoenixGroup.add(phoenixFireLight);
+
+    // Dải tàn tro lửa hoàng kim lấp lánh theo cánh phượng
+    const phoenixSparkCount = 90;
+    const phoenixSparkGeo = new THREE.BufferGeometry();
+    const phoenixSparkPos = new Float32Array(phoenixSparkCount * 3);
+    for (let p = 0; p < phoenixSparkCount * 3; p += 3) {
+      phoenixSparkPos[p] = (Math.random() - 0.5) * 8;
+      phoenixSparkPos[p + 1] = (Math.random() - 0.5) * 8;
+      phoenixSparkPos[p + 2] = (Math.random() - 0.5) * 8;
+    }
+    phoenixSparkGeo.setAttribute('position', new THREE.BufferAttribute(phoenixSparkPos, 3));
+    const phoenixSparkPoints = new THREE.Points(
+      phoenixSparkGeo,
+      new THREE.PointsMaterial({
+        size: 0.32,
+        color: 0xFFB800,
+        transparent: true,
+        opacity: 0.9,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    phoenixGroup.add(phoenixSparkPoints);
+
+    // Đôi Hạc Tiên Cố Đô (Stork.glb)
+    const storksGroup = new THREE.Group();
+    scene.add(storksGroup);
+    const storkMeshes = [];
+    const storkUrls = ['./models/birds/Stork.glb', 'https://threejs.org/examples/models/gltf/Stork.glb'];
     let modelsLoadedCount = 0;
-    const totalModelsToLoad = 3;
+    const totalModelsToLoad = 2;
 
     function updateLoadingProgress(step) {
       modelsLoadedCount += step;
@@ -1090,35 +1034,6 @@
     }
 
     const gltfLoader = new THREE.GLTFLoader();
-    function loadPhoenixModel(idx = 0) {
-      if (idx >= phoenixUrls.length) { updateLoadingProgress(1); return; }
-      gltfLoader.load(phoenixUrls[idx], (gltf) => {
-        phoenixMesh = gltf.scene.children[0];
-        phoenixMesh.material = new THREE.MeshStandardMaterial({
-          color: 0xFFB800,
-          emissive: 0xFF4500,
-          emissiveIntensity: 0.65,
-          metalness: 0.85,
-          roughness: 0.15,
-          morphTargets: true
-        });
-        phoenixMesh.scale.set(0.082, 0.082, 0.082);
-        phoenixGroup.add(phoenixMesh);
-
-        const mixer = new THREE.AnimationMixer(phoenixMesh);
-        mixer.clipAction(gltf.animations[0]).setDuration(1.0).play();
-        mixers.push(mixer);
-
-        updateLoadingProgress(1);
-      }, undefined, () => loadPhoenixModel(idx + 1));
-    }
-    loadPhoenixModel();
-
-    // 2. Đôi Hạc Tiên Cố Đô (Stork.glb)
-    const storksGroup = new THREE.Group();
-    scene.add(storksGroup);
-    const storkMeshes = [];
-    const storkUrls = ['./models/birds/Stork.glb', 'https://threejs.org/examples/models/gltf/Stork.glb'];
     function loadStorkModel(idx = 0) {
       if (idx >= storkUrls.length) { updateLoadingProgress(1); return; }
       gltfLoader.load(storkUrls[idx], (gltf) => {
@@ -1132,7 +1047,7 @@
             roughness: 0.2,
             morphTargets: true
           });
-          storkMesh.scale.set(0.019, 0.019, 0.019);
+          storkMesh.scale.set(0.024, 0.024, 0.024);
           storksGroup.add(storkMesh);
           storkMeshes.push(storkMesh);
 
@@ -1145,7 +1060,7 @@
     }
     loadStorkModel();
 
-    // 3. Chim Loan Ngũ Sắc Cung Đình (Parrot.glb)
+    // Chim Loan Ngũ Sắc Cung Đình (Parrot.glb)
     let parrotMesh = null;
     const parrotGroup = new THREE.Group();
     heroRightGroup.add(parrotGroup);
@@ -1162,7 +1077,7 @@
           roughness: 0.25,
           morphTargets: true
         });
-        parrotMesh.scale.set(0.032, 0.032, 0.032);
+        parrotMesh.scale.set(0.035, 0.035, 0.035);
         parrotGroup.add(parrotMesh);
 
         const mixer = new THREE.AnimationMixer(parrotMesh);
@@ -1174,25 +1089,10 @@
     }
     loadParrotModel();
 
-    // Dải hạt bụi vàng lấp lánh
-    const sparkCount = 140;
-    const sparkGeo = new THREE.BufferGeometry();
-    const sparkPos = new Float32Array(sparkCount * 3);
-    for (let p = 0; p < sparkCount * 3; p += 3) {
-      sparkPos[p] = (Math.random() - 0.5) * 12;
-      sparkPos[p + 1] = (Math.random() - 0.5) * 10;
-      sparkPos[p + 2] = (Math.random() - 0.5) * 10;
-    }
-    sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+    // Dải bụi vàng kim thiên hà
     const sparkPoints = new THREE.Points(
-      sparkGeo,
-      new THREE.PointsMaterial({
-        size: 0.22,
-        color: 0xFFD700,
-        transparent: true,
-        opacity: 0.85,
-        blending: THREE.AdditiveBlending
-      })
+      new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(150 * 3).map(() => (Math.random() - 0.5) * 14), 3)),
+      new THREE.PointsMaterial({ size: 0.24, color: 0xFFD700, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending })
     );
     heroRightGroup.add(sparkPoints);
 
@@ -1592,82 +1492,66 @@
       phoneTexture.needsUpdate = true;
 
       // ========================================================================
-      // 1. RỒNG THỜI NGUYỄN: BAY TỪ XA VÀO VÀ UỐN LƯỢN QUANH BẦU TRỜI (FLY-IN 3D)
+      // ========================================================================
+      // 1. THANH LONG (JADE DRAGON): BAY TỪ XA VÀO & UỐN LƯỢN ĐỒ SỘ QUANH TRUNG TÂM
       // ========================================================================
       let dHeadPos = new THREE.Vector3();
       let dHeadNext = new THREE.Vector3();
 
       if (!isFlyInCompleted) {
-        // Giai đoạn Khai môn: Rồng lao từ cự ly xa xăm (z: -90) xuyên qua cổng vào tiền cảnh
-        flyInTime += delta * 0.38;
+        // Giai đoạn Khai môn: Rồng lao từ cự ly sâu thẳm (z: -95) xuyên qua cổng vào tiền cảnh
+        flyInTime += delta * 0.42;
         const fProg = Math.min(flyInTime, 1.0);
-        const zPos = -90 + fProg * 105; // Từ z = -90 đến z = 15
-        const yPos = 22 - fProg * 12 + Math.sin(time * 3.5) * 1.5;
-        const xPos = -25 + fProg * 35 + Math.cos(time * 2.8) * 2.0;
+        const zPos = -95 + fProg * 110; // Từ z = -95 đến z = +15
+        const yPos = 24 - fProg * 14 + Math.sin(time * 3.2) * 1.6;
+        const xPos = -28 + fProg * 38 + Math.cos(time * 2.5) * 2.2;
         dHeadPos.set(xPos, yPos, zPos);
-        dHeadNext.set(xPos + 0.5, yPos - 0.2, zPos + 2.0);
+        dHeadNext.set(xPos + 0.8, yPos - 0.3, zPos + 2.5);
       } else {
-        // Giai đoạn bay lượn quỹ đạo oai nghiêm trên bầu trời
-        const dT = (time * 0.07) % 1;
+        // Giai đoạn bay lượn bao quát 360 độ quanh Smartphone và đài sen
+        const dT = (time * 0.065) % 1;
         dHeadPos = dragonSkyPath.getPointAt(dT);
         dHeadNext = dragonSkyPath.getPointAt((dT + 0.01) % 1);
-        // Thêm độ uốn lượn nhịp nhàng cho đầu rồng
-        dHeadPos.y += Math.sin(time * 2.5) * 1.2;
-        dHeadPos.x += Math.cos(time * 2.0) * 0.8;
+        dHeadPos.y += Math.sin(time * 2.2) * 1.5;
+        dHeadPos.x += Math.cos(time * 1.8) * 1.2;
       }
 
-      dragonHead.position.copy(dHeadPos);
-      dragonHead.lookAt(dHeadNext);
+      dragonEntityGroup.position.copy(dHeadPos);
+      dragonEntityGroup.lookAt(dHeadNext);
 
-      // Cập nhật vị trí đầu rồng vào buffer lịch sử
-      dragonHistory.unshift(dHeadPos.clone());
-      if (dragonHistory.length > dragonHistoryLength) dragonHistory.pop();
-
-      // Cập nhật 42 đốt thân rồng bám theo vết chuyển động của đầu rồng
-      const spacing = 8; // Khoảng cách giữa các đốt thân rồng đồ sộ
-      for (let s = 0; s < segmentCount; s++) {
-        const histIndex = Math.min((s + 1) * spacing, dragonHistory.length - 1);
-        const targetSegPos = dragonHistory[histIndex];
-        dragonSegments[s].position.copy(targetSegPos);
-
-        // Đốt thân nhìn về hướng đốt trước đó để tạo dáng uốn cong mềm mại
-        const prevIndex = Math.max(histIndex - spacing, 0);
-        dragonSegments[s].lookAt(dragonHistory[prevIndex]);
-
-        // Thêm sóng quẫy nhẹ cho vây lưng
-        dragonSegments[s].rotation.z += Math.sin(time * 4.0 + s * 0.3) * 0.15;
-      }
+      // Chuyển động uốn lượn nhịp nhàng sóng sin của thân rồng
+      dragonMesh.rotation.z = Math.sin(time * 2.8) * 0.16;
+      dragonMesh.rotation.y = Math.cos(time * 2.2) * 0.14;
+      dragonSparkPoints.rotation.z = time * 0.3;
 
       // ========================================================================
-      // 2. PHƯỢNG HOÀNG LỬA: BAY TỪ XA VÀO VÀ SẢI CÁNH SONG PHI VỚI RỒNG
+      // 2. HỎA PHƯỢNG HOÀNG KIM: SẢI CÁNH VỖ NHỊP 3D & SONG PHI ĐỐI MẶT RỒNG
       // ========================================================================
-      if (phoenixGroup) {
-        let pPos = new THREE.Vector3();
-        let pNext = new THREE.Vector3();
+      let pPos = new THREE.Vector3();
+      let pNext = new THREE.Vector3();
 
-        if (!isFlyInCompleted) {
-          // Phượng hoàng xuất phát từ xa đối xứng với rồng (x: 25, z: -85)
-          const fProg = Math.min(flyInTime, 1.0);
-          const pZ = -85 + fProg * 102;
-          const pY = 24 - fProg * 14 + Math.cos(time * 3.2) * 1.2;
-          const pX = 25 - fProg * 30 + Math.sin(time * 2.6) * 1.8;
-          pPos.set(pX, pY, pZ);
-          pNext.set(pX - 0.5, pY - 0.2, pZ + 2.0);
-        } else {
-          const pT = (time * 0.08 + 0.35) % 1;
-          pPos = phoenixSkyPath.getPointAt(pT);
-          pNext = phoenixSkyPath.getPointAt((pT + 0.01) % 1);
-          pPos.y += Math.cos(time * 2.2) * 1.0;
-        }
-
-        phoenixGroup.position.copy(pPos);
-        phoenixGroup.lookAt(pNext);
-
-        // Đuôi phượng lụa đung đưa mềm mại theo gió
-        phoenixTailGroup.children.forEach((ft, idx) => {
-          ft.rotation.x = 0.5 + Math.sin(time * 3.0 + idx) * 0.25;
-        });
+      if (!isFlyInCompleted) {
+        // Phượng hoàng xuất phát từ xa đối xứng (x: +28, z: -90)
+        const fProg = Math.min(flyInTime, 1.0);
+        const pZ = -90 + fProg * 106;
+        const pY = 26 - fProg * 16 + Math.cos(time * 3.0) * 1.4;
+        const pX = 28 - fProg * 34 + Math.sin(time * 2.4) * 2.0;
+        pPos.set(pX, pY, pZ);
+        pNext.set(pX - 0.8, pY - 0.3, pZ + 2.5);
+      } else {
+        const pT = (time * 0.075 + 0.38) % 1;
+        pPos = phoenixSkyPath.getPointAt(pT);
+        pNext = phoenixSkyPath.getPointAt((pT + 0.01) % 1);
+        pPos.y += Math.cos(time * 2.4) * 1.4;
       }
+
+      phoenixGroup.position.copy(pPos);
+      phoenixGroup.lookAt(pNext);
+
+      // Cánh phượng vỗ nhịp và đuôi mắt công uốn lượn mềm mại theo gió
+      phoenixMesh.rotation.z = Math.sin(time * 3.6) * 0.18;
+      phoenixMesh.rotation.x = Math.cos(time * 2.8) * 0.12;
+      phoenixSparkPoints.rotation.y = time * 0.4;
 
       // Đôi Hạc Tiên Cung Đình
       storkMeshes.forEach((stork, idx) => {
