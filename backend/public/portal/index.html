@@ -2,7 +2,8 @@
 <html lang="vi" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <script src="./js/image-helper.js"></script>
   <title>HUEGO — Nền tảng Du lịch Thông minh Cố Đô Huế · Di sản, AI & Bản đồ số</title>
   <meta name="description" content="HUEGO - Nền tảng du lịch Cố Đô Huế thông minh: hơn 4.350 địa điểm di tích, ẩm thực, bảo tàng 3D và Trợ lý AI Mệ Huế bản địa.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23582c83'><circle cx='12' cy='12' r='10'/></svg>">
@@ -148,7 +149,11 @@
           <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
           <span>Khẩn cấp & Hỗ trợ</span>
         </a>
-        <a href="./app/" class="nav-item" style="color:var(--primary);font-weight:700;background:var(--primary-light);border-radius:12px;margin-top:6px;">
+        <a href="./landing.html" class="nav-item" style="color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);border-radius:12px;margin-top:4px;">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span>Trải nghiệm 3D ✨</span>
+        </a>
+        <a href="./app/" class="nav-item btn-open-app" style="color:var(--primary);font-weight:700;background:var(--primary-light);border-radius:12px;margin-top:6px;">
           <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
           <span>Mở App HUEGO 📱</span>
         </a>
@@ -186,8 +191,13 @@
             <span id="itineraryBadge" style="background:var(--primary);color:white;border-radius:9999px;padding:1px 6px;font-size:11px;font-weight:800;"></span>
           </a>
 
+          <!-- Landing 3D Experience Button -->
+          <a href="./landing.html" class="btn-3d-experience" style="font-size: 0.85rem; font-weight: 700; color: #78350f; background: #fef3c7; border: 1px solid #fde68a; padding: 0.45rem 0.9rem; border-radius: 9999px; text-decoration:none; display:flex; align-items:center; gap:6px; box-shadow: 0 2px 6px rgba(217,119,6,0.15);" title="Trải nghiệm Cố Đô Huế 3D">
+            <span>✨</span> <span>Trải nghiệm 3D</span>
+          </a>
+
           <!-- App Mobile Shortcut -->
-          <a href="./app/" style="font-size: 0.85rem; font-weight: 700; color: white; background: var(--primary); padding: 0.45rem 1rem; border-radius: 9999px; text-decoration:none; display:flex; align-items:center; gap:6px; box-shadow: 0 2px 8px rgba(88,44,131,0.25);">
+          <a href="./app/" class="btn-open-app" style="font-size: 0.85rem; font-weight: 700; color: white; background: var(--primary); padding: 0.45rem 1rem; border-radius: 9999px; text-decoration:none; display:flex; align-items:center; gap:6px; box-shadow: 0 2px 8px rgba(88,44,131,0.25);">
             <span>📱</span> <span>Mở App</span>
           </a>
         </div>
@@ -249,10 +259,10 @@
           <div class="footer-col">
             <h4>Khám Phá Di Sản</h4>
             <ul class="footer-links">
-              <li><a href="/map.html">Bản đồ số 4.352 điểm</a></li>
-              <li><a href="/museum.html">Bảo tàng 10 cổ vật 3D</a></li>
-              <li><a href="/hue.html">Cẩm nang lịch trình Cố Đô</a></li>
-              <li><a href="/simulator.html">Mô phỏng 1 ngày ở Huế</a></li>
+              <li><a href="./map.html">Bản đồ số 4.352 điểm</a></li>
+              <li><a href="./museum.html">Bảo tàng 10 cổ vật 3D</a></li>
+              <li><a href="./hue.html">Cẩm nang lịch trình Cố Đô</a></li>
+              <li><a href="./simulator.html">Mô phỏng 1 ngày ở Huế</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -298,7 +308,7 @@
       <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path></svg>
       <span>Cẩm nang</span>
     </a>
-    <a href="./app/" class="mobile-nav-item" style="color:var(--primary);font-weight:700;">
+    <a href="./app/" class="mobile-nav-item btn-open-app" style="color:var(--primary);font-weight:700;">
       <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
       <span>App Huế</span>
     </a>
@@ -364,5 +374,33 @@
   </div>
 
   <script src="./js/app.js"></script>
+
+  <!-- Modal Quét Mã QR Mở App (Dành cho Desktop) -->
+  <div class="modal-overlay" id="app-qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+    <div class="modal-content qr-modal-box">
+      <button class="modal-close-btn" id="qr-modal-close-btn" aria-label="Đóng cửa sổ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div class="qr-modal-body" style="text-align:center;padding:1.5rem 1rem;">
+        <div class="qr-header">
+          <span style="font-size:2.5rem;display:inline-block;margin-bottom:0.5rem;">📱</span>
+          <h2 id="qr-modal-title" style="font-size:1.35rem;font-weight:800;color:var(--text-main);">Trải Nghiệm App HUEGO Trên Điện Thoại</h2>
+          <p style="font-size:0.9rem;color:var(--text-muted);margin:0.5rem auto 1rem;max-width:380px;">Quét mã QR bằng camera điện thoại để kích hoạt tính năng định vị GPS Geofencing, Audio Thuyết minh & Check-in di tích Cố Đô.</p>
+        </div>
+        <div class="qr-code-wrapper" style="margin:1rem auto;padding:1rem;background:#FFFFFF;border-radius:16px;display:inline-block;box-shadow:0 10px 25px rgba(0,0,0,0.12);border:2px solid var(--accent-gold);">
+          <img id="qr-modal-image" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Mã QR mở ứng dụng HUEGO" style="width:190px;height:190px;display:block;border-radius:8px;" />
+        </div>
+        <div class="qr-app-url-box" style="margin:0.75rem auto 1.5rem;font-size:0.85rem;color:var(--text-muted);word-break:break-all;max-width:400px;">
+          Địa chỉ: <strong id="qr-modal-url-text" style="color:var(--primary);"></strong>
+        </div>
+        <div>
+          <a href="./app/" id="qr-direct-link" class="btn-primary" style="text-decoration:none;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:12px;font-weight:700;">
+            <span>Mở trực tiếp trên máy tính này →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

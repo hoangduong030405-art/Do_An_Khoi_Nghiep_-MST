@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HUEGO — Nền tảng Du lịch Thông minh Cố Đô Huế | 3D Experience</title>
+  <meta name="description" content="Trải nghiệm Landing Page 3D HUEGO: Trợ lý AI Mệ Huế, Bản đồ số 4.352+ điểm đến, Bảo tàng Cung đình 3D xoay 360°, Thả Hoa Đăng Sông Hương thời gian thực.">
+
+  <!-- Google Fonts: Playfair Display & Be Vietnam Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&display=swap" rel="stylesheet">
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            hue: {
+              purple: '#4A1D96',
+              royal: '#6D28D9',
+              deep: '#2E1065',
+              night: '#0B0819',
+              gold: '#D97706',
+              amber: '#F59E0B',
+              lightgold: '#FEF3C7',
+              cream: '#FAF8F5'
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Be Vietnam Pro"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Three.js r128, GLTFLoader, OrbitControls, GSAP 3.12, Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* Reset & Base Aesthetics */
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      overflow-x: hidden;
+      background-color: #FAF8F5;
+      color: #1E1B4B;
+      transition: background-color 0.8s ease;
+    }
+
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .interactive-3d-zone {
+      pointer-events: auto;
+    }
+
+    /* Glassmorphism System */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 20px 45px -15px rgba(74, 29, 150, 0.08);
+    }
+
+    .glass-panel-dark {
+      background: rgba(15, 12, 27, 0.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(217, 119, 6, 0.35);
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Gradients */
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #B45309 0%, #F59E0B 50%, #D97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .purple-gradient-text {
+      background: linear-gradient(135deg, #4A1D96 0%, #7C3AED 50%, #C026D3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Glow Effects */
+    .glow-gold {
+      box-shadow: 0 0 35px rgba(217, 119, 6, 0.35);
+    }
+
+    .glow-purple {
+      box-shadow: 0 0 40px rgba(109, 40, 217, 0.3);
+    }
+
+    /* Warp Flash Overlay (Feature 2) */
+    #warp-flash-overlay {
+      position: fixed;
+      inset: 0;
+      background: #FAF5FF;
+      z-index: 99999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Keyframe Animations */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+
+    .animate-float-slow {
+      animation: floatSlow 6s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    .animate-pulse-glow {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D97706;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="relative selection:bg-hue-gold selection:text-white">
+
+  <!-- Fullscreen WebGL Canvas for Three.js 3D Engine -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Warp Transition Flash Overlay -->
+  <div id="warp-flash-overlay"></div>
+
+  <!-- Content Layer (Choreographed over 3D Canvas) -->
+  <div class="relative z-10 flex flex-col min-h-screen">
+
+    <!-- ============================================================== -->
+    <!-- 1. TOPBAR: Brand, Live Hue Weather 3D Engine, Direct Nav Links -->
+    <!-- ============================================================== -->
+    <header class="sticky top-0 z-50 w-full px-3 lg:px-8 py-3 transition-all duration-300" id="main-header">
+      <div class="max-w-7xl mx-auto glass-panel rounded-2xl px-4 lg:px-6 py-2.5 flex items-center justify-between border border-white/80 shadow-lg">
+        
+        <!-- Logo HUE GO -->
+        <a href="./landing.html" class="flex items-center gap-2 group flex-shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-hue-purple to-hue-royal flex items-center justify-center text-white shadow-md transform group-hover:scale-105 transition-transform">
+            <span class="font-serif text-2xl font-bold">H</span>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span class="font-serif text-2xl lg:text-3xl font-extrabold tracking-tight text-hue-purple">HUE</span>
+            <span class="bg-gradient-to-r from-hue-gold to-hue-amber text-slate-950 font-black text-xs px-2 py-0.5 rounded-md shadow-sm">GO</span>
+          </div>
+        </a>
+
+        <!-- FEATURE 1: Live Hue Weather 3D Engine Selector (Ban Giám Khảo Demo Switcher) -->
+        <div class="hidden md:flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shadow-inner flex-shrink-0">
+          <div class="flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-hue-purple bg-white rounded-lg shadow-sm mr-0.5" id="weather-live-indicator">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="weather-badge-text">Huế 27°C • Dịu mát</span>
+          </div>
+
+          <!-- Switcher Buttons -->
+          <button onclick="changeWeather3D('mild', this)" class="weather-btn active px-2.5 py-1 text-xs font-semibold rounded-lg transition-all bg-white text-hue-purple shadow-sm" title="Chế độ Ngày Dịu mát">
+            🌤️ Dịu mát
+          </button>
+          <button onclick="changeWeather3D('rain', this)" class="weather-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all text-slate-600 hover:text-hue-purple hover:bg-white/60" title="Mưa phùn Cố Đô">
+            🌧️ Mưa phùn
+          </button>
+          <button onclick="changeWeather3D('sunset', this)" class="weather-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all text-slate-600 hover:text-hue-purple hover:bg-white/60" title="Hoàng hôn Tím sông Hương">
+            🌅 Hoàng hôn
+          </button>
+          <button onclick="changeWeather3D('night', this)" class="weather-btn px-2.5 py-1 text-xs font-semibold rounded-lg transition-all text-slate-600 hover:text-hue-purple hover:bg-white/60" title="Đêm Hoàng Cung lung linh">
+            🌙 Đêm Cung Đình
+          </button>
+        </div>
+
+        <!-- Navigation Links to Project Pages -->
+        <nav class="hidden xl:flex items-center gap-5 text-sm font-semibold text-slate-700">
+          <a href="./map.html" class="hover:text-hue-purple transition-colors flex items-center gap-1">
+            <span>🗺️ Bản đồ số</span>
+          </a>
+          <a href="./museum.html" class="hover:text-hue-purple transition-colors flex items-center gap-1">
+            <span>🏛️ Bảo tàng 3D</span>
+          </a>
+          <a href="./simulator.html" class="hover:text-hue-purple transition-colors flex items-center gap-1">
+            <span>⏳ Mô phỏng 1 ngày</span>
+          </a>
+          <a href="./essentials.html" class="hover:text-hue-purple transition-colors flex items-center gap-1">
+            <span>🚨 Khẩn cấp 24/7</span>
+          </a>
+        </nav>
+
+        <!-- CTA Open App (Triggers Feature 2 Warp Transition) -->
+        <div class="flex items-center gap-2">
+          <button onclick="triggerWarpTransition('./index.html')" class="relative group overflow-hidden px-4 lg:px-5 py-2.5 rounded-xl bg-gradient-to-r from-hue-purple to-hue-royal text-white text-sm font-bold shadow-lg hover:shadow-hue-purple/40 hover:scale-105 active:scale-95 transition-all">
+            <span class="relative z-10 flex items-center gap-1.5">
+              <span>Mở App HUEGO</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </span>
+            <div class="absolute inset-0 bg-gradient-to-r from-hue-gold to-hue-amber opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================================== -->
+    <!-- 2. HERO SECTION: Antigravity Imperial Portal & 3D Interactive Mascot -->
+    <!-- ============================================================== -->
+    <section class="relative min-h-[88vh] flex items-center px-4 lg:px-8 py-10 lg:py-16">
+      <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left Hero Content -->
+        <div class="lg:col-span-7 space-y-6 z-20">
+          
+          <!-- Pitching Badge -->
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-hue-purple/10 border border-hue-purple/20 text-hue-purple text-xs font-bold tracking-wide uppercase">
+            <span class="flex h-2 w-2 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-hue-gold opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-hue-gold"></span>
+            </span>
+            Đồ Án Khởi Nghiệp Công Nghệ Du Lịch Huế 2026
+          </div>
+
+          <!-- Headline -->
+          <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.15] tracking-tight text-slate-900">
+            Khám phá Cố Đô Huế <br>
+            với <span class="purple-gradient-text">Trí Tuệ Nhân Tạo</span> & <span class="gold-gradient-text">Không Gian 3D</span>
+          </h1>
+
+          <!-- Description -->
+          <p class="text-base sm:text-lg text-slate-600 max-w-xl font-normal leading-relaxed">
+            HUEGO kết nối chiều sâu di sản triều Nguyễn bằng mô hình số hóa O2O thông minh: tự động đổi lịch trình khi mưa, trợ lý AI Mệ Huế bản địa, bảo tàng cổ vật số 3D và cơ chế du lịch xanh giảm phát thải.
+          </p>
+
+          <!-- Core Value Stats Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 max-w-2xl">
+            <div class="glass-panel p-3.5 rounded-xl border-l-4 border-l-hue-purple">
+              <div class="text-2xl font-black text-hue-purple font-serif">4.352+</div>
+              <div class="text-xs font-semibold text-slate-500 mt-0.5">Địa điểm Cố Đô</div>
+            </div>
+            <div class="glass-panel p-3.5 rounded-xl border-l-4 border-l-hue-gold">
+              <div class="text-2xl font-black text-hue-gold font-serif">30</div>
+              <div class="text-xs font-semibold text-slate-500 mt-0.5">Di sản UNESCO</div>
+            </div>
+            <div class="glass-panel p-3.5 rounded-xl border-l-4 border-l-emerald-600">
+              <div class="text-2xl font-black text-emerald-600 font-serif">10</div>
+              <div class="text-xs font-semibold text-slate-500 mt-0.5">Cổ vật 3D Xoay</div>
+            </div>
+            <div class="glass-panel p-3.5 rounded-xl border-l-4 border-l-pink-600">
+              <div class="text-2xl font-black text-pink-600 font-serif">35m</div>
+              <div class="text-xs font-semibold text-slate-500 mt-0.5">Radar Geofence</div>
+            </div>
+          </div>
+
+          <!-- Hero Action Buttons (FEATURE 2 Trigger) -->
+          <div class="flex flex-wrap items-center gap-4 pt-4">
+            <button onclick="triggerWarpTransition('./index.html')" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-hue-purple to-hue-royal text-white font-bold text-base shadow-xl hover:shadow-hue-purple/50 transform hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2 group">
+              <span>🚀 Bắt Đầu Trải Nghiệm (Warp Portal)</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </button>
+            <a href="#river-section" class="px-6 py-3.5 rounded-xl glass-panel text-slate-800 font-bold text-base hover:bg-white hover:text-hue-purple border border-slate-200 transition-all flex items-center gap-2">
+              <span>🪷 Thả Hoa Đăng Sông Hương</span>
+            </a>
+          </div>
+
+          <!-- Feature 2 Micro-hint -->
+          <div class="text-xs text-slate-500 flex items-center gap-1.5 pt-1">
+            <svg class="w-4 h-4 text-hue-gold flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg>
+            <span>Nhấp trực tiếp vào chiếc <b>Smartphone 3D</b> bên phải để kích hoạt hiệu ứng <i>Cổng Không Gian Xuyên Thấu</i> sang App.</span>
+          </div>
+
+        </div>
+
+        <!-- Right Hero: 3D Interactive Target Space -->
+        <div class="lg:col-span-5 h-[440px] lg:h-[560px] relative flex items-center justify-center">
+          
+          <!-- Floating Decorative Cards -->
+          <div class="absolute -top-3 left-0 glass-panel p-3 rounded-2xl shadow-xl flex items-center gap-3 z-30 animate-float-slow">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-600 flex items-center justify-center text-xl text-white shadow-sm">
+              🦁
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-900">Linh vật Nghê Cung Đình</div>
+              <div class="text-[11px] text-hue-gold font-semibold">Đội Nón Bài Thơ Hologram 3D</div>
+            </div>
+          </div>
+
+          <div class="absolute -bottom-4 right-0 glass-panel p-3.5 rounded-2xl shadow-xl flex items-center gap-3 z-30" style="animation: floatSlow 7s ease-in-out infinite 2s;">
+            <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-xl shadow-sm">
+              👑
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-900">Trợ lý AI Mệ Huế</div>
+              <div class="text-[11px] text-emerald-600 font-semibold">● Sẵn sàng thuyết minh Cố Đô</div>
+            </div>
+          </div>
+
+          <!-- Interactive Clickable Hotspot on 3D Device -->
+          <button onclick="triggerWarpTransition('./index.html')" class="absolute z-30 inset-x-8 inset-y-12 cursor-pointer opacity-0" title="Nhấp để du hành xuyên qua Smartphone vào HUEGO"></button>
+
+          <!-- Hint Tooltip Overlay -->
+          <div class="absolute bottom-2 inset-x-0 mx-auto w-fit glass-panel px-3.5 py-1.5 rounded-full text-xs font-bold text-hue-purple shadow-md z-20 pointer-events-none flex items-center gap-1.5 animate-pulse">
+            <span>🖱️ Rê chuột để tương tác ánh sáng 3D</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================================== -->
+    <!-- 3. SHOWCASE 4 TRỤ CỘT CÔNG NGHỆ: Glassmorphism Interactive Cards -->
+    <!-- ============================================================== -->
+    <section class="py-20 px-4 lg:px-8 relative z-20">
+      <div class="max-w-7xl mx-auto space-y-12">
+        
+        <div class="text-center max-w-2xl mx-auto space-y-3">
+          <span class="text-xs font-bold tracking-widest text-hue-gold uppercase">Hệ sinh thái TravelTech HUEGO</span>
+          <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900">
+            4 Trụ Cột Công Nghệ <span class="purple-gradient-text">Đột Phá</span>
+          </h2>
+          <p class="text-slate-600 text-sm sm:text-base">
+            Mỗi trụ cột là một sản phẩm số hoàn chỉnh, kết nối liền mạch giữa di sản truyền thống và trải nghiệm công nghệ cao.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <!-- TRỤ CỘT 1: BẢN ĐỒ SỐ DU LỊCH (map.html) -->
+          <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between group hover:border-hue-purple/50 transition-all hover:-translate-y-1 duration-300">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                🗺️
+              </div>
+              <div class="space-y-1.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-hue-purple">PostGIS Geofencing</span>
+                <h3 class="font-serif text-xl font-bold text-slate-900">Bản Đồ Số Di Sản</h3>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Khám phá 30 cụm di sản Đại Nội, Lăng tẩm triều Nguyễn và Chùa Thiên Mụ. Hỗ trợ tải gói bản đồ ngoại tuyến (~5MB) mượt mà khi mất sóng 4G.
+              </p>
+              <div class="bg-purple-50/70 p-3 rounded-xl border border-purple-100 space-y-1">
+                <div class="text-[11px] font-bold text-hue-purple">📡 Radar GPS Geofence 35m</div>
+                <div class="text-[10px] text-slate-500">Tự động phát hiện khi du khách đến gần di tích</div>
+              </div>
+            </div>
+            <a href="./map.html" class="mt-6 w-full py-2.5 rounded-xl bg-purple-50 text-hue-purple font-bold text-xs flex items-center justify-center gap-1.5 group-hover:bg-hue-purple group-hover:text-white transition-all">
+              <span>Mở Bản Đồ Số</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+
+          <!-- TRỤ CỘT 2: BẢO TÀNG CUNG ĐÌNH 3D (museum.html) -->
+          <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between group hover:border-hue-gold/60 transition-all hover:-translate-y-1 duration-300">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                🏛️
+              </div>
+              <div class="space-y-1.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-hue-gold">WebGL 3D Artifacts</span>
+                <h3 class="font-serif text-xl font-bold text-slate-900">Bảo Tàng Số 3D</h3>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Xoay 360° chiêm ngưỡng 10 bảo vật vô giá: Ngai của Hoàng đế, Kiệu Vua, Quả cầu Cửu Long, Bộ Xăm Hường cung đình với độ chi tiết vật liệu thếp vàng chân thực.
+              </p>
+              
+              <!-- Mini 3D Preview Hint Widget -->
+              <div class="bg-amber-50/80 p-3 rounded-xl border border-amber-200/80 text-center cursor-pointer hover:bg-amber-100/80 transition-colors" onclick="window.location.href='./museum.html'">
+                <div class="text-[11px] font-bold text-amber-800">👑 Ngai của Hoàng đế 3D</div>
+                <div class="text-[10px] text-amber-600">Bấm để xoay 360 độ trực quan tại Bảo Tàng</div>
+              </div>
+            </div>
+            <a href="./museum.html" class="mt-6 w-full py-2.5 rounded-xl bg-amber-50 text-hue-gold font-bold text-xs flex items-center justify-center gap-1.5 group-hover:bg-hue-gold group-hover:text-white transition-all">
+              <span>Vào Bảo Tàng 3D</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+
+          <!-- TRỤ CỘT 3: MÔ PHỎNG 1 NGÀY Ở HUẾ (simulator.html) -->
+          <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between group hover:border-emerald-500/50 transition-all hover:-translate-y-1 duration-300">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                ⏳
+              </div>
+              <div class="space-y-1.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Interactive Simulation</span>
+                <h3 class="font-serif text-xl font-bold text-slate-900">Sống Thử 1 Ngày</h3>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                <i>"Bạn không trả lời câu hỏi. Bạn sống thử một ngày Huế."</i> Lựa chọn tình huống thực tế để nhận điểm Green Points và chứng chỉ Hoàng Gia điện tử.
+              </p>
+              
+              <!-- Interactive Choice Widget for Judges -->
+              <div class="space-y-1.5">
+                <button onclick="setSimMood('early', this)" class="sim-btn w-full text-left px-3 py-2 rounded-lg text-[11px] font-semibold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition-colors border border-emerald-200/60 flex items-center justify-between">
+                  <span>🌅 Sương sớm Sông Hương (5:30)</span>
+                  <span class="text-[10px] bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded font-bold">+25 GP</span>
+                </button>
+                <button onclick="setSimMood('late', this)" class="sim-btn w-full text-left px-3 py-2 rounded-lg text-[11px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors border border-slate-200 flex items-center justify-between">
+                  <span>☕ Ngủ nướng & Cà phê muối</span>
+                  <span class="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-bold">+10 GP</span>
+                </button>
+              </div>
+            </div>
+            <a href="./simulator.html" class="mt-6 w-full py-2.5 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-xs flex items-center justify-center gap-1.5 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+              <span>Trải Nghiệm Mô Phỏng</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+
+          <!-- TRỤ CỘT 4: KHẨN CẤP & AN TOÀN 24/7 (essentials.html) -->
+          <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between group hover:border-red-500/50 transition-all hover:-translate-y-1 duration-300">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                🚨
+              </div>
+              <div class="space-y-1.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-red-600">Tourist Safety First</span>
+                <h3 class="font-serif text-xl font-bold text-slate-900">Khẩn Cấp 24/7</h3>
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Bộ công cụ cứu hộ du lịch số hóa: danh bạ hotline trực tiếp, vị trí Bệnh viện Trung ương Huế, BV ĐH Y Dược Huế và trạm hỗ trợ du khách.
+              </p>
+              
+              <!-- Quick SOS Dial Grid -->
+              <div class="grid grid-cols-3 gap-1.5">
+                <a href="tel:113" class="p-2 text-center rounded-lg bg-red-50 text-red-700 font-bold text-[11px] border border-red-200 hover:bg-red-600 hover:text-white transition-colors">
+                  🚔 113
+                </a>
+                <a href="tel:114" class="p-2 text-center rounded-lg bg-orange-50 text-orange-700 font-bold text-[11px] border border-orange-200 hover:bg-orange-600 hover:text-white transition-colors">
+                  🚒 114
+                </a>
+                <a href="tel:115" class="p-2 text-center rounded-lg bg-rose-50 text-rose-700 font-bold text-[11px] border border-rose-200 hover:bg-rose-600 hover:text-white transition-colors">
+                  🚑 115
+                </a>
+              </div>
+            </div>
+            <a href="./essentials.html" class="mt-6 w-full py-2.5 rounded-xl bg-red-50 text-red-700 font-bold text-xs flex items-center justify-center gap-1.5 group-hover:bg-red-600 group-hover:text-white transition-all">
+              <span>Cẩm Nang An Toàn</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================== -->
+    <!-- 4. FEATURE 3: THẢ HOA ĐĂNG ƯỚC NGUYỆN TRÊN SÔNG HƯƠNG 3D (FOOTER) -->
+    <!-- ============================================================== -->
+    <section class="mt-auto relative z-20 pt-28 pb-16 px-4 lg:px-8 overflow-hidden text-white" id="river-section">
+      
+      <!-- Backdrop into Deep Night River -->
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0819]/85 to-[#0B0819] pointer-events-none"></div>
+
+      <div class="max-w-4xl mx-auto relative z-30 space-y-8">
+        
+        <!-- Section Header -->
+        <div class="text-center space-y-3">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-hue-gold/20 border border-hue-gold/40 text-hue-gold text-xs font-bold uppercase tracking-wider">
+            ✨ Trải nghiệm Văn hóa Cố Đô Tương Tác
+          </div>
+          <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold">
+            Thả Hoa Đăng Ước Nguyện <br>
+            <span class="gold-gradient-text">Trên Sông Hương 3D</span>
+          </h2>
+          <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto">
+            Gửi gắm ước nguyện của bạn hoặc Ban Giám Khảo vào dòng Hương Giang huyền ảo với nhịp Cầu Tràng Tiền lung linh phía chân trời.
+          </p>
+        </div>
+
+        <!-- Glassmorphism Wish Box (FEATURE 3 Form) -->
+        <div class="glass-panel-dark p-6 sm:p-8 rounded-3xl max-w-2xl mx-auto border border-hue-gold/30 shadow-2xl relative">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tên của bạn / Ban Giám Khảo</label>
+              <input type="text" id="wish-author" placeholder="Ví dụ: Giám Khảo Khởi Nghiệp" 
+                class="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-hue-gold transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Lời chúc gửi Cố Đô Huế</label>
+              <input type="text" id="wish-content" placeholder="Ví dụ: Chúc Huế mãi xanh và HUEGO thành công!" 
+                class="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-hue-gold transition-colors">
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs text-amber-300/80">
+              <span>🪷 Đã có <strong id="lantern-counter" class="text-amber-300 text-sm font-bold">18</strong> hoa đăng đang trôi</span>
+            </div>
+            <button onclick="releaseLotusLantern()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-hue-gold to-hue-amber text-slate-950 font-black text-sm shadow-xl hover:shadow-hue-gold/40 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <span>✨ Thả Hoa Đăng Lên Sông Hương</span>
+            </button>
+          </div>
+
+          <!-- Notification Toast inside Box -->
+          <div id="wish-toast" class="hidden mt-4 p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 text-xs font-semibold text-center">
+            🎉 Hoa đăng của bạn đã được thả trôi nhẹ nhàng trên dòng sông Hương!
+          </div>
+
+        </div>
+
+        <!-- Big Pitching Call-To-Action (Warp Portal) -->
+        <div class="pt-8 text-center space-y-4">
+          <p class="text-xs uppercase tracking-widest text-slate-400 font-bold">Bạn đã sẵn sàng đồng hành cùng HUEGO?</p>
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <button onclick="triggerWarpTransition('./index.html')" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-hue-purple via-hue-royal to-hue-gold text-white font-black text-lg shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2 glow-gold">
+              <span>📱 Khám Phá Nền Tảng HUEGO (Web Portal)</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+            <button onclick="triggerWarpTransition('./app/index.html')" class="px-7 py-4 rounded-2xl glass-panel-dark text-amber-300 border border-amber-400/40 font-bold text-base hover:bg-white/10 active:scale-95 transition-all flex items-center gap-2">
+              <span>📲 Mở Ứng Dụng Di Động Giả Lập</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer Copyright -->
+        <div class="pt-16 border-t border-white/10 text-center text-xs text-slate-400 space-y-2">
+          <p>© 2026 HUEGO — Hue Green Heritage TravelTech Project. Bản quyền thuộc Dự án Khởi Nghiệp Sáng Tạo Di Sản Huế.</p>
+          <p class="text-[11px] text-slate-500">Công nghệ: Three.js WebGL Engine • GSAP Motion • PostGIS Geofencing • Trợ lý AI Mệ Huế</p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+
+  <!-- ============================================================== -->
+  <!-- 5. THREE.JS 3D ENGINE & CREATIVE INTERACTIONS JAVASCRIPT CODE  -->
+  <!-- ============================================================== -->
+  <script>
+    // ==========================================
+    // GLOBAL STATE & WEATHER SYSTEM
+    // ==========================================
+    let scene, camera, renderer;
+    let weatherMode = 'mild';
+    let ambientLight, dirLight, hemisphereLight;
+    let particleSystem, rainSystem, warpStreetsSystem;
+    let mascotGroup, phoneGroup, riverMesh, bridgeGroup, riverContainerGroup;
+    let lotusLanterns = [];
+    let isWarping = false;
+    let mouseX = 0, mouseY = 0;
+    let targetCameraX = 0, targetCameraY = 2.5;
+
+    // Palette Configurations for 4 Weather Modes
+    const WEATHER_CONFIGS = {
+      mild: {
+        badge: 'Huế 27°C • Dịu mát',
+        bgColor: 0xFAF8F5,
+        ambientColor: 0xFFFBEB,
+        ambientIntensity: 0.95,
+        dirColor: 0xFDE68A,
+        dirIntensity: 1.25,
+        fogColor: 0xFAF8F5,
+        fogNear: 15,
+        fogFar: 65,
+        rainActive: false,
+        petalsActive: true
+      },
+      rain: {
+        badge: 'Huế 22°C • Mưa phùn lãng mạn',
+        bgColor: 0x1E1B2E,
+        ambientColor: 0x6D597A,
+        ambientIntensity: 0.65,
+        dirColor: 0x818CF8,
+        dirIntensity: 0.85,
+        fogColor: 0x1E1B2E,
+        fogNear: 12,
+        fogFar: 50,
+        rainActive: true,
+        petalsActive: false
+      },
+      sunset: {
+        badge: 'Huế 26°C • Hoàng hôn Tím Hương Giang',
+        bgColor: 0x33144A,
+        ambientColor: 0x9333EA,
+        ambientIntensity: 0.85,
+        dirColor: 0xF59E0B,
+        dirIntensity: 1.6,
+        fogColor: 0x33144A,
+        fogNear: 12,
+        fogFar: 55,
+        rainActive: false,
+        petalsActive: true
+      },
+      night: {
+        badge: 'Huế 23°C • Đêm Hoàng Cung Lung Linh',
+        bgColor: 0x090514,
+        ambientColor: 0x1E1B4B,
+        ambientIntensity: 0.45,
+        dirColor: 0xD97706,
+        dirIntensity: 0.75,
+        fogColor: 0x090514,
+        fogNear: 10,
+        fogFar: 60,
+        rainActive: false,
+        petalsActive: false
+      }
+    };
+
+    // ==========================================
+    // INITIALIZE THREE.JS SCENE
+    // ==========================================
+    function init3D() {
+      const canvas = document.getElementById('webgl-canvas');
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // 1. Scene & Camera
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(WEATHER_CONFIGS.mild.bgColor);
+      scene.fog = new THREE.Fog(WEATHER_CONFIGS.mild.fogColor, WEATHER_CONFIGS.mild.fogNear, WEATHER_CONFIGS.mild.fogFar);
+
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(0, 2.5, 12);
+
+      // 2. Renderer (60 FPS Performance Optimized)
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance"
+      });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.15;
+
+      // 3. Lighting Setup
+      ambientLight = new THREE.AmbientLight(WEATHER_CONFIGS.mild.ambientColor, WEATHER_CONFIGS.mild.ambientIntensity);
+      scene.add(ambientLight);
+
+      dirLight = new THREE.DirectionalLight(WEATHER_CONFIGS.mild.dirColor, WEATHER_CONFIGS.mild.dirIntensity);
+      dirLight.position.set(6, 10, 8);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
+      scene.add(dirLight);
+
+      hemisphereLight = new THREE.HemisphereLight(0xFFFBEB, 0x4A1D96, 0.5);
+      scene.add(hemisphereLight);
+
+      // 4. Build 3D Elements
+      buildHeroMascotAndPhone();
+      buildParticleSystems();
+      buildRainSystem();
+      buildWarpSystem();
+      buildRiverAndBridge();
+      loadStoredLanterns();
+
+      // River is initially hidden at top of page, fades in as user scrolls down
+      if (riverContainerGroup) {
+        riverContainerGroup.visible = false;
+      }
+
+      // 5. Events
+      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('scroll', onScroll);
+
+      // Initial scroll check
+      onScroll();
+
+      // 6. Start Loop
+      animate();
+    }
+
+    // ==========================================
+    // 3D HERO ASSETS: SMARTPHONE & LINH VẬT NGHÊ HUẾ
+    // ==========================================
+    function buildHeroMascotAndPhone() {
+      mascotGroup = new THREE.Group();
+      mascotGroup.position.set(3.0, 0.3, 2);
+
+      // --- A. Procedural Smartphone 3D ---
+      phoneGroup = new THREE.Group();
+      phoneGroup.position.set(-1.4, 0.5, 1.2);
+      phoneGroup.rotation.set(-0.1, 0.35, 0.05);
+
+      // Phone Body
+      const bodyGeo = new THREE.BoxGeometry(2.0, 4.0, 0.16);
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: 0x1E1B4B,
+        metalness: 0.9,
+        roughness: 0.2,
+      });
+      const phoneBody = new THREE.Mesh(bodyGeo, bodyMat);
+      phoneBody.castShadow = true;
+      phoneGroup.add(phoneBody);
+
+      // Phone Gold Edge Bezel
+      const edgeGeo = new THREE.BoxGeometry(2.06, 4.06, 0.15);
+      const edgeMat = new THREE.MeshStandardMaterial({
+        color: 0xD97706,
+        metalness: 0.95,
+        roughness: 0.1,
+        emissive: 0xB45309,
+        emissiveIntensity: 0.3
+      });
+      const edgeMesh = new THREE.Mesh(edgeGeo, edgeMat);
+      phoneGroup.add(edgeMesh);
+
+      // Dynamic Canvas Screen Texture (HUEGO UI Preview)
+      const screenCanvas = document.createElement('canvas');
+      screenCanvas.width = 512;
+      screenCanvas.height = 1024;
+      const ctx = screenCanvas.getContext('2d');
+      drawScreenTexture(ctx);
+
+      const screenTexture = new THREE.CanvasTexture(screenCanvas);
+      const screenGeo = new THREE.PlaneGeometry(1.9, 3.86);
+      const screenMat = new THREE.MeshBasicMaterial({
+        map: screenTexture,
+        toneMapped: false
+      });
+      const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+      screenMesh.position.z = 0.09;
+      phoneGroup.add(screenMesh);
+
+      mascotGroup.add(phoneGroup);
+
+      // --- B. Linh Vật Nghê Cung Đình 3D Procedural ---
+      const creatureGroup = new THREE.Group();
+      creatureGroup.position.set(1.5, 0.2, 0);
+
+      const nghMat = new THREE.MeshStandardMaterial({
+        color: 0x581C87,
+        metalness: 0.65,
+        roughness: 0.25,
+        emissive: 0x3B0764,
+        emissiveIntensity: 0.4
+      });
+
+      const goldTrimMat = new THREE.MeshStandardMaterial({
+        color: 0xD97706,
+        metalness: 0.95,
+        roughness: 0.15,
+        emissive: 0xF59E0B,
+        emissiveIntensity: 0.5
+      });
+
+      // Body Torso
+      const torsoGeo = new THREE.CylinderGeometry(0.75, 0.95, 1.4, 20);
+      const torso = new THREE.Mesh(torsoGeo, nghMat);
+      torso.position.y = 0.7;
+      torso.castShadow = true;
+      creatureGroup.add(torso);
+
+      // Head
+      const headGeo = new THREE.DodecahedronGeometry(0.8, 1);
+      const head = new THREE.Mesh(headGeo, nghMat);
+      head.position.set(0, 1.7, 0.45);
+      head.castShadow = true;
+      creatureGroup.add(head);
+
+      // Snout / Mõm Nghê
+      const snoutGeo = new THREE.BoxGeometry(0.65, 0.45, 0.65);
+      const snout = new THREE.Mesh(snoutGeo, goldTrimMat);
+      snout.position.set(0, 1.55, 0.95);
+      creatureGroup.add(snout);
+
+      // Pearl of Wisdom (Ngọc Châu miệng nghê phát sáng)
+      const pearlGeo = new THREE.SphereGeometry(0.18, 16, 16);
+      const pearlMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B });
+      const pearl = new THREE.Mesh(pearlGeo, pearlMat);
+      pearl.position.set(0, 1.45, 1.25);
+      creatureGroup.add(pearl);
+
+      // Eyes (Glowing Golden Eyes)
+      const eyeGeo = new THREE.SphereGeometry(0.13, 16, 16);
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0xFDE68A });
+      const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+      eyeL.position.set(-0.32, 1.88, 1.0);
+      const eyeR = eyeL.clone();
+      eyeR.position.x = 0.32;
+      creatureGroup.add(eyeL);
+      creatureGroup.add(eyeR);
+
+      // Sừng Kỳ Lân Cung Đình
+      const hornGeo = new THREE.ConeGeometry(0.18, 0.85, 10);
+      const horn = new THREE.Mesh(hornGeo, goldTrimMat);
+      horn.position.set(0, 2.6, 0.35);
+      horn.rotation.x = -0.25;
+      creatureGroup.add(horn);
+
+      // Bờm Mây Cung Đình 3 Tầng (Imperial Mane)
+      for (let i = 0; i < 9; i++) {
+        const maneGeo = new THREE.TorusGeometry(0.32, 0.08, 8, 16, Math.PI * 1.5);
+        const mane = new THREE.Mesh(maneGeo, goldTrimMat);
+        const angle = (i / 8) * Math.PI - Math.PI / 2;
+        mane.position.set(Math.sin(angle) * 0.85, 1.75 + Math.cos(angle) * 0.35, -0.05);
+        mane.rotation.z = angle;
+        creatureGroup.add(mane);
+      }
+
+      // --- C. Hologram Nón Bài Thơ 3D (Lơ lửng trên đầu Nghê) ---
+      const hatGroup = new THREE.Group();
+      hatGroup.position.set(0, 2.9, 0.35);
+
+      const hatGeo = new THREE.ConeGeometry(1.3, 0.78, 32, 2, true);
+      const hatMat = new THREE.MeshStandardMaterial({
+        color: 0xFDE68A,
+        transparent: true,
+        opacity: 0.8,
+        wireframe: false,
+        roughness: 0.1,
+        metalness: 0.3,
+        emissive: 0xD97706,
+        emissiveIntensity: 0.5,
+        side: THREE.DoubleSide
+      });
+      const hatMesh = new THREE.Mesh(hatGeo, hatMat);
+      hatGroup.add(hatMesh);
+
+      // Nan Nón Vàng Phát Sáng
+      const wireMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B, wireframe: true, transparent: true, opacity: 0.6 });
+      const wireHat = new THREE.Mesh(hatGeo, wireMat);
+      hatGroup.add(wireHat);
+
+      creatureGroup.add(hatGroup);
+      creatureGroup.hat = hatGroup;
+
+      // Two Orbiting AI Halo Rings (Mệ Huế AI Orbit)
+      const haloGeo1 = new THREE.TorusGeometry(1.45, 0.03, 16, 64);
+      const haloMat1 = new THREE.MeshBasicMaterial({ color: 0xF59E0B, transparent: true, opacity: 0.85 });
+      const halo1 = new THREE.Mesh(haloGeo1, haloMat1);
+      halo1.position.set(0, 1.8, 0.4);
+      halo1.rotation.x = Math.PI / 2.3;
+      creatureGroup.add(halo1);
+      creatureGroup.halo1 = halo1;
+
+      const haloGeo2 = new THREE.TorusGeometry(1.65, 0.025, 16, 64);
+      const haloMat2 = new THREE.MeshBasicMaterial({ color: 0xC084FC, transparent: true, opacity: 0.7 });
+      const halo2 = new THREE.Mesh(haloGeo2, haloMat2);
+      halo2.position.set(0, 1.8, 0.4);
+      halo2.rotation.y = Math.PI / 3;
+      halo2.rotation.x = Math.PI / 4;
+      creatureGroup.add(halo2);
+      creatureGroup.halo2 = halo2;
+
+      mascotGroup.add(creatureGroup);
+      scene.add(mascotGroup);
+    }
+
+    // Helper: Draw Phone Screen Canvas UI
+    function drawScreenTexture(ctx) {
+      const grad = ctx.createLinearGradient(0, 0, 0, 1024);
+      grad.addColorStop(0, '#2E1065');
+      grad.addColorStop(0.5, '#4A1D96');
+      grad.addColorStop(1, '#0F0C1B');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 1024);
+
+      // Status Bar
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText('09:41', 40, 55);
+      ctx.fillText('5G 📶 100% 🔋', 340, 55);
+
+      // App Header
+      ctx.fillStyle = '#F59E0B';
+      ctx.font = 'bold 36px "Playfair Display", serif';
+      ctx.fillText('HUEGO CỐ ĐÔ', 40, 120);
+
+      ctx.fillStyle = '#E9D5FF';
+      ctx.font = '22px sans-serif';
+      ctx.fillText('Radar Du Lịch Thông Minh 35m', 40, 155);
+
+      // Radar Concentric Circles
+      ctx.strokeStyle = 'rgba(217, 119, 6, 0.4)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(256, 420, 160, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(256, 420, 100, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(256, 420, 40, 0, Math.PI * 2);
+      ctx.fillStyle = '#F59E0B';
+      ctx.fill();
+
+      // Destination Cards
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.roundRect(40, 640, 432, 100, 20);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 28px sans-serif';
+      ctx.fillText('🏛️ Đại Nội Huế • Đã mở khóa', 70, 700);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.roundRect(40, 760, 432, 100, 20);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('⛩️ Chùa Thiên Mụ • Cách 1.2km', 70, 820);
+
+      // Bottom Bar
+      ctx.fillStyle = '#D97706';
+      ctx.roundRect(60, 900, 392, 70, 35);
+      ctx.fill();
+      ctx.fillStyle = '#0F0C1B';
+      ctx.font = 'bold 26px sans-serif';
+      ctx.fillText('✨ Khám Phá Ngay', 160, 945);
+    }
+
+    // ==========================================
+    // PARTICLE ENGINES: GOLD DUST & LOTUS PETALS
+    // ==========================================
+    function buildParticleSystems() {
+      const count = 180;
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
+
+      for (let i = 0; i < count; i++) {
+        pos[i * 3] = (Math.random() - 0.5) * 24;
+        pos[i * 3 + 1] = Math.random() * 14 - 3;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 16;
+      }
+
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+      const mat = new THREE.PointsMaterial({
+        color: 0xF59E0B,
+        size: 0.18,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending
+      });
+
+      particleSystem = new THREE.Points(geo, mat);
+      scene.add(particleSystem);
+    }
+
+    // ==========================================
+    // RAIN ENGINE: MƯA PHÙN CỐ ĐÔ
+    // ==========================================
+    function buildRainSystem() {
+      const rainCount = 700;
+      const rainGeo = new THREE.BufferGeometry();
+      const rainPos = new Float32Array(rainCount * 3);
+
+      for (let i = 0; i < rainCount; i++) {
+        rainPos[i * 3] = (Math.random() - 0.5) * 28;
+        rainPos[i * 3 + 1] = Math.random() * 22;
+        rainPos[i * 3 + 2] = (Math.random() - 0.5) * 22;
+      }
+
+      rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
+
+      const rainMat = new THREE.PointsMaterial({
+        color: 0xA5B4FC,
+        size: 0.12,
+        transparent: true,
+        opacity: 0.0
+      });
+
+      rainSystem = new THREE.Points(rainGeo, rainMat);
+      scene.add(rainSystem);
+    }
+
+    // ==========================================
+    // WARP SPEED STREAKS (FEATURE 2)
+    // ==========================================
+    function buildWarpSystem() {
+      const warpCount = 600;
+      const warpGeo = new THREE.BufferGeometry();
+      const warpPos = new Float32Array(warpCount * 3);
+
+      for (let i = 0; i < warpCount; i++) {
+        warpPos[i * 3] = (Math.random() - 0.5) * 16;
+        warpPos[i * 3 + 1] = (Math.random() - 0.5) * 16;
+        warpPos[i * 3 + 2] = Math.random() * 30 - 15;
+      }
+
+      warpGeo.setAttribute('position', new THREE.BufferAttribute(warpPos, 3));
+
+      const warpMat = new THREE.PointsMaterial({
+        color: 0xF59E0B,
+        size: 0.25,
+        transparent: true,
+        opacity: 0.0,
+        blending: THREE.AdditiveBlending
+      });
+
+      warpStreetsSystem = new THREE.Points(warpGeo, warpMat);
+      scene.add(warpStreetsSystem);
+    }
+
+    // ==========================================
+    // SÔNG HƯƠNG & CẦU TRÀNG TIỀN 3D (FEATURE 3)
+    // ==========================================
+    function buildRiverAndBridge() {
+      riverContainerGroup = new THREE.Group();
+      riverContainerGroup.position.set(0, -18, -6); // Located deep below hero section
+
+      // River Water Surface Mesh
+      const riverGeo = new THREE.PlaneGeometry(80, 50, 64, 64);
+      const riverMat = new THREE.MeshStandardMaterial({
+        color: 0x070414,
+        roughness: 0.1,
+        metalness: 0.88,
+        wireframe: false
+      });
+      riverMesh = new THREE.Mesh(riverGeo, riverMat);
+      riverMesh.rotation.x = -Math.PI / 2;
+      riverMesh.position.set(0, 0, 0);
+      riverMesh.receiveShadow = true;
+      riverContainerGroup.add(riverMesh);
+
+      // Cầu Tràng Tiền 3D (6 nhịp vành lược duyên dáng)
+      bridgeGroup = new THREE.Group();
+      bridgeGroup.position.set(0, 1.8, -16);
+
+      const bridgeSpanMat = new THREE.MeshStandardMaterial({
+        color: 0xC084FC,
+        metalness: 0.75,
+        roughness: 0.2,
+        emissive: 0x9333EA,
+        emissiveIntensity: 0.6
+      });
+
+      for (let i = -3; i < 3; i++) {
+        const archGeo = new THREE.TorusGeometry(2.4, 0.13, 8, 24, Math.PI);
+        const arch = new THREE.Mesh(archGeo, bridgeSpanMat);
+        arch.position.set(i * 4.6 + 2.3, 0, 0);
+        bridgeGroup.add(arch);
+
+        // LED Lantern Light under span
+        const light = new THREE.PointLight(0xF59E0B, 0.9, 10);
+        light.position.set(i * 4.6 + 2.3, 0.5, 0);
+        bridgeGroup.add(light);
+      }
+
+      // Deck
+      const deckGeo = new THREE.BoxGeometry(32, 0.25, 2.0);
+      const deckMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85 });
+      const deck = new THREE.Mesh(deckGeo, deckMat);
+      deck.position.y = -0.1;
+      bridgeGroup.add(deck);
+
+      riverContainerGroup.add(bridgeGroup);
+      scene.add(riverContainerGroup);
+    }
+
+    // Build a single Lotus Lantern 3D Mesh
+    function createLotusLanternMesh(author, wish) {
+      const lantern = new THREE.Group();
+
+      // Lotus Petals (2 layers)
+      const outerPetalMat = new THREE.MeshStandardMaterial({
+        color: 0xFB7185,
+        emissive: 0xE11D48,
+        emissiveIntensity: 0.55,
+        roughness: 0.3
+      });
+
+      const innerPetalMat = new THREE.MeshStandardMaterial({
+        color: 0xFDE047,
+        emissive: 0xF59E0B,
+        emissiveIntensity: 0.6,
+        roughness: 0.2
+      });
+
+      // Layer 1: Outer Petals
+      for (let i = 0; i < 8; i++) {
+        const petalGeo = new THREE.ConeGeometry(0.3, 0.75, 5);
+        const petal = new THREE.Mesh(petalGeo, outerPetalMat);
+        const angle = (i / 8) * Math.PI * 2;
+        petal.position.set(Math.cos(angle) * 0.4, 0.18, Math.sin(angle) * 0.4);
+        petal.rotation.z = -Math.cos(angle) * 0.45;
+        petal.rotation.x = Math.sin(angle) * 0.45;
+        lantern.add(petal);
+      }
+
+      // Layer 2: Inner Petals
+      for (let i = 0; i < 6; i++) {
+        const petalGeo = new THREE.ConeGeometry(0.2, 0.55, 5);
+        const petal = new THREE.Mesh(petalGeo, innerPetalMat);
+        const angle = (i / 6) * Math.PI * 2;
+        petal.position.set(Math.cos(angle) * 0.25, 0.22, Math.sin(angle) * 0.25);
+        petal.rotation.z = -Math.cos(angle) * 0.35;
+        petal.rotation.x = Math.sin(angle) * 0.35;
+        lantern.add(petal);
+      }
+
+      // Candle
+      const candleGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.35, 8);
+      const candleMat = new THREE.MeshBasicMaterial({ color: 0xFEF08A });
+      const candle = new THREE.Mesh(candleGeo, candleMat);
+      candle.position.y = 0.28;
+      lantern.add(candle);
+
+      const candleLight = new THREE.PointLight(0xF59E0B, 1.4, 5);
+      candleLight.position.y = 0.5;
+      lantern.add(candleLight);
+
+      // Label 3D Text (Canvas Sprite)
+      if (author) {
+        const labelCanvas = document.createElement('canvas');
+        labelCanvas.width = 256;
+        labelCanvas.height = 128;
+        const lCtx = labelCanvas.getContext('2d');
+        lCtx.fillStyle = 'rgba(11, 8, 25, 0.88)';
+        lCtx.roundRect(10, 10, 236, 108, 16);
+        lCtx.fill();
+        lCtx.strokeStyle = '#F59E0B';
+        lCtx.lineWidth = 3;
+        lCtx.stroke();
+
+        lCtx.fillStyle = '#FDE68A';
+        lCtx.font = 'bold 22px sans-serif';
+        lCtx.textAlign = 'center';
+        lCtx.fillText(author.slice(0, 16), 128, 48);
+
+        lCtx.fillStyle = '#FFFFFF';
+        lCtx.font = '16px sans-serif';
+        lCtx.fillText(wish ? `"${wish.slice(0, 18)}..."` : 'HUEGO', 128, 85);
+
+        const labelTexture = new THREE.CanvasTexture(labelCanvas);
+        const spriteMat = new THREE.SpriteMaterial({ map: labelTexture, transparent: true });
+        const sprite = new THREE.Sprite(spriteMat);
+        sprite.position.y = 1.1;
+        sprite.scale.set(1.5, 0.75, 1);
+        lantern.add(sprite);
+      }
+
+      return lantern;
+    }
+
+    // Load initial lanterns
+    function loadStoredLanterns() {
+      let stored = [];
+      try {
+        stored = JSON.parse(localStorage.getItem('huego_lanterns')) || [];
+      } catch (_) {}
+
+      const defaultWishes = [
+        { author: 'Huế Green Heritage', wish: 'Cố Đô ngàn năm xanh tươi' },
+        { author: 'Trần Ban Giám Khảo', wish: 'Chúc dự án HUEGO đạt giải nhất' },
+        { author: 'Nguyễn Du Khách', wish: 'Yêu con người xứ Huế mộng mơ' },
+        { author: 'TravelTech Việt', wish: 'Chuyển đổi số di sản bền vững' },
+        { author: 'Học sinh Cố Đô', wish: 'Tự hào lịch sử triều Nguyễn' }
+      ];
+
+      const fullList = [...stored, ...defaultWishes];
+      document.getElementById('lantern-counter').innerText = fullList.length + 12;
+
+      for (let i = 0; i < 18; i++) {
+        const item = fullList[i % fullList.length];
+        const lMesh = createLotusLanternMesh(item.author, item.wish);
+        lMesh.position.set(
+          (Math.random() - 0.5) * 28,
+          0.15,
+          -4 - Math.random() * 12
+        );
+        lMesh.driftSpeed = 0.005 + Math.random() * 0.008;
+        lMesh.bobPhase = Math.random() * Math.PI * 2;
+        riverContainerGroup.add(lMesh);
+        lotusLanterns.push(lMesh);
+      }
+    }
+
+    // ==========================================
+    // INTERACTION: FEATURE 3 THẢ HOA ĐĂNG
+    // ==========================================
+    window.releaseLotusLantern = function() {
+      const authorInput = document.getElementById('wish-author');
+      const wishInput = document.getElementById('wish-content');
+      const author = authorInput.value.trim() || 'Giám Khảo Khởi Nghiệp';
+      const wish = wishInput.value.trim() || 'Chúc HUEGO cất cánh vươn xa!';
+
+      // 1. Tạo hoa đăng mới
+      const newLantern = createLotusLanternMesh(author, wish);
+      newLantern.position.set(0, 5, -2); // Spawns in front of camera
+      newLantern.scale.set(0.2, 0.2, 0.2);
+      riverContainerGroup.add(newLantern);
+
+      // 2. Parabolic Fly Animation xuống mặt sông Hương
+      const targetPos = {
+        x: (Math.random() - 0.5) * 8,
+        y: 0.15,
+        z: -5 - Math.random() * 4
+      };
+
+      gsap.to(newLantern.scale, { x: 1.25, y: 1.25, z: 1.25, duration: 2, ease: "power2.out" });
+      gsap.to(newLantern.position, {
+        x: targetPos.x,
+        z: targetPos.z,
+        duration: 2.2,
+        ease: "power2.out"
+      });
+      gsap.to(newLantern.position, {
+        y: targetPos.y,
+        duration: 2.2,
+        ease: "bounce.out",
+        onComplete: () => {
+          newLantern.driftSpeed = 0.008;
+          newLantern.bobPhase = 0;
+          lotusLanterns.push(newLantern);
+        }
+      });
+
+      // 3. Save to localStorage
+      try {
+        let stored = JSON.parse(localStorage.getItem('huego_lanterns')) || [];
+        stored.unshift({ author, wish, date: new Date().toISOString() });
+        localStorage.setItem('huego_lanterns', JSON.stringify(stored.slice(0, 30)));
+      } catch (_) {}
+
+      // 4. Ripple & Confetti celebration
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.8 },
+        colors: ['#D97706', '#F59E0B', '#E11D48', '#C084FC']
+      });
+
+      // Toast & Counter Update
+      const toast = document.getElementById('wish-toast');
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 5000);
+
+      const counter = document.getElementById('lantern-counter');
+      counter.innerText = parseInt(counter.innerText || '20') + 1;
+
+      // Clear inputs
+      authorInput.value = '';
+      wishInput.value = '';
+    };
+
+    // ==========================================
+    // INTERACTION: FEATURE 2 WARP PORTAL TRANSITION
+    // ==========================================
+    window.triggerWarpTransition = function(targetUrl) {
+      if (isWarping) return;
+      isWarping = true;
+
+      // 1. Fade out HTML UI
+      gsap.to("header, section, .glass-panel", {
+        opacity: 0,
+        y: -20,
+        duration: 0.6,
+        stagger: 0.05,
+        ease: "power2.in"
+      });
+
+      // 2. Kích hoạt Warp Streaks
+      warpStreetsSystem.material.opacity = 0.95;
+      gsap.to(warpStreetsSystem.material, {
+        size: 0.55,
+        duration: 1.0,
+        ease: "power3.in"
+      });
+
+      // 3. Camera lao thẳng xuyên qua màn hình Smartphone 3D
+      const targetZ = mascotGroup.position.z + 1.1;
+      gsap.to(camera.position, {
+        x: mascotGroup.position.x - 1.4,
+        y: mascotGroup.position.y + 0.5,
+        z: targetZ,
+        duration: 1.2,
+        ease: "power3.in",
+        onUpdate: () => {
+          camera.lookAt(mascotGroup.position.x - 1.4, mascotGroup.position.y + 0.5, targetZ - 1);
+        }
+      });
+
+      // 4. Flash lóe sáng trắng tím
+      const flash = document.getElementById('warp-flash-overlay');
+      gsap.to(flash, {
+        opacity: 1,
+        duration: 0.35,
+        delay: 0.95,
+        onComplete: () => {
+          window.location.href = targetUrl || './index.html';
+        }
+      });
+    };
+
+    // ==========================================
+    // INTERACTION: FEATURE 1 WEATHER 3D ENGINE
+    // ==========================================
+    window.changeWeather3D = function(mode, btnElement) {
+      if (!WEATHER_CONFIGS[mode]) return;
+      weatherMode = mode;
+      const cfg = WEATHER_CONFIGS[mode];
+
+      // Update Header Buttons UI
+      document.querySelectorAll('.weather-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-white', 'text-hue-purple', 'shadow-sm');
+        btn.classList.add('text-slate-600');
+      });
+      if (btnElement) {
+        btnElement.classList.add('active', 'bg-white', 'text-hue-purple', 'shadow-sm');
+        btnElement.classList.remove('text-slate-600');
+      }
+
+      // Update Header Text Badge
+      document.getElementById('weather-badge-text').innerText = cfg.badge;
+
+      // Smooth Three.js Lighting & Fog Transition
+      gsap.to(scene.background, {
+        r: ((cfg.bgColor >> 16) & 255) / 255,
+        g: ((cfg.bgColor >> 8) & 255) / 255,
+        b: (cfg.bgColor & 255) / 255,
+        duration: 1.2
+      });
+
+      gsap.to(scene.fog.color, {
+        r: ((cfg.fogColor >> 16) & 255) / 255,
+        g: ((cfg.fogColor >> 8) & 255) / 255,
+        b: (cfg.fogColor & 255) / 255,
+        duration: 1.2
+      });
+
+      gsap.to(ambientLight, {
+        intensity: cfg.ambientIntensity,
+        duration: 1.2
+      });
+      ambientLight.color.setHex(cfg.ambientColor);
+
+      gsap.to(dirLight, {
+        intensity: cfg.dirIntensity,
+        duration: 1.2
+      });
+      dirLight.color.setHex(cfg.dirColor);
+
+      // Rain Particles toggle
+      gsap.to(rainSystem.material, {
+        opacity: cfg.rainActive ? 0.75 : 0.0,
+        duration: 0.8
+      });
+
+      // Gold Petals toggle
+      gsap.to(particleSystem.material, {
+        opacity: cfg.petalsActive ? 0.8 : 0.2,
+        duration: 0.8
+      });
+    };
+
+    // Helper: Simulator Mood Switch
+    window.setSimMood = function(mood, btn) {
+      document.querySelectorAll('.sim-btn').forEach(b => {
+        b.classList.remove('border-emerald-500', 'bg-emerald-100');
+      });
+      btn.classList.add('border-emerald-500', 'bg-emerald-100');
+      if (mood === 'early') {
+        changeWeather3D('mild');
+      } else {
+        changeWeather3D('sunset');
+      }
+    };
+
+    // ==========================================
+    // RENDER & ANIMATION LOOP (60 FPS OPTIMIZED)
+    // ==========================================
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
+
+      // 1. Smooth Camera Movement from Mouse/Scroll
+      if (!isWarping) {
+        camera.position.x += (targetCameraX - camera.position.x) * 0.05;
+        camera.position.y += (targetCameraY - camera.position.y) * 0.05;
+      }
+
+      // 2. Animate Hero Mascot & Smartphone
+      if (mascotGroup) {
+        // Floating Smartphone
+        phoneGroup.position.y = 0.5 + Math.sin(time * 1.5) * 0.12;
+        phoneGroup.rotation.y = 0.35 + Math.sin(time * 0.8) * 0.08;
+
+        // Rotating Hologram Nón Bài Thơ & Orbiting Halos
+        const creature = mascotGroup.children[1];
+        if (creature) {
+          if (creature.hat) {
+            creature.hat.rotation.y = time * 0.6;
+            creature.hat.position.y = 2.9 + Math.sin(time * 2.0) * 0.06;
+          }
+          if (creature.halo1) {
+            creature.halo1.rotation.z = time * 0.8;
+          }
+          if (creature.halo2) {
+            creature.halo2.rotation.y = -time * 0.7;
+          }
+        }
+      }
+
+      // 3. Animate Gold Dust Particles
+      if (particleSystem) {
+        particleSystem.rotation.y = time * 0.03;
+        const pos = particleSystem.geometry.attributes.position.array;
+        for (let i = 0; i < pos.length; i += 3) {
+          pos[i + 1] -= delta * 0.22;
+          if (pos[i + 1] < -4) pos[i + 1] = 12;
+        }
+        particleSystem.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // 4. Animate Rain (When active)
+      if (rainSystem && rainSystem.material.opacity > 0.05) {
+        const rPos = rainSystem.geometry.attributes.position.array;
+        for (let i = 0; i < rPos.length; i += 3) {
+          rPos[i + 1] -= delta * 18.0;
+          rPos[i] -= delta * 3.5;
+          if (rPos[i + 1] < -6) {
+            rPos[i + 1] = 18;
+            rPos[i] = (Math.random() - 0.5) * 28;
+          }
+        }
+        rainSystem.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // 5. Animate Warp Streaks (Feature 2)
+      if (isWarping && warpStreetsSystem) {
+        const wPos = warpStreetsSystem.geometry.attributes.position.array;
+        for (let i = 0; i < wPos.length; i += 3) {
+          wPos[i + 2] += delta * 48.0;
+          if (wPos[i + 2] > 15) wPos[i + 2] = -15;
+        }
+        warpStreetsSystem.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // 6. Animate Lotus Lanterns Drifting on River
+      if (riverContainerGroup && riverContainerGroup.visible) {
+        lotusLanterns.forEach((lantern, idx) => {
+          lantern.position.x += lantern.driftSpeed || 0.006;
+          lantern.position.y = 0.15 + Math.sin(time * 2.2 + (lantern.bobPhase || 0)) * 0.06;
+          lantern.rotation.y = Math.sin(time * 0.5 + idx) * 0.12;
+
+          if (lantern.position.x > 18) {
+            lantern.position.x = -18;
+          }
+        });
+
+        // Cầu Tràng Tiền Lights Hue Shift
+        if (bridgeGroup) {
+          const hueShift = (Math.sin(time * 0.4) + 1) * 0.5;
+          bridgeGroup.children[0].material.color.setHSL(0.75 + hueShift * 0.15, 0.8, 0.6);
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Window Resize Handler
+    function onWindowResize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+
+    // Mouse Movement Parallax
+    function onMouseMove(e) {
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      if (!isWarping) {
+        targetCameraX = mouseX * 0.6;
+      }
+    }
+
+    // Scroll Choreography
+    function onScroll() {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = Math.min(scrollY / (maxScroll || 1), 1);
+
+      if (!isWarping) {
+        // Only show river section when scrolled past 35% of the page
+        if (progress > 0.35) {
+          if (riverContainerGroup) riverContainerGroup.visible = true;
+          const riverProgress = (progress - 0.35) / 0.65;
+          targetCameraY = 2.5 - riverProgress * 20.0; // Camera descends to river level (-17.5)
+          camera.lookAt(0, -18 + riverProgress * 2, -18);
+        } else {
+          if (riverContainerGroup) riverContainerGroup.visible = false;
+          targetCameraY = 2.5;
+          camera.lookAt(0, 1.5, 0);
+        }
+      }
+    }
+
+    // Initialize 3D Engine on Load
+    window.addEventListener('DOMContentLoaded', init3D);
+  </script>
+
+</body>
+</html>
