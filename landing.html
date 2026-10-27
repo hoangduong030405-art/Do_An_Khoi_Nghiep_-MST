@@ -231,7 +231,7 @@
   <!-- CANVAS THREE.JS HIỂN THỊ RỒNG - PHƯỢNG - NGHÊ & KHÔNG GIAN 3D CUNG ĐÌNH -->
   <canvas id="webgl-canvas"></canvas>
 
-  <!-- LỚP GIAO DIỆN CHÍNH -->
+  <!-- LỚP GIAO DIỆN CHÍNH (GIỮ NGUYÊN 100% BỐ CỤC 2D ĐẸP MẮT) -->
   <div class="relative z-10 w-full min-h-screen pointer-events-none">
 
     <!-- THANH HEADER ĐIỀU HƯỚNG & ĐIỀU KHIỂN THỜI TIẾT THỜI GIAN THỰC -->
@@ -353,7 +353,7 @@
 
           <div class="mt-5 flex items-center gap-2 text-xs font-semibold text-stone-600 bg-royal-gold/15 px-3 py-1.5 rounded-lg border border-royal-gold/40">
             <span>💡</span>
-            <span>Rồng và Phượng Hoàng 3D đang bay lượn bảo hộ! Hãy di chuột hoặc bấm trực tiếp vào <strong>Smartphone 3D</strong> để xuyên cổng vào App!</span>
+            <span>Rồng Thời Nguyễn và Phượng Hoàng Lửa 3D điêu khắc PBR 24K chân thực. Di chuột hoặc click trực tiếp vào <strong>Smartphone 3D</strong> để xuyên cổng vào App!</span>
           </div>
 
         </div>
@@ -362,7 +362,7 @@
         <div class="lg:col-span-5 h-[420px] lg:h-[540px] relative pointer-events-auto flex items-center justify-center">
           <div class="text-center p-4 rounded-2xl bg-white/30 backdrop-blur-sm border border-royal-gold/30 shadow-lg pointer-events-none transform -rotate-1">
             <span class="text-xs uppercase font-black text-royal-red tracking-widest block mb-1">Long Phụng Chầu Cung Điện</span>
-            <span class="text-[11px] text-stone-700 font-semibold block">Rồng Thời Nguyễn 40 Đốt Sống · Phượng Hoàng 2 Khớp Cánh · Nghê Vàng</span>
+            <span class="text-[11px] text-stone-700 font-semibold block">Rồng Liền Khối CatmullRom · Phượng Hoàng Cánh Lông Vũ · Smartphone Retina</span>
           </div>
         </div>
 
@@ -508,7 +508,7 @@
               Thả Hoa Đăng Trên Sông Hương 3D
             </h2>
             <p class="text-stone-700 text-xs sm:text-sm mt-2 font-medium">
-              Gửi gắm ước nguyện bình an đến Cố Đô. Chiếc hoa đăng sen 3D sẽ bay theo đường cong Parabol chạm mặt sông, gợn sóng nước và trôi xuôi dòng cùng Thuyền Rồng Ngự.
+              Gửi gắm ước nguyện bình an đến Cố Đô. Đèn hoa sen 16 cánh chạm khắc 3D sẽ bay theo đường cong Parabol chạm mặt sông, gợn sóng nước và trôi xuôi dòng cùng Thuyền Rồng Ngự.
             </p>
           </div>
 
@@ -526,7 +526,7 @@
 
             <div class="sm:col-span-3 pt-5 sm:pt-0">
               <button id="btn-release-lantern" class="w-full py-3.5 px-4 bg-gradient-to-r from-royal-red to-amber-700 hover:from-red-800 hover:to-amber-800 text-dopaper-light font-black text-xs uppercase tracking-wider rounded-lg shadow-xl border border-royal-gold flex items-center justify-center gap-2 transform hover:scale-105 active:scale-95 transition">
-                <span>✨ Thả Hoa Đăng</span>
+                <span>✨ Thả Hoa Đăng Sen</span>
               </button>
             </div>
 
@@ -535,7 +535,7 @@
           <div class="mt-6 pt-6 border-t border-royal-gold/30 flex flex-wrap items-center justify-between text-xs text-stone-600 font-semibold gap-2">
             <div class="flex items-center gap-2">
               <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
-              <span>Đang có <strong id="lantern-count" class="text-royal-red text-sm font-black">18</strong> ngọn hoa đăng trôi trên Sông Hương</span>
+              <span>Đang có <strong id="lantern-count" class="text-royal-red text-sm font-black">18</strong> ngọn hoa sen 16 cánh trôi trên Sông Hương</span>
             </div>
             <div class="text-[11px] text-stone-500 italic">
               * Dữ liệu hoa đăng được ghi nhớ bền vững qua localStorage
@@ -565,17 +565,17 @@
           </div>
         </div>
         <div class="text-stone-400 text-center sm:text-right">
-          Bản quyền © 2026 HUEGO Team · Công nghệ WebGL / Three.js 60FPS Zero-Jank
+          Bản quyền © 2026 HUEGO Team · Công nghệ WebGL / Three.js Điêu Khắc PBR 24K Sắc Nét Cao
         </div>
       </div>
     </footer>
 
   </div>
 
-  <!-- THREE.JS HIGH-PERFORMANCE 60FPS ENGINE: RỒNG - PHƯỢNG - NGHÊ -->
+  <!-- THREE.JS ENGINE ĐIÊU KHẮC SẮC NÉT CAO (HIGH-DEFINITION SCULPTED PBR) -->
   <script>
     /* ==========================================================================
-       1. KHỞI TẠO THREE.JS 60FPS ZERO-JANK & NỘI SUY MƯỢT (LERP)
+       1. KHỞI TẠO RENDERER RETINA SẮC NÉT & ÁNH SÁNG PHẢN CHIẾU 24K (HDRI PBR)
        ========================================================================== */
     const canvas = document.getElementById('webgl-canvas');
     const warpOverlay = document.getElementById('warp-overlay');
@@ -587,27 +587,90 @@
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 3, 26);
 
+    // Renderer sắc nét Retina không nén mờ
     const renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       antialias: true,
-      powerPreference: 'high-performance'
+      alpha: true,
+      powerPreference: "high-performance"
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0)); // Sắc nét tuyệt đối trên Retina/FullHD
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.25;
 
-    // Chiếu sáng
-    const ambientLight = new THREE.AmbientLight(0xFFF7EB, 0.9);
+    // Chiếu sáng Studio 3-Point
+    const ambientLight = new THREE.AmbientLight(0xFFFBF0, 1.1);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xFFE8B3, 1.2);
-    dirLight.position.set(20, 40, 30);
+    const dirLight = new THREE.DirectionalLight(0xFFF3D6, 1.6);
+    dirLight.position.set(20, 35, 25);
     scene.add(dirLight);
 
-    const rimLight = new THREE.DirectionalLight(0xD4AF37, 0.8);
-    rimLight.position.set(-20, -10, -20);
+    const rimLight = new THREE.DirectionalLight(0xF59E0B, 1.2);
+    rimLight.position.set(-25, -10, -20);
     scene.add(rimLight);
+
+    // Môi trường phản chiếu Studio Procedural CubeTexture (EnvMap) cho Kim loại Vàng 24K
+    function createStudioEnvMap(renderer) {
+      const envCanvas = document.createElement('canvas');
+      envCanvas.width = 512;
+      envCanvas.height = 256;
+      const ctx = envCanvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, '#FFE8B3');
+      grad.addColorStop(0.35, '#8B5A2B');
+      grad.addColorStop(0.75, '#1A1208');
+      grad.addColorStop(1, '#0A0602');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 256);
+
+      // Studio Softbox Lights
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(150, 70, 50, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#FFD700';
+      ctx.beginPath();
+      ctx.arc(380, 80, 65, 0, Math.PI * 2);
+      ctx.fill();
+
+      const envTex = new THREE.CanvasTexture(envCanvas);
+      envTex.mapping = THREE.EquirectangularReflectionMapping;
+
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      pmrem.compileEquirectangularShader();
+      const target = pmrem.fromEquirectangular(envTex);
+      pmrem.dispose();
+      return target.texture;
+    }
+    scene.environment = createStudioEnvMap(renderer);
+
+    // Vật liệu Vàng 24K Hoàng Kim & Pháp Lam
+    const gold24kMat = new THREE.MeshStandardMaterial({
+      color: 0xFFD700,
+      metalness: 0.92,
+      roughness: 0.18,
+      envMapIntensity: 1.5
+    });
+
+    const vermilionMat = new THREE.MeshStandardMaterial({
+      color: 0xDC2626,
+      roughness: 0.25,
+      metalness: 0.4,
+      emissive: 0x7F1D1D,
+      emissiveIntensity: 0.35
+    });
+
+    const jadeMat = new THREE.MeshStandardMaterial({
+      color: 0x059669,
+      roughness: 0.1,
+      metalness: 0.2,
+      emissive: 0x064E3B,
+      emissiveIntensity: 0.2
+    });
 
     // Lerp Variables
     let targetScrollY = 0;
@@ -630,47 +693,39 @@
     });
 
     /* ==========================================================================
-       2. LẤP ĐẦY NỀN TRỐNG: VÒNG TRÒN BÁT QUÁI PHONG THỦY & MÂY CUNG ĐÌNH 3D
+       2. LỚP NỀN TRỐNG: VÒNG BÁT QUÁI PHÁP LAM & MÂY CUNG ĐÌNH 3D
        ========================================================================== */
     const bgDecorGroup = new THREE.Group();
     scene.add(bgDecorGroup);
 
-    // Vòng Bát Quái - Thái Cực Đồ Khổng Lồ Quay Chậm Sau Lưng Hero
     const baguaGroup = new THREE.Group();
     baguaGroup.position.set(5.5, 3.5, 0);
 
-    // Vành tròn vàng đồng mảnh mờ
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xD4AF37, wireframe: true, transparent: true, opacity: 0.18 });
-    const ring1 = new THREE.Mesh(new THREE.RingGeometry(8, 8.2, 48), ringMat);
-    const ring2 = new THREE.Mesh(new THREE.RingGeometry(12, 12.3, 64), ringMat);
-    const ring3 = new THREE.Mesh(new THREE.RingGeometry(16, 16.4, 64), ringMat);
-    baguaGroup.add(ring1);
-    baguaGroup.add(ring2);
-    baguaGroup.add(ring3);
+    const ringLineMat = new THREE.MeshBasicMaterial({ color: 0xD4AF37, wireframe: true, transparent: true, opacity: 0.22 });
+    baguaGroup.add(new THREE.Mesh(new THREE.RingGeometry(8, 8.2, 64), ringLineMat));
+    baguaGroup.add(new THREE.Mesh(new THREE.RingGeometry(12, 12.25, 64), ringLineMat));
+    baguaGroup.add(new THREE.Mesh(new THREE.RingGeometry(16, 16.3, 64), ringLineMat));
 
-    // Vạch quẻ Bát Quái
     for (let q = 0; q < 8; q++) {
       const angle = (q / 8) * Math.PI * 2;
-      const trigram = new THREE.Mesh(new THREE.BoxGeometry(0.3, 2.5, 0.05), ringMat);
+      const trigram = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.6, 0.05), ringLineMat);
       trigram.position.set(Math.cos(angle) * 10, Math.sin(angle) * 10, 0);
       trigram.rotation.z = angle + Math.PI / 2;
       baguaGroup.add(trigram);
     }
     bgDecorGroup.add(baguaGroup);
 
-    // Mây Ngũ Sắc Cung Đình 3D Lơ Lửng (Stylized Clouds)
+    // Mây Ngũ Sắc Cung Đình 3D Lơ Lửng
     const cloudsGroup = new THREE.Group();
     const cloudMat = new THREE.MeshLambertMaterial({ color: 0xFDF3C7, transparent: true, opacity: 0.65 });
     for (let c = 0; c < 6; c++) {
       const cloud = new THREE.Group();
-      const s1 = new THREE.Mesh(new THREE.SphereGeometry(1.6, 10, 8), cloudMat);
-      const s2 = new THREE.Mesh(new THREE.SphereGeometry(1.1, 8, 8), cloudMat);
-      const s3 = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8), cloudMat);
+      const s1 = new THREE.Mesh(new THREE.SphereGeometry(1.6, 12, 10), cloudMat);
+      const s2 = new THREE.Mesh(new THREE.SphereGeometry(1.1, 10, 8), cloudMat);
+      const s3 = new THREE.Mesh(new THREE.SphereGeometry(1.2, 10, 8), cloudMat);
       s2.position.set(-1.4, -0.3, 0);
       s3.position.set(1.4, -0.2, 0);
-      cloud.add(s1);
-      cloud.add(s2);
-      cloud.add(s3);
+      cloud.add(s1); cloud.add(s2); cloud.add(s3);
       cloud.position.set((c % 2 === 0 ? -1 : 1) * (14 + Math.random() * 8), 6 + c * 2, -10 + c * 4);
       cloud.scale.set(1.2, 0.65, 0.8);
       cloudsGroup.add(cloud);
@@ -678,283 +733,343 @@
     bgDecorGroup.add(cloudsGroup);
 
     /* ==========================================================================
-       3. RỒNG THỜI NGUYỄN 3D CÔNG NGHỆ (PROCEDURAL ARTICULATED CYBER-DRAGON)
+       3. ĐIÊU KHẮC "RỒNG THỜI NGUYỄN 3D" LIỀN KHỐI (CATMULL-ROM + TAPERED MESH)
        ========================================================================== */
-    const dragonEntity = new THREE.Group();
-    scene.add(dragonEntity);
+    // Tạo Bump Map Vảy Rồng Hoàng Gia 1024x1024
+    function createDragonScaleTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 1024;
+      cvs.height = 1024;
+      const ctx = cvs.getContext('2d');
+      ctx.fillStyle = '#808080';
+      ctx.fillRect(0, 0, 1024, 1024);
 
-    // Đầu Rồng Cung Đình
-    const dragonHead = new THREE.Group();
-    const dragonGoldMat = new THREE.MeshStandardMaterial({
-      color: 0xD4AF37,
-      roughness: 0.3,
-      metalness: 0.7,
-      emissive: 0x8B1E1E,
-      emissiveIntensity: 0.3
-    });
-    const dragonWireMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B, wireframe: true });
-
-    // Hộp sọ & mõm rồng
-    const skullMesh = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.9, 1.8), dragonGoldMat);
-    const skullWire = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.92, 1.82), dragonWireMat);
-    dragonHead.add(skullMesh);
-    dragonHead.add(skullWire);
-
-    // Mũi và sừng hươu rồng
-    const hornL = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.16, 1.8, 6), dragonGoldMat);
-    hornL.position.set(0.45, 0.9, -0.5);
-    hornL.rotation.x = -0.5;
-    hornL.rotation.z = 0.3;
-    const hornR = hornL.clone();
-    hornR.position.x = -0.45;
-    hornR.rotation.z = -0.3;
-    dragonHead.add(hornL);
-    dragonHead.add(hornR);
-
-    // Mắt rồng phát sáng
-    const eyeDragonMat = new THREE.MeshBasicMaterial({ color: 0xFF2200 });
-    const eyeDL = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), eyeDragonMat);
-    eyeDL.position.set(0.55, 0.25, 0.2);
-    const eyeDR = eyeDL.clone();
-    eyeDR.position.x = -0.55;
-    dragonHead.add(eyeDL);
-    dragonHead.add(eyeDR);
-
-    // Râu rồng dài uốn lượn
-    const whiskerL = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.08, 2.2, 6), dragonGoldMat);
-    whiskerL.position.set(0.5, -0.3, 0.8);
-    whiskerL.rotation.x = 0.8;
-    whiskerL.rotation.z = 0.4;
-    const whiskerR = whiskerL.clone();
-    whiskerR.position.x = -0.5;
-    whiskerR.rotation.z = -0.4;
-    dragonHead.add(whiskerL);
-    dragonHead.add(whiskerR);
-
-    // Ngọc Minh Châu Hologram phát sáng trước miệng Rồng
-    const pearlHolo = new THREE.Mesh(
-      new THREE.SphereGeometry(0.35, 16, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFFFBEB, wireframe: true })
-    );
-    pearlHolo.position.set(0, -0.1, 2.2);
-    dragonHead.add(pearlHolo);
-
-    dragonEntity.add(dragonHead);
-
-    // Thân Rồng Đa Đốt (38 Segments Nối Tiếp)
-    const dragonSegments = [];
-    const dorsalFinMat = new THREE.MeshStandardMaterial({
-      color: 0xDC2626,
-      emissive: 0x9333EA,
-      emissiveIntensity: 0.6,
-      roughness: 0.2
-    });
-
-    for (let s = 0; s < 38; s++) {
-      const segGroup = new THREE.Group();
-      const scaleFactor = Math.max(0.35, 1.0 - (s / 42));
-
-      // Đốt thân
-      const segMesh = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.5 * scaleFactor, 0.55 * scaleFactor, 0.8, 8),
-        dragonGoldMat
-      );
-      segMesh.rotation.x = Math.PI / 2;
-      segGroup.add(segMesh);
-
-      // Vây lưng phát sáng Neon
-      const finMesh = new THREE.Mesh(
-        new THREE.ConeGeometry(0.25 * scaleFactor, 0.6 * scaleFactor, 4),
-        dorsalFinMat
-      );
-      finMesh.position.y = 0.5 * scaleFactor;
-      finMesh.rotation.x = -0.2;
-      segGroup.add(finMesh);
-
-      dragonEntity.add(segGroup);
-      dragonSegments.push(segGroup);
+      const rows = 32, cols = 32;
+      const rw = 1024 / cols, rh = 1024 / rows;
+      for (let r = 0; r < rows; r++) {
+        const offset = (r % 2) * (rw / 2);
+        for (let c = -1; c <= cols + 1; c++) {
+          const x = c * rw + offset;
+          const y = r * rh;
+          ctx.beginPath();
+          ctx.arc(x, y, rw * 0.7, 0, Math.PI);
+          ctx.fillStyle = '#C0C0C0';
+          ctx.fill();
+          ctx.strokeStyle = '#303030';
+          ctx.lineWidth = 4;
+          ctx.stroke();
+        }
+      }
+      const tex = new THREE.CanvasTexture(cvs);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(6, 24);
+      return tex;
     }
 
+    const scaleBumpTex = createDragonScaleTexture();
+    const dragonScaleMat = new THREE.MeshStandardMaterial({
+      color: 0xFFD700,
+      metalness: 0.94,
+      roughness: 0.16,
+      bumpMap: scaleBumpTex,
+      bumpScale: 0.06,
+      envMapIntensity: 1.8
+    });
+
+    // Thân Rồng Liền Mạch (Custom Tapered Tube BufferGeometry)
+    const DRAGON_SEGS = 48;
+    const DRAGON_RAD_SEGS = 12;
+    const dragonGeo = new THREE.BufferGeometry();
+    const totalVerts = (DRAGON_SEGS + 1) * (DRAGON_RAD_SEGS + 1);
+    const dragonPos = new Float32Array(totalVerts * 3);
+    const dragonUvs = new Float32Array(totalVerts * 2);
+    const dragonIndices = [];
+
+    // Tạo Index Buffer
+    for (let i = 0; i < DRAGON_SEGS; i++) {
+      for (let j = 0; j < DRAGON_RAD_SEGS; j++) {
+        const a = i * (DRAGON_RAD_SEGS + 1) + j;
+        const b = (i + 1) * (DRAGON_RAD_SEGS + 1) + j;
+        const c = (i + 1) * (DRAGON_RAD_SEGS + 1) + (j + 1);
+        const d = i * (DRAGON_RAD_SEGS + 1) + (j + 1);
+        dragonIndices.push(a, b, d);
+        dragonIndices.push(b, c, d);
+      }
+    }
+    dragonGeo.setIndex(dragonIndices);
+    dragonGeo.setAttribute('position', new THREE.BufferAttribute(dragonPos, 3));
+    dragonGeo.setAttribute('uv', new THREE.BufferAttribute(dragonUvs, 2));
+
+    const dragonBodyMesh = new THREE.Mesh(dragonGeo, dragonScaleMat);
+    scene.add(dragonBodyMesh);
+
+    // Đầu Rồng Thời Nguyễn Điêu Khắc Tinh Xảo
+    const dragonHeadGroup = new THREE.Group();
+    scene.add(dragonHeadGroup);
+
+    // Mõm và Hàm Rồng
+    const snoutMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.55, 0.75, 1.6, 12),
+      dragonScaleMat
+    );
+    snoutMesh.rotation.x = Math.PI / 2;
+    dragonHeadGroup.add(snoutMesh);
+
+    // Mũi hếch & Sừng Hươu Chạm Trổ Phân Nhánh
+    for (let side = -1; side <= 1; side += 2) {
+      const hornMain = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.16, 2.2, 8), gold24kMat);
+      hornMain.position.set(side * 0.45, 0.95, -0.5);
+      hornMain.rotation.x = -0.5;
+      hornMain.rotation.z = side * 0.35;
+      const hornBranch = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.1, 0.9, 6), gold24kMat);
+      hornBranch.position.set(side * 0.2, 0.7, 0.2);
+      hornBranch.rotation.z = side * 0.5;
+      hornMain.add(hornBranch);
+      dragonHeadGroup.add(hornMain);
+
+      // Râu rồng uốn lượn mềm mại
+      const whiskerCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(side * 0.45, -0.2, 0.8),
+        new THREE.Vector3(side * 0.9, -0.6, 1.4),
+        new THREE.Vector3(side * 0.6, -1.2, 2.2),
+        new THREE.Vector3(side * 0.3, -1.8, 2.8)
+      ]);
+      const whiskerMesh = new THREE.Mesh(new THREE.TubeGeometry(whiskerCurve, 16, 0.04, 6, false), gold24kMat);
+      dragonHeadGroup.add(whiskerMesh);
+
+      // Mắt đỏ phát quang ngọc bích
+      const eyeRong = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 10), new THREE.MeshBasicMaterial({ color: 0xFF1E00 }));
+      eyeRong.position.set(side * 0.52, 0.25, 0.2);
+      dragonHeadGroup.add(eyeRong);
+    }
+
+    // Bờm Lửa Nhiều Lớp Xếp Cánh Quạt Phía Sau Đầu
+    for (let m = 0; m < 5; m++) {
+      const maneShape = new THREE.Shape();
+      maneShape.moveTo(0, 0);
+      maneShape.quadraticCurveTo(0.2, 0.6, 0, 1.4);
+      maneShape.quadraticCurveTo(-0.2, 0.6, 0, 0);
+      const maneMesh = new THREE.Mesh(
+        new THREE.ExtrudeGeometry(maneShape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02 }),
+        vermilionMat
+      );
+      maneMesh.position.set(0, 0.3 + m * 0.2, -0.8 - m * 0.15);
+      maneMesh.rotation.x = -0.6;
+      maneMesh.scale.setScalar(0.8 + m * 0.15);
+      dragonHeadGroup.add(maneMesh);
+    }
+
+    // Ngọc Minh Châu Lõi Trắng Sáng + Hào Quang Mềm Mại
+    const pearlGroup = new THREE.Group();
+    pearlGroup.position.set(0, -0.15, 2.6);
+
+    const pearlCore = new THREE.Mesh(
+      new THREE.SphereGeometry(0.35, 20, 20),
+      new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
+    );
+    pearlGroup.add(pearlCore);
+
+    // Hào quang tỏa sáng mềm mại (Radial Sprite Canvas)
+    function createGlowSprite() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 128; cvs.height = 128;
+      const ctx = cvs.getContext('2d');
+      const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      grad.addColorStop(0.3, 'rgba(254, 240, 138, 0.8)');
+      grad.addColorStop(0.6, 'rgba(245, 158, 11, 0.4)');
+      grad.addColorStop(1, 'rgba(217, 119, 6, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 128);
+      const tex = new THREE.CanvasTexture(cvs);
+      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending });
+      const sprite = new THREE.Sprite(mat);
+      sprite.scale.set(2.4, 2.4, 1);
+      return sprite;
+    }
+    pearlGroup.add(createGlowSprite());
+    dragonHeadGroup.add(pearlGroup);
+
     /* ==========================================================================
-       4. PHƯỢNG HOÀNG LỬA HOLOGRAM 3D (ARTICULATED TECH-PHOENIX)
+       4. ĐIÊU KHẮC "PHƯỢNG HOÀNG LỬA" & "NGHÊ VÀNG ĐỘI NÓN BÀI THƠ"
        ========================================================================== */
     const phoenixEntity = new THREE.Group();
     scene.add(phoenixEntity);
 
-    const phRedMat = new THREE.MeshStandardMaterial({
-      color: 0xDC2626,
-      emissive: 0xB91C1C,
-      emissiveIntensity: 0.5,
-      roughness: 0.3
-    });
-    const phGoldMat = new THREE.MeshStandardMaterial({
-      color: 0xF59E0B,
-      emissive: 0xD4AF37,
-      emissiveIntensity: 0.6,
-      roughness: 0.2
-    });
+    // Thân Phượng Hoàng Thanh Thoát & Cổ Chữ S
+    const phBody = new THREE.Mesh(new THREE.ConeGeometry(0.55, 2.8, 12), vermilionMat);
+    phBody.rotation.x = Math.PI / 2;
+    phoenixEntity.add(phBody);
 
-    // Thân phượng hoàng
-    const phTorso = new THREE.Mesh(new THREE.ConeGeometry(0.6, 2.8, 8), phRedMat);
-    phTorso.rotation.x = Math.PI / 2;
-    phoenixEntity.add(phTorso);
+    const phNeckCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 0, 1.2),
+      new THREE.Vector3(0, 0.6, 2.0),
+      new THREE.Vector3(0, 1.4, 2.2),
+      new THREE.Vector3(0, 1.8, 2.5)
+    ]);
+    const phNeck = new THREE.Mesh(new THREE.TubeGeometry(phNeckCurve, 16, 0.28, 10, false), vermilionMat);
+    phoenixEntity.add(phNeck);
 
-    // Đầu và mào hoàng tộc
-    const phHeadGroup = new THREE.Group();
-    phHeadGroup.position.set(0, 0.4, 1.6);
-    const phHeadMesh = new THREE.Mesh(new THREE.SphereGeometry(0.4, 10, 8), phGoldMat);
-    phHeadGroup.add(phHeadMesh);
+    const phHeadMesh = new THREE.Mesh(new THREE.SphereGeometry(0.38, 12, 10), gold24kMat);
+    phHeadMesh.position.set(0, 1.8, 2.5);
+    phoenixEntity.add(phHeadMesh);
 
-    const plume = new THREE.Mesh(new THREE.ConeGeometry(0.18, 1.2, 4), phRedMat);
-    plume.position.set(0, 0.6, -0.2);
-    plume.rotation.x = -0.6;
-    phHeadGroup.add(plume);
-    phoenixEntity.add(phHeadGroup);
+    // Mỏ vàng & Mào Phượng Hoàng 3 Nhánh Hoàng Tộc
+    for (let p = -1; p <= 1; p++) {
+      const plume = new THREE.Mesh(new THREE.ConeGeometry(0.12, 1.2, 5), gold24kMat);
+      plume.position.set(p * 0.18, 2.4, 2.1);
+      plume.rotation.x = -0.5;
+      plume.rotation.z = p * 0.2;
+      phoenixEntity.add(plume);
+    }
 
-    // Đôi Cánh Đa Lớp (Inner & Outer Wing Joints)
-    // Cánh Trái
+    // Đôi Cánh Gồm 24 Chiếc Lông Vũ Điêu Khắc (ExtrudeGeometry) Xếp Rẻ Quạt
+    function createFeatherGeo(len, wid) {
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0);
+      shape.quadraticCurveTo(wid * 0.8, len * 0.4, wid * 0.4, len * 0.85);
+      shape.lineTo(0, len);
+      shape.lineTo(-wid * 0.4, len * 0.85);
+      shape.quadraticCurveTo(-wid * 0.8, len * 0.4, 0, 0);
+      return new THREE.ExtrudeGeometry(shape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02 });
+    }
+
     const pWingLInner = new THREE.Group();
-    pWingLInner.position.set(0.5, 0.1, 0.4);
-
-    const pWingLInnerMesh = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.9), phRedMat);
-    pWingLInnerMesh.position.x = 1.1;
-    pWingLInner.add(pWingLInnerMesh);
-
+    pWingLInner.position.set(0.45, 0.2, 0.4);
     const pWingLOuter = new THREE.Group();
-    pWingLOuter.position.set(2.2, 0, 0);
-    const pWingLOuterMesh = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.7), phGoldMat);
-    pWingLOuterMesh.position.x = 1.2;
-    pWingLOuter.add(pWingLOuterMesh);
+    pWingLOuter.position.set(2.4, 0, 0);
     pWingLInner.add(pWingLOuter);
     phoenixEntity.add(pWingLInner);
 
-    // Cánh Phải
     const pWingRInner = new THREE.Group();
-    pWingRInner.position.set(-0.5, 0.1, 0.4);
-
-    const pWingRInnerMesh = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.9), phRedMat);
-    pWingRInnerMesh.position.x = -1.1;
-    pWingRInner.add(pWingRInnerMesh);
-
+    pWingRInner.position.set(-0.45, 0.2, 0.4);
     const pWingROuter = new THREE.Group();
-    pWingROuter.position.set(-2.2, 0, 0);
-    const pWingROuterMesh = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.7), phGoldMat);
-    pWingROuterMesh.position.x = -1.2;
-    pWingROuter.add(pWingROuterMesh);
+    pWingROuter.position.set(-2.4, 0, 0);
     pWingRInner.add(pWingROuter);
     phoenixEntity.add(pWingRInner);
 
-    // Đuôi Phượng Hoàng: 5 Dải Lụa Ánh Sáng
+    // Gắn 6 lông vũ trên khớp trong và 6 lông vũ trên khớp ngoài (mỗi bên cánh 12 lông)
+    for (let f = 0; f < 6; f++) {
+      const fMat = f % 2 === 0 ? vermilionMat : gold24kMat;
+      const fMeshL1 = new THREE.Mesh(createFeatherGeo(1.6 + f * 0.15, 0.35), fMat);
+      fMeshL1.position.set(f * 0.35, 0, -f * 0.2);
+      fMeshL1.rotation.z = -0.4 - f * 0.15;
+      pWingLInner.add(fMeshL1);
+
+      const fMeshR1 = new THREE.Mesh(createFeatherGeo(1.6 + f * 0.15, 0.35), fMat);
+      fMeshR1.position.set(-f * 0.35, 0, -f * 0.2);
+      fMeshR1.rotation.z = 0.4 + f * 0.15;
+      pWingRInner.add(fMeshR1);
+
+      const fMeshL2 = new THREE.Mesh(createFeatherGeo(2.2 + f * 0.2, 0.38), fMat);
+      fMeshL2.position.set(f * 0.35, 0, -f * 0.2);
+      fMeshL2.rotation.z = -0.7 - f * 0.12;
+      pWingLOuter.add(fMeshL2);
+
+      const fMeshR2 = new THREE.Mesh(createFeatherGeo(2.2 + f * 0.2, 0.38), fMat);
+      fMeshR2.position.set(-f * 0.35, 0, -f * 0.2);
+      fMeshR2.rotation.z = 0.7 + f * 0.12;
+      pWingROuter.add(fMeshR2);
+    }
+
+    // 5 Dải Đuôi Lụa Ánh Sáng
     const phTailRibbons = [];
     for (let r = -2; r <= 2; r++) {
       const ribbon = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.28, 4.2, 4, 10),
+        new THREE.PlaneGeometry(0.32, 4.8, 4, 12),
         new THREE.MeshStandardMaterial({
           color: r % 2 === 0 ? 0xF59E0B : 0xDC2626,
           emissive: 0x7C3AED,
-          emissiveIntensity: 0.4,
+          emissiveIntensity: 0.5,
           side: THREE.DoubleSide
         })
       );
-      ribbon.position.set(r * 0.32, -0.2, -3.0);
+      ribbon.position.set(r * 0.32, -0.2, -3.2);
       ribbon.rotation.x = Math.PI / 2.3;
       phoenixEntity.add(ribbon);
       phTailRibbons.push(ribbon);
     }
 
     /* ==========================================================================
-       5. NGHÊ CUNG ĐÌNH TINH CHỈNH & SMARTPHONE 3D KHẢM XÀ CỪ
+       5. NGHÊ VÀNG CHẦU ĐIỆN & SMARTPHONE RETINA SẮC NÉT
        ========================================================================== */
     const heroMascotGroup = new THREE.Group();
     heroMascotGroup.position.set(5.5, 2.5, 12);
     scene.add(heroMascotGroup);
 
-    // Smartphone 3D
-    const phoneGroup = new THREE.Group();
-    phoneGroup.position.set(-1.8, 0.2, 0);
-
-    const phoneBody = new THREE.Mesh(
-      new THREE.BoxGeometry(2.4, 4.8, 0.16),
-      new THREE.MeshStandardMaterial({ color: 0x1E1B4B, roughness: 0.2, metalness: 0.8 })
-    );
-    phoneGroup.add(phoneBody);
-
-    const phoneFrame = new THREE.Mesh(
-      new THREE.BoxGeometry(2.48, 4.88, 0.14),
-      new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.1, metalness: 0.9 })
-    );
-    phoneGroup.add(phoneFrame);
-
-    const phoneScreen = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.2, 4.5),
-      new THREE.MeshBasicMaterial({ color: 0xFAF8F5 })
-    );
-    phoneScreen.position.z = 0.09;
-    phoneGroup.add(phoneScreen);
-
-    heroMascotGroup.add(phoneGroup);
-
-    // Bé Nghê Cung Đình
+    // --- TƯỢNG NGHÊ VÀNG TRÊN BỆ ĐÁ HOA SEN ---
     const ngheGroup = new THREE.Group();
     ngheGroup.position.set(1.5, -0.6, 0.5);
 
-    const ngheBody = new THREE.Mesh(
-      new THREE.SphereGeometry(1.0, 16, 12),
-      new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.3, metalness: 0.6 })
+    // Bệ đá hoa sen chạm nổi
+    const plinthMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.4, 1.6, 0.5, 16),
+      new THREE.MeshStandardMaterial({ color: 0x64748B, roughness: 0.5 })
     );
-    ngheBody.scale.set(1, 1.2, 1.4);
+    plinthMesh.position.y = -0.55;
+    ngheGroup.add(plinthMesh);
+
+    // Thân nghê ngồi thếp vàng 24K
+    const ngheBody = new THREE.Mesh(
+      new THREE.SphereGeometry(1.0, 20, 16),
+      gold24kMat
+    );
+    ngheBody.scale.set(1.0, 1.25, 1.35);
     ngheGroup.add(ngheBody);
 
-    // Đầu Nghê (Gật gù, mắt xoay theo chuột)
-    const headGroup = new THREE.Group();
-    headGroup.position.set(0, 1.2, 0.8);
+    // Chuông đồng cổ ngực
+    const bellMesh = new THREE.Mesh(new THREE.SphereGeometry(0.26, 12, 10), vermilionMat);
+    bellMesh.position.set(0, 0.2, 1.15);
+    ngheGroup.add(bellMesh);
 
-    const headMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.72, 16, 12),
-      new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.3 })
-    );
+    // Đầu Nghê (Khớp quay)
+    const headGroup = new THREE.Group();
+    headGroup.position.set(0, 1.25, 0.85);
+
+    const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.75, 20, 16), gold24kMat);
     headGroup.add(headMesh);
 
-    // Bờm xoắn Pháp Lam
-    for (let b = -2; b <= 2; b++) {
-      const mane = new THREE.Mesh(
-        new THREE.TorusGeometry(0.2, 0.08, 8, 12),
-        new THREE.MeshStandardMaterial({ color: 0x1E3A5F, roughness: 0.2 })
-      );
-      mane.position.set(b * 0.24, 0.52, -0.18);
-      mane.rotation.y = Math.PI / 2;
-      headGroup.add(mane);
-    }
+    // Mũi sư tử & Mắt ngọc bích sáng ngời
+    const snoutNghe = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 10), gold24kMat);
+    snoutNghe.position.set(0, 0.05, 0.65);
+    headGroup.add(snoutNghe);
 
-    // Mắt nghê phát sáng
-    const eyeMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B });
-    const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 8), eyeMat);
-    eyeL.position.set(0.3, 0.22, 0.62);
+    const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 10), jadeMat);
+    eyeL.position.set(0.3, 0.24, 0.62);
     const eyeR = eyeL.clone();
     eyeR.position.x = -0.3;
     headGroup.add(eyeL);
     headGroup.add(eyeR);
 
-    // Nón Bài Thơ & Vòng Hào Quang Công Nghệ Xoay Tròn
+    // Bờm xoắn ốc Pháp Lam xanh biếc
+    for (let b = -2; b <= 2; b++) {
+      const mane = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.08, 10, 16), jadeMat);
+      mane.position.set(b * 0.24, 0.55, -0.18);
+      mane.rotation.y = Math.PI / 2;
+      headGroup.add(mane);
+    }
+
+    // Nón Bài Thơ 3D có nan tre và lụa xuyên sáng
     const hatMesh = new THREE.Mesh(
-      new THREE.ConeGeometry(0.9, 0.48, 16, 1, true),
+      new THREE.ConeGeometry(0.92, 0.5, 24, 1, true),
       new THREE.MeshStandardMaterial({
         color: 0xFDF3C7,
+        roughness: 0.35,
         transparent: true,
         opacity: 0.88,
-        roughness: 0.4,
         side: THREE.DoubleSide
       })
     );
     hatMesh.rotation.x = 0.2;
     hatMesh.rotation.z = -0.25;
-    hatMesh.position.set(0.15, 0.78, 0);
+    hatMesh.position.set(0.15, 0.8, 0);
     headGroup.add(hatMesh);
 
-    // Vòng hào quang công nghệ (Cyber Halo Ring)
+    // Vòng hào quang công nghệ xoay tròn
     const haloRing = new THREE.Mesh(
-      new THREE.TorusGeometry(1.05, 0.03, 8, 32),
-      new THREE.MeshBasicMaterial({ color: 0xD4AF37, wireframe: true })
+      new THREE.TorusGeometry(1.05, 0.03, 8, 36),
+      new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true })
     );
     haloRing.rotation.x = Math.PI / 2 + 0.2;
     haloRing.position.set(0.15, 0.85, 0);
@@ -962,40 +1077,213 @@
 
     ngheGroup.add(headGroup);
 
-    // Đuôi nghê
+    // Đuôi mây cuộn sóng
     const tailGroup = new THREE.Group();
     tailGroup.position.set(0, 0.5, -1.2);
-    const tailMesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.08, 0.22, 1.2, 8),
-      new THREE.MeshLambertMaterial({ color: 0x8B1E1E })
-    );
+    const tailMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.25, 1.3, 10), vermilionMat);
     tailMesh.rotation.x = -Math.PI / 4;
     tailGroup.add(tailMesh);
     ngheGroup.add(tailGroup);
 
     heroMascotGroup.add(ngheGroup);
 
+    // --- SMARTPHONE 3D RETINA SIÊU SẮC NÉT (1024x2048 CANVAS UI) ---
+    function createPhoneScreenTexture() {
+      const cvs = document.createElement('canvas');
+      cvs.width = 1024;
+      cvs.height = 2048;
+      const ctx = cvs.getContext('2d');
+
+      // Nền Tím Hoàng Cung
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, 2048);
+      bgGrad.addColorStop(0, '#1E1035');
+      bgGrad.addColorStop(0.35, '#2D124D');
+      bgGrad.addColorStop(1, '#0F081D');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 1024, 2048);
+
+      // Status Bar
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 36px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('09:41', 70, 80);
+      ctx.textAlign = 'right';
+      ctx.fillText('5G  100% 🔋', 950, 80);
+
+      // Header HUEGO
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = '900 68px "Playfair Display", serif';
+      ctx.fillText('HUE', 70, 180);
+      ctx.fillStyle = '#F59E0B';
+      ctx.beginPath(); ctx.roundRect(240, 125, 95, 65, 14); ctx.fill();
+      ctx.fillStyle = '#1E1035';
+      ctx.font = '900 42px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('GO', 256, 172);
+
+      ctx.fillStyle = '#E9D5FF';
+      ctx.font = '600 32px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('Nền tảng Du lịch Thông minh Cố Đô', 70, 235);
+
+      // Radar Geofence Scanner 35m
+      const rx = 512, ry = 580, rRad = 260;
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(rx, ry, rRad, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.6)'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(rx, ry, rRad * 0.65, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.9)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(rx, ry, rRad * 0.35, 0, Math.PI * 2); ctx.stroke();
+
+      const sweep = ctx.createRadialGradient(rx, ry, 10, rx, ry, rRad);
+      sweep.addColorStop(0, 'rgba(217, 119, 6, 0.45)');
+      sweep.addColorStop(1, 'rgba(109, 40, 217, 0.05)');
+      ctx.fillStyle = sweep;
+      ctx.beginPath(); ctx.arc(rx, ry, rRad, 0, Math.PI * 2); ctx.fill();
+
+      // Điểm di sản định vị
+      ctx.fillStyle = '#10B981'; ctx.beginPath(); ctx.arc(rx + 80, ry - 70, 15, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#F59E0B'; ctx.beginPath(); ctx.arc(rx - 100, ry + 80, 18, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#EC4899'; ctx.beginPath(); ctx.arc(rx + 110, ry + 100, 15, 0, Math.PI * 2); ctx.fill();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#FEF3C7';
+      ctx.font = 'bold 36px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('📡 RADAR DI SẢN: 35M GEOFENCE', rx, ry + rRad + 65);
+
+      // 3 Thẻ Địa Điểm Nổi Bật
+      const cards = [
+        { icon: '🏛️', name: 'Đại Nội Huế · Ngọ Môn', dist: '150m · GPS Geofence', color: '#8B1E1E' },
+        { icon: '⛩️', name: 'Chùa Thiên Mụ · Tháp Phước Duyên', dist: '2.4km · Audio Guide', color: '#1E3A5F' },
+        { icon: '👑', name: 'Bảo Tàng Cung Đình 3D', dist: '10 Bảo Vật Xoay 360°', color: '#4C1D95' }
+      ];
+
+      let cy = 1000;
+      cards.forEach((c) => {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.roundRect(70, cy, 884, 170, 24); ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = c.color;
+        ctx.beginPath(); ctx.roundRect(100, cy + 25, 120, 120, 20); ctx.fill();
+        ctx.font = '64px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(c.icon, 160, cy + 105);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 40px "Be Vietnam Pro", sans-serif';
+        ctx.fillText(c.name, 250, cy + 75);
+
+        ctx.fillStyle = '#D4AF37';
+        ctx.font = '600 30px "Be Vietnam Pro", sans-serif';
+        ctx.fillText(c.dist, 250, cy + 125);
+
+        ctx.fillStyle = '#F59E0B';
+        ctx.font = 'bold 44px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('→', 910, cy + 100);
+
+        cy += 200;
+      });
+
+      // Nút Khám Phá Ngay
+      const btnGrad = ctx.createLinearGradient(70, 1640, 954, 1640);
+      btnGrad.addColorStop(0, '#D4AF37');
+      btnGrad.addColorStop(0.5, '#F59E0B');
+      btnGrad.addColorStop(1, '#8B1E1E');
+      ctx.fillStyle = btnGrad;
+      ctx.beginPath(); ctx.roundRect(70, 1640, 884, 130, 65); ctx.fill();
+      ctx.strokeStyle = '#FEF3C7'; ctx.lineWidth = 4; ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '900 46px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('⚡ MỞ APP HUEGO · TRẢI NGHIỆM', 512, 1722);
+
+      // Bottom Bar
+      ctx.fillStyle = 'rgba(15, 8, 29, 0.95)';
+      ctx.fillRect(0, 1850, 1024, 198);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, 1850); ctx.lineTo(1024, 1850); ctx.stroke();
+
+      const navs = ['Khám Phá', 'Bản Đồ', '3D Di Sản', 'Trợ Lý AI'];
+      const navIcons = ['🌟', '🗺️', '👑', '💬'];
+      navs.forEach((n, idx) => {
+        const nx = 128 + idx * 256;
+        ctx.textAlign = 'center';
+        ctx.font = '48px sans-serif';
+        ctx.fillText(navIcons[idx], nx, 1930);
+        ctx.fillStyle = idx === 0 ? '#D4AF37' : '#94A3B8';
+        ctx.font = 'bold 26px "Be Vietnam Pro", sans-serif';
+        ctx.fillText(n, nx, 1980);
+      });
+
+      const tex = new THREE.CanvasTexture(cvs);
+      tex.generateMipmaps = true;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      return tex;
+    }
+
+    const phoneGroup = new THREE.Group();
+    phoneGroup.position.set(-1.8, 0.2, 0);
+
+    // Khung Vàng Champagne Bo Góc Bóng Gương
+    const phoneShape = new THREE.Shape();
+    const pw = 2.4, ph = 4.8, pr = 0.28;
+    phoneShape.moveTo(-pw/2 + pr, -ph/2);
+    phoneShape.lineTo(pw/2 - pr, -ph/2);
+    phoneShape.quadraticCurveTo(pw/2, -ph/2, pw/2, -ph/2 + pr);
+    phoneShape.lineTo(pw/2, ph/2 - pr);
+    phoneShape.quadraticCurveTo(pw/2, ph/2, pw/2 - pr, ph/2);
+    phoneShape.lineTo(-pw/2 + pr, ph/2);
+    phoneShape.quadraticCurveTo(-pw/2, ph/2, -pw/2, ph/2 - pr);
+    phoneShape.lineTo(-pw/2, -ph/2 + pr);
+    phoneShape.quadraticCurveTo(-pw/2, -ph/2, -pw/2 + pr, -ph/2);
+
+    const phoneChassis = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(phoneShape, { depth: 0.16, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04 }),
+      gold24kMat
+    );
+    phoneGroup.add(phoneChassis);
+
+    // Màn hình hiển thị HUEGO Retina sắc nét
+    const phoneScreen = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.32, 4.72),
+      new THREE.MeshBasicMaterial({ map: createPhoneScreenTexture() })
+    );
+    phoneScreen.position.z = 0.21;
+    phoneGroup.add(phoneScreen);
+
+    heroMascotGroup.add(phoneGroup);
+
     /* ==========================================================================
-       6. SÔNG HƯƠNG, THUYỀN RỒNG, CẦU TRÀNG TIỀN & HOA ĐĂNG 3D
+       6. SÔNG HƯƠNG & HOA ĐĂNG HOA SEN 16 CÁNH 3D ĐIÊU KHẮC (KHÔNG DÙNG CẦU TRÒN)
        ========================================================================== */
     const riverSectionGroup = new THREE.Group();
     riverSectionGroup.position.set(0, -18, -12);
     scene.add(riverSectionGroup);
 
+    // Mặt nước Sông Hương bóng gương gợn sóng
     const riverMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(160, 160, 32, 32),
-      new THREE.MeshLambertMaterial({ color: 0x0A1424, roughness: 0.2 })
+      new THREE.PlaneGeometry(160, 160, 48, 48),
+      new THREE.MeshStandardMaterial({
+        color: 0x07111E,
+        roughness: 0.1,
+        metalness: 0.85,
+        envMapIntensity: 1.2
+      })
     );
     riverMesh.rotation.x = -Math.PI / 2;
     riverSectionGroup.add(riverMesh);
 
-    // Cầu Tràng Tiền 6 Vài 12 Nhịp
+    // Cầu Tràng Tiền 6 Vài 12 Nhịp Thếp Vàng
     const bridgeGroup = new THREE.Group();
     bridgeGroup.position.set(0, 1.2, -45);
     for (let b = -3; b <= 3; b++) {
       const arch = new THREE.Mesh(
-        new THREE.TorusGeometry(3.6, 0.18, 8, 16, Math.PI),
-        new THREE.MeshBasicMaterial({ color: 0xD4AF37 })
+        new THREE.TorusGeometry(3.6, 0.18, 10, 20, Math.PI),
+        gold24kMat
       );
       arch.position.x = b * 7;
       bridgeGroup.add(arch);
@@ -1007,7 +1295,7 @@
     dragonBoat.position.set(-6, 0.2, 5);
     const hullMesh = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.8, 7), new THREE.MeshLambertMaterial({ color: 0x3E1C12 }));
     dragonBoat.add(hullMesh);
-    const dHead = new THREE.Mesh(new THREE.SphereGeometry(0.7, 12, 10), new THREE.MeshLambertMaterial({ color: 0xD4AF37 }));
+    const dHead = new THREE.Mesh(new THREE.SphereGeometry(0.7, 14, 12), gold24kMat);
     dHead.position.set(0, 0.8, 3.8);
     dragonBoat.add(dHead);
     riverSectionGroup.add(dragonBoat);
@@ -1015,7 +1303,7 @@
     // Rùa Kim Quy
     const kimQuy = new THREE.Group();
     kimQuy.position.set(6, 0.1, 8);
-    const shell = new THREE.Mesh(new THREE.SphereGeometry(1.2, 12, 8), new THREE.MeshLambertMaterial({ color: 0xD4AF37 }));
+    const shell = new THREE.Mesh(new THREE.SphereGeometry(1.2, 14, 10), gold24kMat);
     shell.scale.set(1.1, 0.5, 1.4);
     kimQuy.add(shell);
     const tHead = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 8), new THREE.MeshLambertMaterial({ color: 0xB45309 }));
@@ -1023,14 +1311,89 @@
     kimQuy.add(tHead);
     riverSectionGroup.add(kimQuy);
 
-    // Hoa Đăng Sông Hương
-    const lanterns = [];
-    const lotusGeo = new THREE.CylinderGeometry(0.45, 0.2, 0.35, 8);
-    const lotusMat = new THREE.MeshLambertMaterial({ color: 0x8B1E1E, emissive: 0xD4AF37, emissiveIntensity: 0.45 });
+    // HÀM TẠO HOA ĐĂNG HOA SEN 16 CÁNH 3D CHÂN THẬT
+    function createLotusLantern() {
+      const lotus = new THREE.Group();
 
+      // Cánh sen điêu khắc Shape
+      const petalShape = new THREE.Shape();
+      petalShape.moveTo(0, 0);
+      petalShape.quadraticCurveTo(0.25, 0.3, 0.28, 0.7);
+      petalShape.quadraticCurveTo(0.2, 1.1, 0, 1.4);
+      petalShape.quadraticCurveTo(-0.2, 1.1, -0.28, 0.7);
+      petalShape.quadraticCurveTo(-0.25, 0.3, 0, 0);
+
+      const petalGeo = new THREE.ExtrudeGeometry(petalShape, { depth: 0.02, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01 });
+      const petalPinkMat = new THREE.MeshStandardMaterial({
+        color: 0xFB7185,
+        roughness: 0.35,
+        emissive: 0xBE123C,
+        emissiveIntensity: 0.3
+      });
+      const petalGoldMat = new THREE.MeshStandardMaterial({
+        color: 0xFBBF24,
+        roughness: 0.25,
+        metalness: 0.6,
+        emissive: 0xD97706,
+        emissiveIntensity: 0.4
+      });
+
+      // Tầng 1: 7 cánh ngoài (hơi mở)
+      for (let i = 0; i < 7; i++) {
+        const ang = (i / 7) * Math.PI * 2;
+        const p = new THREE.Mesh(petalGeo, petalPinkMat);
+        p.rotation.x = Math.PI / 2 - 0.5;
+        p.rotation.y = ang;
+        p.position.set(Math.cos(ang) * 0.45, 0.05, Math.sin(ang) * 0.45);
+        lotus.add(p);
+      }
+
+      // Tầng 2: 5 cánh giữa (úp nhẹ)
+      for (let i = 0; i < 5; i++) {
+        const ang = (i / 5) * Math.PI * 2 + 0.3;
+        const p = new THREE.Mesh(petalGeo, petalGoldMat);
+        p.scale.setScalar(0.85);
+        p.rotation.x = Math.PI / 2 - 0.8;
+        p.rotation.y = ang;
+        p.position.set(Math.cos(ang) * 0.3, 0.12, Math.sin(ang) * 0.3);
+        lotus.add(p);
+      }
+
+      // Tầng 3: 4 cánh trong ôm ngọn nến
+      for (let i = 0; i < 4; i++) {
+        const ang = (i / 4) * Math.PI * 2 + 0.5;
+        const p = new THREE.Mesh(petalGeo, petalPinkMat);
+        p.scale.setScalar(0.7);
+        p.rotation.x = Math.PI / 2 - 1.1;
+        p.rotation.y = ang;
+        p.position.set(Math.cos(ang) * 0.18, 0.18, Math.sin(ang) * 0.18);
+        lotus.add(p);
+      }
+
+      // Đài sen xanh ở giữa
+      const pod = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.15, 0.15, 12), jadeMat);
+      pod.position.y = 0.15;
+      lotus.add(pod);
+
+      // Ngọn nến lung linh phát sáng ấm áp
+      const candleFlame = new THREE.Mesh(
+        new THREE.SphereGeometry(0.1, 10, 10),
+        new THREE.MeshBasicMaterial({ color: 0xFFFBEB })
+      );
+      candleFlame.position.y = 0.32;
+      lotus.add(candleFlame);
+
+      const candleLight = new THREE.PointLight(0xF59E0B, 1.2, 6);
+      candleLight.position.y = 0.35;
+      lotus.add(candleLight);
+
+      return lotus;
+    }
+
+    const lanterns = [];
     for (let i = 0; i < 18; i++) {
-      const mesh = new THREE.Mesh(lotusGeo, lotusMat);
-      mesh.position.set((Math.random() - 0.5) * 35, 0.15, (Math.random() - 0.5) * 30);
+      const mesh = createLotusLantern();
+      mesh.position.set((Math.random() - 0.5) * 35, 0.05, (Math.random() - 0.5) * 30);
       mesh.userData = { speedX: -0.015 - Math.random() * 0.02, speedZ: (Math.random() - 0.5) * 0.01, rotSpeed: 0.01 + Math.random() * 0.02 };
       riverSectionGroup.add(mesh);
       lanterns.push(mesh);
@@ -1038,11 +1401,11 @@
 
     // Thả hoa đăng mới theo Parabol
     function releaseNewLantern(name, wish) {
-      const newMesh = new THREE.Mesh(lotusGeo, new THREE.MeshLambertMaterial({ color: 0xF59E0B, emissive: 0xFEF3C7, emissiveIntensity: 0.8 }));
+      const newMesh = createLotusLantern();
       newMesh.position.set(0, 10, 18);
       scene.add(newMesh);
 
-      const targetPos = new THREE.Vector3((Math.random() - 0.5) * 12, -17.85, -10 + (Math.random() - 0.5) * 10);
+      const targetPos = new THREE.Vector3((Math.random() - 0.5) * 12, -17.9, -10 + (Math.random() - 0.5) * 10);
       gsap.to(newMesh.position, { x: targetPos.x, z: targetPos.z, duration: 2.2, ease: "power2.out" });
       gsap.to(newMesh.position, {
         y: targetPos.y + 4,
@@ -1055,7 +1418,7 @@
             ease: "bounce.out",
             onComplete: () => {
               scene.remove(newMesh);
-              newMesh.position.set(targetPos.x, 0.15, targetPos.z);
+              newMesh.position.set(targetPos.x, 0.05, targetPos.z);
               newMesh.userData = { speedX: -0.025, speedZ: -0.005, rotSpeed: 0.03, name };
               riverSectionGroup.add(newMesh);
               lanterns.push(newMesh);
@@ -1087,7 +1450,7 @@
     }
 
     /* ==========================================================================
-       7. HỆ THỐNG MƯA VÀ LIVE HUE WEATHER 3D ENGINE
+       7. MƯA & LIVE HUE WEATHER 3D ENGINE
        ========================================================================== */
     const rainCount = 1800;
     const rainGeo = new THREE.BufferGeometry();
@@ -1103,10 +1466,10 @@
     scene.add(rainSystem);
 
     const weatherPresets = {
-      clear: { bg: 0xF4EFE6, fog: 0xF4EFE6, dirLight: 0xFFE8B3, ambient: 0xFFF7EB, dragonEmissive: 0x8B1E1E, phEmissive: 0xB91C1C },
-      rain: { bg: 0xD1D5DB, fog: 0xD1D5DB, dirLight: 0x9CA3AF, ambient: 0x6B7280, dragonEmissive: 0x1E3A5F, phEmissive: 0x0E7490 },
-      sunset: { bg: 0x3B1954, fog: 0x3B1954, dirLight: 0xF59E0B, ambient: 0x8B1E1E, dragonEmissive: 0xD97706, phEmissive: 0xDC2626 },
-      night: { bg: 0x0B0914, fog: 0x0B0914, dirLight: 0x3B82F6, ambient: 0x1E1B4B, dragonEmissive: 0x9333EA, phEmissive: 0xF59E0B }
+      clear: { bg: 0xF4EFE6, fog: 0xF4EFE6, dirLight: 0xFFF3D6, ambient: 0xFFFBF0, exposure: 1.25 },
+      rain: { bg: 0xD1D5DB, fog: 0xD1D5DB, dirLight: 0x9CA3AF, ambient: 0x6B7280, exposure: 1.05 },
+      sunset: { bg: 0x3B1954, fog: 0x3B1954, dirLight: 0xF59E0B, ambient: 0x8B1E1E, exposure: 1.35 },
+      night: { bg: 0x0B0914, fog: 0x0B0914, dirLight: 0x3B82F6, ambient: 0x1E1B4B, exposure: 1.15 }
     };
 
     function applyWeather(mode) {
@@ -1115,10 +1478,7 @@
       gsap.to(scene.fog.color, { r: ((p.fog >> 16) & 255) / 255, g: ((p.fog >> 8) & 255) / 255, b: (p.fog & 255) / 255, duration: 1.2 });
       gsap.to(dirLight.color, { r: ((p.dirLight >> 16) & 255) / 255, g: ((p.dirLight >> 8) & 255) / 255, b: (p.dirLight & 255) / 255, duration: 1.2 });
       gsap.to(ambientLight.color, { r: ((p.ambient >> 16) & 255) / 255, g: ((p.ambient >> 8) & 255) / 255, b: (p.ambient & 255) / 255, duration: 1.2 });
-      
-      // Đổi màu năng lượng phát sáng trên Rồng và Phượng Hoàng
-      gsap.to(dragonGoldMat.emissive, { r: ((p.dragonEmissive >> 16) & 255) / 255, g: ((p.dragonEmissive >> 8) & 255) / 255, b: (p.dragonEmissive & 255) / 255, duration: 1.2 });
-      gsap.to(phRedMat.emissive, { r: ((p.phEmissive >> 16) & 255) / 255, g: ((p.phEmissive >> 8) & 255) / 255, b: (p.phEmissive & 255) / 255, duration: 1.2 });
+      gsap.to(renderer, { toneMappingExposure: p.exposure, duration: 1.2 });
     }
 
     const weatherButtons = document.querySelectorAll('#weather-switcher .weather-btn');
@@ -1131,15 +1491,14 @@
     });
 
     /* ==========================================================================
-       8. WARP SPEED TRANSITION (RỒNG & PHƯỢNG HOÀNG XOẮN VÀO NHAU DẪN ĐƯỜNG)
+       8. WARP SPEED TRANSITION
        ========================================================================== */
     function triggerWarpTransition() {
       if (!warpOverlay) { window.location.href = './index.html'; return; }
       warpOverlay.style.pointerEvents = 'auto';
       warpOverlay.style.opacity = '1';
 
-      // Rồng và Phượng Hoàng xoắn vào nhau hội tụ trước màn hình điện thoại
-      gsap.to(dragonEntity.position, { x: heroMascotGroup.position.x - 1.8, y: heroMascotGroup.position.y, z: heroMascotGroup.position.z + 1, duration: 1.0 });
+      gsap.to(dragonHeadGroup.position, { x: heroMascotGroup.position.x - 1.8, y: heroMascotGroup.position.y, z: heroMascotGroup.position.z + 1, duration: 1.0 });
       gsap.to(phoenixEntity.position, { x: heroMascotGroup.position.x - 1.8, y: heroMascotGroup.position.y, z: heroMascotGroup.position.z + 1, duration: 1.0 });
 
       gsap.to(camera.position, {
@@ -1163,12 +1522,12 @@
       mouseVector.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouseVector.y = -(e.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouseVector, camera);
-      const intersects = raycaster.intersectObjects([phoneScreen, phoneBody, hatMesh], true);
+      const intersects = raycaster.intersectObjects([phoneScreen, phoneChassis, hatMesh], true);
       if (intersects.length > 0) triggerWarpTransition();
     });
 
     /* ==========================================================================
-       9. VÒNG LẶP RENDER CHÍNH 60FPS ZERO-JANK
+       9. VÒNG LẶP RENDER CHÍNH 60FPS ZERO-JANK & TÍNH TOÁN CATMULL-ROM
        ========================================================================== */
     const clock = new THREE.Clock();
 
@@ -1205,48 +1564,76 @@
         camera.lookAt(0, -18, -15);
       }
 
-      // 3. DIỄN HOẠT RỒNG THỜI NGUYỄN 3D (UỐN LƯỢN QUANH SMARTPHONE & TIÊU ĐỀ)
-      const dragonHeadX = 3.5 + Math.sin(t * 1.5) * 6.5;
-      const dragonHeadY = 4.0 + Math.cos(t * 2.1) * 2.8;
-      const dragonHeadZ = 10.0 + Math.sin(t * 0.9) * 4.5;
-      dragonHead.position.set(dragonHeadX, dragonHeadY, dragonHeadZ);
-      dragonHead.rotation.y = Math.cos(t * 1.5) * 0.6 + currentMouseX * 0.2;
-      dragonHead.rotation.x = -Math.sin(t * 2.1) * 0.3;
-      pearlHolo.rotation.y = t * 3;
-
-      // 38 Đốt thân Rồng uốn lượn theo hàm sóng sin có độ trễ pha
-      for (let s = 0; s < dragonSegments.length; s++) {
-        const seg = dragonSegments[s];
-        const delay = (s + 1) * 0.18;
-        const segX = 3.5 + Math.sin(t * 1.5 - delay) * 6.5;
-        const segY = 4.0 + Math.cos(t * 2.1 - delay) * 2.8;
-        const segZ = 10.0 + Math.sin(t * 0.9 - delay) * 4.5 - (s * 0.35);
-        seg.position.set(segX, segY, segZ);
-        seg.rotation.y = Math.cos(t * 1.5 - delay) * 0.6;
-        seg.rotation.z = Math.sin(t * 2.5 - delay) * 0.35;
+      // 3. TÍNH TOÁN ĐƯỜNG CONG RỒNG THỜI NGUYỄN LIỀN MẠCH (CATMULL-ROM)
+      const curvePoints = [];
+      const numCtrl = 16;
+      for (let i = 0; i < numCtrl; i++) {
+        const pRatio = i / (numCtrl - 1);
+        const phase = t * 1.8 - i * 0.35;
+        const cx = 3.5 + Math.sin(phase) * (5.5 - pRatio * 2.0) + (1 - pRatio) * (currentMouseX * 1.2);
+        const cy = 3.8 + Math.cos(phase * 1.2) * (2.2 - pRatio * 1.0) + (1 - pRatio) * (currentMouseY * 0.8);
+        const cz = 10.5 - i * 1.1 + Math.sin(phase * 0.8) * 2.2;
+        curvePoints.push(new THREE.Vector3(cx, cy, cz));
       }
+      const dragonCurve = new THREE.CatmullRomCurve3(curvePoints);
 
-      // 4. DIỄN HOẠT PHƯỢNG HOÀNG LỬA 3D (VỖ CÁNH 2 KHỚP & BAY ĐỐI XỨNG RỒNG)
-      const phX = -4.5 + Math.cos(t * 1.4) * 4.0;
-      const phY = 5.0 + Math.sin(t * 1.8) * 2.5;
-      const phZ = 8.0 + Math.cos(t * 1.1) * 3.5;
+      // Định vị đầu rồng tại điểm đầu tiên và xoay theo tiếp tuyến
+      const headPos = dragonCurve.getPoint(0);
+      const headTangent = dragonCurve.getTangent(0);
+      dragonHeadGroup.position.copy(headPos);
+      dragonHeadGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), headTangent);
+      pearlGroup.rotation.y = t * 3;
+
+      // Cập nhật đỉnh thân rồng liền khối (Tapered Mesh: dày ở cổ, thuôn nhọn ở đuôi)
+      const frames = dragonCurve.computeFrenetFrames(DRAGON_SEGS, false);
+      const posAttr = dragonGeo.attributes.position;
+      const uvAttr = dragonGeo.attributes.uv;
+      let pIdx = 0;
+      let uvIdx = 0;
+
+      for (let i = 0; i <= DRAGON_SEGS; i++) {
+        const u = i / DRAGON_SEGS;
+        const pt = dragonCurve.getPoint(u);
+        const N = frames.normals[i];
+        const B = frames.binormals[i];
+        const rad = 0.58 * (1.0 - u * 0.82); // Thuôn nhỏ từ 0.58 xuống 0.10 ở đuôi
+
+        for (let j = 0; j <= DRAGON_RAD_SEGS; j++) {
+          const v = j / DRAGON_RAD_SEGS;
+          const theta = v * Math.PI * 2;
+          const cosTheta = Math.cos(theta);
+          const sinTheta = Math.sin(theta);
+
+          posAttr.array[pIdx++] = pt.x + rad * (cosTheta * N.x + sinTheta * B.x);
+          posAttr.array[pIdx++] = pt.y + rad * (cosTheta * N.y + sinTheta * B.y);
+          posAttr.array[pIdx++] = pt.z + rad * (cosTheta * N.z + sinTheta * B.z);
+
+          uvAttr.array[uvIdx++] = u * 6;
+          uvAttr.array[uvIdx++] = v * 2;
+        }
+      }
+      posAttr.needsUpdate = true;
+      dragonGeo.computeVertexNormals();
+
+      // 4. DIỄN HOẠT PHƯỢNG HOÀNG LỬA (ĐẬP CÁNH LÔNG VŨ & LƯỚT GIÓ)
+      const phX = -4.5 + Math.cos(t * 1.3) * 3.8;
+      const phY = 5.2 + Math.sin(t * 1.7) * 2.2;
+      const phZ = 8.5 + Math.cos(t * 1.0) * 3.2;
       phoenixEntity.position.set(phX, phY, phZ);
-      phoenixEntity.rotation.z = Math.sin(t * 1.4) * 0.2 + currentMouseX * 0.15;
-      phoenixEntity.rotation.y = Math.sin(t * 1.1) * 0.3;
+      phoenixEntity.rotation.z = Math.sin(t * 1.3) * 0.2 + currentMouseX * 0.15;
+      phoenixEntity.rotation.y = Math.sin(t * 1.0) * 0.3;
 
-      // Khớp trong và ngoài vỗ cánh
       pWingLInner.rotation.z = Math.sin(t * 4.5) * 0.45;
       pWingLOuter.rotation.z = Math.sin(t * 4.5 - 0.5) * 0.35;
       pWingRInner.rotation.z = -Math.sin(t * 4.5) * 0.45;
       pWingROuter.rotation.z = -Math.sin(t * 4.5 - 0.5) * 0.35;
 
-      // 5 dải đuôi lụa uốn lượn
       phTailRibbons.forEach((rib, idx) => {
         rib.rotation.x = (Math.PI / 2.3) + Math.sin(t * 3.5 + idx * 0.6) * 0.2;
         rib.rotation.y = Math.cos(t * 2.5 + idx * 0.4) * 0.15;
       });
 
-      // 5. BÉ NGHÊ & SMARTPHONE 3D
+      // 5. BÉ NGHÊ & SMARTPHONE
       phoneGroup.position.y = 0.2 + Math.sin(t * 1.8) * 0.12;
       phoneGroup.rotation.y = Math.sin(t * 1.2) * 0.15;
       headGroup.rotation.x = Math.sin(t * 2) * 0.08;
@@ -1254,10 +1641,9 @@
       haloRing.rotation.z += 0.02;
       tailGroup.rotation.y = Math.sin(t * 4) * 0.35;
 
-      // Vòng Bát Quái xoay chậm
       baguaGroup.rotation.z = t * 0.04;
 
-      // 6. THUYỀN RỒNG & HOA ĐĂNG
+      // 6. THUYỀN RỒNG & HOA ĐĂNG HOA SEN
       dragonBoat.position.y = 0.2 + Math.sin(t * 1.6) * 0.08;
       dragonBoat.rotation.z = Math.sin(t * 1.6) * 0.03;
       dragonBoat.position.x = -6 + Math.sin(t * 0.5) * 1.5;
@@ -1270,12 +1656,12 @@
       });
 
       // 7. MƯA
-      const posAttr = rainGeo.attributes.position;
+      const rPos = rainGeo.attributes.position;
       for (let i = 1; i < rainCount * 3; i += 3) {
-        posAttr.array[i] -= 0.18;
-        if (posAttr.array[i] < -20) posAttr.array[i] = 30;
+        rPos.array[i] -= 0.18;
+        if (rPos.array[i] < -20) rPos.array[i] = 30;
       }
-      posAttr.needsUpdate = true;
+      rPos.needsUpdate = true;
 
       renderer.render(scene, camera);
     }
