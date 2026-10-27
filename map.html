@@ -539,6 +539,11 @@
       <div id="main-hue-map"></div>
 
       <!-- Offline Map Download Button -->
+      <!-- Toggle Satellite Layer Button -->
+      <button class="offline-download-btn map-layer-toggle-btn" id="mapLayerToggleBtn" onclick="toggleMapType()" style="bottom: 70px;" title="Chuyển đổi kiểu bản đồ (Vệ tinh / Đường phố)">
+        <span id="mapLayerIcon">🛰️</span> <span id="mapLayerText">Vệ tinh</span>
+      </button>
+
       <button class="offline-download-btn" onclick="downloadOfflineMap()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download offline Hue map (~5MB)
@@ -552,7 +557,7 @@
       <!-- Right Side Detail Drawer Card -->
       <div class="map-right-drawer" id="right-drawer">
         <button onclick="closeDrawer()" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer;">✕</button>
-        <img class="drawer-img" id="drawer-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Chi tiết địa danh" />
+        <img class="drawer-img" id="drawer-img" alt="" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Chi tiết địa danh" />
         <div class="drawer-body">
           <span class="drawer-badge" id="drawer-badge">Imperial & Tombs</span>
           <h3 class="drawer-title" id="drawer-title">Thai Hoa Palace</h3>
@@ -582,8 +587,155 @@
   <script src="./js/location-service.js"></script>
 
   <script>
+    // ================================================================
+    // CẤU HÌNH BẢN ĐỒ NỀN HUEGO (BASEMAP CONFIG)
+    // ================================================================
+    const HUEGO_MAP_CONFIG = {
+      // Thứ tự dự phòng bản đồ đường phố: CartoDB Voyager -> Esri World Street Map -> OpenStreetMap
+      streetProviders: [
+        {
+          id: 'carto_voyager',
+          name: 'CartoDB Voyager',
+          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+          subdomains: 'abcd',
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
+        },
+        {
+          id: 'esri_streets',
+          name: 'Esri World Street Map',
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+          subdomains: '',
+          maxZoom: 19,
+          attribution: 'Tiles &copy; <a href="https://www.esri.com/" target="_blank">Esri</a> ArcGIS'
+        },
+        {
+          id: 'osm_standard',
+          name: 'OpenStreetMap Standard',
+          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: 'abc',
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+        }
+      ],
+      // Vệ tinh Esri: KHÔNG nằm trong chuỗi dự phòng, chỉ là lớp người dùng tự chọn bằng nút
+      satelliteProvider: {
+        id: 'esri_satellite',
+        name: 'Vệ tinh (Esri World Imagery)',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        subdomains: '',
+        maxZoom: 19,
+        attribution: 'Tiles &copy; <a href="https://www.esri.com/" target="_blank">Esri</a>, Maxar, Earthstar Geographics'
+      }
+    };
+
     let map;
     let markersClusterGroup;
+    let currentTileLayer = null;
+    let satelliteTileLayer = null;
+    let isSatelliteMode = false;
+    let currentStreetIndex = 0;
+    let triedStreetProviders = new Set([0]); // Chuyển nguồn chỉ một lần mỗi nguồn (tránh vòng lặp)
+    let fallbackScheduled = false;
+
+    function createTileLayer(providerConfig) {
+      const options = {
+        maxZoom: providerConfig.maxZoom || 19,
+        attribution: providerConfig.attribution
+      };
+      if (providerConfig.subdomains) {
+        options.subdomains = providerConfig.subdomains;
+      }
+      return L.tileLayer(providerConfig.url, options);
+    }
+
+    function attachTileErrorFallback(layer, providerIndex) {
+      layer.on('tileerror', function() {
+        if (isSatelliteMode || fallbackScheduled) return;
+
+        let nextIndex = -1;
+        for (let i = 0; i < HUEGO_MAP_CONFIG.streetProviders.length; i++) {
+          if (!triedStreetProviders.has(i)) {
+            nextIndex = i;
+            break;
+          }
+        }
+
+        if (nextIndex !== -1) {
+          fallbackScheduled = true;
+          triedStreetProviders.add(nextIndex);
+          const failedName = HUEGO_MAP_CONFIG.streetProviders[providerIndex].name;
+          const nextProvider = HUEGO_MAP_CONFIG.streetProviders[nextIndex];
+          console.warn(`[HUEGO Map] Nguồn "${failedName}" lỗi tải tile. Tự động chuyển dự phòng sang "${nextProvider.name}".`);
+
+          setTimeout(function() {
+            if (!isSatelliteMode && map) {
+              if (currentTileLayer) {
+                map.removeLayer(currentTileLayer);
+              }
+              currentStreetIndex = nextIndex;
+              currentTileLayer = createTileLayer(nextProvider);
+              attachTileErrorFallback(currentTileLayer, nextIndex);
+              currentTileLayer.addTo(map);
+              currentTileLayer.bringToBack();
+            }
+            fallbackScheduled = false;
+          }, 250);
+        } else {
+          console.warn('[HUEGO Map] Đã thử qua tất cả các nguồn bản đồ đường phố dự phòng.');
+        }
+      });
+    }
+
+    window.toggleMapType = function() {
+      if (!map) return;
+      isSatelliteMode = !isSatelliteMode;
+      const iconEl = document.getElementById('mapLayerIcon');
+      const textEl = document.getElementById('mapLayerText');
+
+      if (isSatelliteMode) {
+        if (currentTileLayer) map.removeLayer(currentTileLayer);
+        if (!satelliteTileLayer) {
+          satelliteTileLayer = createTileLayer(HUEGO_MAP_CONFIG.satelliteProvider);
+        }
+        satelliteTileLayer.addTo(map);
+        satelliteTileLayer.bringToBack();
+        if (iconEl) iconEl.textContent = '🗺️';
+        if (textEl) textEl.textContent = 'Đường phố';
+      } else {
+        if (satelliteTileLayer) map.removeLayer(satelliteTileLayer);
+        if (!currentTileLayer) {
+          currentTileLayer = createTileLayer(HUEGO_MAP_CONFIG.streetProviders[currentStreetIndex]);
+          attachTileErrorFallback(currentTileLayer, currentStreetIndex);
+        }
+        currentTileLayer.addTo(map);
+        currentTileLayer.bringToBack();
+        if (iconEl) iconEl.textContent = '🛰️';
+        if (textEl) textEl.textContent = 'Vệ tinh';
+      }
+    };
+
+    function handleThumbnailError(imgElement, category, name) {
+      if (!imgElement) return;
+      imgElement.onerror = null;
+      imgElement.alt = '';
+      if (typeof window.generateDynamicSvgPlaceholder === 'function') {
+        imgElement.src = window.generateDynamicSvgPlaceholder(category, name);
+      } else {
+        const safeName = (name || 'Huế Heritage').replace(/[<>&"']/g, '');
+        const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="100%" height="100%">' +
+          '<defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">' +
+          '<stop offset="0%" stop-color="#1E1B4B"/><stop offset="100%" stop-color="#312E81"/>' +
+          '</linearGradient></defs>' +
+          '<rect width="400" height="220" fill="url(#g)"/>' +
+          '<circle cx="200" cy="85" r="36" fill="#4338CA" opacity="0.6"/>' +
+          '<text x="200" y="96" font-family="sans-serif" font-size="28" text-anchor="middle" fill="#FFFFFF">🏛️</text>' +
+          '<text x="200" y="145" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#E0E7FF">' + safeName + '</text>' +
+          '<text x="200" y="170" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#A5B4FC">HUEGO CỐ ĐÔ HUẾ</text>' +
+          '</svg>';
+        imgElement.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+    }
     let allHeritageZones = [];
     let currentFilterCat = 'All';
     let activeVerticals = new Set(['tour', 'fnb', 'cafe', 'stay', 'specialty', 'nature', 'service']);
@@ -603,10 +755,12 @@
         zoomControl: true
       }).setView([16.467, 107.590], 13);
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
-        maxZoom: 19
-      }).addTo(map);
+      // Khởi tạo lớp bản đồ đường phố đầu tiên (CartoDB Voyager) kèm cơ chế fallback
+      currentStreetIndex = 0;
+      triedStreetProviders = new Set([0]);
+      currentTileLayer = createTileLayer(HUEGO_MAP_CONFIG.streetProviders[0]);
+      attachTileErrorFallback(currentTileLayer, 0);
+      currentTileLayer.addTo(map);
 
       markersClusterGroup = L.markerClusterGroup({
         chunkedLoading: true,
@@ -791,7 +945,8 @@
 
       const img = document.getElementById('drawer-img');
       img.src = window.resolvePlaceImage ? window.resolvePlaceImage(place) : (place.img || '');
-      img.onerror = () => { if(window.handleImgError){ window.handleImgError(img, place.cat || 'tour', place.name); } };
+      img.alt = '';
+      img.onerror = function() { handleThumbnailError(this, place.cat || 'tour', place.name); };
 
       document.getElementById('drawer-badge').textContent = place.cat || 'Heritage & Sightseeing';
       document.getElementById('drawer-title').textContent = place.name;

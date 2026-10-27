@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>HUEGO – Ứng Dụng Khám Phá Huế Thông Minh</title>
+  <title>Sống thử một ngày ở Huế</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -1433,7 +1433,7 @@
 <body>
 
   <div class="top-controls">
-    <div class="top-title">📱 HUEGO SMART MOBILE SIMULATOR <span style="font-size:10px; background:rgba(212,175,55,0.25); border:1px solid var(--imperial-gold); padding:2px 6px; border-radius:8px; color:var(--imperial-gold); margin-left:6px;">v2.6-consolidated</span></div>
+    <div class="top-title">📱 Sống thử một ngày ở Huế <span style="font-size:10px; background:rgba(212,175,55,0.25); border:1px solid var(--imperial-gold); padding:2px 6px; border-radius:8px; color:var(--imperial-gold); margin-left:6px;">v2.7-mapfix</span></div>
     <div style="display:flex; gap:8px; align-items:center;">
       <button class="btn-enable-audio-ios" onclick="window.huegoSpeech && window.huegoSpeech.unlockAudioContext(); showToast('🎧 Đã bật quyền thuyết minh âm thanh thiết bị!')">🔊 Bật Thuyết Minh</button>
       <span id="perfLoadBadge" style="font-size:11px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); padding:4px 8px; border-radius:12px; color:#A7F3D0;">⚡ Đo thời gian tải...</span>
@@ -1452,6 +1452,11 @@
       <div class="status-bar">
         <span id="live-clock">09:41</span>
         <span style="display: flex; gap: 4px; align-items: center;">5G 📶 🔋 100%</span>
+      </div>
+
+      <!-- Demo Mode Banner (Chỉ bật cố định khi hostname chứa 'github.io' hoặc 'localhost') -->
+      <div id="demoModeBanner" style="display:none; background:#FEF3C7; color:#92400E; border-bottom:1px solid #F59E0B; font-size:10px; font-weight:700; text-align:center; padding:4px 8px; z-index:1000; letter-spacing:0.2px;">
+        ⚠️ CHẾ ĐỘ DEMO – dữ liệu không được lưu lên máy chủ
       </div>
 
       <!-- App Header -->
@@ -1535,7 +1540,7 @@
           <!-- Bottom Sheet Chi Tiết Điểm Đến -->
           <div class="place-sheet" id="placeSheet">
             <div class="sheet-handle" onclick="closeSheet()"></div>
-            <img id="sheetImg" class="sheet-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Thumbnail" />
+            <img id="sheetImg" class="sheet-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="" onerror="handleThumbnailFallback(this)" />
             <div class="sheet-title" id="sheetTitle">Tên Địa Danh</div>
             <div class="sheet-address" id="sheetAddress">📍 Địa chỉ</div>
             <div class="sheet-badges">
@@ -1598,7 +1603,7 @@
               </div>
             </div>
             <div id="itineraryMetrics" style="font-size:10px; color:#475569; margin-bottom:10px; line-height:1.3; background:#F1F5F9; padding:6px 10px; border-radius:8px;">
-              🛣️ Lộ trình lưu trữ tại PostgreSQL. Nhấn "Tối Ưu Thứ Tự" để sắp xếp đường đi ngắn nhất.
+              🛣️ Nhấn "Tối Ưu Thứ Tự" để sắp xếp đường đi ngắn nhất.
             </div>
 
             <div class="stops-list" id="stopsContainer">
@@ -1760,7 +1765,7 @@
 
         <!-- Disc / Card Section -->
         <div class="audio-disc-card">
-          <img id="audioCover" class="audio-cover-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Di tích" />
+          <img id="audioCover" class="audio-cover-img" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="" onerror="handleThumbnailFallback(this)" />
           <div class="audio-place-name" id="audioPlaceTitle">Đại Nội Huế</div>
           <div class="audio-speaker-sub">Giọng đọc Mệ Huế AI • Cố Đô Thuyết Minh</div>
 
@@ -1872,10 +1877,110 @@
     ];
 
     // Initialize Leaflet Map with Google Maps & Esri Basemaps + Full 4,352 Hue Map Places
+    // Cấu hình nguồn bản đồ HUEGO với thứ tự dự phòng và attribution chuẩn mực
+    const HUEGO_MAP_CONFIG = {
+      // Thứ tự dự phòng cho bản đồ đường phố: CartoDB Voyager -> Esri World Street Map -> OpenStreetMap
+      streetProviders: [
+        {
+          id: 'carto_voyager',
+          name: 'CartoDB Voyager',
+          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+          subdomains: 'abcd',
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
+        },
+        {
+          id: 'esri_streets',
+          name: 'Esri World Street Map',
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+          subdomains: '',
+          maxZoom: 19,
+          attribution: 'Tiles &copy; <a href="https://www.esri.com/" target="_blank">Esri</a> ArcGIS'
+        },
+        {
+          id: 'osm_standard',
+          name: 'OpenStreetMap Standard',
+          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: 'abc',
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+        }
+      ],
+      // Ảnh vệ tinh Esri: KHÔNG nằm trong chuỗi dự phòng, chỉ là lớp người dùng tự chọn bằng nút
+      satelliteProvider: {
+        id: 'esri_satellite',
+        name: 'Vệ tinh (Esri World Imagery)',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        subdomains: '',
+        maxZoom: 19,
+        attribution: 'Tiles &copy; <a href="https://www.esri.com/" target="_blank">Esri</a>, Maxar, Earthstar Geographics'
+      }
+    };
+
     let map, markersClusterGroup;
-    let currentTileLayer;
-    let tileLayerIndex = 0;
-    let tileLayers = [];
+    let currentTileLayer = null;
+    let satelliteTileLayer = null;
+    let isSatelliteMode = false;
+    let currentStreetIndex = 0;
+    let triedStreetProviders = new Set([0]); // Chống vòng lặp: mỗi nguồn chỉ thử 1 lần
+    let fallbackScheduled = false;
+
+    // Helper ảnh fallback placeholder khi ảnh di tích lỗi
+    function handleThumbnailFallback(imgEl) {
+      if (!imgEl) return;
+      imgEl.onerror = null;
+      imgEl.alt = '';
+      imgEl.src = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20220%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%232E1065%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23581C87%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%2295%22%20r%3D%2245%22%20fill%3D%22rgba(255%2C255%2C255%2C0.08)%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%22108%22%20font-size%3D%2238%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3Ctext%20x%3D%22200%22%20y%3D%22165%22%20font-size%3D%2213%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22bold%22%20fill%3D%22%23D4AF37%22%20text-anchor%3D%22middle%22%20letter-spacing%3D%220.5%22%3EHU%E1%BA%BE%20GREEN%20HERITAGE%3C%2Ftext%3E%3C%2Fsvg%3E";
+    }
+
+    function createTileLayer(providerConfig) {
+      const options = {
+        maxZoom: providerConfig.maxZoom || 19,
+        attribution: providerConfig.attribution
+      };
+      if (providerConfig.subdomains) {
+        options.subdomains = providerConfig.subdomains;
+      }
+      return L.tileLayer(providerConfig.url, options);
+    }
+
+    function attachTileErrorFallback(layer, providerIndex) {
+      layer.on('tileerror', function() {
+        if (isSatelliteMode || fallbackScheduled) return;
+
+        let nextIndex = -1;
+        for (let i = 0; i < HUEGO_MAP_CONFIG.streetProviders.length; i++) {
+          if (!triedStreetProviders.has(i)) {
+            nextIndex = i;
+            break;
+          }
+        }
+
+        if (nextIndex !== -1) {
+          fallbackScheduled = true;
+          triedStreetProviders.add(nextIndex);
+          const failedName = HUEGO_MAP_CONFIG.streetProviders[providerIndex].name;
+          const nextProvider = HUEGO_MAP_CONFIG.streetProviders[nextIndex];
+          console.warn(`[HUEGO Map] Nguồn "${failedName}" lỗi tải tile. Tự động chuyển dự phòng sang "${nextProvider.name}".`);
+
+          setTimeout(function() {
+            if (!isSatelliteMode && map) {
+              if (currentTileLayer) {
+                map.removeLayer(currentTileLayer);
+              }
+              currentStreetIndex = nextIndex;
+              currentTileLayer = createTileLayer(nextProvider);
+              attachTileErrorFallback(currentTileLayer, nextIndex);
+              currentTileLayer.addTo(map);
+              showToast('🔄 Chuyển sang nguồn bản đồ: ' + nextProvider.name);
+            }
+            fallbackScheduled = false;
+          }, 400);
+        } else {
+          console.warn('[HUEGO Map] Tất cả nguồn bản đồ đường phố dự phòng đã được thử.');
+        }
+      });
+    }
     let allHueMapPoints = [];
     let allHeritageSites = [];
     let currentMapFilter = 'ALL';
@@ -1918,32 +2023,15 @@
     function initMap() {
       map = L.map('map', { zoomControl: false }).setView([16.4697, 107.5779], 13);
 
-      // 1. OpenStreetMap Standard (Giấy phép ODbL mở)
-      const osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
-        maxZoom: 19
-      });
-
-      // 2. Esri World Imagery (Vệ tinh)
-      const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics',
-        maxZoom: 19
-      });
-
-      // 3. Esri World Street Map (Bản đồ GIS di sản)
-      const esriStreets = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri ArcGIS',
-        maxZoom: 19
-      });
-
-      tileLayers = [
-        { name: 'Đường phố (OpenStreetMap)', nextText: 'Vệ tinh', icon: '🛰️', layer: osmStreets },
-        { name: 'Vệ tinh (Esri Imagery)', nextText: 'Esri GIS', icon: '🏛️', layer: esriSatellite },
-        { name: 'Bản đồ GIS (Esri Street)', nextText: 'Đường phố', icon: '🗺️', layer: esriStreets }
-      ];
-
-      currentTileLayer = osmStreets;
+      // Khởi đầu với nguồn đường phố đầu tiên (CartoDB Voyager)
+      currentStreetIndex = 0;
+      triedStreetProviders = new Set([0]);
+      currentTileLayer = createTileLayer(HUEGO_MAP_CONFIG.streetProviders[0]);
+      attachTileErrorFallback(currentTileLayer, 0);
       currentTileLayer.addTo(map);
+
+      // Tạo sẵn lớp vệ tinh nhưng không thêm vào map cho đến khi người dùng tự chọn
+      satelliteTileLayer = createTileLayer(HUEGO_MAP_CONFIG.satelliteProvider);
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -2036,18 +2124,37 @@
     }
 
     function toggleMapType() {
-      if (!map || tileLayers.length === 0) return;
-      map.removeLayer(currentTileLayer);
-      tileLayerIndex = (tileLayerIndex + 1) % tileLayers.length;
-      const nextConfig = tileLayers[tileLayerIndex];
-      currentTileLayer = nextConfig.layer;
-      currentTileLayer.addTo(map);
-
+      if (!map) return;
       const iconEl = document.getElementById('mapLayerIcon');
       const textEl = document.getElementById('mapLayerText');
-      if (iconEl) iconEl.textContent = nextConfig.icon;
-      if (textEl) textEl.textContent = nextConfig.nextText;
-      showToast('Chế độ: ' + nextConfig.name);
+
+      if (!isSatelliteMode) {
+        // Chuyển sang Vệ tinh Esri
+        if (currentTileLayer) map.removeLayer(currentTileLayer);
+        if (!satelliteTileLayer) {
+          satelliteTileLayer = createTileLayer(HUEGO_MAP_CONFIG.satelliteProvider);
+        }
+        satelliteTileLayer.addTo(map);
+        isSatelliteMode = true;
+        if (iconEl) iconEl.textContent = '🗺️';
+        if (textEl) textEl.textContent = 'Đường phố';
+        showToast('Chế độ: Vệ tinh (Esri Imagery)');
+      } else {
+        // Quay lại bản đồ đường phố hiện hành
+        if (satelliteTileLayer) map.removeLayer(satelliteTileLayer);
+        if (currentTileLayer) {
+          currentTileLayer.addTo(map);
+        } else {
+          currentTileLayer = createTileLayer(HUEGO_MAP_CONFIG.streetProviders[currentStreetIndex]);
+          attachTileErrorFallback(currentTileLayer, currentStreetIndex);
+          currentTileLayer.addTo(map);
+        }
+        isSatelliteMode = false;
+        if (iconEl) iconEl.textContent = '🛰️';
+        if (textEl) textEl.textContent = 'Vệ tinh';
+        const curName = HUEGO_MAP_CONFIG.streetProviders[currentStreetIndex].name;
+        showToast('Chế độ: Đường phố (' + curName + ')');
+      }
     }
 
     function showToast(msg) {
@@ -2103,7 +2210,7 @@
 
       const imgEl = document.getElementById('sheetImg');
       imgEl.src = (window.resolvePlaceImage ? window.resolvePlaceImage(activePlace) : activePlace.img);
-      imgEl.onerror = function() { if(window.handleImgError){ window.handleImgError(this, activePlace.cat, activePlace.name); }else{ this.onerror=null; } };
+      imgEl.onerror = function() { if(window.handleImgError){ window.handleImgError(this, activePlace.cat, activePlace.name); }else{ handleThumbnailFallback(this); } };
 
       document.getElementById('sheetTitle').innerText = activePlace.name;
 
@@ -2292,7 +2399,7 @@
 
       const audioCover = document.getElementById('audioCover');
       audioCover.src = (window.resolvePlaceImage ? window.resolvePlaceImage(place) : place.img);
-      audioCover.onerror = function() { if(window.handleImgError){ window.handleImgError(this, place.cat, place.name); }else{ this.onerror=null; } };
+      audioCover.onerror = function() { if(window.handleImgError){ window.handleImgError(this, place.cat, place.name); }else{ handleThumbnailFallback(this); } };
       document.getElementById('audioPlaceTitle').innerText = place.name;
       document.getElementById('miniTitle').innerText = place.name;
       document.getElementById('audioScriptText').innerText = 'Đang kết nối Mệ Huế để lấy thuyết minh di sản...';
@@ -3658,8 +3765,70 @@
       }
     }
 
+    // ==========================================
+    // QUẢN LÝ CHẾ ĐỘ DEMO CHO CHECK-IN
+    // Chỉ bật khi hostname chứa 'github.io' hoặc 'localhost' (hoặc '127.0.0.1').
+    // KHÔNG bật chỉ vì request bị lỗi.
+    // ==========================================
+    const isDemoMode = (function() {
+      const host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
+      return host.includes('github.io') || host.includes('localhost') || host === '127.0.0.1';
+    })();
+
+    // Điểm GP demo lưu trong localStorage dưới khóa riêng 'demo_gp'
+    function getDemoGp() {
+      const val = localStorage.getItem('demo_gp');
+      return val !== null ? (parseInt(val, 10) || 0) : 50;
+    }
+
+    function setDemoGp(pts) {
+      localStorage.setItem('demo_gp', String(pts));
+      updateDemoGpDisplay(pts);
+    }
+
+    function updateDemoGpDisplay(pts) {
+      const ptsText = pts + ' GP';
+      const hPts = document.getElementById('userTotalPoints');
+      if (hPts) hPts.innerText = ptsText;
+      const pPts = document.getElementById('profilePts');
+      if (pPts) pPts.innerText = ptsText;
+      const mPts = document.getElementById('authUserPts');
+      if (mPts) mPts.innerText = ptsText;
+    }
+
+    // Khởi tạo hiển thị nhãn demo khi tải trang
+    document.addEventListener('DOMContentLoaded', function() {
+      if (isDemoMode) {
+        const banner = document.getElementById('demoModeBanner');
+        if (banner) banner.style.display = 'block';
+        updateDemoGpDisplay(getDemoGp());
+      }
+    });
+
     // Check-in GPS điểm hiện tại trong sheet
     function unlockCurrentPlaceGps() {
+      if (isDemoMode) {
+        // [CHẾ ĐỘ DEMO] Tích điểm vào khóa demo riêng, thông báo rõ [Bản trình diễn]
+        const placeName = (activePlace && activePlace.name) ? activePlace.name : 'Địa danh Huế';
+        const addPts = (activePlace && activePlace.points) ? activePlace.points : 25;
+        const newGp = getDemoGp() + addPts;
+        setDemoGp(newGp);
+
+        if ('vibrate' in navigator) {
+          try { navigator.vibrate([150, 80, 150]); } catch (_) {}
+        }
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 100, spread: 60, origin: { y: 0.65 } });
+        }
+        showToast(`[Bản trình diễn] 🎉 Mở khóa thành công ${placeName} (+${addPts} GP)!`);
+
+        if (activePlace && activePlace.desc && window.huegoSpeech) {
+          window.huegoSpeech.playNarration(placeName, activePlace.desc, 'Thuyết minh bản trình diễn Demo');
+        }
+        return;
+      }
+
+      // [MÔI TRƯỜNG THẬT] Gọi NestJS geofencing, lỗi thì báo lỗi thật, không cộng điểm giả
       if (!userLocation) {
         showToast('Đang dò tọa độ GPS của bạn, vui lòng đợi vài giây...');
         return;
@@ -3678,6 +3847,21 @@
 
     // Nhập mã QR dự phòng
     function promptQrUnlock() {
+      if (isDemoMode) {
+        const qrCode = prompt('Nhập mã QR bảo mật tại di tích (Ví dụ: HUE-DEMO-2026):', 'HUE-DEMO-2026');
+        if (!qrCode || !qrCode.trim()) return;
+        const newGp = getDemoGp() + 30;
+        setDemoGp(newGp);
+        if ('vibrate' in navigator) {
+          try { navigator.vibrate([150, 80, 150]); } catch (_) {}
+        }
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 100, spread: 60, origin: { y: 0.65 } });
+        }
+        showToast('[Bản trình diễn] 🎉 Mở khóa thành công qua mã QR (+30 GP)!');
+        return;
+      }
+
       if (!currentUser || !authToken) {
         showToast('Vui lòng đăng nhập hoặc Vào Thử Demo trước khi quét QR.');
         openAuthModal();
@@ -3688,10 +3872,29 @@
       performRealUnlock({ qrToken: qrCode.trim() });
     }
 
-    // Nút "Mô phỏng check-in": chỉ hoạt động trong chế độ demo và gửi tọa độ thật lên API
+    // Nút "Mô phỏng check-in": Chỉ hoạt động trong bản trình diễn hoặc gửi tọa độ thật lên API
     async function triggerSimulatedCheckIn() {
+      if (isDemoMode) {
+        const newGp = getDemoGp() + 30;
+        setDemoGp(newGp);
+        if ('vibrate' in navigator) {
+          try { navigator.vibrate([150, 80, 150]); } catch (_) {}
+        }
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 100, spread: 60, origin: { y: 0.65 } });
+        }
+        showToast('[Bản trình diễn] 🎉 Mở khóa mô phỏng Cầu Tràng Tiền (+30 GP)!');
+        if (itineraryStops && itineraryStops[2]) {
+          itineraryStops[2].visited = true;
+          itineraryStops[2].desc = 'Vừa mở khóa thành công trong bản trình diễn';
+        }
+        saveItineraryState();
+        renderItinerary();
+        showRoyalCertificate();
+        return;
+      }
+
       showToast('Đang gửi tọa độ mô phỏng Cầu Tràng Tiền lên máy chủ NestJS...');
-      // Gửi tọa độ thật của Cầu Tràng Tiền (16.4687, 107.5925)
       const success = await performRealUnlock({
         latitude: 16.4687,
         longitude: 107.5925,
