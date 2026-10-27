@@ -592,15 +592,8 @@
     // ================================================================
     const HUEGO_MAP_CONFIG = {
       // Thứ tự dự phòng bản đồ đường phố: CartoDB Voyager -> Esri World Street Map -> OpenStreetMap
+      // Thứ tự ưu tiên: Esri World Street Map (chuẩn GIS, miễn phí, không watermark) -> CartoDB Voyager -> OpenStreetMap
       streetProviders: [
-        {
-          id: 'carto_voyager',
-          name: 'CartoDB Voyager',
-          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-          subdomains: 'abcd',
-          maxZoom: 19,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
-        },
         {
           id: 'esri_streets',
           name: 'Esri World Street Map',
@@ -608,6 +601,14 @@
           subdomains: '',
           maxZoom: 19,
           attribution: 'Tiles &copy; <a href="https://www.esri.com/" target="_blank">Esri</a> ArcGIS'
+        },
+        {
+          id: 'carto_voyager',
+          name: 'CartoDB Voyager',
+          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+          subdomains: 'abcd',
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>'
         },
         {
           id: 'osm_standard',
