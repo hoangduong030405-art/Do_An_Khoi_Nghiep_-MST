@@ -1,0 +1,107 @@
+/* ==========================================================================
+   HUEGO — DU LỊCH CỐ ĐÔ HUẾ 3D — DESIGN SYSTEM & BASE STYLES
+   Imperial Hue Royal Aesthetics & Cinematic Editorial Layout
+   ========================================================================== */
+
+:root {
+  /* Color Palette Hoàng Gia Cố Đô Huế */
+  --c-abyss: #0d081e;
+  --c-navy-deep: #130a28;
+  --c-navy-surface: rgba(19, 10, 40, 0.75);
+  --c-gold-primary: #f5b861;
+  --c-gold-hover: #ffd685;
+  --c-gold-amber: #e5a952;
+  --c-lantern-orange: #ff7e47;
+  --c-imperial-crimson: #a82b35;
+  --c-perfume-river: #0c3b3e;
+  --c-ivory: #f7f3ec;
+  --c-ivory-dim: rgba(247, 243, 236, 0.68);
+  --c-border-gold: rgba(245, 184, 97, 0.28);
+  --c-border-light: rgba(255, 255, 255, 0.12);
+
+  /* Fonts */
+  --font-serif: 'Playfair Display', 'Cinzel', Georgia, serif;
+  --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Mono', 'SF Mono', Consolas, monospace;
+
+  /* Spacing & Fluid Clamp */
+  --fs-hero: clamp(2.8rem, 8.5vw, 7.8rem);
+  --fs-h1: clamp(2.2rem, 5vw, 4.2rem);
+  --fs-h2: clamp(1.8rem, 3.8vw, 3.0rem);
+  --fs-h3: clamp(1.4rem, 2.4vw, 2.0rem);
+  --fs-body: clamp(0.95rem, 1.1vw, 1.15rem);
+  --fs-small: clamp(0.75rem, 0.85vw, 0.9rem);
+
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--c-abyss);
+  color: var(--c-ivory);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Three.js Fixed Background Canvas */
+#webgl-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Global Top Progress Bar */
+#global-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--c-gold-primary), var(--c-lantern-orange));
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Main Page Content Overlay */
+#page-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* Accessibility reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

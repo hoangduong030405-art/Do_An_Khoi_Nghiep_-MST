@@ -1,0 +1,90 @@
+/* ==========================================================================
+   PRELOADER STYLES (Aperture Reveal & Telemetry Loader)
+   ========================================================================== */
+
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--c-abyss);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4vw;
+  pointer-events: auto;
+  clip-path: circle(150% at 50% 50%);
+  transition: clip-path 1.2s var(--ease-cinematic);
+}
+
+.preloader-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preloader-brand {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  letter-spacing: 0.25em;
+  color: var(--c-gold-primary);
+  font-weight: 700;
+}
+
+.preloader-coords {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-ivory-dim);
+  letter-spacing: 0.15em;
+}
+
+.preloader-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+#preloader-percent {
+  font-family: var(--font-serif);
+  font-size: clamp(4.5rem, 15vw, 12rem);
+  font-weight: 900;
+  line-height: 0.9;
+  background: linear-gradient(135deg, var(--c-ivory) 0%, var(--c-gold-primary) 60%, var(--c-lantern-orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+#preloader-status {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-gold-primary);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.preloader-footer {
+  width: 100%;
+}
+
+.preloader-progress-track {
+  width: 100%;
+  height: 2px;
+  background-color: var(--c-border-light);
+  position: relative;
+  overflow: hidden;
+}
+
+#preloader-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--c-gold-primary), var(--c-lantern-orange));
+  transition: width 0.15s ease-out;
+}

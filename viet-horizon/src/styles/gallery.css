@@ -1,0 +1,115 @@
+/* ==========================================================================
+   HORIZONTAL GALLERY SECTION STYLES
+   ========================================================================== */
+
+#gallery {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  pointer-events: auto;
+}
+
+.gallery-header {
+  position: absolute;
+  top: 10vh;
+  left: 6vw;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.gallery-tag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--c-gold-primary);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.gallery-title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-h2);
+  color: var(--c-ivory);
+}
+
+.gallery-viewport {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+#gallery-track {
+  display: flex;
+  gap: 4vw;
+  padding-left: 35vw;
+  padding-right: 15vw;
+  will-change: transform;
+}
+
+.gallery-card {
+  flex-shrink: 0;
+  width: clamp(280px, 32vw, 420px);
+  height: clamp(400px, 55vh, 600px);
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--c-border-gold);
+  background: var(--c-navy-surface);
+  backdrop-filter: blur(12px);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s var(--ease-cinematic), border-color 0.4s ease;
+  cursor: pointer;
+}
+
+.gallery-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--c-gold-primary);
+}
+
+.card-num {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--c-gold-primary);
+  letter-spacing: 0.2em;
+}
+
+.gallery-card-badge {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  background: rgba(245, 184, 97, 0.15);
+  color: var(--c-gold-primary);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gallery-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  line-height: 1.2;
+  color: var(--c-ivory);
+  margin-bottom: 0.6rem;
+}
+
+.gallery-card-desc {
+  font-size: 0.9rem;
+  color: var(--c-ivory-dim);
+  font-weight: 300;
+}
