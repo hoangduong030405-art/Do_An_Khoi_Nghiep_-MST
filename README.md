@@ -138,6 +138,6 @@ flutter run
 - **Chính sách vòng đời & Xóa liên kết theo tầng (Cascade):** Mỗi lộ trình chỉ có tối đa 1 liên kết hoạt động tại một thời điểm; khi tạo link mới, link cũ sẽ bị vô hiệu hóa tức thì. Khi người dùng xóa lộ trình hoặc xóa tài khoản, toàn bộ các bản ghi liên kết chia sẻ liên quan tự động bị xóa triệt để nhờ ràng buộc khóa ngoại `ON DELETE CASCADE`.
 
 WEB
-https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/
+[https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/](https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/3d/)
 APP
 https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/app/
