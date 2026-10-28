@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>HUEGO — Du Lịch Cố Đô 3D | Khám Phá Di Sản Số Hoàng Gia Huế</title>
+  
+  <!-- SEO & OpenGraph -->
+  <meta name="description" content="HUEGO — Ứng dụng trải nghiệm du lịch số 3D Cố Đô Huế. Cất cánh lướt qua Sông Hương, Chùa Thiên Mụ, Quần thể Lăng tẩm và Đại Nội Hoàng Thành qua góc nhìn điện ảnh." />
+  <meta name="keywords" content="HUEGO, Du lịch Huế 3D, App du lịch Huế, Sông Hương, Đại Nội Huế, Chùa Thiên Mụ, Lăng Khải Định, Di sản số Huế" />
+  <meta property="og:title" content="HUEGO — Khám Phá Di Sản Số Cố Đô Huế Trong Không Gian 3D" />
+  <meta property="og:description" content="Chuyến bay điện ảnh 3D cuộn trang dẫn lối du khách qua những tuyệt tác ngàn năm của Cố Đô Huế." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0d081e" />
+
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+
+  <!-- Google Fonts: Hoàng Gia & Hiện Đại (Hỗ trợ chuẩn tiếng Việt) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Main Styles -->
+  <script type="module" crossorigin src="./assets/index-AT2-hPUR.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CDR6EYcE.css">
+</head>
+<body>
+
+  <!-- 1. PRELOADER & MASK REVEAL -->
+  <div id="preloader">
+    <div class="preloader-header">
+      <div class="preloader-brand">HUEGO // CỐ ĐÔ 3D</div>
+      <div class="preloader-coords">FLIGHT HUE-2026 // CỐ ĐÔ HUẾ 16°28'N</div>
+    </div>
+    <div class="preloader-center">
+      <div id="preloader-percent">00%</div>
+      <div id="preloader-status">KHỞI TẠO KHÔNG GIAN DI SẢN SỐ HUẾ...</div>
+    </div>
+    <div class="preloader-footer">
+      <div class="preloader-progress-track">
+        <div id="preloader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. GLOBAL TOP SCROLL PROGRESS -->
+  <div id="global-scroll-progress"></div>
+
+  <!-- 3. CUSTOM CURSOR -->
+  <div id="custom-cursor"></div>
+  <div id="cursor-follower">
+    <span id="cursor-badge"></span>
+  </div>
+
+  <!-- 4. FIXED WEBGL 3D CANVAS -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- 5. FLIGHT HUD (TELEMETRY OVERLAY) -->
+  <aside class="flight-hud" aria-label="Flight Telemetry">
+    <div class="hud-item">
+      <span class="hud-label">Độ Cao</span>
+      <span class="hud-value" id="hud-altitude">3,200 M</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">Tốc Độ</span>
+      <span class="hud-value" id="hud-speed">460 KM/H</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">Hướng Bay</span>
+      <span class="hud-value" id="hud-heading">168° S</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">Chặng Hiện Tại</span>
+      <span class="hud-value" id="hud-waypoint">VÒM TRỜI CỐ ĐÔ // NÚI NGỰ BÌNH</span>
+    </div>
+  </aside>
+
+  <!-- 6. SITE HEADER & NAVIGATION -->
+  <header class="site-header">
+    <a href="#hero" class="brand-wrapper" data-cursor="Trang chủ">
+      <svg class="brand-emblem" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" stroke="#f5b861" stroke-width="1.6" />
+        <path d="M20 5 L23 15 L33 18 L23 21 L20 33 L17 21 L7 18 L17 15 Z" fill="#f5b861" />
+        <circle cx="20" cy="19" r="2.5" fill="#fff" />
+      </svg>
+      <div>
+        <div class="brand-title">HUEGO</div>
+        <div class="brand-tagline">Di Sản Số Cố Đô</div>
+      </div>
+    </a>
+
+    <nav class="nav-links" aria-label="Main Navigation">
+      <a href="#songhuong" data-cursor="Khám Phá">Sông Hương</a>
+      <a href="#thienmu" data-cursor="Khám Phá">Thiên Mụ</a>
+      <a href="#langtam" data-cursor="Khám Phá">Lăng Tẩm</a>
+      <a href="#gallery" data-cursor="Bộ sưu tập">Trải Nghiệm 3D</a>
+      <a href="#impact" data-cursor="Số liệu">Đánh Giá</a>
+    </nav>
+
+    <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="header-cta-btn magnetic-btn" data-cursor="Mở Web">
+      <span class="btn-text">Vào Web HUEGO ↗</span>
+    </a>
+  </header>
+
+  <!-- 7. MAIN SCROLL-DRIVEN CONTENT -->
+  <main id="page-wrapper">
+
+    <!-- HERO SECTION -->
+    <section class="flight-section" id="hero">
+      <div class="hero-meta">APP DU LỊCH HUẾ 3D // HÀNH TRÌNH DI SẢN HOÀNG GIA</div>
+      <h1 class="hero-title">
+        <span class="char">H</span><span class="char">U</span><span class="char">E</span><span class="char">G</span><span class="char">O</span>
+        <span class="char">&nbsp;</span>
+        <span class="char">—</span>
+        <span class="char">&nbsp;</span>
+        <span class="char">C</span><span class="char">h</span><span class="char">ạ</span><span class="char">m</span>
+        <span class="char">&nbsp;</span>
+        <span class="char">V</span><span class="char">à</span><span class="char">o</span>
+        <br />
+        <span class="char">D</span><span class="char">i</span>
+        <span class="char">&nbsp;</span>
+        <span class="char">S</span><span class="char">ả</span><span class="char">n</span>
+        <span class="char">&nbsp;</span>
+        <span class="char">C</span><span class="char">ố</span>
+        <span class="char">&nbsp;</span>
+        <span class="char">Đ</span><span class="char">ô</span>
+        <span class="char">&nbsp;</span>
+        <span class="char">H</span><span class="char">u</span><span class="char">ế</span>
+      </h1>
+      <p class="hero-subtitle">
+        Ứng dụng du lịch thông minh dẫn lối du khách bay xuyên không gian 3D, tái hiện vàng son triều Nguyễn qua lăng kính công nghệ số.
+      </p>
+      <div class="hero-cta-group">
+        <a href="#songhuong" class="primary-btn magnetic-btn" data-cursor="Khám phá">
+          <span class="btn-text">Bay Khám Phá 3D</span>
+        </a>
+        <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="secondary-btn magnetic-btn" data-cursor="Vào Web">
+          <span class="btn-text">Vào Web HUEGO ↗</span>
+        </a>
+      </div>
+      <div class="scroll-prompt">
+        <span>Cuộn để cất cánh qua Xứ Huế</span>
+        <div class="scroll-indicator-line"></div>
+      </div>
+    </section>
+
+    <!-- DESTINATION 1: SÔNG HƯƠNG & CẦU TRÀNG TIỀN -->
+    <section class="flight-section" id="songhuong">
+      <div class="content-card card-left">
+        <span class="card-tag">ĐIỂM ĐẾN #01 // 16°28'N 107°35'E</span>
+        <h2 class="card-title">Dòng Sông Hương — Dải Lụa Lam Ngọc Xứ Huế</h2>
+        <p class="card-desc">
+          Camera hạ thấp lướt sát làn nước biếc Sông Hương, nơi dòng chảy nghìn năm êm đềm ôm lấy Kinh thành cổ kính, phản chiếu ráng chiều hoàng hôn tím biếc và bóng cầu Tràng Tiền duyên dáng.
+        </p>
+        <a href="#thienmu" class="card-link" data-cursor="Tiếp tục">
+          <span>Ngược Dòng Lên Thiên Mụ</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- DESTINATION 2: CHÙA THIÊN MỤ & ĐÊM HOA ĐĂNG -->
+    <section class="flight-section" id="thienmu">
+      <div class="content-card card-right">
+        <span class="card-tag">ĐIỂM ĐẾN #02 // 16°27'N 107°32'E</span>
+        <h2 class="card-title">Tháp Phước Duyên — Đêm Hoa Đăng Sông Hương</h2>
+        <p class="card-desc">
+          Hòa mình vào không gian linh thiêng huyền ảo với hơn 2.200 đóa hoa đăng ngũ sắc bập bềnh trên mặt nước, lắng nghe tiếng chuông chùa Thiên Mụ ngân nga giữa làn sương đêm Cố Đô.
+        </p>
+        <a href="#langtam" class="card-link" data-cursor="Tiếp tục">
+          <span>Bay Về Miền Lăng Tẩm</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- DESTINATION 3: QUẦN THỂ LĂNG TẨM & ĐỒI VỌNG CẢNH -->
+    <section class="flight-section" id="langtam">
+      <div class="content-card card-left">
+        <span class="card-tag">ĐIỂM ĐẾN #03 // 16°23'N 107°35'E</span>
+        <h2 class="card-title">Quần Thể Lăng Tẩm — Tuyệt Tác Núi Ngự Đồi Thông</h2>
+        <p class="card-desc">
+          Vút bay qua những đồi thông thơ mộng của Lăng Khải Định, Tự Đức và Minh Mạng. Nơi kiến trúc cung đình đỉnh cao hòa quyện cùng thuật phong thủy non nước thiêng liêng.
+        </p>
+        <a href="#gallery" class="card-link" data-cursor="Tiếp tục">
+          <span>Xem Tính Năng App HUEGO</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- FEATURED EXPERIENCES: HORIZONTAL 3D GALLERY (HUEGO APP FEATURES) -->
+    <section id="gallery">
+      <div class="gallery-header">
+        <div class="gallery-tag">HỆ SINH THÁI HUEGO</div>
+        <h2 class="gallery-title">Trải Nghiệm Du Lịch Số Độc Bản</h2>
+      </div>
+      <div class="gallery-viewport">
+        <div id="gallery-track">
+          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
+            <span class="card-num">01</span>
+            <span class="gallery-card-badge">Thực Tế Ảo</span>
+            <h3 class="gallery-card-title">VR Hoàng Thành 3D</h3>
+            <p class="gallery-card-desc">Tái hiện lầu Ngũ Phụng, Điện Thái Hòa và Tử Cấm Thành thời thịnh trị dưới dạng 3D tương tác đa chiều. Bấm để trải nghiệm ngay ↗</p>
+          </a>
+          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
+            <span class="card-num">02</span>
+            <span class="gallery-card-badge">Âm Nhạc</span>
+            <h3 class="gallery-card-title">Ca Huế Sông Hương</h3>
+            <p class="gallery-card-desc">Đặt chỗ thưởng thức Nhã nhạc Cung đình trên thuyền rồng, kết nối trực tiếp các nghệ nhân di sản. Bấm để trải nghiệm ngay ↗</p>
+          </a>
+          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
+            <span class="card-num">03</span>
+            <span class="gallery-card-badge">Bảo Tàng Số</span>
+            <h3 class="gallery-card-title">Cổ Vật Triều Nguyễn 3D</h3>
+            <p class="gallery-card-desc">Xoay ngắm 360 độ ngọc tỷ truyền quốc, mũ bình thiên, áo phụng hoàng gia cùng thuyết minh âm thanh. Bấm để trải nghiệm ngay ↗</p>
+          </a>
+          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
+            <span class="card-num">04</span>
+            <span class="gallery-card-badge">Ẩm Thực</span>
+            <h3 class="gallery-card-title">Bản Đồ Ẩm Thực Cố Đô</h3>
+            <p class="gallery-card-desc">Dẫn đường AR tìm đến quán bánh bèo nậm lọc gia truyền, bún bò mệ Kéo và tiệc chè tiến vua. Bấm để trải nghiệm ngay ↗</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NUMBERS & REVIEWS SECTION (HUEGO APP IMPACT) -->
+    <section class="flight-section" id="impact">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" data-counter-target="99.8" data-counter-suffix="%">0%</div>
+          <div class="stat-label">Hài Lòng Từ Du Khách</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-counter-target="150" data-counter-prefix="+" data-counter-suffix="">0</div>
+          <div class="stat-label">Di Tích Số Hóa 3D</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-counter-target="500" data-counter-prefix="+" data-counter-suffix="K">0</div>
+          <div class="stat-label">Lượt Tải Ứng Dụng HUEGO</div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <p class="testimonial-quote">
+          “HUEGO đã biến những trang sử triều Nguyễn và từng viên gạch rêu phong của Cố Đô Huế thành một trải nghiệm sống động, trực quan và đầy cảm xúc trong lòng bàn tay.”
+        </p>
+        <div class="testimonial-author">
+          Hội Đồng Di Sản Văn Hóa & Du Lịch Tỉnh Thừa Thiên Huế
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA SECTION (ENTER HUEGO WEB PLATFORM) -->
+    <section class="flight-section" id="cta">
+      <div class="cta-box">
+        <div class="cta-tag">HỘI TỤ DI SẢN // NỀN TẢNG HUEGO WEB</div>
+        <h2 class="cta-title">Sẵn Sàng Cho Chuyến Du Hành Cố Đô Của Bạn?</h2>
+        <p class="cta-subtitle">
+          Truy cập ngay nền tảng web thông minh HUEGO để mở khóa bản đồ số hơn 4.350 địa điểm di tích, ẩm thực, bảo tàng 3D và Trợ lý AI Mệ Huế bản địa.
+        </p>
+        <div style="display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;">
+          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="primary-btn magnetic-btn" id="open-booking-btn" data-cursor="Vào Web">
+            <span class="btn-text">Vào Ngay Web HUEGO ↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer" id="footer">
+      <div class="footer-top">
+        <div class="footer-brand">HUEGO — DU LỊCH CỐ ĐÔ 3D</div>
+        <nav class="footer-nav">
+          <a href="#hero">Trang Chủ</a>
+          <a href="#songhuong">Sông Hương</a>
+          <a href="#thienmu">Thiên Mụ</a>
+          <a href="#langtam">Lăng Tẩm</a>
+          <a href="#gallery">Trải Nghiệm 3D</a>
+          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" style="color: var(--c-gold-primary);">Vào Web HUEGO ↗</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2026 HUEGO TRAVEL ECOSYSTEM. Nền tảng Du lịch Thông minh & Di sản Số Cố Đô Huế.</div>
+        <div>TỌA ĐỘ KINH THÀNH: 16°28'10"N 107°34'40"E</div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Script Entry Point -->
+</body>
+</html>
