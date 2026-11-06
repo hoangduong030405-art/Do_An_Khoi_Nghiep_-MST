@@ -255,23 +255,22 @@
 
     const v = place.vertical || place.v || 'tour';
     const name = place.name_vi || place.name || '';
-    const fallbackPhoto = getRealPhoto(v, name);
 
     if (place.imageStatus === 'hidden' || place.imageStatus === 'missing' || place.imageStatus === 'broken') {
-      return fallbackPhoto;
+      return window.generateDynamicSvgPlaceholder ? window.generateDynamicSvgPlaceholder(v, name) : getRealPhoto(v, name);
     }
 
     // Nếu có coverPhotoUrl hoặc img hợp lệ
     const candidate = place.coverPhotoUrl || place.img;
     if (candidate && typeof candidate === 'string' && candidate.trim()) {
-      // Nếu là link Cloudflare R2 cũ đã ngừng hoạt động thì fallback về ảnh thật theo danh mục
-      if (candidate.includes('r2.dev')) {
-        return fallbackPhoto;
+      if (candidate.startsWith('http://') || candidate.startsWith('https://')) {
+        return candidate;
       }
       return normalizeAssetUrl(candidate);
     }
 
-    return fallbackPhoto;
+    // Nếu chưa có ảnh thực tế riêng, hiển thị thẻ SVG chuẩn nhận diện HUEGO theo đúng tên địa danh
+    return window.generateDynamicSvgPlaceholder ? window.generateDynamicSvgPlaceholder(v, name) : getRealPhoto(v, name);
   };
 
   // 5. Trình xử lý onerror cho mọi thẻ <img> trong ứng dụng (Đảm bảo 100% không vỡ ảnh)
@@ -279,21 +278,9 @@
     if (!img) return;
     const v = vertical || img.getAttribute('data-vertical') || 'tour';
     const n = name || img.getAttribute('data-name') || img.alt || '';
-    const realPhoto = getRealPhoto(v, n);
 
-    // Tránh vòng lặp vô hạn nếu ảnh realPhoto cũng bị lỗi
-    if (img.src && (img.src.endsWith(realPhoto) || img.src === realPhoto)) {
-      img.onerror = null;
-      img.src = window.generateDynamicSvgPlaceholder(v, n);
-      return;
-    }
-
-    img.onerror = function() {
-      this.onerror = null;
-      this.src = window.generateDynamicSvgPlaceholder(v, n);
-    };
-
-    img.src = realPhoto;
+    img.onerror = null;
+    img.src = window.generateDynamicSvgPlaceholder ? window.generateDynamicSvgPlaceholder(v, n) : getRealPhoto(v, n);
   };
 
   // Khởi động đồng bộ config
