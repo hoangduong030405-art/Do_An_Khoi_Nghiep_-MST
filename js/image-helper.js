@@ -79,20 +79,134 @@
   }
   window.normalizeAssetUrl = normalizeAssetUrl;
 
-  // Lấy ảnh chụp thực tế theo danh mục và tên địa danh
+  // Lấy ảnh chụp thực tế theo danh mục và tên địa danh chính xác cao
   function getRealPhoto(vertical, name) {
     const n = (name || '').toLowerCase();
-    if (n.includes('lotteria') || n.includes('kfc') || n.includes('jollibee') || n.includes('mcdonald') || n.includes('burger') || n.includes('pizza') || n.includes('gà rán') || n.includes('ga ran') || n.includes('fast food') || n.includes('fastfood') || n.includes('dookki')) {
+
+    // 1. Thuyền rồng / Ca Huế / Bến thuyền / Bao Vinh
+    if (n.includes('thuyền rồng') || n.includes('ca huế') || n.includes('thuyen rong') || n.includes('du thuyền') || n.includes('bến thuyền') || n.includes('bao vinh') || n.includes('boat')) {
+      return normalizeAssetUrl('/images/pois/thuyen-rong-song-huong.webp');
+    }
+    // 2. Cổ phục / Áo dài / Cho thuê trang phục
+    if (n.includes('cổ phục') || n.includes('áo dài') || n.includes('ao dai') || n.includes('co phuc') || n.includes('nhat binh') || n.includes('nhật bình') || n.includes('trang phục')) {
+      return normalizeAssetUrl('/images/pois/co-phuc-hue.webp');
+    }
+    // 3. Tranh mộc bản / Vẽ tranh / Mỹ thuật / Tranh tường
+    if (n.includes('mộc bản') || n.includes('moc ban') || n.includes('tranh tường') || n.includes('tranh tuong') || n.includes('vẽ tranh') || n.includes('hội họa') || n.includes('tranh thêu')) {
+      return normalizeAssetUrl('/images/pois/tranh-moc-ban-hue.webp');
+    }
+    // 4. Nhà cổ / Nhà rường / Vườn nhà cổ / Tôn nữ viên
+    if (n.includes('nhà cổ') || n.includes('nhà rường') || n.includes('nha co') || n.includes('nha ruong') || n.includes('tôn nữ viên')) {
+      return normalizeAssetUrl('/images/pois/nha-ruong-hue.webp');
+    }
+    // 5. Thanh trà Thủy Biều / Vườn cây
+    if (n.includes('thanh trà') || n.includes('thủy biều') || n.includes('thuy bieu')) {
+      return normalizeAssetUrl('/images/pois/thanh-tra-thuy-bieu.webp');
+    }
+    // 6. Cây cổ thụ / Cây bàng
+    if (n.includes('cây bàng') || n.includes('cổ thụ') || n.includes('cây đa') || n.includes('cay bang') || n.includes('co thu')) {
+      return normalizeAssetUrl('/images/pois/cay-co-thu-hue.webp');
+    }
+    // 7. Công ty du lịch / Lữ hành / Travel / Tourist
+    if (n.includes('du lịch') || n.includes('travel') || n.includes('tourist') || n.includes('lữ hành') || n.includes('vietnamtourism')) {
+      return normalizeAssetUrl('/images/pois/du-lich-hue-tour.webp');
+    }
+    // 8. Chùa chiền / Tự / Tịnh thất / Tu viện (xoay tua 2 ảnh kiến trúc chùa tuyệt đẹp)
+    if (n.includes('chùa') || n.includes('chua ') || n.includes('tịnh thất') || n.includes('thiền viện') || n.includes('tu viện') || n.includes('niệm giang') || n.includes('tổ đình')) {
+      const hash = n.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      return hash % 2 === 0 ? normalizeAssetUrl('/images/pois/chua-co-hue.webp') : normalizeAssetUrl('/images/pois/chua-tam-quan.webp');
+    }
+    // 9. Lăng tẩm / Lăng mộ / Bia mộ (ảnh lăng tẩm Cố Đô Huế thực tế)
+    if (n.includes('lăng ') || n.includes('lang ') || n.includes('lăng mộ') || n.includes('bia mộ') || n.includes('tomb')) {
+      return normalizeAssetUrl('/images/pois/lang-kien-thai-vuong.webp');
+    }
+    // 10. Đình làng / Miếu / Đền
+    if (n.includes('đình làng') || n.includes('dinh lang') || n.includes('miếu') || n.includes('đền thờ')) {
+      return normalizeAssetUrl('/images/pois/dinh-lang-hue.webp');
+    }
+    // 11. Sửa xe máy / Garage ô tô
+    if (n.includes('sửa xe') || n.includes('sua xe') || n.includes('gara') || n.includes('garage') || n.includes('vá xe') || n.includes('bảo trì xe') || n.includes('phụ tùng')) {
+      return normalizeAssetUrl('/images/pois/sua-xe-hue.webp');
+    }
+    // 12. Rửa xe
+    if (n.includes('rửa xe') || n.includes('rua xe') || n.includes('bãi rửa')) {
+      return normalizeAssetUrl('/images/pois/rua-xe-hue.webp');
+    }
+    // 13. Cây xăng / Petrolimex
+    if (n.includes('xăng') || n.includes('petrolimex') || n.includes('nhiên liệu')) {
+      return normalizeAssetUrl('/images/pois/cay-xang-hue.webp');
+    }
+    // 14. Ngân hàng / ATM
+    if (n.includes('ngân hàng') || n.includes('bank') || n.includes('atm') || n.includes('vietcombank') || n.includes('bidv') || n.includes('agribank') || n.includes('viettinbank')) {
+      return normalizeAssetUrl('/images/pois/ngan-hang-atm.webp');
+    }
+    // 15. Giặt ủi / Giặt là
+    if (n.includes('giặt') || n.includes('laundry')) {
+      return normalizeAssetUrl('/images/pois/giat-ui-hue.webp');
+    }
+    // 16. Fastfood / Gà rán / Burger / Pizza
+    if (n.includes('lotteria') || n.includes('kfc') || n.includes('jollibee') || n.includes('pizza') || n.includes('burger') || n.includes('gà rán') || n.includes('ga ran') || n.includes('fastfood') || n.includes('fast food') || n.includes('dookki')) {
       return normalizeAssetUrl('/images/pois/fastfood-hue.webp');
     }
+    // 17. Bánh mì
+    if (n.includes('bánh mì') || n.includes('banh mi')) {
+      return normalizeAssetUrl('/images/pois/banh-mi-hue.webp');
+    }
+    // 18. Cơm hến / Bún hến
+    if (n.includes('cơm hến') || n.includes('com hen') || n.includes('bún hến') || n.includes('bun hen')) {
+      return normalizeAssetUrl('/images/pois/com-hen-hue.webp');
+    }
+    // 19. Bánh bèo / Nậm / Lọc / Bánh khoái / Bánh canh
+    if (n.includes('bánh bèo') || n.includes('banh beo') || n.includes('bánh nậm') || n.includes('bánh lọc') || n.includes('bánh khoái') || n.includes('bánh canh')) {
+      return normalizeAssetUrl('/images/pois/banh-beo-nam-loc.webp');
+    }
+    // 20. Chè Huế / Quán kem
+    if (n.includes('chè ') || n.includes('che ') || n.includes('chè huế') || n.includes('tiệm kem') || n.includes('quán chè')) {
+      return normalizeAssetUrl('/images/pois/che-hue.webp');
+    }
+    // 21. Quán chay / Ẩm thực chay
+    if (n.includes('chay') || n.includes('quán ăn chay') || n.includes('cơm chay')) {
+      return normalizeAssetUrl('/images/pois/am-thuc-chay-hue.webp');
+    }
+    // 22. Hải sản / Quán nhậu / Ốc
+    if (n.includes('hải sản') || n.includes('hai san') || n.includes('quán nhậu') || n.includes('quán ốc') || n.includes('ốc ') || n.includes('seafood')) {
+      return normalizeAssetUrl('/images/pois/hai-san-hue.webp');
+    }
+    // 23. Lẩu / Nướng / BBQ
+    if (n.includes('lẩu') || n.includes('nướng') || n.includes('bbq') || n.includes('grill') || n.includes('hotpot')) {
+      return normalizeAssetUrl('/images/pois/lau-nuong-hue.webp');
+    }
+    // 24. Tiệm bánh / Bakery
+    if (n.includes('bakery') || n.includes('bánh kem') || n.includes('bánh ngọt') || n.includes('tiệm bánh')) {
+      return normalizeAssetUrl('/images/pois/tiem-banh-hue.webp');
+    }
+    // 25. Trà sữa / Trà chanh
+    if (n.includes('trà sữa') || n.includes('tra sua') || n.includes('trà chanh') || n.includes('toco') || n.includes('gong cha')) {
+      return normalizeAssetUrl('/images/pois/tra-sua-hue.webp');
+    }
+    // 26. Cà phê
+    if (n.includes('cafe') || n.includes('cà phê') || n.includes('coffee')) {
+      return normalizeAssetUrl('/images/pois/ca-phe-muoi-hue.webp');
+    }
+    // 27. Bún bò Huế
+    if (n.includes('bún bò') || n.includes('bun bo') || n.includes('quán bún')) {
+      return normalizeAssetUrl('/images/pois/bun-bo-hue.webp');
+    }
+    // 28. Khách sạn / Hotel / Resort
+    if (n.includes('hotel') || n.includes('resort') || n.includes('khách sạn')) {
+      return normalizeAssetUrl('/images/pois/khach-san-hue.webp');
+    }
+    // 29. Homestay / Nhà nghỉ
+    if (n.includes('homestay') || n.includes('nhà nghỉ')) {
+      return normalizeAssetUrl('/images/pois/homestay-hue.webp');
+    }
+    // 30. Chợ Bến Ngự
     if (n.includes('bến ngự') || n.includes('ben ngu')) {
       return normalizeAssetUrl('/images/pois/cho-ben-ngu-market.webp');
     }
+    // 31. Bảo tàng Hồ Chí Minh
     if (n.includes('hồ chí minh') || n.includes('ho chi minh')) {
       return normalizeAssetUrl('/images/pois/bao-tang-ho-chi-minh-hue.webp');
-    }
-    if (n.includes('dục đức') || n.includes('duc duc')) {
-      return normalizeAssetUrl('/images/pois/lang-duc-duc.webp');
     }
 
     const v = vertical || 'tour';
