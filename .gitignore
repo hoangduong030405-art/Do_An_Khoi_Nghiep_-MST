@@ -33,3 +33,4 @@ scratch_tour_list.txt
 UPGRADE_PROMPT*.md
 PHASE_*.md
 .opencode/
+node_modules

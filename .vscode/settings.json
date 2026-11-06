@@ -1,7 +1,7 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "files.autoSave": "onFocusChange",
+  "files.autoSave": "off",
   "typescript.tsdk": "backend/node_modules/typescript/lib",
   "dart.flutterSdkPath": "C:\\Users\\PREDATOR\\flutter",
   "terminal.integrated.env.windows": {
