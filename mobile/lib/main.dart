@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'core/theme/app_theme.dart';
 import 'features/map/presentation/screens/huego_map_screen.dart';
 import 'features/itinerary/presentation/screens/itinerary_planner_screen.dart';
@@ -72,7 +71,7 @@ class _HuegoAppState extends State<HuegoApp> {
 }
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({Key? key}) : super(key: key);
+  const MainNavigationScreen({super.key});
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();

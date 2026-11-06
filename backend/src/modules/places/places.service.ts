@@ -45,7 +45,7 @@ export class PlacesService {
           environmentType: p.vertical === 'tour' || p.vertical === 'service' ? 'OUTDOOR' : 'INDOOR',
           ticketPriceVnd: 0,
           greenRewardPoints: 25,
-          thumbnailUrl: p.coverPhotoUrl || 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp',
+          thumbnailUrl: p.coverPhotoUrl || '/images/pois/dai-noi-hue.webp',
           googleRating: p.googleRating,
           googleReviewCount: p.googleReviewCount,
         };

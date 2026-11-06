@@ -10,7 +10,7 @@ import '../../data/place_dto.dart';
 import '../../../ai_guide/presentation/widgets/audio_guide_modal.dart';
 
 class HuegoMapScreen extends StatefulWidget {
-  const HuegoMapScreen({Key? key}) : super(key: key);
+  const HuegoMapScreen({super.key});
 
   @override
   State<HuegoMapScreen> createState() => _HuegoMapScreenState();
@@ -290,12 +290,14 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
                   ApiEndpoints.unlockGeofence,
                   data: {'qrToken': qrCtrl.text},
                 );
+                if (!mounted) return;
                 if (response.statusCode == 200 && response.data['unlocked'] == true) {
                   _showUnlockedMilestoneDialog(response.data);
                 } else if (response.data['message'] != null) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.data['message'])));
                 }
               } catch (e) {
+                if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Mã không hợp lệ hoặc lỗi kết nối')));
               }
             },
@@ -313,8 +315,8 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         backgroundColor: Colors.white,
-        title: Row(
-          children: const [
+        title: const Row(
+          children: [
             Icon(Icons.stars_rounded, color: HuegoTheme.imperialGold, size: 36),
             SizedBox(width: 8),
             Text('MỞ KHÓA THÀNH CÔNG!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: HuegoTheme.royalViolet)),
@@ -365,6 +367,24 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
     );
   }
 
+  bool _isNarratableHeritagePlace(PlaceDto place) {
+    final cat = place.categoryCode.toUpperCase().trim();
+    if (['CAFE', 'CUISINE', 'STAY', 'SERVICE', 'RENTAL', 'GAS', 'SPECIALTY'].contains(cat)) {
+      return false;
+    }
+
+    final name = place.name.toLowerCase();
+    final id = place.id.toLowerCase();
+    final combined = '$id $name';
+
+    final excludeRegex = RegExp(r'cà phê|cafe|bún bò|cơm hến|bánh bèo|bánh ép|bánh khoái|chè|khách sạn|hotel|homestay|resort|cây xăng|atm|ngân hàng|siêu thị|quán nhậu|spa|phòng khám|thuốc|xe dịch vụ|tour|thuê xe|đại lý|rú chá|ru cha|đầm chuồn|phá tam giang|thác bồ ghè|suối mơ|thác đổ|vườn lan|vườn hoa|trại thiếu nhi', caseSensitive: false);
+    if (excludeRegex.hasMatch(combined)) return false;
+
+    final heritageRegex = RegExp(r'đại nội|hoàng thành|tử cấm thành|ngọ môn|thái hòa|cửu đỉnh|thế miếu|thế tổ miếu|thiên mụ|long an|cổ vật|khải định|tự đức|minh mạng|gia long|thiệu trị|đồng khánh|dục đức|an định|hòn chén|tịnh tâm|cầu ngói|thủy xuân|từ đàm|báo quốc|từ hiếu|quốc học|bảo tàng|đông ba|hổ quyền|voi ré|duyệt thị đường|tàng thư lâu|kỳ đài|cột cờ|thần công|chín hầm|bunker|boongke|đàn âm hồn|âm hồn|khâm sứ|bác hồ|phan bội châu|nguyễn chí thanh|tràng tiền|trường tiền|vọng cảnh|hải vân|đồn nhất|bạch mã|hương giang|sông hương|ngự bình|thuận an|trấn hải thành', caseSensitive: false);
+
+    return heritageRegex.hasMatch(combined);
+  }
+
   void _showPlaceDetailsModal(PlaceDto place) {
     showModalBottomSheet(
       context: context,
@@ -403,46 +423,48 @@ class _HuegoMapScreenState extends State<HuegoMapScreen> {
               place.environmentType == 'INDOOR' ? '🏛️ Không gian trong nhà (Tối ưu ngày mưa)' : '🌳 Không gian ngoài trời thoáng đãng',
               style: const TextStyle(fontSize: 13, color: HuegoTheme.textMuted),
             ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: HuegoTheme.royalViolet.withOpacity(0.06),
-                borderRadius: BorderRadius.circular(16),
+            if (_isNarratableHeritagePlace(place)) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: HuegoTheme.royalViolet.withOpacity(0.06),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.record_voice_over, color: HuegoTheme.royalViolet, size: 28),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Thuyết minh lịch sử và ký ức chiến tranh độc bản từ Trợ lý Mệ Huế.',
+                        style: TextStyle(fontSize: 13, height: 1.4),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                children: const [
-                  Icon(Icons.record_voice_over, color: HuegoTheme.royalViolet, size: 28),
-                  SizedBox(width: 12),
+              const SizedBox(height: 20),
+              Row(
+                children: [
                   Expanded(
-                    child: Text(
-                      'Lắng nghe câu chuyện lịch sử 13 đời vua triều Nguyễn và phong thủy kinh thành từ Trợ lý Mệ Huế.',
-                      style: TextStyle(fontSize: 13, height: 1.4),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        AudioGuideModal.show(context, place);
+                      },
+                      icon: const Icon(Icons.volume_up, color: Colors.white),
+                      label: const Text('Nghe Thuyết Minh AI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: HuegoTheme.royalViolet,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      AudioGuideModal.show(context, place);
-                    },
-                    icon: const Icon(Icons.volume_up, color: Colors.white),
-                    label: const Text('Nghe Thuyết Minh AI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: HuegoTheme.royalViolet,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            ],
           ],
         ),
       ),

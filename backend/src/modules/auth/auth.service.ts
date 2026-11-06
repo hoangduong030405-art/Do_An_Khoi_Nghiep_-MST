@@ -227,7 +227,7 @@ export class AuthService {
       throw new UnauthorizedException('Chế độ Demo hiện đang bị tắt trên máy chủ (DEMO_MODE=false)');
     }
     const demoRand = Math.floor(1000 + Math.random() * 9000);
-    const demoEmail = `demo.${demoRand}@huego.vn`;
+    const demoEmail = `demo.${demoRand}.${Date.now()}.${crypto.randomBytes(2).toString('hex')}@huego.vn`;
     const passwordHash = await this.hashPassword('Demo@Huego2026');
     const demoUser = this.userRepository.create({
       email: demoEmail,

@@ -1,0 +1,19 @@
+{
+  "name": "hue3d-landing-page",
+  "version": "1.0.0",
+  "description": "Trang web giới thiệu (Landing Page) hiện đại cho ứng dụng Web 3D Du lịch Huế",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.12"
+  }
+}
+

@@ -7,7 +7,16 @@ import { AskGuideDto, AdaptItineraryDto, ExplainPlaceStoryDto } from './dto/ai-r
 import { InMemoryDbService } from '../../database/in-memory-db.service';
 import { Place } from '../places/entities/place.entity';
 import { PlaceNarration } from '../places/entities/place-narration.entity';
-import { HUE_HERITAGE_STORIES } from './data/hue-heritage-stories';
+import {
+  HUE_HERITAGE_STORIES,
+  resolveBilingualPlaceNarration,
+  isNarratablePlace,
+} from './data/hue-heritage-stories';
+import {
+  MatchedPlaceContext,
+  matchQuestionLandmarks,
+  buildNaturalHueResponse,
+} from './data/hue-conversational-engine';
 
 @Injectable()
 export class AiAssistantService {
@@ -24,8 +33,8 @@ export class AiAssistantService {
     @InjectRepository(PlaceNarration)
     private readonly narrationRepo: Repository<PlaceNarration> = null as any,
   ) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (apiKey && apiKey !== 'your_gemini_api_key_here') {
+    const apiKey = (process.env.GEMINI_API_KEY || '').trim();
+    if (apiKey && apiKey !== 'your_gemini_api_key_here' && apiKey.startsWith('AIza')) {
       this.genAI = new GoogleGenerativeAI(apiKey);
     }
   }
@@ -77,86 +86,38 @@ export class AiAssistantService {
     const offTopicKeywords = [
       'bitcoin', 'crypto', 'tiền ảo', 'chứng khoán', 'forex',
       'giá btc', 'ethereum', 'lập trình python', 'java', 'giải phương trình',
-      'chiến tranh thế giới', 'tổng thống mỹ', 'elon musk'
+      'chiến tranh thế giới', 'tổng thống mỹ', 'elon musk',
     ];
     const qLower = question.toLowerCase();
     return offTopicKeywords.some((kw) => qLower.includes(kw));
   }
 
   /**
-   * Tìm kiếm ngữ cảnh di sản và bài thuyết minh từ Database
+   * Tìm kiếm ngữ cảnh di sản và bài thuyết minh từ Database đúng theo câu hỏi
    */
-  private async retrieveGroundedContext(question: string, nearbyPlaceName?: string): Promise<{
+  private async retrieveGroundedContext(
+    question: string,
+    nearbyPlaceName?: string,
+  ): Promise<{
     contextText: string;
     usedPlaceIds: string[];
-    matchedNarrations: Array<PlaceNarration & { placeName: string }>;
+    matchedContexts: MatchedPlaceContext[];
   }> {
-    const qLower = question.toLowerCase();
-    const usedPlaceIds: string[] = [];
-    const matchedNarrations: Array<PlaceNarration & { placeName: string }> = [];
-    const contextParts: string[] = [];
-
     try {
-      this.logger.log(`[Grounding Debug] repos: placeRepo=${!!this.placeRepo}, narrationRepo=${!!this.narrationRepo}`);
       const [narrations, places] = await Promise.all([
-        this.narrationRepo.find(),
-        this.placeRepo.find(),
+        this.narrationRepo ? this.narrationRepo.find() : Promise.resolve([]),
+        this.placeRepo ? this.placeRepo.find() : Promise.resolve([]),
       ]);
-      this.logger.log(`[Grounding Debug] loaded: narrations=${narrations.length}, places=${places.length}`);
 
-      const placeMap = new Map<string, Place>();
-      for (const p of places) {
-        placeMap.set(p.id, p);
-      }
-
-      for (const nar of narrations) {
-        const place = placeMap.get(nar.placeId);
-        const placeName = (place?.name || '').toLowerCase();
-        const placeId = nar.placeId.toLowerCase();
-
-        let matched = false;
-        if ((qLower.includes('đại nội') || qLower.includes('hoàng thành')) && (placeName.includes('đại nội') || placeId.includes('8f8b0596'))) matched = true;
-        else if ((qLower.includes('thái hòa') || qLower.includes('điện thái hòa')) && placeName.includes('thái hòa')) matched = true;
-        else if (qLower.includes('ngọ môn') && placeName.includes('ngọ môn')) matched = true;
-        else if (qLower.includes('thiên mụ') && placeName.includes('thiên mụ')) matched = true;
-        else if (qLower.includes('tự đức') && placeName.includes('tự đức')) matched = true;
-        else if (qLower.includes('khải định') && placeName.includes('khải định')) matched = true;
-        else if (qLower.includes('minh mạng') && placeName.includes('minh mạng')) matched = true;
-        else if (qLower.includes('gia long') && placeName.includes('gia long')) matched = true;
-        else if (qLower.includes('đồng khánh') && placeName.includes('đồng khánh')) matched = true;
-        else if ((qLower.includes('tràng tiền') || qLower.includes('trường tiền')) && placeName.includes('tràng tiền')) matched = true;
-        else if ((qLower.includes('cồn hến') || qLower.includes('cơm hến')) && (placeName.includes('cồn hến') || placeName.includes('hến'))) matched = true;
-        else if (qLower.includes('tịnh tâm') && placeName.includes('tịnh tâm')) matched = true;
-        else if (qLower.includes('đông ba') && placeName.includes('đông ba')) matched = true;
-        else if ((qLower.includes('cổ vật') || qLower.includes('long an')) && placeName.includes('cổ vật')) matched = true;
-        else if (nearbyPlaceName && placeName.includes(nearbyPlaceName.toLowerCase())) matched = true;
-
-        if (matched) {
-          usedPlaceIds.push(nar.placeId);
-          matchedNarrations.push({ ...nar, placeName: place?.name || 'Di tích Huế' });
-          contextParts.push(
-            `[Địa danh: ${place?.name || nar.placeId}]\n` +
-            `- Địa chỉ: ${place?.address || 'Huế'}\n` +
-            `- Thuyết minh chính thức: ${nar.shortText}\n` +
-            `- Lược sử chi tiết: ${nar.longText}\n` +
-            `- Nguồn tài liệu xác thực: ${nar.sources}\n` +
-            `- Giá vé: ${place?.ticketPriceVnd ? place.ticketPriceVnd.toLocaleString('vi-VN') + ' VNĐ' : 'Miễn phí hoặc theo quy định BQL'}`
-          );
-        }
-      }
+      return matchQuestionLandmarks(question, nearbyPlaceName, narrations, places);
     } catch (err: any) {
       this.logger.warn(`Lỗi tra cứu grounding context: ${err.message}`);
+      return matchQuestionLandmarks(question, nearbyPlaceName, [], []);
     }
-
-    return {
-      contextText: contextParts.join('\n\n'),
-      usedPlaceIds,
-      matchedNarrations,
-    };
   }
 
   /**
-   * Hỏi đáp với Hướng dẫn viên AI "Mệ Huế" (Grounded, có kiểm soát)
+   * Hỏi đáp với Hướng dẫn viên AI "Mệ Huế" (Grounded, tự nhiên, trả lời đúng trọng tâm câu hỏi)
    */
   async chatWithGuide(dto: AskGuideDto, userId: string = 'anonymous') {
     const startTime = Date.now();
@@ -168,7 +129,8 @@ export class AiAssistantService {
     // 2. Chống Prompt Injection
     if (this.isPromptInjection(question)) {
       return {
-        answer: 'Dạ thưa bạn, Mệ Huế là hướng dẫn viên du lịch Cố Đô và chỉ có thể trò chuyện về lịch sử, văn hóa, danh thắng và ẩm thực Huế thôi nhen. Bạn cứ hỏi Mệ về các di tích hay món ngon xứ Huế nì!',
+        answer:
+          'Dạ thưa bạn, Mệ Huế là hướng dẫn viên du lịch Cố Đô và chỉ có thể trò chuyện về lịch sử, văn hóa, danh thắng và ẩm thực Huế thôi nhen. Bạn cứ hỏi Mệ về các di tích hay món ngon xứ Huế nì!',
         source: 'fallback',
         grounded: false,
         usedPlaceIds: [],
@@ -179,7 +141,8 @@ export class AiAssistantService {
     // 3. Từ chối câu hỏi ngoài chủ đề
     if (this.isOffTopic(question)) {
       return {
-        answer: 'Dạ thưa quý khách, Mệ Huế chỉ am hiểu và đồng hành cùng bạn về lịch sử triều Nguyễn, di tích lăng tẩm và ẩm thực Cố Đô Huế thôi nợ. Những chuyện ngoài lề như tiền số, chứng khoán Mệ không rành mô nhen! Bạn có muốn Mệ gợi ý một vòng tham quan Đại Nội hay quán bún bò chuẩn vị không nợ?',
+        answer:
+          'Dạ thưa quý khách, Mệ Huế chỉ am hiểu và đồng hành cùng bạn về lịch sử triều Nguyễn, di tích lăng tẩm và ẩm thực Cố Đô Huế thôi nợ. Những chuyện ngoài lề như tiền số, chứng khoán Mệ không rành mô nhen! Bạn có muốn Mệ gợi ý một vòng tham quan Đại Nội hay quán bún bò chuẩn vị không nợ?',
         source: 'fallback',
         grounded: false,
         usedPlaceIds: [],
@@ -187,40 +150,36 @@ export class AiAssistantService {
       };
     }
 
-    // 4. Grounding Retrieval từ Database
-    const { contextText, usedPlaceIds, matchedNarrations } = await this.retrieveGroundedContext(
+    // 4. Grounding Retrieval từ Database (chỉ khớp những địa danh mà câu hỏi thực sự hỏi tới)
+    const { contextText, usedPlaceIds, matchedContexts } = await this.retrieveGroundedContext(
       question,
       currentNearbyPlace,
     );
 
-    // 5. Gọi Gemini với Timeout 8.000 ms nếu có API Key
+    // 5. Gọi Gemini với Timeout 8.000 ms nếu có API Key hợp lệ
     if (this.genAI) {
       try {
+        const rawModel = process.env.GEMINI_MODEL_NAME || 'gemini-2.5-flash';
+        const safeModel = rawModel.includes('3.8') ? 'gemini-2.5-flash' : rawModel;
+
         const systemInstruction = `
-          Bạn là "Mệ Huế" (O Huế AI) - Trợ lý du lịch và Hướng dẫn viên bản địa am hiểu sâu sắc của ứng dụng HUEGO (Khám phá Cố Đô Huế).
-          
-          QUY TẮC BẮT BUỘC VỀ DỮ KIỆN (GROUNDING):
-          1. CHỈ SỬ DỤNG thông tin lịch sử, năm tháng, số liệu được cung cấp trong phần [DỮ KIỆN XÁC THỰC CỐ ĐÔ] bên dưới. TUYỆT ĐỐI KHÔNG TỰ BỊA ĐẶT NĂM THÁNG, SỰ KIỆN LỊCH SỬ HAY NHÂN VẬT.
-          2. Về giờ mở cửa hoặc giá vé: NẾU dữ kiện không có, BẮT BUỘC phải nói rõ: "Dạ thông tin giờ mở cửa/giá vé cụ thể hiện chưa có trong dữ liệu xác thực, bạn vui lòng liên hệ ban quản lý di tích hoặc quầy vé tại điểm đến để nắm rõ nhen."
-          3. Nếu câu hỏi ngoài chủ đề du lịch Cố Đô Huế, lịch sự từ chối và hướng về di sản Huế.
-          4. Phong cách trả lời: Giọng điệu đôn hậu, nhã nhặn, ân cần của người Huế (xưng Mệ, gọi quý khách/bạn/người con; dùng thán từ mộc mạc: dạ, thưa, nhen, nợ...).
-          
-          [DỮ KIỆN XÁC THỰC CỐ ĐÔ]:
-          ${contextText || 'Chưa có trích xuất cụ thể cho địa danh này trong DB.'}
-        `;
+Bạn là "Mệ Huế" (O Huế AI) - Trợ lý du lịch và Hướng dẫn viên bản địa am hiểu sâu sắc của ứng dụng HUEGO (Khám phá Cố Đô Huế).
+
+NGUYÊN TẮC TRẢ LỜI TỰ NHIÊN & ĐÚNG TRỌNG TÂM:
+1. Trả lời TRỰC TIẾP, TỰ NHIÊN và ĐÚNG TRỌNG TÂM câu hỏi của du khách (ví dụ: hỏi giá vé thì báo giá vé, hỏi giờ mở cửa thì báo giờ mở cửa, hỏi món ăn cụ thể thì tư vấn đúng món đó kèm địa chỉ thật tại Huế, hỏi lịch trình thì thiết kế lịch trình theo đúng thời gian khách yêu cầu).
+2. Khi câu hỏi liên quan đến di tích có trong [DỮ KIỆN XÁC THỰC CỐ ĐÔ], BẮT BUỘC sử dụng chính xác năm tháng, số liệu và nguồn tư liệu đã cung cấp. TUYỆT ĐỐI KHÔNG tự bịa đặt năm tháng hay sự kiện lịch sử.
+3. Giọng điệu đôn hậu, duyên dáng, mộc mạc của người Huế (xưng "Mệ", gọi "bạn" hoặc "quý khách", dùng từ ngữ tự nhiên: dạ, nhen, nợ, nghe...). Trình bày rõ ràng, dễ đọc.
+
+[DỮ KIỆN XÁC THỰC CỐ ĐÔ]:
+${contextText || 'Sử dụng kiến thức thực tế về ẩm thực, văn hóa và du lịch Huế.'}
+        `.trim();
 
         const model = this.genAI.getGenerativeModel({
-          model: process.env.GEMINI_MODEL_NAME || 'gemini-2.5-flash',
+          model: safeModel,
           systemInstruction,
         });
 
-        let promptText = question;
-        if (currentNearbyPlace) {
-          promptText += `\n[Vị trí khách đang ở gần: ${currentNearbyPlace}]`;
-        }
-
-        // Thực thi gọi với Timeout 8 giây (8.000 ms)
-        const geminiPromise = model.generateContent(promptText);
+        const geminiPromise = model.generateContent(question);
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Gemini API call timed out after 8000ms')), 8000),
         );
@@ -229,7 +188,9 @@ export class AiAssistantService {
         const answer = result.response.text();
         const duration = Date.now() - startTime;
 
-        this.logger.log(`[AI Guide Chat] User: ${userId} | Places: [${usedPlaceIds.join(', ')}] | Source: gemini | ${duration}ms`);
+        this.logger.log(
+          `[AI Guide Chat] User: ${userId} | Places: [${usedPlaceIds.join(', ')}] | Source: gemini | ${duration}ms`,
+        );
 
         return {
           answer,
@@ -239,77 +200,39 @@ export class AiAssistantService {
           timestamp: new Date().toISOString(),
         };
       } catch (err: any) {
-        this.logger.warn(`Gemini API gặp sự cố hoặc timeout (${err.message}). Tự động fallback sang tri thức nội bộ từ DB.`);
+        this.logger.warn(
+          `Gemini API gặp sự cố hoặc timeout (${err.message}). Tự động chuyển sang bộ máy hội thoại tri thức Huế.`,
+        );
       }
     }
 
-    // 6. Heuristic Knowledge Engine fallback grounded trực tiếp từ DB
-    const fallbackAnswer = this.generateHueKnowledgeFallback(
+    // 6. Bộ máy hội thoại tri thức bản địa thông minh (Intent-aware Conversational Engine)
+    let liveWeather: any = null;
+    if (/mưa|nắng|thời tiết|nhiệt độ/i.test(question)) {
+      try {
+        liveWeather = await this.weatherService.getCurrentHueWeather();
+      } catch (_) {}
+    }
+
+    const fallbackAnswer = buildNaturalHueResponse(
       question,
-      language,
+      matchedContexts,
       currentNearbyPlace,
-      matchedNarrations,
+      liveWeather,
     );
 
     const duration = Date.now() - startTime;
-    this.logger.log(`[AI Guide Chat] User: ${userId} | Places: [${usedPlaceIds.join(', ')}] | Source: fallback | ${duration}ms`);
+    this.logger.log(
+      `[AI Guide Chat] User: ${userId} | Places: [${usedPlaceIds.join(', ')}] | Source: fallback | ${duration}ms`,
+    );
 
     return {
       answer: fallbackAnswer,
       source: 'fallback',
-      grounded: usedPlaceIds.length > 0 || matchedNarrations.length > 0,
+      grounded: usedPlaceIds.length > 0 || matchedContexts.length > 0,
       usedPlaceIds,
       timestamp: new Date().toISOString(),
     };
-  }
-
-  /**
-   * Fallback có kiểm soát: Trích xuất trực tiếp từ DB place_narrations và tri thức bản địa chuẩn
-   */
-  private generateHueKnowledgeFallback(
-    question: string,
-    lang: string,
-    nearbyPlace?: string,
-    matchedNarrations: Array<PlaceNarration & { placeName: string }> = [],
-  ): string {
-    const q = question.toLowerCase();
-
-    // Nếu đã khớp được bài thuyết minh chuẩn trong DB: trả lời bằng dữ liệu thật
-    if (matchedNarrations.length > 0) {
-      const nar = matchedNarrations[0];
-      const placeName = nar.placeName;
-      
-      // Nếu hỏi về giờ mở cửa
-      if (q.includes('giờ mở cửa') || q.includes('mấy giờ') || q.includes('thời gian mở cửa')) {
-        if (placeName.includes('Thiên Mụ')) {
-          return `Dạ thưa bạn, Chùa Thiên Mụ là chốn tu hành tôn nghiêm, thường mở cửa đón du khách và Phật tử từ sáng sớm (khoảng 06:00) đến chiều muộn hoàng hôn (khoảng 18:00) hàng ngày và không thu vé tham quan nhen! Bạn nên viếng chùa vào sáng sớm hoặc lúc chiều tà để cảm nhận trọn vẹn nét thanh tịnh và nghe tiếng chuông ngân bên sông Hương nhen.`;
-        }
-        return `Dạ thưa bạn, đối với ${placeName}, thông tin giờ mở cửa chính thức có thể thay đổi theo mùa của Trung tâm Bảo tồn Di tích Cố đô Huế (mùa hè thường từ 07:00 - 17:30, mùa đông từ 07:30 - 17:00). Bạn vui lòng kiểm tra trực tiếp tại quầy vé trước khi vào tham quan nhen!`;
-      }
-
-      // Nếu hỏi năm xây dựng hoặc lịch sử
-      if (q.includes('năm nào') || q.includes('xây năm') || q.includes('khởi công') || q.includes('lịch sử')) {
-        return `Dạ thưa bạn, Mệ kể bạn nghe về ${placeName} nhen:\n\n${nar.shortText}\n\n(Nguồn tư liệu xác thực: ${nar.sources})`;
-      }
-
-      return `Dạ chào bạn! Về ${placeName}, Mệ xin chia sẻ câu chuyện di sản được xác thực như sau nhen:\n\n${nar.shortText}`;
-    }
-
-    // Câu hỏi ẩm thực
-    if (q.includes('ẩm thực') || q.includes('ăn gì') || q.includes('món ngon') || q.includes('quán ăn') || q.includes('bún bò')) {
-      return `Dạ, ẩm thực xứ Huế có hơn một ngàn món từ phong vị cung đình thanh nhã đến các món dân dã đường phố. Mệ gợi ý bạn những món nhất định phải thử kèm địa chỉ truyền đời nhen:
-• Bún bò Huế Mụ Rơi (đường Nguyễn Du) chuẩn vị sả ruốc ngọt thanh từ xương.
-• Cơm hến Hoa Đông (bản địa gốc Cồn Hến) cay nồng đượm vị mắm ruốc, tóp mỡ giòn rụm.
-• Bánh bèo, nậm, lọc Bà Đỏ (đường Nguyễn Bỉnh Khiêm) dẻo thơm nóng hổi.
-• Chè hẻm 20 món Hùng Vương hoặc chè bột lọc bọc heo quay Mợ Tôn Đích cửa Thượng Tứ.`;
-    }
-
-    // Câu hỏi về thời tiết
-    if (q.includes('mưa') || q.includes('thời tiết')) {
-      return `Mưa Huế nổi tiếng thi vị và trầm mặc. Ngày mưa, Mệ khuyên bạn ghé các điểm trong nhà ấm cúng: Bảo tàng Cổ vật Cung đình Huế (Điện Long An), Không gian nghệ thuật Lê Bá Đặng, hoặc ghé nhà rường cổ Kim Long thưởng thức ấm trà Cung đình thơm thảo mộc nhen!`;
-    }
-
-    return `Dạ chào bạn! Mệ Huế rất hân hạnh đồng hành cùng bạn khám phá Cố Đô. Bạn cứ hỏi Mệ về lịch sử Đại Nội, lăng tẩm hoàng gia, các chùa cổ thiền môn hay những quán ăn vặt đậm đà xứ Huế nhen!`;
   }
 
   /**
@@ -328,7 +251,7 @@ export class AiAssistantService {
         `;
 
         const model = this.genAI.getGenerativeModel({
-          model: process.env.GEMINI_MODEL_NAME || 'gemini-2.5-flash',
+          model: 'gemini-2.5-flash',
           systemInstruction,
           generationConfig: { responseMimeType: 'application/json' },
         });
@@ -380,7 +303,8 @@ export class AiAssistantService {
               originalPlace: item.placeName,
               recommendedPlace: 'Bảo tàng Cổ vật Cung đình Huế & Không gian Trà Kim Long',
               envType: 'INDOOR',
-              culturalHighlight: 'Thưởng trà hoa sen trong không gian nhà rường cổ kính, chiêm ngưỡng bảo vật hoàng cung triều Nguyễn.',
+              culturalHighlight:
+                'Thưởng trà hoa sen trong không gian nhà rường cổ kính, chiêm ngưỡng bảo vật hoàng cung triều Nguyễn.',
               action: 'REPLACED',
             };
           }
@@ -398,7 +322,7 @@ export class AiAssistantService {
   }
 
   /**
-   * Thuyết minh chi tiết di tích từ DB hoặc fallback kịch bản
+   * Thuyết minh chi tiết di tích từ DB hoặc bài viết chuẩn di tích & danh thắng chiến tranh
    */
   async narratePlaceStory(dto: ExplainPlaceStoryDto) {
     if (this.narrationRepo) {
@@ -409,6 +333,7 @@ export class AiAssistantService {
         });
         if (nar) {
           return {
+            available: true,
             placeId: dto.placeId,
             placeName: nar.place?.name,
             audioNarrationScript: nar.shortText,
@@ -423,14 +348,38 @@ export class AiAssistantService {
       }
     }
 
-    const fallbackStory = HUE_HERITAGE_STORIES[dto.placeId] || {
+    // Tra cứu trong kho tư liệu chuẩn mực di tích lịch sử và du lịch thiên nhiên chiến tranh
+    const resolved = resolveBilingualPlaceNarration({
       placeId: dto.placeId,
-      placeName: 'Di tích Cố Đô Huế',
-      audioNarrationScript: 'Chào mừng bạn đến với Cố Đô Huế, vùng đất di sản ngàn năm văn hiến bên dòng sông Hương thơ mộng.',
-      secretHistoricalFact: 'Hệ thống di tích Cố đô Huế lưu giữ trọn vẹn diện mạo kinh đô phong kiến phương Đông.',
-      photoSpotAdvice: 'Chụp ảnh cùng trang phục truyền thống áo dài ngũ thân.',
+      placeName: dto.placeName,
+      category: dto.category,
+      address: dto.address,
+      language: dto.language,
+    });
+
+    if (resolved) {
+      return {
+        available: true,
+        placeId: dto.placeId,
+        placeName: resolved.placeName,
+        audioNarrationScript: resolved.audioNarrationScript,
+        secretHistoricalFact: resolved.secretHistoricalFact,
+        photoSpotAdvice: resolved.photoSpotAdvice,
+        localSpecialtyPairing: resolved.localSpecialtyPairing,
+        ecoGreenTip: resolved.ecoGreenTip,
+        kind: resolved.kind,
+        language: resolved.language,
+      };
+    }
+
+    // Không thuộc diện di tích lịch sử hoặc danh thắng chiến tranh -> trả về available = false
+    return {
+      available: false,
+      placeId: dto.placeId,
+      placeName: dto.placeName || 'Địa danh không thuộc diện thuyết minh',
+      message:
+        'Địa điểm này không có thuyết minh riêng (hệ thống chỉ cung cấp bài thuyết minh chuẩn xác cho các di tích lịch sử và danh lam thắng cảnh thiên nhiên gắn liền với lịch sử - chiến tranh của Huế).',
     };
-    return fallbackStory;
   }
 
   /**
@@ -481,7 +430,8 @@ export class AiAssistantService {
 
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
       },
     });
 

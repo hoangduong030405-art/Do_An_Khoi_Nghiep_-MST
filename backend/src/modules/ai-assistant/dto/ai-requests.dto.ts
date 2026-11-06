@@ -56,12 +56,39 @@ export class AdaptItineraryDto {
 
 export class ExplainPlaceStoryDto {
   @ApiProperty({
-    description: 'ID của địa điểm cần thuyết minh',
-    example: '8f8b0596-f5ee-449e-8c31-9cb6be62b662',
+    description: 'ID hoặc slug của địa điểm cần thuyết minh',
+    example: 'dai-noi-hue',
   })
   @IsString()
   @IsNotEmpty()
   placeId: string;
+
+  @ApiProperty({
+    description: 'Tên địa danh (giúp đối chiếu chính xác di tích cổ hoặc điểm thiên nhiên)',
+    example: 'Đại Nội Huế',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  placeName?: string;
+
+  @ApiProperty({
+    description: 'Danh mục địa điểm (HISTORICAL, OUTSKIRTS_ECO, SCENIC_VIEW, tour, nature...)',
+    example: 'HISTORICAL',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  category?: string;
+
+  @ApiProperty({
+    description: 'Địa chỉ địa danh',
+    example: 'Phú Hậu, TP Huế',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  address?: string;
 
   @ApiProperty({
     description: 'Thời điểm hoặc bối cảnh tham quan: MORNING, AFTERNOON, NIGHT, RAINY',
@@ -90,4 +117,3 @@ export class ExplainPlaceStoryDto {
   @IsOptional()
   language?: string = 'vi';
 }
-

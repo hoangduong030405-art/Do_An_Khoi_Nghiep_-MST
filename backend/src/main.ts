@@ -27,7 +27,7 @@ async function bootstrap() {
       's/(.*)', 's',
       'app/(.*)', 'app',
       'flutter/(.*)', 'flutter',
-      'random-wheel/(.*)', 'random-wheel',
+
       'api/(.*)', 'api',
     ],
   });

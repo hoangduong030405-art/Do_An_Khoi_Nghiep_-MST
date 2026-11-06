@@ -1568,6 +1568,9 @@
               <button class="btn-action" onclick="openGoogleMapsDirection()" style="background:#1E6B7B; color:white;">
                 <span>🧭</span> Chỉ Đường
               </button>
+              <button class="btn-action" onclick="pushActivePlaceToWheel()" style="background:linear-gradient(135deg, #582C83, #7E22CE); color:#FDE047; font-weight:800; grid-column:span 2; border:1px solid rgba(212,175,55,0.5);">
+                <span>🎲</span> Đẩy Cột Mốc Này Vào Vòng Quay Điểm Đến
+              </button>
               <button class="btn-action" id="sheet3dBtn" onclick="open3dMuseumFromSheet()" style="background:var(--imperial-gold); color:#000; font-weight:800; display:none; grid-column:span 2;">
                 <span>🏛️</span> 3D Cung Đình
               </button>
@@ -1615,27 +1618,85 @@
         <!-- TAB 3: VÒNG QUAY MAY MẮN (RANDOM WHEEL) -->
         <div class="tab-view" id="tab-wheel">
           <div class="wheel-container">
-            <div class="wheel-intro">
+            <div class="wheel-intro" style="margin-bottom: 10px;">
               <h3>VÒNG QUAY QUYẾT ĐỊNH ĐIỂM ĐẾN 🎲</h3>
-              <p>Phân vân không biết đi đâu? Chọn tiêu chí bên dưới và để vận may Huế chọn giúp bạn!</p>
+              <p>Lọc theo nhu cầu hoặc đẩy trực tiếp các cột mốc từ Bản đồ vào vòng quay để chọn điểm đi!</p>
+              <div style="display:flex; gap:6px; margin-top:10px; justify-content:center; flex-wrap:wrap;">
+                <button onclick="syncMapMilestonesToWheel(true)" style="background:linear-gradient(135deg,#582C83,#4C1D95); color:#FDE047; border:1px solid #D4AF37; border-radius:10px; padding:6px 10px; font-size:11px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                  🗺️ Đẩy cột mốc đang lọc ở Bản đồ vào
+                </button>
+                <button onclick="shuffleWheelPlaces()" style="background:#F1F5F9; color:#334155; border:1px solid #CBD5E1; border-radius:10px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                  🔄 Đổi nhóm điểm khác
+                </button>
+              </div>
+              <div id="wheelSourceBadge" style="margin-top:8px; font-size:11px; font-weight:700; color:#582C83; background:#F3E8FF; padding:4px 10px; border-radius:12px; display:inline-block;">
+                📍 Đang nạp 8 cột mốc: Tất cả tinh hoa Cố Đô
+              </div>
             </div>
 
             <div class="wheel-filter-chips">
-              <button class="filter-chip active" onclick="setWheelCategory('CAFE', this)">☕ Cà phê sống ảo</button>
-              <button class="filter-chip" onclick="setWheelCategory('CUISINE', this)">🍜 Món ngon đặc sản</button>
-              <button class="filter-chip" onclick="setWheelCategory('SCENIC_VIEW', this)">📸 Check-in view đẹp</button>
-              <button class="filter-chip" onclick="setWheelCategory('OUTSKIRTS_ECO', this)">🌲 Ngoại thành</button>
+              <button class="filter-chip active" data-wheel-cat="ALL" onclick="setWheelCategory('ALL', this)">🎲 Tất cả tinh hoa</button>
+              <button class="filter-chip" data-wheel-cat="MAP_CURRENT" onclick="setWheelCategory('MAP_CURRENT', this)">🗺️ Đang lọc ở Bản đồ</button>
+              <button class="filter-chip" data-wheel-cat="HISTORICAL" onclick="setWheelCategory('HISTORICAL', this)">🏛️ Di tích & Lăng tẩm</button>
+              <button class="filter-chip" data-wheel-cat="CAFE" onclick="setWheelCategory('CAFE', this)">☕ Cà phê sống ảo</button>
+              <button class="filter-chip" data-wheel-cat="CUISINE" onclick="setWheelCategory('CUISINE', this)">🍜 Món ngon đặc sản</button>
+              <button class="filter-chip" data-wheel-cat="SCENIC_VIEW" onclick="setWheelCategory('SCENIC_VIEW', this)">📸 Check-in view đẹp</button>
+              <button class="filter-chip" data-wheel-cat="OUTSKIRTS_ECO" onclick="setWheelCategory('OUTSKIRTS_ECO', this)">🌲 Ngoại thành sinh thái</button>
+              <button class="filter-chip" data-wheel-cat="INDOOR" onclick="setWheelCategory('INDOOR', this)">🌧️ Trong nhà ngày mưa</button>
+              <button class="filter-chip" data-wheel-cat="NEARBY" onclick="setWheelCategory('NEARBY', this)">📍 Gần tôi nhất</button>
             </div>
 
-            <div class="wheel-canvas-wrap">
+            <div class="wheel-canvas-wrap" style="margin-bottom: 16px;">
               <div class="wheel-pointer"></div>
               <canvas id="wheel-canvas" width="290" height="290"></canvas>
               <div class="wheel-center-btn" onclick="spinTheWheel()">QUAY</div>
             </div>
 
-            <button class="spin-action-btn" onclick="spinTheWheel()">
-              <span>✨</span> QUAY NGAY BẰNG VẬN MAY!
+            <button class="spin-action-btn" id="wheelSpinMainBtn" onclick="spinTheWheel()" style="margin-bottom: 14px;">
+              <span>✨</span> QUAY CHỌN ĐIỂM ĐI NGAY!
             </button>
+
+            <!-- Thẻ Kết Quả Điểm Đến Chiến Thắng -->
+            <div id="wheelWinnerCard" style="display:none; width:100%; background:white; border:2px solid var(--imperial-gold); border-radius:20px; overflow:hidden; box-shadow:0 10px 25px rgba(88,44,131,0.18); margin-bottom:14px; text-align:left;">
+              <div style="position:relative; height:140px; width:100%; background:#2E1065;">
+                <img id="wheelWinnerImg" src="" alt="" style="width:100%; height:100%; object-fit:cover;" onerror="handleThumbnailFallback(this)" />
+                <div style="position:absolute; top:10px; left:10px; background:rgba(88,44,131,0.9); color:#FDE047; font-size:10px; font-weight:800; padding:4px 10px; border-radius:20px; border:1px solid #D4AF37;">
+                  🎯 ĐIỂM ĐẾN ĐƯỢC CHỌN
+                </div>
+                <div id="wheelWinnerGp" style="position:absolute; top:10px; right:10px; background:#15803D; color:white; font-size:10px; font-weight:800; padding:4px 9px; border-radius:20px;">
+                  +30 GP
+                </div>
+              </div>
+              <div style="padding:14px;">
+                <div id="wheelWinnerTitle" style="font-size:16px; font-weight:800; color:#1E293B; margin-bottom:4px;">Tên Địa Danh</div>
+                <div id="wheelWinnerMeta" style="font-size:11px; color:#64748B; margin-bottom:8px;">📍 Địa chỉ • Cách bạn 1.2 km</div>
+                <div id="wheelWinnerDesc" style="font-size:12px; color:#334155; background:#F8FAFC; border-left:3px solid #582C83; padding:8px 10px; border-radius:8px; margin-bottom:12px; line-height:1.45;">
+                  Mô tả địa điểm
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <button onclick="goToWheelWinnerOnMap()" style="grid-column:span 2; background:linear-gradient(135deg,#582C83,#6B21A8); color:#FDE047; border:none; padding:10px 12px; border-radius:12px; font-size:12px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 12px rgba(88,44,131,0.25);">
+                    📍 Đi Tới Cột Mốc Này Trên Bản Đồ
+                  </button>
+                  <button onclick="addWheelWinnerToItinerary()" style="background:#059669; color:white; border:none; padding:9px 10px; border-radius:11px; font-size:11px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
+                    ➕ Thêm Vào Lộ Trình
+                  </button>
+                  <button onclick="openWheelWinnerDirections()" style="background:#1E6B7B; color:white; border:none; padding:9px 10px; border-radius:11px; font-size:11px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px;">
+                    🧭 Chỉ Đường Google
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Danh sách các cột mốc đang có trong Vòng Quay -->
+            <div style="width:100%; background:white; border-radius:16px; padding:12px; border:1px solid #E2E8F0; text-align:left;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:12px; font-weight:800; color:#1E293B;">📌 Các cột mốc trên vòng quay (<span id="wheelSliceCountText">8</span>)</span>
+                <span style="font-size:10px; color:#64748B;">Chạm để xem trên Bản đồ</span>
+              </div>
+              <div id="wheelCandidateList" style="display:flex; flex-direction:column; gap:6px; max-height:210px; overflow-y:auto;">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2119,6 +2180,9 @@
         }
 
         applyCurrentMapFilter();
+        if (typeof setWheelCategory === 'function' && !isSpinning) {
+          setWheelCategory(window.currentWheelCategory || 'ALL');
+        }
       } catch (err) {
         console.warn('Lỗi nạp dữ liệu Huế Map đầy đủ:', err);
       }
@@ -2172,7 +2236,9 @@
       toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2200);
     }
 
+    window.currentDisplayedMapPlaces = huePlaces;
     function renderMapMarkers(places) {
+      window.currentDisplayedMapPlaces = Array.isArray(places) && places.length > 0 ? places : huePlaces;
       if (!markersClusterGroup) return;
       markersClusterGroup.clearLayers();
 
@@ -2198,11 +2264,11 @@
     async function showPlaceDetails(place) {
       activePlace = {
         id: place.id,
-        name: place.name || place.name_vi,
+        name: place.name_vi || place.name || 'Địa danh Huế',
         lat: place.lat,
         lng: place.lng,
         cat: place.v || place.cat || 'tour',
-        img: place.img || place.coverPhotoUrl || 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp',
+        img: place.img || place.coverPhotoUrl || '/images/pois/dai-noi-hue.webp',
         points: place.points || 25,
         price: place.price || (place.v === 'tour' ? 'Vé tham quan' : 'Tùy chọn'),
         env: place.env || (place.v === 'tour' || place.v === 'service' ? 'OUTDOOR' : 'INDOOR'),
@@ -2278,10 +2344,13 @@
     }
 
     function filterCategory(cat, el) {
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
+      document.querySelectorAll('.map-filter-bar .filter-chip').forEach(c => c.classList.remove('active'));
+      if (el) el.classList.add('active');
       currentMapFilter = cat;
       applyCurrentMapFilter();
+      if (window.currentWheelCategory === 'MAP_CURRENT' && typeof syncMapMilestonesToWheel === 'function') {
+        syncMapMilestonesToWheel(false);
+      }
     }
 
     function applyCurrentMapFilter() {
@@ -2295,15 +2364,19 @@
         allHeritageSites.forEach(zone => {
           if (zone.places) {
             zone.places.forEach(hp => {
-              heritagePoints.push({
+                            heritagePoints.push({
                 id: hp.id,
-                name: hp.name,
+                name: hp.name_vi || hp.name,
+                name_vi: hp.name_vi,
+                name_en: hp.name,
+                address: hp.address || hp.addr || 'Thành phố Huế',
                 lat: hp.lat,
                 lng: hp.lng,
                 v: 'tour',
                 cat: 'Di sản UNESCO',
-                r: 4.9,
-                img: 'https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev/places/heritage-dai-noi-hue.webp'
+                r: hp.rating || 4.9,
+                img: hp.img || hp.coverPhotoUrl || '/images/pois/dai-noi-hue.webp',
+                desc: hp.desc || ('Di tích ' + (hp.name_vi || hp.name) + ' thuộc Quần thể Di tích Cố Đô Huế.')
               });
             });
           }
@@ -2342,6 +2415,9 @@
 
         if (!q) {
           applyCurrentMapFilter();
+        if (typeof setWheelCategory === 'function' && !isSpinning) {
+          setWheelCategory(window.currentWheelCategory || 'ALL');
+        }
           return;
         }
 
@@ -3069,17 +3145,317 @@
       showToast('Đã thêm [' + activePlace.name + '] vào lộ trình!');
     }
 
-    // TAB 3: FORTUNE WHEEL LOGIC
+    // TAB 3: FORTUNE WHEEL LOGIC (LỌC THEO YÊU CẦU & ĐẨY DỮ LIỆU TỪ CỘT MỐC BẢN ĐỒ)
     const wheelCanvas = document.getElementById('wheel-canvas');
     const ctx = wheelCanvas.getContext('2d');
-    const wheelLabels = [
-      'Cà Phê Muối', 'Đại Nội Huế', 'Chè 20 Món', 'Đồi Vọng Cảnh',
-      'Cầu Tràng Tiền', 'Lăng Khải Định', 'Trà Kim Long', 'Làng Hương'
-    ];
     const wheelColors = ['#582C83', '#D4AF37', '#1E6B7B', '#E65100', '#2E7D32', '#C2185B', '#00897B', '#F57F17'];
 
+    window.currentWheelCategory = 'ALL';
+    let wheelFilteredPool = [];
+    let wheelPoolOffset = 0;
+    let wheelPlaces = [];
+    let wheelLabels = [];
+    let currentWheelWinner = null;
+    let customPushedPlaces = [];
+
+    const WHEEL_CATEGORY_NAMES = {
+      ALL: 'Tất cả tinh hoa Cố Đô',
+      MAP_CURRENT: 'Cột mốc đang lọc trên Bản đồ',
+      HISTORICAL: 'Di tích & Lăng tẩm Cố Đô',
+      CAFE: 'Quán Cà phê sống ảo',
+      CUISINE: 'Món ngon & Đặc sản Huế',
+      SCENIC_VIEW: 'Điểm Check-in view đẹp',
+      OUTSKIRTS_ECO: 'Ngoại thành & Sinh thái',
+      INDOOR: 'Không gian Trong nhà (Ngày mưa)',
+      NEARBY: 'Cột mốc gần vị trí của bạn nhất',
+      CUSTOM_PUSHED: 'Các cột mốc bạn đã chọn từ Bản đồ'
+    };
+
+    function shortenWheelLabel(name) {
+      if (!name) return 'Điểm đến Huế';
+      const cleaned = String(name).split('(')[0].split(' - ')[0].trim();
+      return cleaned.length > 17 ? cleaned.slice(0, 16).trim() + '…' : cleaned;
+    }
+
+    function normalizeMapMilestone(p) {
+      const lat = Number(p.lat !== undefined ? p.lat : p.latitude) || 16.4697;
+      const lng = Number(p.lng !== undefined ? p.lng : p.longitude) || 107.5779;
+      let distKm = null;
+      if (userLocation && typeof userLocation.lat === 'number') {
+        distKm = getDistanceKm(userLocation.lat, userLocation.lng, lat, lng);
+      }
+      return {
+        id: String(p.id || p.placeId || p.slug || p.name),
+        name: p.name || p.name_vi || 'Địa danh Cố Đô',
+        lat,
+        lng,
+        v: p.v || p.vertical || 'tour',
+        cat: p.cat || p.categoryCode || p.v || 'HISTORICAL',
+        img: p.img || p.coverPhotoUrl || p.thumbnailUrl || 'https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Ngomon2.jpg/960px-Ngomon2.jpg',
+        points: p.points || p.greenRewardPoints || 25,
+        price: p.price || (p.ticketPriceVnd ? p.ticketPriceVnd.toLocaleString('vi-VN') + 'đ' : 'Miễn phí / Tùy chọn'),
+        env: p.env || p.environmentType || 'OUTDOOR',
+        address: p.address || p.address_vi || 'Thành phố Huế',
+        desc: p.desc || p.descriptionVi || ('Cột mốc khám phá nổi bật tại Cố Đô Huế: ' + (p.name || p.name_vi)),
+        distKm
+      };
+    }
+
+    function getCombinedMapMilestones() {
+      const map = new Map();
+      // 1. Ưu tiên 20 cột mốc chính trong huePlaces (loại trừ cây xăng/tiện ích)
+      huePlaces.forEach(p => {
+        if (p.cat !== 'UTILITY') {
+          const norm = normalizeMapMilestone(p);
+          map.set(norm.name.toLowerCase(), norm);
+        }
+      });
+      // 2. Bổ sung 30 điểm di sản UNESCO từ allHeritageSites
+      if (Array.isArray(allHeritageSites)) {
+        allHeritageSites.forEach(zone => {
+          if (Array.isArray(zone.places)) {
+            zone.places.forEach(hp => {
+              const key = (hp.name || '').toLowerCase();
+              if (key && !map.has(key)) {
+                map.set(key, normalizeMapMilestone({
+                  ...hp,
+                  cat: 'HISTORICAL',
+                  v: 'tour',
+                  points: 35,
+                  address: hp.address || zone.zone || 'Kinh thành Huế',
+                  desc: hp.story || hp.description || ('Di sản thuộc cụm ' + (zone.zone || 'Cố Đô Huế'))
+                }));
+              }
+            });
+          }
+        });
+      }
+      // 3. Bổ sung các điểm đánh giá cao từ 4.352 điểm bản đồ (allHueMapPoints)
+      if (Array.isArray(allHueMapPoints) && allHueMapPoints.length > 0) {
+        const highRated = allHueMapPoints.filter(p => p.v !== 'service' && p.v !== 'stay' && (Number(p.r) || 4.7) >= 4.6).slice(0, 250);
+        highRated.forEach(p => {
+          const key = (p.name || p.name_vi || '').toLowerCase();
+          if (key && !map.has(key)) {
+            map.set(key, normalizeMapMilestone(p));
+          }
+        });
+      }
+      return Array.from(map.values());
+    }
+
+    function buildFilteredWheelPool(cat) {
+      if (cat === 'MAP_CURRENT') {
+        const currentMapPts = (window.currentDisplayedMapPlaces && window.currentDisplayedMapPlaces.length > 0)
+          ? window.currentDisplayedMapPlaces.filter(p => p.cat !== 'UTILITY' && p.v !== 'service')
+          : huePlaces.filter(p => p.cat !== 'UTILITY');
+        return currentMapPts.slice(0, 120).map(normalizeMapMilestone);
+      }
+
+      const allPool = getCombinedMapMilestones();
+      let filtered = [];
+
+      if (cat === 'ALL') {
+        filtered = allPool;
+      } else if (cat === 'HISTORICAL') {
+        filtered = allPool.filter(p =>
+          p.cat === 'HISTORICAL' || p.v === 'tour' ||
+          /đại nội|lăng|chùa|điện|cung|bảo tàng|phu|miếu|tịnh tâm|hổ quyền/i.test(p.name)
+        );
+      } else if (cat === 'CAFE') {
+        filtered = allPool.filter(p =>
+          p.cat === 'CAFE' || p.v === 'cafe' ||
+          /cà phê|cafe|coffee|trà/i.test(p.name)
+        );
+      } else if (cat === 'CUISINE') {
+        filtered = allPool.filter(p =>
+          p.cat === 'CUISINE' || p.v === 'fnb' || p.v === 'specialty' ||
+          /bún|cơm|bánh|chè|nem|trà|ẩm thực|quán/i.test(p.name)
+        );
+      } else if (cat === 'SCENIC_VIEW') {
+        filtered = allPool.filter(p =>
+          p.cat === 'SCENIC_VIEW' ||
+          /cầu|đồi|làng hương|sông hương|vọng cảnh|trường quốc học|cồn|hồ|phố đi bộ/i.test(p.name)
+        );
+      } else if (cat === 'OUTSKIRTS_ECO') {
+        filtered = allPool.filter(p =>
+          p.cat === 'OUTSKIRTS_ECO' || p.v === 'nature' ||
+          /đồi|rừng|rú chá|đầm|phá|biển|suối|thủy biều|thiên an|vọng cảnh|lăng gia long|lăng minh mạng/i.test(p.name)
+        );
+      } else if (cat === 'INDOOR') {
+        filtered = allPool.filter(p =>
+          p.env === 'INDOOR' || p.cat === 'CAFE' || p.cat === 'CUISINE' ||
+          /bảo tàng|cung an định|điện long an/i.test(p.name)
+        );
+      } else if (cat === 'NEARBY') {
+        filtered = [...allPool].sort((a, b) => (a.distKm ?? 99) - (b.distKm ?? 99));
+      } else {
+        filtered = allPool;
+      }
+
+      if (filtered.length < 4) {
+        filtered = allPool;
+      }
+      return filtered;
+    }
+
+    function updateWheelSlicesFromPool(resetOffset = true) {
+      if (resetOffset) wheelPoolOffset = 0;
+      const pool = wheelFilteredPool.length > 0 ? wheelFilteredPool : buildFilteredWheelPool(window.currentWheelCategory || 'ALL');
+      const selected = [];
+      const usedNames = new Set();
+
+      // Đưa các cột mốc người dùng chủ động đẩy từ Bản đồ lên đầu (nếu đang ở chế độ ưu tiên bản đồ)
+      if (customPushedPlaces.length > 0 && (window.currentWheelCategory === 'MAP_CURRENT' || window.currentWheelCategory === 'ALL')) {
+        for (const cp of customPushedPlaces) {
+          const key = cp.name.toLowerCase();
+          if (!usedNames.has(key) && selected.length < 8) {
+            selected.push(cp);
+            usedNames.add(key);
+          }
+        }
+      }
+
+      const targetCount = Math.min(8, Math.max(4, pool.length));
+      for (let i = 0; i < pool.length && selected.length < targetCount; i++) {
+        const candidate = pool[(wheelPoolOffset + i) % pool.length];
+        const key = candidate.name.toLowerCase();
+        if (!usedNames.has(key)) {
+          selected.push(candidate);
+          usedNames.add(key);
+        }
+      }
+
+      wheelPlaces = selected;
+      wheelLabels = wheelPlaces.map(p => shortenWheelLabel(p.name));
+      drawWheel();
+      renderWheelCandidateList();
+      updateWheelSourceBadge();
+    }
+
+    function updateWheelSourceBadge() {
+      const badge = document.getElementById('wheelSourceBadge');
+      const countEl = document.getElementById('wheelSliceCountText');
+      if (countEl) countEl.innerText = String(wheelPlaces.length);
+      if (badge) {
+        const label = WHEEL_CATEGORY_NAMES[window.currentWheelCategory] || 'Tất cả cột mốc';
+        badge.innerText = '📍 Đang nạp ' + wheelPlaces.length + ' cột mốc (' + wheelFilteredPool.length + ' điểm phù hợp): ' + label;
+      }
+    }
+
+    function renderWheelCandidateList() {
+      const container = document.getElementById('wheelCandidateList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      wheelPlaces.forEach((p, idx) => {
+        const color = wheelColors[idx % wheelColors.length];
+        const distStr = typeof p.distKm === 'number' ? (p.distKm < 1 ? Math.round(p.distKm * 1000) + 'm' : p.distKm.toFixed(1) + ' km') : '';
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 10px; border-radius:10px; background:#F8FAFC; border:1px solid #E2E8F0; cursor:pointer; transition:background 0.2s;';
+        row.onclick = () => previewWheelPlaceOnMap(idx);
+        row.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px; overflow:hidden; flex:1;">
+            <span style="width:12px; height:12px; border-radius:50%; background:${color}; flex-shrink:0; border:1px solid rgba(0,0,0,0.15);"></span>
+            <div style="overflow:hidden;">
+              <div style="font-size:12px; font-weight:700; color:#1E293B; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${idx + 1}. ${p.name}</div>
+              <div style="font-size:10px; color:#64748B;">${p.address || 'TP Huế'}${distStr ? ' • Cách ' + distStr : ''} • <b style="color:#15803D;">+${p.points || 25} GP</b></div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <button onclick="event.stopPropagation(); previewWheelPlaceOnMap(${idx});" style="background:#EDE9FE; color:#582C83; border:none; border-radius:8px; padding:4px 7px; font-size:10px; font-weight:700; cursor:pointer;" title="Xem cột mốc này trên Bản đồ">🗺️ Bản đồ</button>
+            <button onclick="event.stopPropagation(); replaceWheelSlice(${idx});" style="background:#FEE2E2; color:#DC2626; border:none; border-radius:8px; padding:4px 7px; font-size:10px; font-weight:700; cursor:pointer;" title="Đổi sang điểm khác">🔄</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function replaceWheelSlice(idx) {
+      if (isSpinning || wheelPlaces.length === 0) return;
+      const usedIds = new Set(wheelPlaces.map(p => p.id));
+      const pool = wheelFilteredPool.length > 0 ? wheelFilteredPool : getCombinedMapMilestones();
+      const replacement = pool.find(p => !usedIds.has(p.id));
+      if (replacement) {
+        wheelPlaces[idx] = replacement;
+        wheelLabels = wheelPlaces.map(p => shortenWheelLabel(p.name));
+        drawWheel();
+        renderWheelCandidateList();
+        showToast('🔄 Đã đổi sang cột mốc: ' + replacement.name);
+      } else {
+        shuffleWheelPlaces();
+      }
+    }
+
+    function previewWheelPlaceOnMap(idx) {
+      const place = wheelPlaces[idx];
+      if (!place) return;
+      focusPlaceOnMap(place);
+    }
+
+    function focusPlaceOnMap(place) {
+      if (!place) return;
+      const mapNavBtn = document.querySelector('.bottom-nav .nav-btn');
+      switchTab('tab-map', mapNavBtn);
+      setTimeout(() => {
+        if (map) {
+          map.invalidateSize();
+          map.flyTo([place.lat, place.lng], 16, { animate: true, duration: 1.0 });
+        }
+        showPlaceDetails(place);
+      }, 180);
+    }
+
+    function pushActivePlaceToWheel() {
+      if (!activePlace) return;
+      const norm = normalizeMapMilestone(activePlace);
+      customPushedPlaces = [norm, ...customPushedPlaces.filter(p => p.id !== norm.id && p.name !== norm.name)].slice(0, 8);
+
+      const existingIdx = wheelPlaces.findIndex(p => p.id === norm.id || p.name === norm.name);
+      if (existingIdx !== -1) {
+        wheelPlaces.splice(existingIdx, 1);
+      }
+      wheelPlaces.unshift(norm);
+      if (wheelPlaces.length > 8) wheelPlaces = wheelPlaces.slice(0, 8);
+      wheelLabels = wheelPlaces.map(p => shortenWheelLabel(p.name));
+      drawWheel();
+      renderWheelCandidateList();
+      updateWheelSourceBadge();
+
+      closeSheet();
+      const wheelNavBtn = document.querySelectorAll('.bottom-nav .nav-btn')[2];
+      switchTab('tab-wheel', wheelNavBtn);
+      showToast('🎲 Đã đẩy [' + norm.name + '] từ Bản đồ vào Vòng Quay!');
+    }
+
+    function syncMapMilestonesToWheel(showNotification = true) {
+      window.currentWheelCategory = 'MAP_CURRENT';
+      document.querySelectorAll('.wheel-filter-chips .filter-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-wheel-cat') === 'MAP_CURRENT');
+      });
+      wheelFilteredPool = buildFilteredWheelPool('MAP_CURRENT');
+      // Xáo trộn nhẹ để lấy 8 cột mốc tiêu biểu đang hiển thị trên bản đồ
+      wheelFilteredPool = [...wheelFilteredPool].sort(() => 0.5 - Math.random());
+      updateWheelSlicesFromPool(true);
+      if (showNotification) {
+        showToast('🗺️ Đã đẩy ' + wheelPlaces.length + ' cột mốc đang lọc trên Bản đồ vào Vòng Quay!');
+      }
+    }
+
+    function shuffleWheelPlaces() {
+      if (isSpinning) return;
+      if (wheelFilteredPool.length <= wheelPlaces.length) {
+        wheelFilteredPool = [...wheelFilteredPool].sort(() => 0.5 - Math.random());
+        wheelPoolOffset = 0;
+      } else {
+        wheelPoolOffset = (wheelPoolOffset + wheelPlaces.length) % wheelFilteredPool.length;
+      }
+      updateWheelSlicesFromPool(false);
+      showToast('🔄 Đã nạp nhóm cột mốc mới lên Vòng Quay!');
+    }
+
     function drawWheel() {
-      const numSlices = wheelLabels.length;
+      if (!wheelCanvas || !ctx) return;
+      const numSlices = Math.max(1, wheelLabels.length);
       const arc = (2 * Math.PI) / numSlices;
       const radius = wheelCanvas.width / 2;
       ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
@@ -3087,11 +3463,13 @@
       for (let i = 0; i < numSlices; i++) {
         const angle = i * arc;
         ctx.beginPath();
-        ctx.fillStyle = wheelColors[i];
+        ctx.fillStyle = wheelColors[i % wheelColors.length];
         ctx.moveTo(radius, radius);
         ctx.arc(radius, radius, radius, angle, angle + arc);
         ctx.lineTo(radius, radius);
         ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)';
         ctx.stroke();
 
         ctx.save();
@@ -3099,48 +3477,179 @@
         ctx.rotate(angle + arc / 2);
         ctx.textAlign = 'right';
         ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 12px Plus Jakarta Sans';
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.font = 'bold 11.5px Plus Jakarta Sans';
+        ctx.shadowColor = 'rgba(0,0,0,0.55)';
         ctx.shadowBlur = 4;
-        ctx.fillText(wheelLabels[i], radius - 20, 4);
+        ctx.fillText(wheelLabels[i] || '', radius - 16, 4);
         ctx.restore();
       }
     }
-    drawWheel();
 
     let isSpinning = false;
     let currentDeg = 0;
-    function spinTheWheel() {
+
+    async function spinTheWheel() {
       if (isSpinning) return;
+      if (!wheelPlaces || wheelPlaces.length === 0) {
+        setWheelCategory('ALL');
+      }
       isSpinning = true;
-      const winningIdx = Math.floor(Math.random() * wheelLabels.length);
-      const sliceAngle = 360 / wheelLabels.length;
-      
-      // Góc tuyệt đối để điểm giữa của phần thưởng nằm ở góc 270 độ (kim chỉ hướng 12 giờ)
-      const absoluteTarget = 270 - (winningIdx * sliceAngle + sliceAngle / 2);
-      
+      const mainBtn = document.getElementById('wheelSpinMainBtn');
+      if (mainBtn) mainBtn.innerHTML = '<span>⏳</span> ĐANG QUAY CHỌN CỘT MỐC...';
+
+      const winningIdx = Math.floor(Math.random() * wheelPlaces.length);
+      const sliceAngle = 360 / wheelPlaces.length;
+
+      // Góc tuyệt đối để điểm giữa của nan quạt winningIdx nằm ở góc 270 độ (kim chỉ hướng 12 giờ)
+      const absoluteTarget = (270 - (winningIdx * sliceAngle + sliceAngle / 2) + 360) % 360;
+
       // Tính toán góc cần quay thêm
       let diff = absoluteTarget - (currentDeg % 360);
-      if (diff <= 0) diff += 360; // Đảm bảo luôn quay tới trước
-      
+      if (diff <= 0) diff += 360;
+
       const extraSpins = 360 * 5;
       currentDeg += diff + extraSpins;
 
       wheelCanvas.style.transform = 'rotate(' + currentDeg + 'deg)';
 
+      // Đồng bộ gọi API backend (nếu có mạng) để lấy lời khuyên AI phong phú
+      let backendAiReason = null;
+      try {
+        const placeIdsParam = wheelPlaces.map(p => p.id).join(',');
+        const q = new URLSearchParams({
+          categoryCode: window.currentWheelCategory === 'MAP_CURRENT' ? 'ALL' : (window.currentWheelCategory || 'ALL'),
+          placeIds: placeIdsParam
+        });
+        if (userLocation && typeof userLocation.lat === 'number') {
+          q.set('userLat', String(userLocation.lat));
+          q.set('userLng', String(userLocation.lng));
+        }
+        fetch('/api/v1/random-wheel/spin?' + q.toString())
+          .then(r => r.ok ? r.json() : null)
+          .then(d => { if (d && d.aiRecommendationReason) backendAiReason = d.aiRecommendationReason; })
+          .catch(() => {});
+      } catch (_) {}
+
       setTimeout(() => {
         isSpinning = false;
-        confetti({ particleCount: 100, spread: 60 });
-        alert('🎉 VÒNG QUAY ĐÃ QUYẾT ĐỊNH: [' + wheelLabels[winningIdx] + ']! Hãy bắt đầu di chuyển đến đây ngay nào!');
-      }, 4200);
+        if (mainBtn) mainBtn.innerHTML = '<span>✨</span> QUAY LẠI ĐIỂM KHÁC';
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 110, spread: 65, origin: { y: 0.6 } });
+        }
+
+        currentWheelWinner = wheelPlaces[winningIdx];
+        renderWheelWinnerCard(currentWheelWinner, backendAiReason);
+        showToast('🎉 Vòng quay đã chọn: ' + currentWheelWinner.name + '!');
+      }, 4100);
+    }
+
+    function renderWheelWinnerCard(place, aiReason) {
+      if (!place) return;
+      const card = document.getElementById('wheelWinnerCard');
+      if (!card) return;
+
+      const imgEl = document.getElementById('wheelWinnerImg');
+      if (imgEl) {
+        imgEl.src = window.resolvePlaceImage ? window.resolvePlaceImage(place) : place.img;
+        imgEl.onerror = function() {
+          if (window.handleImgError) window.handleImgError(this, place.cat, place.name);
+          else handleThumbnailFallback(this);
+        };
+      }
+
+      const gpEl = document.getElementById('wheelWinnerGp');
+      if (gpEl) gpEl.innerText = '+' + (place.points || 25) + ' GP';
+
+      const titleEl = document.getElementById('wheelWinnerTitle');
+      if (titleEl) titleEl.innerText = place.name;
+
+      let distText = '';
+      if (userLocation && typeof userLocation.lat === 'number') {
+        const km = getDistanceKm(userLocation.lat, userLocation.lng, place.lat, place.lng);
+        distText = ' • Cách bạn ' + (km < 1 ? Math.round(km * 1000) + 'm' : km.toFixed(1) + ' km');
+      }
+      const metaEl = document.getElementById('wheelWinnerMeta');
+      if (metaEl) metaEl.innerText = '📍 ' + (place.address || 'Thành phố Huế') + distText + ' • ' + (place.price || 'Miễn phí');
+
+      const descEl = document.getElementById('wheelWinnerDesc');
+      if (descEl) {
+        descEl.innerText = aiReason || place.desc || ('Điểm đến tuyệt vời tại Cố Đô Huế: ' + place.name);
+      }
+
+      card.style.display = 'block';
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function goToWheelWinnerOnMap() {
+      if (!currentWheelWinner) return;
+      focusPlaceOnMap(currentWheelWinner);
+    }
+
+    function addWheelWinnerToItinerary() {
+      if (!currentWheelWinner) return;
+      const alreadyIn = itineraryStops.some(s => s.id === currentWheelWinner.id || s.name === currentWheelWinner.name);
+      if (alreadyIn) {
+        showToast('Địa danh [' + currentWheelWinner.name + '] đã có trong lộ trình của bạn!');
+        return;
+      }
+      itineraryStops.push({
+        id: currentWheelWinner.id,
+        name: currentWheelWinner.name,
+        desc: 'Chọn từ Vòng Quay • +' + (currentWheelWinner.points || 25) + ' GP',
+        visited: false
+      });
+      saveItineraryState();
+      renderItinerary();
+      showToast('➕ Đã thêm [' + currentWheelWinner.name + '] vào lộ trình hôm nay!');
+    }
+
+    function openWheelWinnerDirections() {
+      if (!currentWheelWinner) return;
+      const url = window.HuegoLocationService
+        ? window.HuegoLocationService.constructor.getDirectionsUrl(currentWheelWinner.lat, currentWheelWinner.lng, currentWheelWinner.name)
+        : `https://www.google.com/maps/dir/?api=1&destination=${currentWheelWinner.lat},${currentWheelWinner.lng}`;
+      window.open(url, '_blank');
     }
 
     function setWheelCategory(cat, el) {
-      document.querySelectorAll('.wheel-filter-chips .filter-chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
+      if (isSpinning) return;
+      window.currentWheelCategory = cat || 'ALL';
+      document.querySelectorAll('.wheel-filter-chips .filter-chip').forEach(c => {
+        if (el) {
+          c.classList.toggle('active', c === el);
+        } else {
+          c.classList.toggle('active', c.getAttribute('data-wheel-cat') === window.currentWheelCategory);
+        }
+      });
+
+      wheelFilteredPool = buildFilteredWheelPool(window.currentWheelCategory);
+      if (window.currentWheelCategory !== 'NEARBY') {
+        wheelFilteredPool = [...wheelFilteredPool].sort(() => 0.5 - Math.random());
+      }
+      updateWheelSlicesFromPool(true);
     }
 
+    // Khởi tạo vòng quay ngay khi tải script với các cột mốc bản đồ
+    setWheelCategory('ALL');
+
     // TAB 4: CHAT AI LOGIC (MỆ HUẾ AI 24/7)
+    async function ensureChatAuthToken() {
+      let token = localStorage.getItem('huego_token');
+      if (token) return token;
+      try {
+        const demoRes = await fetch('/api/v1/auth/demo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        if (demoRes.ok) {
+          const demoData = await demoRes.json();
+          if (demoData.accessToken) {
+            localStorage.setItem('huego_token', demoData.accessToken);
+            authToken = demoData.accessToken;
+            return demoData.accessToken;
+          }
+        }
+      } catch (_) {}
+      return null;
+    }
+
     async function sendUserMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
@@ -3153,19 +3662,27 @@
       appendTypingIndicator(typingId);
 
       try {
-        const token = localStorage.getItem('huego_token');
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = 'Bearer ' + token;
+        let token = await ensureChatAuthToken();
+        const makeReq = (tk) => {
+          const headers = { 'Content-Type': 'application/json' };
+          if (tk) headers['Authorization'] = 'Bearer ' + tk;
+          return fetch('/api/v1/ai-guide/chat', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              question: text,
+              language: 'vi',
+              currentNearbyPlace: activePlace ? activePlace.name : undefined
+            })
+          });
+        };
 
-        const res = await fetch('/api/v1/ai-guide/chat', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({
-            question: text,
-            language: 'vi',
-            currentNearbyPlace: activePlace ? activePlace.name : 'Hoàng Thành Huế'
-          })
-        });
+        let res = await makeReq(token);
+        if (res.status === 401) {
+          localStorage.removeItem('huego_token');
+          token = await ensureChatAuthToken();
+          if (token) res = await makeReq(token);
+        }
 
         removeTypingIndicator(typingId);
 
@@ -3203,8 +3720,9 @@
     function formatAiText(text) {
       if (!text) return '';
       let formatted = String(text)
-        .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')
-        .replace(/\\n/g, '<br/>');
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\\n/g, '<br/>')
+        .replace(/\n/g, '<br/>');
       return formatted;
     }
 
@@ -3224,23 +3742,74 @@
     }
 
     function getLocalAiReply(question) {
-      const q = (question || '').toLowerCase();
-      if (q.includes('ăn vặt') || q.includes('hoàng thành') || q.includes('đại nội') || q.includes('bánh ép') || q.includes('chè')) {
-        return 'Dạ thưa người, quanh khu vực Hoàng Thành (Đại Nội Huế) có nhiều món ăn vặt trứ danh lắm nhen:\\n\\n1. **Bánh ép Huế**: Ghé đường Nhật Lệ (Bánh ép Cây Dừa hoặc Cây Điệp), bánh ép dẻo dai nóng hổi kẹp rau răm chấm mắm chua ngọt cay tê lưỡi!\\n2. **Chè bột lọc bọc heo quay**: Quán Mợ Tôn Đích trước cổng Thương Bạc — vị ngọt thanh của chè quyện với viên heo quay mằn mặn giòn rụm siêu độc đáo.\\n3. **Bánh tráng nướng & bánh tráng kẹp**: Dọc bờ hồ Lê Huân mát rượi, ngồi ngắm thành nội ăn vặt rất chill.\\n4. **Bánh bèo, nậm, lọc**: Ghé kiệt Kim Long hoặc đường Đinh Tiên Hoàng để thưởng thức dĩa bánh nóng hổi tôm cháy thơm phức nhen!';
+      const q = (question || '').toLowerCase().trim();
+      const qNoAccent = q.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+
+      if (/^(xin chào|chào mệ|chào bạn|hello|hi|hey|alo|mệ ơi|bạn là ai|mệ là ai)[!.,?\s]*$/i.test(q)) {
+        return 'Dạ, Mệ chào người con thương quý nhen! 👑 Mệ là **Mệ Huế** — hướng dẫn viên bản địa của ứng dụng **HUEGO**.\n\nMệ có thể giúp bạn:\n• **Kể chuyện lịch sử, báo giá vé & giờ mở cửa** Đại Nội, 7 lăng tẩm triều Nguyễn, Chùa Thiên Mụ, Cung An Định...\n• **Chỉ điểm quán ăn chuẩn Huế** (bún bò, cơm hến, bánh bèo nậm lọc, bánh ép, bánh khoái, chè heo quay, cà phê muối).\n• **Thiết kế lịch trình 1–3 ngày** hoặc gợi ý điểm đi chơi buổi tối, ngày mưa.\n\nHôm nay bạn muốn Mệ tư vấn điểm đến hay món ngon nào trước nhen?';
       }
-      if (q.includes('cà phê') || q.includes('cà phê muối') || q.includes('uống')) {
-        return 'Dạ, người muốn uống cà phê muối chuẩn gốc thì ghé số 10 Nguyễn Lương Định hoặc số 142 Đặng Thái Thân (ngay sát Thành Nội) nghe! Cà phê thơm ngát, lớp bọt kem muối beo béo mặn mặn đậm đà khó quên!';
+      if (/^(cảm ơn|cám ơn|thank|thanks|hay quá|tuyệt quá)/i.test(q) && q.length < 40) {
+        return 'Dạ không có chi mô nhen! Đi chơi Huế cần hỏi giá vé, giờ mở cửa hay quán ăn ngon chuẩn bản địa thì cứ nhắn Mệ liền nghe! 🌸';
       }
-      if (q.includes('tràng tiền') || q.includes('sông hương')) {
-        return 'Cầu Tràng Tiền là biểu tượng 6 vài 12 nhịp của xứ Huế. Buổi chiều tà tầm 17h dạo cầu ngắm hoàng hôn sông Hương rồi tạt qua phố đi bộ Nguyễn Đình Chiểu ăn bánh mì chân cầu Tràng Tiền là tuyệt hảo nhen!';
+
+      const asksTicket = /giá vé|vé vào|bao nhiêu tiền|miễn phí|mua vé|chi phí|gia ve/.test(q) || /gia ve/.test(qNoAccent);
+      const asksHours = /giờ mở cửa|mấy giờ|mở cửa|đóng cửa|buổi nào đẹp|gio mo cua|may gio/.test(q) || /gio mo cua/.test(qNoAccent);
+
+      if (/đại nội|hoàng thành|tử cấm thành|ngọ môn|thái hòa|dai noi|hoang thanh/.test(q) || /dai noi|hoang thanh/.test(qNoAccent)) {
+        if (asksTicket) return 'Dạ, giá vé tham quan **Đại Nội Huế (Hoàng Thành)** hiện tại là **200.000 VNĐ/người lớn** và **40.000 VNĐ/trẻ em (7–12 tuổi)**.\n• **Mẹo tiết kiệm**: Bạn nên mua **vé tuyến Combo 3 điểm** (Đại Nội + Lăng Minh Mạng + Lăng Khải Định: **420.000đ**) hoặc **Combo 4 điểm** (+ Lăng Tự Đức: **530.000đ**) sẽ tiết kiệm hơn nhiều so với mua lẻ từng điểm nhen!';
+        if (asksHours) return 'Dạ, **Đại Nội Huế** mở cửa đón khách hàng ngày từ **06:30 – 17:30 (mùa hè)** và **07:00 – 17:00 (mùa đông)**. Bạn nên đi tầm **07:30 – 10:00 sáng** hoặc **15:30 – 17:00 chiều** để trời mát và chụp ảnh cổ phục trước Ngọ Môn – Điện Thái Hòa đẹp nhất nhen!';
+        return 'Dạ, **Đại Nội Huế (Hoàng Thành & Tử Cấm Thành)** được vua Gia Long khởi công khảo sát năm **1804** và hoàn thiện quy mô dưới thời vua Minh Mạng năm **1833**, là trung tâm quyền lực của 13 đời vua triều Nguyễn suốt 143 năm (1802–1945).\n• **Điểm nhấn không thể bỏ lỡ**: Cổng Ngọ Môn, Điện Thái Hòa, Thế Tổ Miếu & Cửu Đỉnh, Cung Diên Thọ, Điện Kiến Trung.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 200.000 VNĐ/người lớn.';
       }
-      if (q.includes('bún bò')) {
-        return 'Dạ, bún bò Huế chuẩn vị nước dùng phải thơm mùi ruốc sả, có giò heo béo mềm, chả cua giòn ngọt và chút ớt sa tế cay nồng. Người ghé thử Bún bò Mụ Rơi (Nguyễn Du) hoặc Bún bò Bà Tuyết (Nguyễn Công Trứ) nhen!';
+      if (/thiên mụ|linh mụ|phước duyên|thien mu/.test(q) || /thien mu/.test(qNoAccent)) {
+        return 'Dạ, **Chùa Thiên Mụ (Linh Mụ Tự)** trên đồi Hà Khê bên bờ Bắc sông Hương được chúa Tiên Nguyễn Hoàng khởi lập năm **1601**. Nổi bật nhất là **Tháp Phước Duyên 7 tầng** cao 21m xây năm 1844 thời vua Thiệu Trị và chiếc xe Austin cổ của Bồ tát Thích Quảng Đức.\n• **Giờ mở cửa**: 06:00 – 18:00 hằng ngày | **Giá vé**: Miễn phí hoàn toàn.';
       }
-      if (q.includes('mưa') || q.includes('thời tiết')) {
-        return 'Mưa Huế có cái trầm mặc rất riêng. Ngày mưa, người ghé lăng Tự Đức ngắm hồ sen, nhâm nhi tách trà Cung Đình ấm nồng hoặc ngồi một quán cà phê bên sông ngắm mưa giăng mắc là đúng điệu Huế thương!';
+      if (/khải định|ứng lăng|khai dinh/.test(q) || /khai dinh/.test(qNoAccent)) {
+        return 'Dạ, **Lăng Khải Định (Ứng Lăng)** trên núi Châu Chữ (xã Thủy Bằng) được xây dựng suốt 11 năm (**1920 – 1931**), nổi tiếng với kiến trúc giao thoa Đông – Tây và cung Thiên Định khảm hàng triệu mảnh sành sứ, thủy tinh cùng bức họa **Cửu Long Ẩn Vân** trên trần điện.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 150.000 VNĐ/người lớn.';
       }
-      return 'Dạ mệ nghe người hỏi rồi nhen! Huế mình mỗi tấc đất một tích sử thi vị, người muốn mệ dẫn đường đi đâu, ăn gì ngon hay nghe giai thoại cứ hỏi mệ nghe!';
+      if (/tự đức|khiêm lăng|tu duc/.test(q) || /tu duc/.test(qNoAccent)) {
+        return 'Dạ, **Lăng Tự Đức (Khiêm Lăng)** tại phường Thủy Xuân được xây dựng từ **1864 – 1867**, mang vẻ đẹp thơ mộng như một bức tranh thủy mặc với hồ sen Lưu Khiêm, Xung Khiêm Tạ, Dũ Khiêm Tạ và tấm bia đá **Khiêm Cung Ký** 4.935 chữ do chính vua Tự Đức soạn.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 150.000 VNĐ/người lớn.';
+      }
+      if (/minh mạng|hiếu lăng|minh mang/.test(q) || /minh mang/.test(qNoAccent)) {
+        return 'Dạ, **Lăng Minh Mạng (Hiếu Lăng)** trên núi Cẩm Kê (xã Hương Thọ, xây dựng **1840 – 1843**) nổi tiếng với bố cục 40 công trình đăng đối nghiêm ngặt trên trục Thần Đạo dài 700m, giữa hồ Tân Nguyệt và rừng thông xanh ngát.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 150.000 VNĐ/người lớn.';
+      }
+      if (/vọng cảnh|làng hương|thủy xuân|vong canh|lang huong/.test(q) || /vong canh|lang huong/.test(qNoAccent)) {
+        return 'Dạ, trục đường **Huyền Trân Công Chúa** là cung đường check-in tuyệt đẹp buổi chiều tại Huế:\n1. **Làng hương trầm Thủy Xuân** (hơn 700 năm tuổi): Thuê áo dài cổ phục chụp giữa những bó hương xòe hoa ngũ sắc rực rỡ (miễn phí vé vào).\n2. **Đồi Vọng Cảnh** (cách làng hương 800m): Ngắm khúc uốn mềm mại của dòng sông Hương dưới ánh hoàng hôn từ 16:30 – 18:00 (miễn phí hoàn toàn).';
+      }
+      if (/tràng tiền|trường tiền|trang tien/.test(q) || /trang tien/.test(qNoAccent)) {
+        return 'Dạ, **Cầu Tràng Tiền** dài 402,6m với **6 vài 12 nhịp thép** do hãng Eiffel thiết kế, khởi công năm **1897** và khánh thành năm **1899** dưới triều vua Thành Thái. Buổi tối từ 18:30 cầu bật đèn LED đổi màu lung linh, rất tuyệt để tản bộ dọc Cầu Gỗ Lim và ăn bánh mì Tràng Tiền, chè Hẻm!';
+      }
+      if (/bún bò|bun bo/.test(q) || /bun bo/.test(qNoAccent)) {
+        return 'Dạ, **Bún bò Huế** chuẩn vị có nước dùng ninh xương ống bò cùng sả thơm lừng, dậy vị mắm ruốc Huế và chả cua giòn ngọt!\n🍜 **Địa chỉ ngon trứ danh**:\n1. **Bún bò Mụ Rơi**: 40 Nguyễn Chí Diểu (hoặc Nguyễn Du) — bán sáng 06:00 – 10:00.\n2. **Bún bò Bà Tuyết**: 47 Nguyễn Công Trứ (06:00 – 22:00).\n3. **Bún bò O Phụng**: 14 Nguyễn Du (bán chiều).\n• **Giá**: 35.000đ – 55.000đ/tô.';
+      }
+      if (/cơm hến|bún hến|cồn hến|com hen/.test(q) || /com hen/.test(qNoAccent)) {
+        return 'Dạ, **Cơm hến – Bún hến** chuẩn gốc phải ghé **Cơm hến Hoa Đông** (64 Kiệt 7 Ưng Bình, Cồn Hến), **Cơm hến Bà Cam** (49 Tùng Thiện Vương) hoặc **Quán Nhỏ** (11 Ngô Quyền). Tô cơm nguội trộn hến xào, tóp mỡ giòn, mắm ruốc cay nồng chan nước hến nóng chỉ 15.000đ – 25.000đ!';
+      }
+      if (/bánh ép|banh ep/.test(q) || /banh ep/.test(qNoAccent)) {
+        return 'Dạ, **Bánh ép Huế** nóng hổi dẻo dai cuộn rau răm, đu đủ chua chấm mắm tỏi ớt thì ghé ngay:\n1. **Bánh ép Cây Dừa**: 69 – 73 Nhật Lệ (trong Thành Nội).\n2. **Bánh ép Gia Di**: 101 Bà Triệu hoặc 4 Phùng Chí Kiên.\n3. **Bánh ép Chị Huệ**: 118 Lê Ngô Cát.';
+      }
+      if (/bánh bèo|bánh nậm|bánh lọc|ram ít|bánh khoái|nem lụi|banh beo|banh loc|banh khoai/.test(q) || /banh beo|banh loc|banh khoai/.test(qNoAccent)) {
+        return 'Dạ, muốn thưởng thức trọn bộ **Bánh bèo chén – Bánh nậm – Bánh bột lọc – Ram ít – Bánh khoái** chuẩn Huế, bạn ghé ngay:\n1. **Bánh Bà Đỏ**: Số 8 Nguyễn Bỉnh Khiêm, Phú Cát.\n2. **Bánh O Lé**: Kiệt 104 Kim Long.\n3. **Bánh khoái Hồng Mai**: 110 Đinh Tiên Hoàng (ngay gần cửa Thượng Tứ).\n4. **Bánh ướt thịt nướng Huyền Anh**: 50 Kim Long.';
+      }
+      if (/\bchè\b|chè huế|chè hẻm|chè heo quay|che hue|che hem/.test(q) || /che hue|che hem/.test(qNoAccent)) {
+        return 'Dạ, nhắc tới **Chè Huế** thì nhất định phải thử **Chè bột lọc bọc heo quay**, chè hạt sen nhãn lồng và chè đậu ngự tại:\n1. **Chè Mợ Tôn Đích**: Trước cổng Công viên Thương Bạc (đường Trần Hưng Đạo, từ 18:00 – 22:30).\n2. **Chè Hẻm Hùng Vương**: Số 1 Kiệt 29 Hùng Vương.\n3. **Chè Cầm**: Số 10 Nguyễn Sinh Cung.';
+      }
+      if (/cà phê|cafe|coffee|trà cung đình|ca phe/.test(q) || /ca phe|cafe/.test(qNoAccent)) {
+        return 'Dạ, uống **Cà phê Muối** chuẩn gốc nơi khai sinh tại Huế thì ghé **Số 10 Nguyễn Lương Định** hoặc **Số 142 Đặng Thái Thân** (ngay sát tường Đại Nội Huế) nhen! Nếu thích không gian hoài cổ thì ghé **Tân. Cafe** (14 Phạm Hồng Thái) hoặc **Không gian Trà Cung Đình Kim Long**.';
+      }
+      if (/ăn gì|món ngon|ẩm thực|ăn vặt|quán ngon|an gi|mon ngon|an vat/.test(q) || /an gi|mon ngon|an vat/.test(qNoAccent)) {
+        return 'Dạ, Mệ gợi ý danh sách **Món ngon xứ Huế theo từng bữa** để bạn dễ chọn nhen:\n• **Sáng**: Bún bò Mụ Rơi (40 Nguyễn Chí Diểu), Cơm hến Hoa Đông (Cồn Hến), Cà phê muối (142 Đặng Thái Thân).\n• **Trưa & Chiều**: Bánh bèo - nậm - lọc Bà Đỏ (8 Nguyễn Bỉnh Khiêm), Bánh ướt thịt nướng Huyền Anh (50 Kim Long), Bánh ép Cây Dừa (69 Nhật Lệ).\n• **Tối**: Bánh khoái Hồng Mai (110 Đinh Tiên Hoàng), Chè bột lọc heo quay Mợ Tôn Đích (Công viên Thương Bạc).';
+      }
+      if (/lịch trình|1 ngày|2 ngày|3 ngày|buổi tối|chơi gì|lich trinh/.test(q) || /lich trinh/.test(qNoAccent)) {
+        return 'Dạ, Mệ gợi ý **Lịch trình 1 ngày tinh hoa Cố Đô Huế** tối ưu cung đường nhất nhen:\n• **Sáng (07:30 – 11:30)**: Ăn bún bò Huế & uống cà phê muối -> Tham quan **Đại Nội Huế** (Ngọ Môn, Điện Thái Hòa, Thế Miếu) & **Bảo tàng Cổ vật Cung đình**.\n• **Trưa**: Thưởng thức khay bánh bèo, nậm, lọc Bà Đỏ (8 Nguyễn Bỉnh Khiêm).\n• **Chiều (14:30 – 18:00)**: Thăm **Lăng Tự Đức** (hoặc **Lăng Khải Định**) -> Chụp ảnh **Làng hương Thủy Xuân** -> Ngắm hoàng hôn tại **Đồi Vọng Cảnh** & **Chùa Thiên Mụ**.\n• **Tối (19:00 – 21:30)**: Dạo **Cầu Tràng Tiền – Cầu Gỗ Lim**, ăn chè heo quay và nghe **Ca Huế trên thuyền rồng sông Hương**!';
+      }
+      if (/mưa|nắng|thời tiết|mùa nào|thoi tiet/.test(q) || /thoi tiet/.test(qNoAccent)) {
+        return 'Dạ, nếu gặp ngày mưa Huế hoặc nắng gắt, Mệ khuyên bạn ưu tiên các điểm **trong nhà (Indoor)** như **Bảo tàng Cổ vật Cung đình Huế (Điện Long An - 3 Lê Trực)**, **Cung An Định (179B Phan Đình Phùng)** hoặc ngồi thưởng **Trà Cung Đình Kim Long** và **Cà phê Muối** ngắm mưa rơi rất thi vị nhen!';
+      }
+      if (/xe đạp|thuê xe|xích lô|di chuyển|xe dap|thue xe/.test(q) || /xe dap|thue xe/.test(qNoAccent)) {
+        return 'Dạ, bạn có thể thuê **Xe đạp xanh công cộng (Eco-Bike)** tại trạm Bến Tòa Khâm (Lê Lợi), Cầu Trường Tiền hoặc Cửa Hiển Nhơn (Đại Nội) với giá 20.000đ – 40.000đ/giờ, hoặc thuê xe máy (120.000đ/ngày tại phố Chu Văn An – Phạm Ngũ Lão) để đi các lăng tẩm ở xa nhen!';
+      }
+
+      return 'Dạ Mệ nghe câu hỏi **"' + question.trim() + '"** của bạn rồi nhen! Bạn muốn Mệ báo chi tiết **giá vé & giờ mở cửa di tích** (Đại Nội, Lăng Tự Đức, Khải Định, Minh Mạng, Chùa Thiên Mụ), chỉ **quán ăn ngon chuẩn Huế** (bún bò, cơm hến, bánh bèo lọc, bánh ép, chè heo quay), hay lên **lịch trình 1–3 ngày** thì nhắn Mệ tư vấn sát ý liền nghe!';
     }
 
     function sendPrompt(text) {

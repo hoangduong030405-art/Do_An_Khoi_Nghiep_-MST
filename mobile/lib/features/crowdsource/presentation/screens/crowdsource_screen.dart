@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 
 class CrowdsourceScreen extends StatefulWidget {
-  const CrowdsourceScreen({Key? key}) : super(key: key);
+  const CrowdsourceScreen({super.key});
 
   @override
   State<CrowdsourceScreen> createState() => _CrowdsourceScreenState();

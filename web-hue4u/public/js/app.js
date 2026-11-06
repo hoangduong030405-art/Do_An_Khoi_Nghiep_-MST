@@ -358,6 +358,26 @@ function renderPlaces(items) {
   }).join('');
 }
 
+
+// Kiểm tra xem địa điểm có thuộc diện Di tích lịch sử hoặc Du lịch thiên nhiên liên quan chiến tranh
+function isNarratableHeritagePlace(p) {
+  if (!p) return false;
+  const nonHeritageVerticals = ['fnb', 'cafe', 'stay', 'specialty', 'service'];
+  if (nonHeritageVerticals.includes(p.vertical)) return false;
+
+  const rawName = (p.name_vi || p.name || '').toLowerCase();
+  const rawId = (p.id || '').toLowerCase();
+  const sub = Array.isArray(p.subcategory) ? p.subcategory.join(' ').toLowerCase() : '';
+  const combined = rawId + ' ' + rawName + ' ' + sub;
+
+  const excludeRegex = /cà phê|cafe|bún bò|cơm hến|bánh bèo|bánh ép|bánh khoái|chè|khách sạn|hotel|homestay|resort|cây xăng|atm|ngân hàng|siêu thị|quán nhậu|spa|phòng khám|thuốc|xe dịch vụ|tour|thuê xe|đại lý|rú chá|ru cha|đầm chuồn|phá tam giang|thác bồ ghè|suối mơ|thác đổ|vườn lan|vườn hoa|trại thiếu nhi/i;
+  if (excludeRegex.test(combined)) return false;
+
+  const heritageRegex = /đại nội|hoàng thành|tử cấm thành|ngọ môn|thái hòa|cửu đỉnh|thế miếu|thế tổ miếu|thiên mụ|long an|cổ vật|khải định|tự đức|minh mạng|gia long|thiệu trị|đồng khánh|dục đức|an định|hòn chén|tịnh tâm|cầu ngói|thủy xuân|từ đàm|báo quốc|từ hiếu|quốc học|bảo tàng|đông ba|hổ quyền|voi ré|duyệt thị đường|tàng thư lâu|kỳ đài|cột cờ|thần công|chín hầm|bunker|boongke|đàn âm hồn|âm hồn|khâm sứ|bác hồ|phan bội châu|nguyễn chí thanh|tràng tiền|trường tiền|vọng cảnh|hải vân|đồn nhất|bạch mã|hương giang|sông hương|ngự bình|thuận an|trấn hải thành/i;
+
+  return heritageRegex.test(combined);
+}
+
 // Mở modal chi tiết
 window.openPlaceDetail = async function(id) {
   const modal = document.getElementById('place-modal');
@@ -566,15 +586,16 @@ window.toggleWebRainSimulation = function(e) {
   }
 };
 
-// 2. Audio Guide Player
+// 2. Audio Guide Player (Gọi API để lấy bài thuyết minh riêng, chuẩn lịch sử)
 let isAudioPlaying = false;
 let currentUtterance = null;
 
-window.toggleAudioGuide = function(encodedName, encodedAddr, vertical) {
-  const name = decodeURIComponent(encodedName);
-  const addr = decodeURIComponent(encodedAddr);
+window.toggleAudioGuide = async function(placeId, encodedName, encodedAddr, vertical) {
+  const name = decodeURIComponent(encodedName || '');
+  const addr = decodeURIComponent(encodedAddr || '');
   const btn = document.getElementById('modalAudioBtn');
   const btnText = document.getElementById('audioBtnText');
+  const summaryElem = document.getElementById('audioGuideSummaryText');
 
   if (isAudioPlaying) {
     if ('speechSynthesis' in window) {
@@ -586,49 +607,76 @@ window.toggleAudioGuide = function(encodedName, encodedAddr, vertical) {
     return;
   }
 
-  let textToSpeak = `Chào mừng quý khách đến với ${name}. `;
-  if (vertical === 'tour') {
-    textToSpeak += `Đây là một trong những di tích lịch sử và danh lam thắng cảnh tiêu biểu của Cố Đô Huế, tọa lạc tại ${addr || 'trung tâm thành phố Huế'}. Đến đây, quý khách sẽ được chiêm ngưỡng nét kiến trúc cung đình triều Nguyễn độc đáo và cảm nhận chiều sâu văn hóa trầm mặc của đất kinh kỳ.`;
-  } else if (vertical === 'fnb') {
-    textToSpeak += `Một địa chỉ ẩm thực đặc sản nức tiếng xứ Huế tại ${addr || 'Thành phố Huế'}. Món ăn tại đây được chế biến đậm đà, giữ trọn phong vị ẩm thực Cố Đô khó quên.`;
-  } else if (vertical === 'cafe') {
-    textToSpeak += `Một không gian cà phê thư thái tuyệt vời tại ${addr || 'xứ Huế'}. Quý khách có thể thưởng thức ly cà phê muối đặc sản và ngắm nhìn nhịp sống êm đềm của Cố Đô.`;
-  } else {
-    textToSpeak += `Tọa lạc tại ${addr || 'Thành phố Huế'}, đây là điểm dừng chân lý tưởng trong hành trình khám phá di sản Cố Đô Huế của quý khách.`;
-  }
+  if (btnText) btnText.textContent = 'Đang tải bài...';
 
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-    currentUtterance.lang = 'vi-VN';
-    currentUtterance.rate = 0.95;
+  try {
+    const res = await fetch('/api/v1/ai-guide/place-story', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        placeId: placeId,
+        placeName: name,
+        category: vertical,
+        address: addr,
+        language: 'vi',
+      }),
+    });
 
-    // Tìm giọng tiếng Việt nếu có
-    const voices = window.speechSynthesis.getVoices();
-    const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VIE'));
-    if (viVoice) currentUtterance.voice = viVoice;
-
-    currentUtterance.onstart = () => {
-      isAudioPlaying = true;
-      if (btn) btn.classList.add('playing');
-      if (btnText) btnText.textContent = 'Dừng Thuyết Minh';
-    };
-
-    currentUtterance.onend = () => {
-      isAudioPlaying = false;
-      if (btn) btn.classList.remove('playing');
+    let textToSpeak = '';
+    if (res.ok) {
+      const data = await res.json();
+      if (data.available === false || !data.audioNarrationScript) {
+        alert(data.message || 'Địa điểm này không có bài thuyết minh riêng (chỉ áp dụng cho di tích lịch sử và danh thắng chiến tranh).');
+        if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+        return;
+      }
+      textToSpeak = data.audioNarrationScript;
+      if (summaryElem && data.secretHistoricalFact) {
+        summaryElem.innerHTML = '<strong>Ký ức & Lịch sử:</strong> ' + data.secretHistoricalFact;
+      }
+    } else {
+      alert('Không thể tải bài thuyết minh từ máy chủ.');
       if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
-    };
+      return;
+    }
 
-    currentUtterance.onerror = () => {
-      isAudioPlaying = false;
-      if (btn) btn.classList.remove('playing');
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+      currentUtterance.lang = 'vi-VN';
+      currentUtterance.rate = 0.95;
+
+      const voices = window.speechSynthesis.getVoices();
+      const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VIE'));
+      if (viVoice) currentUtterance.voice = viVoice;
+
+      currentUtterance.onstart = () => {
+        isAudioPlaying = true;
+        if (btn) btn.classList.add('playing');
+        if (btnText) btnText.textContent = 'Dừng Thuyết Minh';
+      };
+
+      currentUtterance.onend = () => {
+        isAudioPlaying = false;
+        if (btn) btn.classList.remove('playing');
+        if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+      };
+
+      currentUtterance.onerror = () => {
+        isAudioPlaying = false;
+        if (btn) btn.classList.remove('playing');
+        if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+      };
+
+      window.speechSynthesis.speak(currentUtterance);
+    } else {
+      alert('Trình duyệt của bạn chưa hỗ trợ phát âm thanh trực tiếp.');
       if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
-    };
-
-    window.speechSynthesis.speak(currentUtterance);
-  } else {
-    alert('Trình duyệt của bạn chưa hỗ trợ phát âm thanh trực tiếp.');
+    }
+  } catch (err) {
+    console.error('Lỗi phát thuyết minh:', err);
+    alert('Không thể kết nối máy chủ để tải thuyết minh.');
+    if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
   }
 };
 
@@ -680,6 +728,78 @@ window.sendQuickPrompt = function(text) {
   sendAiMessage();
 };
 
+
+    function getLocalAiReply(question) {
+      const q = (question || '').toLowerCase().trim();
+      const qNoAccent = q.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+
+      if (/^(xin chào|chào mệ|chào bạn|hello|hi|hey|alo|mệ ơi|bạn là ai|mệ là ai)[!.,?\s]*$/i.test(q)) {
+        return 'Dạ, Mệ chào người con thương quý nhen! 👑 Mệ là **Mệ Huế** — hướng dẫn viên bản địa của ứng dụng **HUEGO**.\n\nMệ có thể giúp bạn:\n• **Kể chuyện lịch sử, báo giá vé & giờ mở cửa** Đại Nội, 7 lăng tẩm triều Nguyễn, Chùa Thiên Mụ, Cung An Định...\n• **Chỉ điểm quán ăn chuẩn Huế** (bún bò, cơm hến, bánh bèo nậm lọc, bánh ép, bánh khoái, chè heo quay, cà phê muối).\n• **Thiết kế lịch trình 1–3 ngày** hoặc gợi ý điểm đi chơi buổi tối, ngày mưa.\n\nHôm nay bạn muốn Mệ tư vấn điểm đến hay món ngon nào trước nhen?';
+      }
+      if (/^(cảm ơn|cám ơn|thank|thanks|hay quá|tuyệt quá)/i.test(q) && q.length < 40) {
+        return 'Dạ không có chi mô nhen! Đi chơi Huế cần hỏi giá vé, giờ mở cửa hay quán ăn ngon chuẩn bản địa thì cứ nhắn Mệ liền nghe! 🌸';
+      }
+
+      const asksTicket = /giá vé|vé vào|bao nhiêu tiền|miễn phí|mua vé|chi phí|gia ve/.test(q) || /gia ve/.test(qNoAccent);
+      const asksHours = /giờ mở cửa|mấy giờ|mở cửa|đóng cửa|buổi nào đẹp|gio mo cua|may gio/.test(q) || /gio mo cua/.test(qNoAccent);
+
+      if (/đại nội|hoàng thành|tử cấm thành|ngọ môn|thái hòa|dai noi|hoang thanh/.test(q) || /dai noi|hoang thanh/.test(qNoAccent)) {
+        if (asksTicket) return 'Dạ, giá vé tham quan **Đại Nội Huế (Hoàng Thành)** hiện tại là **200.000 VNĐ/người lớn** và **40.000 VNĐ/trẻ em (7–12 tuổi)**.\n• **Mẹo tiết kiệm**: Bạn nên mua **vé tuyến Combo 3 điểm** (Đại Nội + Lăng Minh Mạng + Lăng Khải Định: **420.000đ**) hoặc **Combo 4 điểm** (+ Lăng Tự Đức: **530.000đ**) sẽ tiết kiệm hơn nhiều so với mua lẻ từng điểm nhen!';
+        if (asksHours) return 'Dạ, **Đại Nội Huế** mở cửa đón khách hàng ngày từ **06:30 – 17:30 (mùa hè)** và **07:00 – 17:00 (mùa đông)**. Bạn nên đi tầm **07:30 – 10:00 sáng** hoặc **15:30 – 17:00 chiều** để trời mát và chụp ảnh cổ phục trước Ngọ Môn – Điện Thái Hòa đẹp nhất nhen!';
+        return 'Dạ, **Đại Nội Huế (Hoàng Thành & Tử Cấm Thành)** được vua Gia Long khởi công khảo sát năm **1804** và hoàn thiện quy mô dưới thời vua Minh Mạng năm **1833**, là trung tâm quyền lực của 13 đời vua triều Nguyễn suốt 143 năm (1802–1945).\n• **Điểm nhấn không thể bỏ lỡ**: Cổng Ngọ Môn, Điện Thái Hòa, Thế Tổ Miếu & Cửu Đỉnh, Cung Diên Thọ, Điện Kiến Trung.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 200.000 VNĐ/người lớn.';
+      }
+      if (/thiên mụ|linh mụ|phước duyên|thien mu/.test(q) || /thien mu/.test(qNoAccent)) {
+        return 'Dạ, **Chùa Thiên Mụ (Linh Mụ Tự)** trên đồi Hà Khê bên bờ Bắc sông Hương được chúa Tiên Nguyễn Hoàng khởi lập năm **1601**. Nổi bật nhất là **Tháp Phước Duyên 7 tầng** cao 21m xây năm 1844 thời vua Thiệu Trị và chiếc xe Austin cổ của Bồ tát Thích Quảng Đức.\n• **Giờ mở cửa**: 06:00 – 18:00 hằng ngày | **Giá vé**: Miễn phí hoàn toàn.';
+      }
+      if (/khải định|ứng lăng|khai dinh/.test(q) || /khai dinh/.test(qNoAccent)) {
+        return 'Dạ, **Lăng Khải Định (Ứng Lăng)** trên núi Châu Chữ (xã Thủy Bằng) được xây dựng suốt 11 năm (**1920 – 1931**), nổi tiếng với kiến trúc giao thoa Đông – Tây và cung Thiên Định khảm hàng triệu mảnh sành sứ, thủy tinh cùng bức họa **Cửu Long Ẩn Vân** trên trần điện.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 150.000 VNĐ/người lớn.';
+      }
+      if (/tự đức|khiêm lăng|tu duc/.test(q) || /tu duc/.test(qNoAccent)) {
+        return 'Dạ, **Lăng Tự Đức (Khiêm Lăng)** tại phường Thủy Xuân được xây dựng từ **1864 – 1867**, mang vẻ đẹp thơ mộng như một bức tranh thủy mặc với hồ sen Lưu Khiêm, Xung Khiêm Tạ, Dũ Khiêm Tạ và tấm bia đá **Khiêm Cung Ký** 4.935 chữ do chính vua Tự Đức soạn.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 150.000 VNĐ/người lớn.';
+      }
+      if (/minh mạng|hiếu lăng|minh mang/.test(q) || /minh mang/.test(qNoAccent)) {
+        return 'Dạ, **Lăng Minh Mạng (Hiếu Lăng)** trên núi Cẩm Kê (xã Hương Thọ, xây dựng **1840 – 1843**) nổi tiếng với bố cục 40 công trình đăng đối nghiêm ngặt trên trục Thần Đạo dài 700m, giữa hồ Tân Nguyệt và rừng thông xanh ngát.\n• **Giờ mở cửa**: 07:00 – 17:30 | **Giá vé**: 150.000 VNĐ/người lớn.';
+      }
+      if (/vọng cảnh|làng hương|thủy xuân|vong canh|lang huong/.test(q) || /vong canh|lang huong/.test(qNoAccent)) {
+        return 'Dạ, trục đường **Huyền Trân Công Chúa** là cung đường check-in tuyệt đẹp buổi chiều tại Huế:\n1. **Làng hương trầm Thủy Xuân** (hơn 700 năm tuổi): Thuê áo dài cổ phục chụp giữa những bó hương xòe hoa ngũ sắc rực rỡ (miễn phí vé vào).\n2. **Đồi Vọng Cảnh** (cách làng hương 800m): Ngắm khúc uốn mềm mại của dòng sông Hương dưới ánh hoàng hôn từ 16:30 – 18:00 (miễn phí hoàn toàn).';
+      }
+      if (/tràng tiền|trường tiền|trang tien/.test(q) || /trang tien/.test(qNoAccent)) {
+        return 'Dạ, **Cầu Tràng Tiền** dài 402,6m với **6 vài 12 nhịp thép** do hãng Eiffel thiết kế, khởi công năm **1897** và khánh thành năm **1899** dưới triều vua Thành Thái. Buổi tối từ 18:30 cầu bật đèn LED đổi màu lung linh, rất tuyệt để tản bộ dọc Cầu Gỗ Lim và ăn bánh mì Tràng Tiền, chè Hẻm!';
+      }
+      if (/bún bò|bun bo/.test(q) || /bun bo/.test(qNoAccent)) {
+        return 'Dạ, **Bún bò Huế** chuẩn vị có nước dùng ninh xương ống bò cùng sả thơm lừng, dậy vị mắm ruốc Huế và chả cua giòn ngọt!\n🍜 **Địa chỉ ngon trứ danh**:\n1. **Bún bò Mụ Rơi**: 40 Nguyễn Chí Diểu (hoặc Nguyễn Du) — bán sáng 06:00 – 10:00.\n2. **Bún bò Bà Tuyết**: 47 Nguyễn Công Trứ (06:00 – 22:00).\n3. **Bún bò O Phụng**: 14 Nguyễn Du (bán chiều).\n• **Giá**: 35.000đ – 55.000đ/tô.';
+      }
+      if (/cơm hến|bún hến|cồn hến|com hen/.test(q) || /com hen/.test(qNoAccent)) {
+        return 'Dạ, **Cơm hến – Bún hến** chuẩn gốc phải ghé **Cơm hến Hoa Đông** (64 Kiệt 7 Ưng Bình, Cồn Hến), **Cơm hến Bà Cam** (49 Tùng Thiện Vương) hoặc **Quán Nhỏ** (11 Ngô Quyền). Tô cơm nguội trộn hến xào, tóp mỡ giòn, mắm ruốc cay nồng chan nước hến nóng chỉ 15.000đ – 25.000đ!';
+      }
+      if (/bánh ép|banh ep/.test(q) || /banh ep/.test(qNoAccent)) {
+        return 'Dạ, **Bánh ép Huế** nóng hổi dẻo dai cuộn rau răm, đu đủ chua chấm mắm tỏi ớt thì ghé ngay:\n1. **Bánh ép Cây Dừa**: 69 – 73 Nhật Lệ (trong Thành Nội).\n2. **Bánh ép Gia Di**: 101 Bà Triệu hoặc 4 Phùng Chí Kiên.\n3. **Bánh ép Chị Huệ**: 118 Lê Ngô Cát.';
+      }
+      if (/bánh bèo|bánh nậm|bánh lọc|ram ít|bánh khoái|nem lụi|banh beo|banh loc|banh khoai/.test(q) || /banh beo|banh loc|banh khoai/.test(qNoAccent)) {
+        return 'Dạ, muốn thưởng thức trọn bộ **Bánh bèo chén – Bánh nậm – Bánh bột lọc – Ram ít – Bánh khoái** chuẩn Huế, bạn ghé ngay:\n1. **Bánh Bà Đỏ**: Số 8 Nguyễn Bỉnh Khiêm, Phú Cát.\n2. **Bánh O Lé**: Kiệt 104 Kim Long.\n3. **Bánh khoái Hồng Mai**: 110 Đinh Tiên Hoàng (ngay gần cửa Thượng Tứ).\n4. **Bánh ướt thịt nướng Huyền Anh**: 50 Kim Long.';
+      }
+      if (/\bchè\b|chè huế|chè hẻm|chè heo quay|che hue|che hem/.test(q) || /che hue|che hem/.test(qNoAccent)) {
+        return 'Dạ, nhắc tới **Chè Huế** thì nhất định phải thử **Chè bột lọc bọc heo quay**, chè hạt sen nhãn lồng và chè đậu ngự tại:\n1. **Chè Mợ Tôn Đích**: Trước cổng Công viên Thương Bạc (đường Trần Hưng Đạo, từ 18:00 – 22:30).\n2. **Chè Hẻm Hùng Vương**: Số 1 Kiệt 29 Hùng Vương.\n3. **Chè Cầm**: Số 10 Nguyễn Sinh Cung.';
+      }
+      if (/cà phê|cafe|coffee|trà cung đình|ca phe/.test(q) || /ca phe|cafe/.test(qNoAccent)) {
+        return 'Dạ, uống **Cà phê Muối** chuẩn gốc nơi khai sinh tại Huế thì ghé **Số 10 Nguyễn Lương Định** hoặc **Số 142 Đặng Thái Thân** (ngay sát tường Đại Nội Huế) nhen! Nếu thích không gian hoài cổ thì ghé **Tân. Cafe** (14 Phạm Hồng Thái) hoặc **Không gian Trà Cung Đình Kim Long**.';
+      }
+      if (/ăn gì|món ngon|ẩm thực|ăn vặt|quán ngon|an gi|mon ngon|an vat/.test(q) || /an gi|mon ngon|an vat/.test(qNoAccent)) {
+        return 'Dạ, Mệ gợi ý danh sách **Món ngon xứ Huế theo từng bữa** để bạn dễ chọn nhen:\n• **Sáng**: Bún bò Mụ Rơi (40 Nguyễn Chí Diểu), Cơm hến Hoa Đông (Cồn Hến), Cà phê muối (142 Đặng Thái Thân).\n• **Trưa & Chiều**: Bánh bèo - nậm - lọc Bà Đỏ (8 Nguyễn Bỉnh Khiêm), Bánh ướt thịt nướng Huyền Anh (50 Kim Long), Bánh ép Cây Dừa (69 Nhật Lệ).\n• **Tối**: Bánh khoái Hồng Mai (110 Đinh Tiên Hoàng), Chè bột lọc heo quay Mợ Tôn Đích (Công viên Thương Bạc).';
+      }
+      if (/lịch trình|1 ngày|2 ngày|3 ngày|buổi tối|chơi gì|lich trinh/.test(q) || /lich trinh/.test(qNoAccent)) {
+        return 'Dạ, Mệ gợi ý **Lịch trình 1 ngày tinh hoa Cố Đô Huế** tối ưu cung đường nhất nhen:\n• **Sáng (07:30 – 11:30)**: Ăn bún bò Huế & uống cà phê muối -> Tham quan **Đại Nội Huế** (Ngọ Môn, Điện Thái Hòa, Thế Miếu) & **Bảo tàng Cổ vật Cung đình**.\n• **Trưa**: Thưởng thức khay bánh bèo, nậm, lọc Bà Đỏ (8 Nguyễn Bỉnh Khiêm).\n• **Chiều (14:30 – 18:00)**: Thăm **Lăng Tự Đức** (hoặc **Lăng Khải Định**) -> Chụp ảnh **Làng hương Thủy Xuân** -> Ngắm hoàng hôn tại **Đồi Vọng Cảnh** & **Chùa Thiên Mụ**.\n• **Tối (19:00 – 21:30)**: Dạo **Cầu Tràng Tiền – Cầu Gỗ Lim**, ăn chè heo quay và nghe **Ca Huế trên thuyền rồng sông Hương**!';
+      }
+      if (/mưa|nắng|thời tiết|mùa nào|thoi tiet/.test(q) || /thoi tiet/.test(qNoAccent)) {
+        return 'Dạ, nếu gặp ngày mưa Huế hoặc nắng gắt, Mệ khuyên bạn ưu tiên các điểm **trong nhà (Indoor)** như **Bảo tàng Cổ vật Cung đình Huế (Điện Long An - 3 Lê Trực)**, **Cung An Định (179B Phan Đình Phùng)** hoặc ngồi thưởng **Trà Cung Đình Kim Long** và **Cà phê Muối** ngắm mưa rơi rất thi vị nhen!';
+      }
+      if (/xe đạp|thuê xe|xích lô|di chuyển|xe dap|thue xe/.test(q) || /xe dap|thue xe/.test(qNoAccent)) {
+        return 'Dạ, bạn có thể thuê **Xe đạp xanh công cộng (Eco-Bike)** tại trạm Bến Tòa Khâm (Lê Lợi), Cầu Trường Tiền hoặc Cửa Hiển Nhơn (Đại Nội) với giá 20.000đ – 40.000đ/giờ, hoặc thuê xe máy (120.000đ/ngày tại phố Chu Văn An – Phạm Ngũ Lão) để đi các lăng tẩm ở xa nhen!';
+      }
+
+      return 'Dạ Mệ nghe câu hỏi **"' + question.trim() + '"** của bạn rồi nhen! Bạn muốn Mệ báo chi tiết **giá vé & giờ mở cửa di tích** (Đại Nội, Lăng Tự Đức, Khải Định, Minh Mạng, Chùa Thiên Mụ), chỉ **quán ăn ngon chuẩn Huế** (bún bò, cơm hến, bánh bèo lọc, bánh ép, chè heo quay), hay lên **lịch trình 1–3 ngày** thì nhắn Mệ tư vấn sát ý liền nghe!';
+    }
+
 window.sendAiMessage = async function() {
   const input = document.getElementById('aiChatInput');
   const text = (input ? input.value : '').trim();
@@ -691,24 +811,52 @@ window.sendAiMessage = async function() {
   const typingId = 'typing-' + Date.now();
   appendTypingWebMsg(typingId);
 
+  async function getWebChatToken() {
+    let tk = localStorage.getItem('huego_token');
+    if (tk) return tk;
+    try {
+      const r = await fetch('/api/v1/auth/demo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      if (r.ok) {
+        const d = await r.json();
+        if (d.accessToken) {
+          localStorage.setItem('huego_token', d.accessToken);
+          return d.accessToken;
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
   try {
-    const res = await fetch('/api/v1/ai-guide/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: text, language: 'vi' })
-    });
+    let token = await getWebChatToken();
+    const callChat = (tk) => {
+      const headers = { 'Content-Type': 'application/json' };
+      if (tk) headers['Authorization'] = 'Bearer ' + tk;
+      return fetch('/api/v1/ai-guide/chat', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ question: text, language: 'vi' })
+      });
+    };
+
+    let res = await callChat(token);
+    if (res.status === 401) {
+      localStorage.removeItem('huego_token');
+      token = await getWebChatToken();
+      if (token) res = await callChat(token);
+    }
 
     removeTypingWebMsg(typingId);
 
     if (res.ok) {
       const data = await res.json();
-      appendWebChatMsg('msg-ai', data.answer || data.reply || 'Dạ Mệ đã ghi nhận lời người rồi nhen!');
+      appendWebChatMsg('msg-ai', data.answer || data.reply || getLocalAiReply(text));
     } else {
-      appendWebChatMsg('msg-ai', 'Dạ Mệ nghe rồi nhen! Huế mình mùa này rất thơ, người muốn ghé quán cà phê muối hay đi dạo ngắm hoàng hôn trên cầu Tràng Tiền thì nói Mệ chỉ lối nghe!');
+      appendWebChatMsg('msg-ai', getLocalAiReply(text));
     }
   } catch (err) {
     removeTypingWebMsg(typingId);
-    appendWebChatMsg('msg-ai', 'Dạ Mệ nghe rồi nhen! Huế mình mỗi tấc đất một tích sử thi vị, người muốn Mệ dẫn đường đi đâu hay ăn gì ngon cứ hỏi Mệ nghe!');
+    appendWebChatMsg('msg-ai', getLocalAiReply(text));
   }
 };
 

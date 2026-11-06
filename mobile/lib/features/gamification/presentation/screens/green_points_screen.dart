@@ -5,7 +5,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../features/auth/data/auth_service.dart';
 
 class GreenPointsScreen extends StatefulWidget {
-  const GreenPointsScreen({Key? key}) : super(key: key);
+  const GreenPointsScreen({super.key});
 
   @override
   State<GreenPointsScreen> createState() => _GreenPointsScreenState();

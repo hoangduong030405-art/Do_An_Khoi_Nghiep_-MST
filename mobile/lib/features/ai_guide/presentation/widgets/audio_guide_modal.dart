@@ -65,6 +65,8 @@ class _AudioGuideModalState extends State<AudioGuideModal> with SingleTickerProv
         ApiEndpoints.placeStory,
         data: {
           'placeId': widget.place.id,
+          'placeName': widget.place.name,
+          'category': widget.place.categoryCode,
           'visitingContext': 'AFTERNOON',
           'tone': 'DEEP_CULTURE',
           'language': _selectedLang,
@@ -73,6 +75,15 @@ class _AudioGuideModalState extends State<AudioGuideModal> with SingleTickerProv
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = response.data;
+        if (data['available'] == false) {
+          setState(() {
+            _errorMessage = data['message'] ??
+                'Địa điểm này không có thuyết minh riêng (chỉ hỗ trợ các di tích lịch sử và danh lam thắng cảnh chiến tranh của Huế).';
+            _isLoading = false;
+          });
+          return;
+        }
+
         setState(() {
           _narrationData = data['narration'] ?? data;
           _isLoading = false;
@@ -84,21 +95,8 @@ class _AudioGuideModalState extends State<AudioGuideModal> with SingleTickerProv
         });
       }
     } catch (e) {
-      // Fallback cục bộ an toàn nếu mạng ngắt quãng
       setState(() {
-        _narrationData = {
-          'placeName': widget.place.name,
-          'audioNarrationScript':
-              'Dạ thưa quý khách, bước chân đến ${widget.place.name}, xin người hãy chầm chậm lắng lại một chút để cảm nhận hơi thở trầm mặc của nghìn năm Cố Đô. Nơi đây từng ghi dấu biết bao thăng trầm của triều đại nhà Nguyễn, nơi mỗi phiến đá, mái ngói rêu phong đều ẩn chứa một câu chuyện vàng son.',
-          'secretHistoricalFact':
-              'Tương truyền, các bậc thầy phong thủy triều Nguyễn đã tính toán thế núi Ngự Bình và sông Hương làm tiền án, minh đường để tụ khí vượng cho muôn đời con cháu.',
-          'photoSpotAdvice':
-              'Hãy đứng ở góc chếch 45 độ đón ánh sáng vàng ấm của buổi chiều hoàng hôn.',
-          'localSpecialtyPairing':
-              'Sau khi tham quan, mời bạn ghé thưởng thức tô bún bò Huế thơm lừng mùi sả ruốc hoặc tách trà sen thanh tao.',
-          'ecoGreenTip':
-              'Hãy giữ trọn nét thanh tịnh nơi di sản: di chuyển bằng xe đạp xanh quanh hào thành và tuyệt đối không xả rác bạn nhé!',
-        };
+        _errorMessage = 'Không thể tải thuyết minh: Vui lòng kiểm tra kết nối mạng.';
         _isLoading = false;
       });
     }

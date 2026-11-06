@@ -5,7 +5,7 @@ import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 
 class AiGuideScreen extends StatefulWidget {
-  const AiGuideScreen({Key? key}) : super(key: key);
+  const AiGuideScreen({super.key});
 
   @override
   State<AiGuideScreen> createState() => _AiGuideScreenState();
@@ -16,11 +16,49 @@ class _AiGuideScreenState extends State<AiGuideScreen> {
   final List<Map<String, String>> _messages = [
     {
       'role': 'assistant',
-      'text': 'Dạ mạ chào bạn! Mệ Huế là trợ lý hướng dẫn viên du lịch của bạn. Bạn muốn tìm hiểu về điển tích Đại Nội, các lăng tẩm triều Nguyễn, hay các quán ăn chuẩn vị Huế hôm nay?',
+      'text': 'Dạ Mệ chào bạn! Mệ Huế là trợ lý hướng dẫn viên bản địa của bạn. Bạn muốn tìm hiểu lịch sử, giá vé, giờ mở cửa các di tích triều Nguyễn, lên lịch trình 1–3 ngày, hay hỏi địa chỉ các quán ăn ngon chuẩn vị Huế hôm nay?',
     }
   ];
   bool _isLoading = false;
   final Dio _dio = ApiClient.instance.dio;
+
+  String _generateLocalFallbackReply(String question) {
+    final q = question.toLowerCase().trim();
+    if (q.contains('đại nội') || q.contains('hoàng thành') || q.contains('ngọ môn') || q.contains('thái hòa')) {
+      return 'Dạ, Đại Nội Huế (Hoàng Thành & Tử Cấm Thành) được vua Gia Long khởi công năm 1804 và hoàn thiện dưới thời vua Minh Mạng năm 1833. Giờ mở cửa: 07:00 – 17:30 hằng ngày | Giá vé: 200.000 VNĐ/người lớn (có vé combo 3 điểm 420.000đ rất tiết kiệm nhen!).';
+    }
+    if (q.contains('thiên mụ') || q.contains('linh mụ')) {
+      return 'Dạ, Chùa Thiên Mụ trên đồi Hà Khê bên bờ Bắc sông Hương được chúa Nguyễn Hoàng lập năm 1601, nổi tiếng với tháp Phước Duyên 7 tầng (xây năm 1844). Chùa mở cửa từ 06:00 – 18:00 và miễn phí vé tham quan nhen!';
+    }
+    if (q.contains('tự đức') || q.contains('khiêm lăng')) {
+      return 'Dạ, Lăng Tự Đức (Khiêm Lăng) xây dựng từ 1864 – 1867 tại phường Thủy Xuân, nổi tiếng với hồ sen Lưu Khiêm, Xung Khiêm Tạ và bia đá Khiêm Cung Ký. Giờ mở cửa: 07:00 – 17:30 | Giá vé: 150.000 VNĐ/người lớn.';
+    }
+    if (q.contains('khải định') || q.contains('ứng lăng')) {
+      return 'Dạ, Lăng Khải Định (Ứng Lăng) trên núi Châu Chữ xây dựng từ 1920 – 1931, nổi bật với nghệ thuật khảm sành sứ tinh xảo tại Cung Thiên Định và bức họa Cửu Long Ẩn Vân. Giờ mở cửa: 07:00 – 17:30 | Giá vé: 150.000 VNĐ/người lớn.';
+    }
+    if (q.contains('minh mạng') || q.contains('hiếu lăng')) {
+      return 'Dạ, Lăng Minh Mạng (Hiếu Lăng) tại núi Cẩm Kê (1840 – 1843) gồm 40 công trình đăng đối nghiêm ngặt trên trục Thần Đạo giữa hồ Tân Nguyệt và rừng thông. Giờ mở cửa: 07:00 – 17:30 | Giá vé: 150.000 VNĐ/người lớn.';
+    }
+    if (q.contains('tràng tiền') || q.contains('trường tiền')) {
+      return 'Dạ, Cầu Tràng Tiền được thiết kế bởi hãng Gustave Eiffel với 6 vài 12 nhịp thép duyên dáng (khởi công 1897, khánh thành 1899). Buổi chiều tối tản bộ trên cầu ngắm hoàng hôn sông Hương và ăn chè hẻm là trải nghiệm tuyệt vời nhất xứ Huế!';
+    }
+    if (q.contains('bún bò')) {
+      return 'Dạ, Bún bò Huế chuẩn vị có nước dùng ninh xương ống bò cùng sả và mắm ruốc Huế thơm lừng. Bạn ghé thử Bún bò Mụ Rơi (40 Nguyễn Chí Diểu), Bún bò Bà Tuyết (47 Nguyễn Công Trứ) hoặc Bún bò O Phụng (14 Nguyễn Du) nhen!';
+    }
+    if (q.contains('cơm hến') || q.contains('bún hến')) {
+      return 'Dạ, Cơm hến – Bún hến chuẩn gốc Cồn Hến bạn ghé quán Hoa Đông (64 Kiệt 7 Ưng Bình, Cồn Hến), quán Bà Cam (49 Tùng Thiện Vương) hoặc Quán Nhỏ (11 Ngô Quyền) nhen!';
+    }
+    if (q.contains('bánh bèo') || q.contains('bánh lọc') || q.contains('bánh nậm') || q.contains('bánh ép') || q.contains('món ngon') || q.contains('ăn gì')) {
+      return 'Dạ, ẩm thực Huế có những địa chỉ trứ danh bạn nhất định phải thử:\n• Bánh bèo, nậm, lọc: Quán Bà Đỏ (8 Nguyễn Bỉnh Khiêm)\n• Bánh khoái: Quán Hồng Mai (110 Đinh Tiên Hoàng)\n• Bánh ép dẻo: Cây Dừa (69 Nhật Lệ)\n• Chè bột lọc heo quay: Mợ Tôn Đích (Công viên Thương Bạc)\n• Cà phê muối: 142 Đặng Thái Thân.';
+    }
+    if (q.contains('mưa') || q.contains('thời tiết')) {
+      return 'Dạ, ngày mưa Huế trầm mặc rất hợp để ghé các điểm trong nhà như Bảo tàng Cổ vật Cung đình Huế (Điện Long An - 3 Lê Trực), Cung An Định (179B Phan Đình Phùng) hoặc thưởng Trà Cung Đình Kim Long và Cà phê Muối nhen!';
+    }
+    if (q.contains('xe đạp') || q.contains('thuê xe') || q.contains('di chuyển')) {
+      return 'Dạ, bạn có thể thuê xe đạp xanh công cộng Eco-Bike tại trạm Bến Tòa Khâm (Lê Lợi), Cầu Trường Tiền hoặc Cửa Hiển Nhơn (Đại Nội) với giá 20.000đ – 40.000đ/giờ để vừa dạo mát vừa tích lũy Green Points nhen!';
+    }
+    return 'Dạ Mệ nghe câu hỏi của bạn rồi nhen! Bạn muốn hỏi về lịch sử, giá vé, giờ mở cửa di tích cụ thể nào (Đại Nội, Lăng Tự Đức, Khải Định, Minh Mạng, Chùa Thiên Mụ), hay muốn tìm địa chỉ quán ăn ngon và lịch trình khám phá Huế thì nhắn rõ tên để Mệ chỉ tận nơi liền nghe!';
+  }
 
   Future<void> _sendMessage(String text) async {
     if (text.trim().isEmpty) return;
@@ -37,11 +75,10 @@ class _AiGuideScreenState extends State<AiGuideScreen> {
         data: {
           'question': text,
           'language': 'vi',
-          'currentNearbyPlace': 'Đại Nội Huế',
         },
       );
 
-      final reply = response.data['answer'] ?? 'Dạ Mệ đang bận chút việc, bạn hỏi lại Mệ nghe!';
+      final reply = response.data['answer'] ?? _generateLocalFallbackReply(text);
       setState(() {
         _messages.add({'role': 'assistant', 'text': reply});
       });
@@ -49,7 +86,7 @@ class _AiGuideScreenState extends State<AiGuideScreen> {
       setState(() {
         _messages.add({
           'role': 'assistant',
-          'text': 'Cầu Tràng Tiền được thiết kế bởi Gustave Eiffel với 6 nhịp và 12 vài thép duyên dáng. Buổi chiều tối tản bộ trên cầu ngắm hoàng hôn sông Hương và ăn chè hẻm là trải nghiệm tuyệt vời nhất xứ Huế!',
+          'text': _generateLocalFallbackReply(text),
         });
       });
     } finally {
@@ -75,8 +112,9 @@ class _AiGuideScreenState extends State<AiGuideScreen> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                _buildQuickChip('Kể về Cầu Tràng Tiền'),
-                _buildQuickChip('Món ngon không thể bỏ lỡ'),
+                _buildQuickChip('Giá vé & giờ mở cửa Đại Nội'),
+                _buildQuickChip('Quán bún bò & bánh Huế ngon'),
+                _buildQuickChip('Lịch trình 1 ngày ở Huế'),
                 _buildQuickChip('Trời mưa Huế đi đâu?'),
                 _buildQuickChip('Thuê xe đạp xanh ở đâu?'),
               ],

@@ -27,6 +27,7 @@ backend/print-points.*
 backend/print-db-points.*
 backend/uploads/
 scratch/
+scratch_tour_list.txt
 
 # Prompt and phase files
 UPGRADE_PROMPT*.md

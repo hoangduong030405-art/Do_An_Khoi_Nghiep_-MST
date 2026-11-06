@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web 3D Du Lịch Huế — Khám Phá Di Sản Cố Đô Trong Không Gian Số</title>
+  
+  <!-- SEO Metadata -->
+  <meta name="description" content="Nền tảng trải nghiệm du lịch số 3D Cố Đô Huế. Tương tác đa chiều với các di tích Đại Nội, Lăng tẩm, Chùa Thiên Mụ và cổ vật Hoàng gia Triều Nguyễn." />
+  <meta name="keywords" content="Hue 3D, Du lịch Huế, Đại Nội Huế, Bảo tàng 3D Huế, Di sản Cố Đô, HUEGO 3D, WebGL Huế" />
+  <meta name="author" content="HUEGO 3D Architecture Team" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Google Fonts: Hoàng Gia & Hiện Đại (Hỗ trợ chuẩn tiếng Việt) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- Thanh tiến trình cuộn trang -->
+  <div id="scroll-progress"></div>
+
+  <!-- ==================== 1. SITE HEADER & NAVIGATION ==================== -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <!-- Brand Logo -->
+      <a href="#hero" class="brand-logo" aria-label="Trang chủ Web 3D Du lịch Huế">
+        <svg class="brand-emblem" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFF0B8"/>
+              <stop offset="50%" stop-color="#E5C158"/>
+              <stop offset="100%" stop-color="#B8860B"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="46" stroke="url(#logoGold)" stroke-width="2.5" fill="rgba(45, 18, 58, 0.4)"/>
+          <path d="M50 20 C52 28, 56 34, 64 36 C58 41, 56 47, 56 56 C50 50, 50 50, 44 56 C44 47, 42 41, 36 36 C44 34, 48 28, 50 20 Z" fill="url(#logoGold)"/>
+          <path d="M24 64 Q50 50 76 64 L72 70 Q50 57 28 70 Z" fill="url(#logoGold)"/>
+          <circle cx="50" cy="38" r="3.2" fill="#FFF"/>
+        </svg>
+        <div class="brand-text">
+          <span class="brand-title">HUE 3D</span>
+          <span class="brand-subtitle">Di Sản Số Cố Đô</span>
+        </div>
+      </a>
+
+      <!-- Menu Điều Hướng -->
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#hero" class="nav-link">Trang Chủ</a></li>
+          <li><a href="#features" class="nav-link">Tính Năng Nổi Bật</a></li>
+          <li><a href="#preview" class="nav-link">Xem Trước Trải Nghiệm</a></li>
+          <li><a href="#about" class="nav-link">Về Dự Án</a></li>
+          <li><a href="#contact" class="nav-link">Liên Hệ</a></li>
+        </ul>
+      </nav>
+
+      <!-- Action Button & Mobile Toggle -->
+      <div class="nav-actions">
+        <a href="http://localhost:3000/" target="_blank" rel="noopener noreferrer" class="btn btn-primary nav-cta-btn">
+          <span>Khám Phá Ngay</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+
+        <!-- Nút Menu Mobile -->
+        <button class="mobile-toggle" aria-label="Mở bảng điều hướng">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 2. HERO SECTION ==================== -->
+  <section id="hero" class="hero-section">
+    <div class="container hero-grid">
+      <!-- Nội dung giới thiệu bên trái -->
+      <div class="hero-content reveal">
+        <div class="badge-tag">
+          <span class="pulse-dot"></span>
+          <span>Bảo Tồn Di Sản 3D & Trí Tuệ Nhân Tạo</span>
+        </div>
+
+        <h1 class="hero-headline">
+          Khám Phá Di Sản <br />
+          <span class="text-gradient-purple-gold">Cố Đô Huế 3D</span>
+        </h1>
+
+        <p class="hero-description">
+          Hành trình chạm vào vàng son quá khứ qua không gian số hóa siêu thực. Chiêm ngưỡng toàn cảnh Đại Nội, tường thành uy nghiêm và các bảo vật triều Nguyễn với công nghệ WebGL đa chiều mượt mà.
+        </p>
+
+        <!-- CTAs -->
+        <div class="hero-cta-group">
+          <a href="http://localhost:3000/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <span>Khám Phá Huế 3D Ngay</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+
+          <a href="#preview" class="btn btn-outline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Xem Demo Trải Nghiệm</span>
+          </a>
+        </div>
+
+        <!-- Thống kê nhanh / Trust Metrics -->
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <span class="metric-number" data-counter="10" data-suffix="+">0</span>
+            <span class="metric-label">Bảo vật Hoàng Cung 3D</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-number" data-counter="4350" data-suffix="+">0</span>
+            <span class="metric-label">Điểm đến số hóa GIS</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-number" data-counter="100" data-suffix="%">0</span>
+            <span class="metric-label">Tương tác WebGL mượt mà</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas 3D góc nền tương tác bằng Three.js -->
+      <div class="hero-visual-wrapper reveal reveal-delay-2">
+        <div class="hero-canvas-glow"></div>
+        <div id="hero-3d-canvas" title="Rê chuột để xoay góc nhìn 3D"></div>
+        <div class="canvas-interactive-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6v6l4 2"/></svg>
+          <span>Tương tác chuột 360° • Xoay vật thể</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 3. FEATURES SECTION ==================== -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Công Nghệ & Trải Nghiệm Đột Phá</span>
+        <h2 class="section-title">Nâng Tầm Du Lịch Di Sản Bằng Công Nghệ 3D</h2>
+        <p class="section-desc">
+          Kết hợp hoàn hảo giữa khảo cứu tư liệu triều Nguyễn và đồ hoạ thời gian thực, mang đến trải nghiệm du lịch số chưa từng có.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <div class="glass-panel feature-card reveal reveal-delay-1">
+          <div class="feature-icon-wrapper">
+            <!-- 3D Spatial Icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          </div>
+          <span class="feature-badge">Không Gian Đồ Họa 3D</span>
+          <h3 class="feature-title">Không Gian Di Sản 3D Sống Động</h3>
+          <p class="feature-desc">
+            Tái hiện toàn vẹn quần thể Đại Nội Huế, Chùa Thiên Mụ, Điện Thái Hoà và Lăng tẩm các vua triều Nguyễn với hiệu ứng ánh sáng ngày & đêm chân thực.
+          </p>
+          <a href="#preview" class="feature-footer-action">
+            <span>Chiêm ngưỡng mô hình</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="glass-panel feature-card reveal reveal-delay-2">
+          <div class="feature-icon-wrapper">
+            <!-- 360 Rotate Artifact Icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+          </div>
+          <span class="feature-badge">Bảo Tàng Cổ Vật Hoàng Gia</span>
+          <h3 class="feature-title">Tương Tác Đa Chiều 360°</h3>
+          <p class="feature-desc">
+            Xoay lật, phóng to từng hoa văn chạm rồng trên Ngai Vàng Hoàng Đế, Kiệu Vua, Cành Vàng Lá Ngọc và Lư Hương Cung Đình với độ chuẩn xác tư liệu 100%.
+          </p>
+          <a href="#preview" class="feature-footer-action">
+            <span>Khám phá bảo vật</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="glass-panel feature-card reveal reveal-delay-3">
+          <div class="feature-icon-wrapper">
+            <!-- Audio Guide / AI Voice Icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+          </div>
+          <span class="feature-badge">Thuyết Minh Tự Động</span>
+          <h3 class="feature-title">Hướng Dẫn Viên AI Mệ Huế</h3>
+          <p class="feature-desc">
+            Lắng nghe giọng thuyết minh xứ Huế ngọt ngào, tường thuật chi tiết từng sự kiện lịch sử, điển tích cung đình và kiến trúc cổ xưa tại mỗi điểm chạm.
+          </p>
+          <a href="http://localhost:3000/" target="_blank" rel="noopener noreferrer" class="feature-footer-action">
+            <span>Trải nghiệm giọng đọc</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="glass-panel feature-card reveal reveal-delay-4">
+          <div class="feature-icon-wrapper">
+            <!-- Map GIS Icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+          </div>
+          <span class="feature-badge">Bản Đồ Số Du Lịch</span>
+          <h3 class="feature-title">Bản Đồ Văn Hóa & Sinh Thái</h3>
+          <p class="feature-desc">
+            Tích hợp bản đồ GPS với hơn 4.300+ điểm đến: từ ẩm thực nức danh (Bún bò, Bánh nậm lọc), thuyền rồng Sông Hương đến cẩm nang cứu trợ du khách.
+          </p>
+          <a href="http://localhost:3000/map.html" target="_blank" rel="noopener noreferrer" class="feature-footer-action">
+            <span>Mở bản đồ số</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 4. INTERACTIVE PREVIEW SECTION ==================== -->
+  <section id="preview" class="preview-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Xem Trước Trải Nghiệm</span>
+        <h2 class="section-title">Hòa Mình Vào Cố Đô Qua Lăng Kính Số</h2>
+        <p class="section-desc">
+          Lựa chọn các chế độ trải nghiệm dưới đây để khám phá không gian di tích và bảo vật hoàng cung 3D.
+        </p>
+      </div>
+
+      <!-- Bộ chọn Tabs chuyển đổi trải nghiệm -->
+      <div class="preview-tabs reveal">
+        <button class="preview-tab-btn active" data-tab="tab-artifacts">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 6 4 6H8l4-6z"/></svg>
+          <span>Bảo Vật Hoàng Cung 3D</span>
+        </button>
+        <button class="preview-tab-btn" data-tab="tab-monuments">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span>Quần Thể Di Tích Đại Nội</span>
+        </button>
+        <button class="preview-tab-btn" data-tab="tab-map">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+          <span>Bản Đồ Di Sản & AI</span>
+        </button>
+      </div>
+
+      <!-- Khung Stage hiển thị nội dung từng Tab -->
+      <div class="glass-panel preview-stage reveal">
+        <!-- Tab 1: Cổ vật Hoàng Cung -->
+        <div id="tab-artifacts" class="preview-tab-pane active">
+          <div class="preview-media-box">
+            <img src="/images/dai-noi-hue.webp" alt="Quả Cầu Cửu Long và Cổ vật Triều Nguyễn" loading="lazy" />
+            <div class="preview-media-overlay">
+              <div class="overlay-caption">
+                <span class="overlay-title">Quả Cầu Cửu Long Triều Nguyễn</span>
+                <span class="overlay-sub">Bảo vật quốc gia thời vua Thiệu Trị • Scan 3D PBR</span>
+              </div>
+            </div>
+          </div>
+          <div class="preview-info-box">
+            <span class="badge-tag">Mô Hình 3D Thời Gian Thực</span>
+            <h3 class="font-royal text-gold" style="font-size: 1.6rem; line-height: 1.25;">
+              Bảo Tàng Số 3D Hoàng Gia
+            </h3>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;">
+              Các bảo vật ngự dụng hoàng cung được số hóa bằng công nghệ quét quang trắc (Photogrammetry), tái hiện tỉ mỉ đến từng chi tiết chạm khắc vảy rồng, chất liệu ngọc bích và vàng ròng.
+            </p>
+            <ul class="spec-list">
+              <li class="spec-item">
+                <span class="spec-key">Niên đại lịch sử:</span>
+                <span class="spec-val">Triều Nguyễn (1802 - 1945)</span>
+              </li>
+              <li class="spec-item">
+                <span class="spec-key">Công nghệ 3D:</span>
+                <span class="spec-val">Three.js / WebGL / PBR 4K</span>
+              </li>
+              <li class="spec-item">
+                <span class="spec-key">Khả năng tương tác:</span>
+                <span class="spec-val">Xoay 360° • Zoom • Đọc tư liệu</span>
+              </li>
+            </ul>
+            <a href="http://localhost:3000/museum.html" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="align-self: flex-start; margin-top: 0.5rem;">
+              <span>Xoay 360° Bảo Vật Ngay</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tab 2: Quần thể Di tích -->
+        <div id="tab-monuments" class="preview-tab-pane">
+          <div class="preview-media-box">
+            <img src="/images/ngo-mon.webp" alt="Ngọ Môn Hoàng Thành Huế" loading="lazy" />
+            <div class="preview-media-overlay">
+              <div class="overlay-caption">
+                <span class="overlay-title">Ngọ Môn — Cổng Chính Hoàng Cung</span>
+                <span class="overlay-sub">Quần thể Di tích Cố đô Huế • Di sản Thế giới UNESCO</span>
+              </div>
+            </div>
+          </div>
+          <div class="preview-info-box">
+            <span class="badge-tag">Không Gian Mở 3D</span>
+            <h3 class="font-royal text-gold" style="font-size: 1.6rem; line-height: 1.25;">
+              Toàn Cảnh Hoàng Thành Huế
+            </h3>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;">
+              Từ cổng Ngọ Môn lộng lẫy, Cầu Trung Đạo bắc qua Hồ Thái Dịch, đến Điện Thái Hòa uy nghiêm — tất cả được tái tạo bằng không gian 3 chiều sống động giúp bạn tự do dạo bước như đang ở Huế.
+            </p>
+            <ul class="spec-list">
+              <li class="spec-item">
+                <span class="spec-key">Di tích tái hiện:</span>
+                <span class="spec-val">Ngọ Môn, Thái Hoà, Chùa Thiên Mụ</span>
+              </li>
+              <li class="spec-item">
+                <span class="spec-key">Góc nhìn:</span>
+                <span class="spec-val">Góc nhìn tự do (Free Roam) & Tự động</span>
+              </li>
+              <li class="spec-item">
+                <span class="spec-key">Thuyết minh:</span>
+                <span class="spec-val">Tích hợp âm thanh audio hướng dẫn viên</span>
+              </li>
+            </ul>
+            <a href="http://localhost:3000/" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="align-self: flex-start; margin-top: 0.5rem;">
+              <span>Dạo Bước Hoàng Cung 3D</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tab 3: Bản đồ & AI -->
+        <div id="tab-map" class="preview-tab-pane">
+          <div class="preview-media-box">
+            <img src="/images/song-huong.webp" alt="Sông Hương Thuyền Rồng" loading="lazy" />
+            <div class="preview-media-overlay">
+              <div class="overlay-caption">
+                <span class="overlay-title">Sông Hương & Lộ Trình Văn Hóa</span>
+                <span class="overlay-sub">Bản đồ số định vị GPS thời gian thực</span>
+              </div>
+            </div>
+          </div>
+          <div class="preview-info-box">
+            <span class="badge-tag">Trợ Lý Du Lịch Thông Minh</span>
+            <h3 class="font-royal text-gold" style="font-size: 1.6rem; line-height: 1.25;">
+              Bản Đồ Số Du Khách Đa Năng
+            </h3>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7;">
+              Tra cứu tức thì các quán ăn đặc sản lâu đời, vị trí bến thuyền rồng ca Huế, homestay mộc mạc và lộ trình tham quan 1 ngày, 2 ngày, 3 ngày tối ưu thời gian.
+            </p>
+            <ul class="spec-list">
+              <li class="spec-item">
+                <span class="spec-key">Cơ sở dữ liệu:</span>
+                <span class="spec-val">4.352 địa điểm du lịch & dịch vụ</span>
+              </li>
+              <li class="spec-item">
+                <span class="spec-key">Trợ lý ảo:</span>
+                <span class="spec-val">AI Hướng dẫn viên hỏi đáp xứ Huế</span>
+              </li>
+              <li class="spec-item">
+                <span class="spec-key">Hotline hỗ trợ:</span>
+                <span class="spec-val">Tích hợp danh bạ cứu trợ khẩn cấp</span>
+              </li>
+            </ul>
+            <a href="http://localhost:3000/map.html" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="align-self: flex-start; margin-top: 0.5rem;">
+              <span>Mở Bản Đồ Khám Phá</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 5. ABOUT PROJECT SECTION ==================== -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="glass-panel about-card reveal">
+        <!-- Cột trái: Tầm nhìn & Sứ mệnh -->
+        <div>
+          <span class="section-tag">Về Dự Án HUE 3D</span>
+          <h2 class="section-title" style="margin-bottom: 1.5rem;">
+            Nối Liền Quá Khứ Nghìn Năm Với <span class="text-gradient-gold">Tương Lai Số</span>
+          </h2>
+          <blockquote class="about-quote">
+            "Bảo tồn di sản không chỉ là giữ gìn những viên gạch cổ, mà là làm cho linh hồn di sản tiếp tục sống trong tâm thức của thế hệ hôm nay và mai sau."
+          </blockquote>
+          <p class="about-text">
+            Dự án <strong>Web 3D Du Lịch Huế</strong> được phát triển nhằm mang đến phương thức tiếp cận di sản mới mẻ: trực quan, sống động và không giới hạn địa lý. Nhờ việc ứng dụng công nghệ đồ họa WebGL và Three.js siêu nhẹ, mọi du khách đều có thể dạo bước trong Đại Nội và chiêm ngưỡng báu vật ngự dụng mà không cần cài đặt phần mềm nặng nề.
+          </p>
+          <div style="display: flex; gap: 2rem; margin-top: 2rem;">
+            <div>
+              <span class="metric-number" data-counter="143" data-suffix=" Năm">0</span>
+              <div class="metric-label">Lịch sử Triều Nguyễn được số hoá</div>
+            </div>
+            <div>
+              <span class="metric-number" data-counter="60" data-suffix=" FPS">0</span>
+              <div class="metric-label">Hiệu năng mượt mà trên di động</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột phải: 3 Trụ cột cốt lõi -->
+        <div class="pillars-grid">
+          <div class="pillar-item">
+            <span class="pillar-num">01</span>
+            <div class="pillar-content">
+              <h4>Bảo Tồn Vĩnh Cửu Trên Không Gian Số</h4>
+              <p>Lưu trữ mô hình 3D độ chính xác cao của di tích và cổ vật, giảm thiểu rủi ro mai một trước thiên tai và thời gian.</p>
+            </div>
+          </div>
+
+          <div class="pillar-item">
+            <span class="pillar-num">02</span>
+            <div class="pillar-content">
+              <h4>Mở Cửa Tiếp Cận Toàn Cầu</h4>
+              <p>Người dân Việt Nam và bạn bè quốc tế ở bất kỳ đâu cũng có thể trải nghiệm không gian văn hóa cố đô mọi lúc, mọi nơi.</p>
+            </div>
+          </div>
+
+          <div class="pillar-item">
+            <span class="pillar-num">03</span>
+            <div class="pillar-content">
+              <h4>Giáo Dục & Truyền Cảm Hứng Lịch Sử</h4>
+              <p>Biến các bài học lịch sử thành chuyến du hành thị giác hấp dẫn, khơi dậy niềm tự hào văn hóa trong giới trẻ.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 6. CALL TO ACTION BANNER ==================== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-banner reveal">
+        <span class="badge-tag" style="margin-bottom: 1.2rem;">Khám Phá Miễn Phí Trên Trình Duyệt</span>
+        <h2 class="cta-title">Sẵn Sàng Dạo Bước Cố Đô Huế 3D Ngay Hôm Nay?</h2>
+        <p class="cta-desc">
+          Trải nghiệm công nghệ du lịch số thế hệ mới, chiêm ngưỡng bảo vật triều Nguyễn và cảm nhận trọn vẹn vẻ đẹp trầm tích của xứ Huế mộng mơ.
+        </p>
+        <div class="cta-btn-group">
+          <a href="http://localhost:3000/" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="padding: 1.1rem 2.5rem; font-size: 1.05rem;">
+            <span>Khám Phá Huế 3D Ngay</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="http://localhost:3000/museum.html" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding: 1.1rem 2.2rem; font-size: 1.05rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Bảo Tàng Cổ Vật 3D</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 7. FOOTER ==================== -->
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Col 1: Brand -->
+        <div class="footer-col">
+          <a href="#hero" class="brand-logo" aria-label="Web 3D Du lịch Huế">
+            <svg class="brand-emblem" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="46" stroke="#E5C158" stroke-width="2.5" fill="rgba(45, 18, 58, 0.4)"/>
+              <path d="M50 20 C52 28, 56 34, 64 36 C58 41, 56 47, 56 56 C50 50, 50 50, 44 56 C44 47, 42 41, 36 36 C44 34, 48 28, 50 20 Z" fill="#E5C158"/>
+              <path d="M24 64 Q50 50 76 64 L72 70 Q50 57 28 70 Z" fill="#E5C158"/>
+            </svg>
+            <div class="brand-text">
+              <span class="brand-title">HUE 3D</span>
+              <span class="brand-subtitle">Di Sản Số Cố Đô</span>
+            </div>
+          </a>
+          <p class="footer-brand-desc">
+            Nền tảng số hóa di sản và du lịch thông minh, đưa nét đẹp văn hóa cố đô Huế vươn tầm công nghệ tương lai.
+          </p>
+        </div>
+
+        <!-- Col 2: Liên kết nhanh -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Trải Nghiệm 3D</h4>
+          <ul class="footer-links">
+            <li><a href="http://localhost:3000/" target="_blank" rel="noopener noreferrer" class="footer-link">Khám Phá Đại Nội 3D</a></li>
+            <li><a href="http://localhost:3000/museum.html" target="_blank" rel="noopener noreferrer" class="footer-link">Bảo Tàng Cổ Vật Hoàng Gia</a></li>
+            <li><a href="http://localhost:3000/map.html" target="_blank" rel="noopener noreferrer" class="footer-link">Bản Đồ Số Du Lịch GIS</a></li>
+            <li><a href="http://localhost:3000/simulator.html" target="_blank" rel="noopener noreferrer" class="footer-link">Sống Thử 1 Ngày Ở Huế</a></li>
+            <li><a href="http://localhost:3000/hue.html" target="_blank" rel="noopener noreferrer" class="footer-link">Cẩm Nang Du Lịch Huế</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Thông tin di sản -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Di Sản Cố Đô</h4>
+          <ul class="footer-links">
+            <li><a href="#preview" class="footer-link">Quần Thể Đại Nội</a></li>
+            <li><a href="#preview" class="footer-link">Chùa Thiên Mụ Cổ Kính</a></li>
+            <li><a href="#preview" class="footer-link">Lăng Tẩm Triều Nguyễn</a></li>
+            <li><a href="#preview" class="footer-link">Thuyền Rồng Sông Hương</a></li>
+            <li><a href="#about" class="footer-link">Sứ Mệnh Bảo Tồn Số</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Thông tin liên hệ & Mạng xã hội -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Kết Nối Với Chúng Tôi</h4>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span>Cố đô Huế, Thừa Thiên Huế, Việt Nam</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>contact@hue3d.vn</span>
+          </div>
+          <div class="footer-contact-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <span>Hotline: 1900 6868</span>
+          </div>
+
+          <div class="footer-socials">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="YouTube">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bản quyền -->
+      <div class="footer-bottom">
+        <div>
+          © 2026 <strong>Web 3D Du Lịch Huế</strong> (HUEGO). Tất cả các quyền được bảo lưu.
+        </div>
+        <div>
+          Được thiết kế với công nghệ WebGL & Three.js hiện đại • Bảo tồn di sản Cố Đô
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Nút Cuộn Về Đầu Trang (Back to Top) -->
+  <button id="back-to-top" aria-label="Cuộn về đầu trang" title="Về đầu trang">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Entry Script (Vite Module) -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
+

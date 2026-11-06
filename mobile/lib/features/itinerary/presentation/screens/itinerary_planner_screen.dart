@@ -6,7 +6,7 @@ import '../../../../core/network/api_client.dart';
 import 'package:geolocator/geolocator.dart';
 
 class ItineraryPlannerScreen extends StatefulWidget {
-  const ItineraryPlannerScreen({Key? key}) : super(key: key);
+  const ItineraryPlannerScreen({super.key});
 
   @override
   State<ItineraryPlannerScreen> createState() => _ItineraryPlannerScreenState();
@@ -160,6 +160,7 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
     try {
       final res = await _dio.get(ApiEndpoints.places);
       final places = res.data as List;
+      if (!mounted) return;
       setState(() => _isLoading = false);
 
       final selectedPlaceId = await showDialog<String>(
@@ -270,7 +271,7 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
                             final stop = _itineraryStops[index];
                             final place = stop['place'] ?? {};
                             // Demo unlocked state
-                            final isVisited = false; 
+                            final bool isVisited = stop['isVisited'] == true;
                             
                             return Card(
                               key: ValueKey(stop['id']),
@@ -393,7 +394,7 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
                   ),
                 ),
               );
-            }).toList()
+            })
         ],
       ),
     );

@@ -4,13 +4,14 @@ import '../../../../core/theme/app_theme.dart';
 import '../../data/random_wheel_service.dart';
 
 class RandomWheelScreen extends StatefulWidget {
-  const RandomWheelScreen({Key? key}) : super(key: key);
+  const RandomWheelScreen({super.key});
 
   @override
   State<RandomWheelScreen> createState() => _RandomWheelScreenState();
 }
 
-class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTickerProviderStateMixin {
+class _RandomWheelScreenState extends State<RandomWheelScreen>
+    with SingleTickerProviderStateMixin {
   final RandomWheelService _wheelService = RandomWheelService();
   late AnimationController _animController;
   late Animation<double> _animation;
@@ -21,16 +22,8 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
   double _currentRotation = 0.0;
   double _targetRotation = 0.0;
 
-  final List<String> _wheelLabels = [
-    'Cà Phê Muối',
-    'Đại Nội Huế',
-    'Chè Hẻm 20 Món',
-    'Đồi Vọng Cảnh',
-    'Cầu Tràng Tiền',
-    'Lăng Khải Định',
-    'Trà Cung Đình',
-    'Làng Hương',
-  ];
+  List<Map<String, dynamic>> _wheelPlaces = [];
+  List<String> _wheelLabels = [];
 
   final List<Color> _sliceColors = [
     const Color(0xFF582C83), // Tím Huế
@@ -55,6 +48,19 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
       parent: _animController,
       curve: Curves.fastLinearToSlowEaseIn,
     );
+
+    _applyFilterAndLoadMilestones('ALL');
+  }
+
+  void _applyFilterAndLoadMilestones(String categoryCode) {
+    final milestones = _wheelService.getFilteredMilestones(categoryCode);
+    setState(() {
+      _selectedCategory = categoryCode;
+      _wheelPlaces = milestones;
+      _wheelLabels = milestones
+          .map((p) => (p['shortLabel'] ?? p['name'] ?? 'Điểm đến').toString())
+          .toList();
+    });
   }
 
   @override
@@ -64,35 +70,60 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
   }
 
   Future<void> _startSpin() async {
-    if (_isSpinning) return;
+    if (_isSpinning || _wheelPlaces.isEmpty) return;
     setState(() => _isSpinning = true);
 
-    // Gọi API Backend lấy kết quả ngẫu nhiên & góc dừng
-    final result = await _wheelService.spinWheel(
-      categoryCode: _selectedCategory,
-      filterTag: _selectedTag,
-    );
+    final winningIdx = Random().nextInt(_wheelPlaces.length);
+    final winningPlace = _wheelPlaces[winningIdx];
+    final sliceAngle = 360.0 / _wheelPlaces.length;
+    final absoluteTargetDeg =
+        (270.0 - (winningIdx * sliceAngle + sliceAngle / 2.0) + 360.0) % 360.0;
 
-    final double targetDeg = (result['targetRotationDegrees'] ?? 1845.0).toDouble();
-    _targetRotation = _currentRotation + (targetDeg * pi / 180.0);
+    final currentDegMod = (_currentRotation * 180.0 / pi) % 360.0;
+    double diffDeg = absoluteTargetDeg - currentDegMod;
+    if (diffDeg <= 0) diffDeg += 360.0;
+
+    final totalSpinDeg = 360.0 * 5 + diffDeg;
+    _targetRotation = _currentRotation + (totalSpinDeg * pi / 180.0);
 
     final startAngle = _currentRotation;
     _animation = Tween<double>(begin: startAngle, end: _targetRotation).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.fastLinearToSlowEaseIn),
+      CurvedAnimation(
+        parent: _animController,
+        curve: Curves.fastLinearToSlowEaseIn,
+      ),
+    );
+
+    // Gọi song song API Backend nếu có kết nối
+    final apiFuture = _wheelService.spinWheel(
+      categoryCode: _selectedCategory,
+      filterTag: _selectedTag,
+      activeSlices: _wheelPlaces,
     );
 
     _animController.reset();
-    _animController.forward().then((_) {
-      _currentRotation = _targetRotation % (2 * pi);
-      setState(() => _isSpinning = false);
-      _showResultDialog(result);
+    await _animController.forward();
+
+    final apiResult = await apiFuture;
+    _currentRotation = _targetRotation % (2 * pi);
+    if (!mounted) return;
+    setState(() => _isSpinning = false);
+
+    _showResultDialog({
+      'winningPlace': winningPlace,
+      'aiRecommendationReason': winningPlace['description'] ??
+          apiResult['aiRecommendationReason'] ??
+          'Lựa chọn xuất sắc từ các cột mốc Bản đồ Cố Đô!',
     });
   }
 
   void _showResultDialog(Map<String, dynamic> result) {
-    final place = result['winningPlace'] ?? {};
-    final placeName = place['name'] ?? 'Địa danh Cố Đô';
-    final reason = result['aiRecommendationReason'] ?? 'Lựa chọn xuất sắc dành cho bạn!';
+    final place = (result['winningPlace'] as Map<String, dynamic>?) ?? {};
+    final placeName = (place['name'] ?? 'Địa danh Cố Đô').toString();
+    final reason = (result['aiRecommendationReason'] ??
+            'Lựa chọn xuất sắc dành cho bạn!')
+        .toString();
+    final gp = place['greenRewardPoints'] ?? 25;
 
     showDialog(
       context: context,
@@ -103,28 +134,68 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header hình ảnh
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(28)),
                   child: Image.network(
-                    place['thumbnailUrl'] ?? 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd',
-                    height: 180,
+                    (place['thumbnailUrl'] ??
+                            'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd')
+                        .toString(),
+                    height: 170,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 170,
+                      color: HuegoTheme.royalViolet,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.temple_buddhist,
+                        color: HuegoTheme.imperialGold,
+                        size: 48,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: HuegoTheme.imperialGold,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      '🎯 ĐIỂM ĐẾN ĐƯỢC CHỌN',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                        color: Colors.black87,
+                      ),
+                    ),
                   ),
                 ),
                 Positioned(
                   top: 12,
                   right: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: HuegoTheme.imperialGold,
+                      color: Colors.green.shade700,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Text('KẾT QUẢ VÒNG QUAY', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.black87)),
+                    child: Text(
+                      '+$gp GP',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -136,17 +207,28 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                 children: [
                   Text(
                     placeName,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: HuegoTheme.royalViolet),
+                    style: const TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                      color: HuegoTheme.royalViolet,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.location_on, size: 16, color: HuegoTheme.textMuted),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: HuegoTheme.textMuted,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          place['address'] ?? 'TP Huế',
-                          style: const TextStyle(fontSize: 13, color: HuegoTheme.textMuted),
+                          (place['address'] ?? 'TP Huế').toString(),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: HuegoTheme.textMuted,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -159,52 +241,84 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                     decoration: BoxDecoration(
                       color: HuegoTheme.royalViolet.withOpacity(0.06),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: HuegoTheme.royalViolet.withOpacity(0.15)),
+                      border: Border.all(
+                        color: HuegoTheme.royalViolet.withOpacity(0.15),
+                      ),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.auto_awesome, color: HuegoTheme.imperialGold, size: 20),
+                        const Icon(
+                          Icons.auto_awesome,
+                          color: HuegoTheme.imperialGold,
+                          size: 20,
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             reason,
-                            style: const TextStyle(fontSize: 13, height: 1.4, fontStyle: FontStyle.italic),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              height: 1.4,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 18),
                   Row(
                     children: [
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () => Navigator.of(ctx).pop(),
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: HuegoTheme.royalViolet),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            side: const BorderSide(
+                              color: HuegoTheme.royalViolet,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                          child: const Text('Quay lại', style: TextStyle(color: HuegoTheme.royalViolet)),
+                          child: const Text(
+                            'Quay lại',
+                            style: TextStyle(color: HuegoTheme.royalViolet),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       Expanded(
-                        child: ElevatedButton(
+                        child: ElevatedButton.icon(
                           onPressed: () {
                             Navigator.of(ctx).pop();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Đã thêm [$placeName] vào Lịch trình hôm nay!'),
+                                content: Text(
+                                  '📍 Đã chọn điểm đi [$placeName] và thêm vào Lộ trình!',
+                                ),
                                 backgroundColor: HuegoTheme.royalViolet,
                               ),
                             );
                           },
+                          icon: const Icon(
+                            Icons.near_me,
+                            color: Colors.white,
+                            size: 16,
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: HuegoTheme.royalViolet,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                          child: const Text('Chọn Điểm Này', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          label: const Text(
+                            'Đi Điểm Này',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -222,15 +336,23 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vòng Quay Quyết Định'),
+        title: const Text('Vòng Quay Cột Mốc Bản Đồ'),
         backgroundColor: HuegoTheme.royalViolet,
+        actions: [
+          IconButton(
+            tooltip: 'Đổi nhóm cột mốc khác từ Bản đồ',
+            onPressed: _isSpinning
+                ? null
+                : () => _applyFilterAndLoadMilestones(_selectedCategory),
+            icon: const Icon(Icons.shuffle, color: HuegoTheme.imperialGold),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // Header giới thiệu tính năng
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -243,20 +365,31 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.casino, color: HuegoTheme.imperialGold, size: 40),
+                    const Icon(
+                      Icons.casino,
+                      color: HuegoTheme.imperialGold,
+                      size: 38,
+                    ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Phân vân không biết đi đâu?',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                        children: [
+                          const Text(
+                            'Chọn điểm đi từ Cột Mốc Bản Đồ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
-                            'Để vòng quay HUEGO chọn ngẫu nhiên quán cà phê sống ảo hoặc món ngon đặc sản cho bạn!',
-                            style: TextStyle(color: Colors.white70, fontSize: 12),
+                            'Đang nạp ${_wheelPlaces.length} cột mốc theo bộ lọc. Chạm tiêu chí bên dưới để lọc lại bánh xe!',
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -264,30 +397,25 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                   ],
                 ),
               ),
-
-              const SizedBox(height: 16),
-
-              // Bộ lọc danh mục (Filter Chips)
+              const SizedBox(height: 14),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildFilterChip('ALL', '🎲 Tất cả'),
-                    _buildFilterChip('CAFE', '☕ Quán Cà Phê'),
-                    _buildFilterChip('CUISINE', '🍜 Đặc Sản'),
-                    _buildFilterChip('HISTORICAL', '🏛️ Di Tích'),
-                    _buildFilterChip('SCENIC_VIEW', '📸 Check-in View Đẹp'),
+                    _buildFilterChip('ALL', '🎲 Tất cả cột mốc'),
+                    _buildFilterChip('HISTORICAL', '🏛️ Di tích & Lăng tẩm'),
+                    _buildFilterChip('CAFE', '☕ Cà phê sống ảo'),
+                    _buildFilterChip('CUISINE', '🍜 Món ngon đặc sản'),
+                    _buildFilterChip('SCENIC_VIEW', '📸 Check-in view đẹp'),
+                    _buildFilterChip('OUTSKIRTS_ECO', '🌲 Ngoại thành'),
+                    _buildFilterChip('INDOOR', '🌧️ Trong nhà ngày mưa'),
                   ],
                 ),
               ),
-
-              const SizedBox(height: 24),
-
-              // Vòng quay vẽ bằng CustomPainter & AnimatedBuilder
+              const SizedBox(height: 20),
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Vành bánh xe trang trí
                   Container(
                     width: 320,
                     height: 320,
@@ -302,8 +430,6 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                       ],
                     ),
                   ),
-
-                  // Bánh xe xoay
                   AnimatedBuilder(
                     animation: _animation,
                     builder: (context, child) {
@@ -319,8 +445,6 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                       );
                     },
                   ),
-
-                  // Kim chỉ định hướng ở đỉnh (Pointer)
                   Positioned(
                     top: 0,
                     child: Container(
@@ -329,14 +453,19 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                       decoration: const BoxDecoration(
                         color: Colors.redAccent,
                         shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
-                        boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 4)],
+                        borderRadius:
+                            BorderRadius.vertical(bottom: Radius.circular(12)),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black38, blurRadius: 4),
+                        ],
                       ),
-                      child: const Icon(Icons.arrow_downward, color: Colors.white, size: 18),
+                      child: const Icon(
+                        Icons.arrow_downward,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                     ),
                   ),
-
-                  // Trục tâm giữa bánh xe (Center Cap)
                   GestureDetector(
                     onTap: _isSpinning ? null : _startSpin,
                     child: Container(
@@ -348,39 +477,136 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
                         ),
                         shape: BoxShape.circle,
                         boxShadow: const [
-                          BoxShadow(color: Colors.black38, blurRadius: 8, offset: Offset(0, 3)),
+                          BoxShadow(
+                            color: Colors.black38,
+                            blurRadius: 8,
+                            offset: Offset(0, 3),
+                          ),
                         ],
                         border: Border.all(color: Colors.white, width: 3),
                       ),
                       child: Center(
                         child: Text(
                           _isSpinning ? '...' : 'QUAY',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: HuegoTheme.royalViolet),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: HuegoTheme.royalViolet,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 30),
-
-              // Nút kích hoạt lớn
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: _isSpinning ? null : _startSpin,
-                  icon: const Icon(Icons.rotate_right, color: Colors.white, size: 26),
+                  icon: const Icon(
+                    Icons.rotate_right,
+                    color: Colors.white,
+                    size: 26,
+                  ),
                   label: Text(
-                    _isSpinning ? 'ĐANG QUAY TÌM ĐỊA ĐIỂM...' : 'QUAY NGAY BẰNG VẬN MAY!',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                    _isSpinning
+                        ? 'ĐANG QUAY CHỌN CỘT MỐC...'
+                        : 'QUAY CHỌN ĐIỂM ĐI NGAY!',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: HuegoTheme.royalViolet,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     elevation: 4,
                   ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: Colors.black12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '📌 Các cột mốc trên vòng quay (${_wheelPlaces.length})',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: HuegoTheme.royalViolet,
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: _isSpinning
+                              ? null
+                              : () => _applyFilterAndLoadMilestones(
+                                    _selectedCategory,
+                                  ),
+                          icon: const Icon(Icons.refresh, size: 16),
+                          label: const Text(
+                            'Đổi nhóm điểm',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    ...List.generate(_wheelPlaces.length, (idx) {
+                      final p = _wheelPlaces[idx];
+                      final color = _sliceColors[idx % _sliceColors.length];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                '${idx + 1}. ${p['name']}',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Text(
+                              '+${p['greenRewardPoints'] ?? 25} GP',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
                 ),
               ),
             ],
@@ -405,7 +631,7 @@ class _RandomWheelScreenState extends State<RandomWheelScreen> with SingleTicker
         ),
         onSelected: (val) {
           if (!_isSpinning) {
-            setState(() => _selectedCategory = code);
+            _applyFilterAndLoadMilestones(code);
           }
         },
       ),
@@ -421,6 +647,7 @@ class _WheelPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (labels.isEmpty) return;
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
     final sliceAngle = (2 * pi) / labels.length;
@@ -435,7 +662,6 @@ class _WheelPainter extends CustomPainter {
       paint.color = colors[i % colors.length];
       final startAngle = i * sliceAngle;
 
-      // Vẽ nan quạt
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
         startAngle,
@@ -444,7 +670,6 @@ class _WheelPainter extends CustomPainter {
         paint,
       );
 
-      // Đường viền chia nan
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
         startAngle,
@@ -453,7 +678,6 @@ class _WheelPainter extends CustomPainter {
         strokePaint,
       );
 
-      // Vẽ chữ nhãn bên trong nan quạt
       canvas.save();
       final textAngle = startAngle + sliceAngle / 2;
       canvas.translate(center.dx, center.dy);
@@ -475,12 +699,15 @@ class _WheelPainter extends CustomPainter {
         maxLines: 1,
       )..layout();
 
-      // Đặt chữ ở 60% bán kính
-      textPainter.paint(canvas, Offset(radius * 0.35, -textPainter.height / 2));
+      textPainter.paint(
+        canvas,
+        Offset(radius * 0.32, -textPainter.height / 2),
+      );
       canvas.restore();
     }
   }
 
   @override
-  bool shouldRepaint(covariant _WheelPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _WheelPainter oldDelegate) =>
+      oldDelegate.labels != labels;
 }

@@ -47,15 +47,15 @@
     service: { name: 'Dịch vụ Tiện ích', icon: '🚗', bg: '#065F46', accent: '#34D399' }
   };
 
-  // 2b. Kho ảnh chụp thực tế Cố Đô Huế theo danh mục (chất lượng cao)
+  // 2b. Kho ảnh chụp thực tế Cố Đô Huế theo danh mục (chất lượng cao, đường dẫn gốc tuyệt đối)
   const CATEGORY_REAL_PHOTOS = {
-    tour: './images/pois/dai-noi-hue.jpg',
-    fnb: './img/hero/am-thuc-cung-dinh-dan-gian.jpg',
-    cafe: './img/hero/ca-phe-song-huong.jpg',
-    stay: './images/pois/cung-an-dinh.jpg',
-    specialty: './images/pois/cho-dong-ba.jpg',
-    service: './images/pois/cau-trang-tien.jpg',
-    nature: './images/pois/song-huong.jpg'
+    tour: '/images/pois/dai-noi-hue.webp',
+    fnb: '/images/pois/bun-bo-hue.webp',
+    cafe: '/images/pois/ca-phe-muoi-hue.webp',
+    stay: '/images/pois/homestay-hue.webp',
+    specialty: '/images/pois/me-xung-hue.webp',
+    service: '/images/pois/dich-vu-tien-ich-hue.webp',
+    nature: '/images/pois/doi-vong-canh.webp'
   };
 
   // 3. Sinh Data URI SVG trực tiếp dự phòng tuyệt đối (không sợ lỗi 404 mạng)
@@ -90,27 +90,29 @@
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   };
 
-  // 4. Lấy đường dẫn ảnh an toàn cho thẻ địa danh (Ưu tiên ảnh chụp thực tế)
+  // 4. Lấy đường dẫn ảnh an toàn cho thẻ địa danh (Ưu tiên ảnh chụp thực tế tuyệt đối)
   window.resolvePlaceImage = function(place) {
     if (!place) {
       return CATEGORY_REAL_PHOTOS.tour;
     }
 
     const v = place.vertical || place.v || 'tour';
-    const name = place.name_vi || place.name || '';
     const fallbackPhoto = CATEGORY_REAL_PHOTOS[v] || CATEGORY_REAL_PHOTOS.tour;
 
-    // Nếu đã bị đánh dấu hidden hoặc missing hoặc broken thì dùng ảnh thật theo danh mục
     if (place.imageStatus === 'hidden' || place.imageStatus === 'missing' || place.imageStatus === 'broken') {
       return fallbackPhoto;
     }
 
-    // Nếu có coverPhotoUrl hợp lệ
+    // Nếu có coverPhotoUrl hoặc img hợp lệ
     const candidate = place.coverPhotoUrl || place.img;
     if (candidate && typeof candidate === 'string' && candidate.trim()) {
-      // Chuẩn hóa đường dẫn tương đối cho local images
-      if (candidate.startsWith('/images/pois/')) {
-        return '.' + candidate;
+      // Nếu là link Cloudflare R2 cũ đã ngừng hoạt động thì fallback về ảnh thật theo danh mục
+      if (candidate.includes('r2.dev')) {
+        return fallbackPhoto;
+      }
+      // Chuẩn hóa đường dẫn tương đối thành tuyệt đối từ root
+      if (candidate.startsWith('./images/')) {
+        return candidate.slice(1);
       }
       return candidate;
     }
@@ -118,18 +120,24 @@
     return fallbackPhoto;
   };
 
-  // 5. Trình xử lý onerror cho mọi thẻ <img> trong ứng dụng (Thay thế bằng ảnh chụp thực tế Cố Đô)
+  // 5. Trình xử lý onerror cho mọi thẻ <img> trong ứng dụng (Đảm bảo 100% không vỡ ảnh)
   window.handleImgError = function(img, vertical, name) {
     if (!img) return;
+    const v = vertical || img.getAttribute('data-vertical') || 'tour';
+    const n = name || img.getAttribute('data-name') || img.alt || '';
+    const realPhoto = getRealPhoto(v);
+
+    // Tránh vòng lặp vô hạn nếu ảnh realPhoto cũng bị lỗi
+    if (img.src && img.src.includes(realPhoto)) {
+      img.onerror = null;
+      img.src = window.generateDynamicSvgPlaceholder(v, n);
+      return;
+    }
+
     img.onerror = function() {
-      // Nếu ảnh chụp thực tế fallback bị lỗi mạng thì mới về SVG
       this.onerror = null;
       this.src = window.generateDynamicSvgPlaceholder(v, n);
     };
-
-    const v = vertical || img.getAttribute('data-vertical') || 'tour';
-    const n = name || img.getAttribute('data-name') || img.alt || '';
-    const realPhoto = CATEGORY_REAL_PHOTOS[v] || CATEGORY_REAL_PHOTOS.tour;
 
     img.src = realPhoto;
   };
