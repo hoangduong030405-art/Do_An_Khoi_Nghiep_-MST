@@ -58,6 +58,49 @@
     nature: '/images/pois/doi-vong-canh.webp'
   };
 
+  // Chuẩn hoá URL tài nguyên (tương thích cả localhost:3000 và GitHub Pages /<repo-name>/)
+  function normalizeAssetUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+    
+    // Nếu chạy trên GitHub Pages có tên repository
+    let pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+    let repoPrefix = '';
+    const match = pathname.match(/^(\/[^\/]+)\/(?:app\/|css\/|js\/|data\/|index\.html|map\.html|museum\.html|simulator\.html)?/);
+    if (match && match[1] && match[1] !== '/app' && match[1] !== '/api' && match[1] !== '/portal' && !match[1].startsWith('/@')) {
+      repoPrefix = match[1];
+    }
+
+    let clean = url;
+    if (clean.startsWith('./')) clean = clean.slice(1);
+    if (!clean.startsWith('/')) clean = '/' + clean;
+
+    return repoPrefix ? (repoPrefix + clean) : clean;
+  }
+  window.normalizeAssetUrl = normalizeAssetUrl;
+
+  // Lấy ảnh chụp thực tế theo danh mục và tên địa danh
+  function getRealPhoto(vertical, name) {
+    const n = (name || '').toLowerCase();
+    if (n.includes('lotteria') || n.includes('kfc') || n.includes('jollibee') || n.includes('mcdonald') || n.includes('burger') || n.includes('pizza') || n.includes('gà rán') || n.includes('ga ran') || n.includes('fast food') || n.includes('fastfood') || n.includes('dookki')) {
+      return normalizeAssetUrl('/images/pois/fastfood-hue.webp');
+    }
+    if (n.includes('bến ngự') || n.includes('ben ngu')) {
+      return normalizeAssetUrl('/images/pois/cho-ben-ngu-market.webp');
+    }
+    if (n.includes('hồ chí minh') || n.includes('ho chi minh')) {
+      return normalizeAssetUrl('/images/pois/bao-tang-ho-chi-minh-hue.webp');
+    }
+    if (n.includes('dục đức') || n.includes('duc duc')) {
+      return normalizeAssetUrl('/images/pois/lang-duc-duc.webp');
+    }
+
+    const v = vertical || 'tour';
+    const photo = CATEGORY_REAL_PHOTOS[v] || CATEGORY_REAL_PHOTOS.tour;
+    return normalizeAssetUrl(photo);
+  }
+  window.getRealPhoto = getRealPhoto;
+
   // 3. Sinh Data URI SVG trực tiếp dự phòng tuyệt đối (không sợ lỗi 404 mạng)
   window.generateDynamicSvgPlaceholder = function(vertical, name) {
     const meta = CATEGORY_META[vertical] || CATEGORY_META.tour;
@@ -93,11 +136,12 @@
   // 4. Lấy đường dẫn ảnh an toàn cho thẻ địa danh (Ưu tiên ảnh chụp thực tế tuyệt đối)
   window.resolvePlaceImage = function(place) {
     if (!place) {
-      return CATEGORY_REAL_PHOTOS.tour;
+      return getRealPhoto('tour', '');
     }
 
     const v = place.vertical || place.v || 'tour';
-    const fallbackPhoto = CATEGORY_REAL_PHOTOS[v] || CATEGORY_REAL_PHOTOS.tour;
+    const name = place.name_vi || place.name || '';
+    const fallbackPhoto = getRealPhoto(v, name);
 
     if (place.imageStatus === 'hidden' || place.imageStatus === 'missing' || place.imageStatus === 'broken') {
       return fallbackPhoto;
@@ -110,11 +154,7 @@
       if (candidate.includes('r2.dev')) {
         return fallbackPhoto;
       }
-      // Chuẩn hóa đường dẫn tương đối thành tuyệt đối từ root
-      if (candidate.startsWith('./images/')) {
-        return candidate.slice(1);
-      }
-      return candidate;
+      return normalizeAssetUrl(candidate);
     }
 
     return fallbackPhoto;
@@ -125,10 +165,10 @@
     if (!img) return;
     const v = vertical || img.getAttribute('data-vertical') || 'tour';
     const n = name || img.getAttribute('data-name') || img.alt || '';
-    const realPhoto = getRealPhoto(v);
+    const realPhoto = getRealPhoto(v, n);
 
     // Tránh vòng lặp vô hạn nếu ảnh realPhoto cũng bị lỗi
-    if (img.src && img.src.includes(realPhoto)) {
+    if (img.src && (img.src.endsWith(realPhoto) || img.src === realPhoto)) {
       img.onerror = null;
       img.src = window.generateDynamicSvgPlaceholder(v, n);
       return;

@@ -4,362 +4,419 @@
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Bảo tàng Cổ vật Cung đình Huế",
-    "address": "3 Lê Trực, TP Huế",
+    "address": "Số 3 Lê Trực, Phường Đông Ba, Thành phố Huế",
     "name_vi": "Bảo tàng Cổ vật Cung đình Huế",
     "name_en": "Hue Royal Antiquities Museum",
     "subcategory": [
       "heritage",
       "museum"
     ],
-    "address_vi": "3 Lê Trực, TP Huế",
+    "address_vi": "Số 3 Lê Trực, Phường Đông Ba, Thành phố Huế",
     "address_en": "3 Le Truc Street, Hue City",
-    "lat": 16.4715,
-    "lng": 107.5815,
+    "lat": 16.47109,
+    "lng": 107.58253,
     "phone": null,
     "googleRating": 4.5,
     "googleReviewCount": 2100,
     "coverPhotoUrl": "/images/pois/bao-tang-co-vat-cung-dinh-hue.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/bao-tang-co-vat-cung-dinh-hue.webp"
+    ],
+    "img": "/images/pois/bao-tang-co-vat-cung-dinh-hue.webp"
   },
   {
     "id": "heritage-bao-tang-ho-chi-minh-hue",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Bảo tàng Hồ Chí Minh Huế",
-    "address": "7 Lê Lợi, Phường Vĩnh Ninh, TP Huế",
+    "address": "Số 07 Lê Lợi, Phường Thuận Hóa, Thành phố Huế",
     "name_vi": "Bảo tàng Hồ Chí Minh Huế",
     "name_en": "Ho Chi Minh Museum Hue",
     "subcategory": [
       "heritage",
       "museum"
     ],
-    "address_vi": "7 Lê Lợi, Phường Vĩnh Ninh, TP Huế",
+    "address_vi": "Số 07 Lê Lợi, Phường Thuận Hóa, Thành phố Huế",
     "address_en": "7 Le Loi Street, Hue City",
-    "lat": 16.4678,
-    "lng": 107.5857,
+    "lat": 16.45972,
+    "lng": 107.58083,
     "phone": null,
     "googleRating": 4.3,
     "googleReviewCount": 850,
-    "coverPhotoUrl": "/images/pois/bao-tang-ho-chi-minh.webp",
+    "coverPhotoUrl": "/images/pois/bao-tang-ho-chi-minh-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bao-tang-ho-chi-minh.webp"
-    ]
+    ],
+    "img": "/images/pois/bao-tang-ho-chi-minh-hue.webp"
   },
   {
     "id": "heritage-bao-tang-my-thuat-hue",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Bảo tàng Mỹ thuật Huế",
-    "address": "44 Lê Lợi, Phường Phú Hội, TP Huế",
+    "address": "15 & 17 Lê Lợi, Thành phố Huế",
     "name_vi": "Bảo tàng Mỹ thuật Huế",
     "name_en": "Hue Fine Arts Museum",
     "subcategory": [
       "heritage",
       "museum"
     ],
-    "address_vi": "44 Lê Lợi, Phường Phú Hội, TP Huế",
+    "address_vi": "15 & 17 Lê Lợi, Thành phố Huế",
     "address_en": "44 Le Loi Street, Hue City",
-    "lat": 16.4627,
-    "lng": 107.5866,
+    "lat": 16.4654,
+    "lng": 107.589,
     "phone": null,
     "googleRating": 4.2,
     "googleReviewCount": 540,
     "coverPhotoUrl": "/images/pois/bao-tang-my-thuat-hue.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/bao-tang-my-thuat-hue.webp"
+    ],
+    "img": "/images/pois/bao-tang-my-thuat-hue.webp"
   },
   {
     "id": "heritage-cau-ngoi-thanh-toan",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Cầu ngói Thanh Toàn",
-    "address": "Thủy Thanh, TX Hương Thủy, TP Huế",
+    "address": "Xã Thủy Thanh, Thị xã Hương Thủy, Thành phố Huế",
     "name_vi": "Cầu ngói Thanh Toàn",
     "name_en": "Thanh Toan Tile Bridge",
     "subcategory": [
       "heritage",
       "bridge"
     ],
-    "address_vi": "Thủy Thanh, TX Hương Thủy, TP Huế",
+    "address_vi": "Xã Thủy Thanh, Thị xã Hương Thủy, Thành phố Huế",
     "address_en": "Thuy Thanh, Huong Thuy, Thua Thien Hue",
-    "lat": 16.4715,
-    "lng": 107.6331,
+    "lat": 16.46673,
+    "lng": 107.64269,
     "phone": null,
     "googleRating": 4.4,
     "googleReviewCount": 1600,
     "coverPhotoUrl": "/images/pois/cau-ngoi-thanh-toan.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/cau-ngoi-thanh-toan.webp"
+    ],
+    "img": "/images/pois/cau-ngoi-thanh-toan.webp"
   },
   {
     "id": "heritage-cau-trang-tien",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Cầu Tràng Tiền",
-    "address": "Cầu Tràng Tiền, TP Huế",
+    "address": "Cầu Tràng Tiền, nối Phường Đông Ba và Phú Hội, Thành phố Huế",
     "name_vi": "Cầu Tràng Tiền",
     "name_en": "Truong Tien Bridge",
     "subcategory": [
       "heritage",
       "bridge"
     ],
-    "address_vi": "Cầu Tràng Tiền, TP Huế",
+    "address_vi": "Cầu Tràng Tiền, nối Phường Đông Ba và Phú Hội, Thành phố Huế",
     "address_en": "Trang Tien Bridge, Hue City Center",
-    "lat": 16.4686,
-    "lng": 107.595,
+    "lat": 16.46889,
+    "lng": 107.58861,
     "phone": null,
     "googleRating": 4.6,
     "googleReviewCount": 8500,
     "coverPhotoUrl": "/images/pois/cau-trang-tien.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/cau-trang-tien.webp"
+    ],
+    "img": "/images/pois/cau-trang-tien.webp"
   },
   {
     "id": "heritage-cho-ben-ngu",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Chợ Bến Ngự",
-    "address": "Đường Phan Bội Châu, Phường Vĩnh Ninh, TP Huế",
+    "address": "Ngã ba Phan Bội Châu & Phan Đình Phùng, Phường Thuận Hóa, Thành phố Huế",
     "name_vi": "Chợ Bến Ngự",
     "name_en": "Ben Ngu Market",
     "subcategory": [
       "heritage",
       "market"
     ],
-    "address_vi": "Đường Phan Bội Châu, Phường Vĩnh Ninh, TP Huế",
+    "address_vi": "Ngã ba Phan Bội Châu & Phan Đình Phùng, Phường Thuận Hóa, Thành phố Huế",
     "address_en": "Truong An, Hue City",
-    "lat": 16.4559,
-    "lng": 107.5843,
+    "lat": 16.45529,
+    "lng": 107.5839,
     "phone": null,
     "googleRating": 4.1,
     "googleReviewCount": 1900,
-    "coverPhotoUrl": "/images/pois/cho-ben-ngu.webp",
+    "coverPhotoUrl": "/images/pois/cho-ben-ngu-market.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/cho-ben-ngu.webp"
+    ],
+    "img": "/images/pois/cho-ben-ngu-market.webp"
   },
   {
     "id": "heritage-cho-dong-ba",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Chợ Đông Ba",
-    "address": "Đường Trần Hưng Đạo, TP Huế",
+    "address": "Số 2 Trần Hưng Đạo, Phường Đông Ba, Thành phố Huế",
     "name_vi": "Chợ Đông Ba",
     "name_en": "Dong Ba Market",
     "subcategory": [
       "heritage",
       "market"
     ],
-    "address_vi": "Đường Trần Hưng Đạo, TP Huế",
+    "address_vi": "Số 2 Trần Hưng Đạo, Phường Đông Ba, Thành phố Huế",
     "address_en": "Phu Hoa, Hue City",
-    "lat": 16.4716,
-    "lng": 107.5897,
+    "lat": 16.47262,
+    "lng": 107.5885,
     "phone": null,
     "googleRating": 4.2,
     "googleReviewCount": 9500,
     "coverPhotoUrl": "/images/pois/cho-dong-ba.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/cho-dong-ba.webp"
+    ],
+    "img": "/images/pois/cho-dong-ba.webp"
   },
   {
     "id": "heritage-chua-bao-quoc",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Chùa Báo Quốc",
-    "address": "Báo Quốc, Phường Đúc, TP Huế",
+    "address": "Đồi Hàm Long, Đường Báo Quốc, Phường Phường Đúc, Thành phố Huế",
     "name_vi": "Chùa Báo Quốc",
     "name_en": "Bao Quoc Pagoda",
     "subcategory": [
       "heritage",
       "pagoda"
     ],
-    "address_vi": "Báo Quốc, Phường Đúc, TP Huế",
+    "address_vi": "Đồi Hàm Long, Đường Báo Quốc, Phường Phường Đúc, Thành phố Huế",
     "address_en": "Duc Ward, Hue City",
-    "lat": 16.4547,
-    "lng": 107.5819,
+    "lat": 16.454,
+    "lng": 107.5796,
     "phone": null,
     "googleRating": 4.4,
     "googleReviewCount": 1200,
     "coverPhotoUrl": "/images/pois/chua-bao-quoc.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/chua-bao-quoc.webp"
+    ],
+    "img": "/images/pois/chua-bao-quoc.webp"
   },
   {
     "id": "heritage-chua-thien-mu",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Chùa Thiên Mụ",
-    "address": "Đồi Hà Khê, Hương Long, TP Huế",
-    "name_vi": "Chùa Thiên Mụ",
+    "name": "Chùa Thiên Mụ (Linh Mụ)",
+    "address": "Đồi Hà Khê, Đường Nguyễn Phúc Nguyên, Phường Hương Long, Thành phố Huế",
+    "name_vi": "Chùa Thiên Mụ (Linh Mụ)",
     "name_en": "Thien Mu Pagoda",
     "subcategory": [
       "heritage",
       "pagoda"
     ],
-    "address_vi": "Đồi Hà Khê, Hương Long, TP Huế",
+    "address_vi": "Đồi Hà Khê, Đường Nguyễn Phúc Nguyên, Phường Hương Long, Thành phố Huế",
     "address_en": "Huong Long, Hue City",
     "lat": 16.4536,
-    "lng": 107.545,
+    "lng": 107.5448,
     "phone": null,
     "googleRating": 4.7,
     "googleReviewCount": 22000,
     "coverPhotoUrl": "/images/pois/chua-thien-mu.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/chua-thien-mu.webp"
+    ],
+    "img": "/images/pois/chua-thien-mu.webp"
   },
   {
     "id": "heritage-chua-tu-dam",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Chùa Từ Đàm",
-    "address": "01 Sư Liễu Quán, Phường Trường An, TP Huế",
+    "address": "Số 01 Sư Liễu Quán, Phường Trường An, Thành phố Huế",
     "name_vi": "Chùa Từ Đàm",
     "name_en": "Tu Dam Pagoda",
     "subcategory": [
       "heritage",
       "pagoda"
     ],
-    "address_vi": "01 Sư Liễu Quán, Phường Trường An, TP Huế",
+    "address_vi": "Số 01 Sư Liễu Quán, Phường Trường An, Thành phố Huế",
     "address_en": "Truong An, Hue City",
-    "lat": 16.4502,
-    "lng": 107.5794,
+    "lat": 16.4539,
+    "lng": 107.5772,
     "phone": null,
     "googleRating": 4.5,
     "googleReviewCount": 3400,
     "coverPhotoUrl": "/images/pois/chua-tu-dam.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/chua-tu-dam.webp"
+    ],
+    "img": "/images/pois/chua-tu-dam.webp"
   },
   {
     "id": "heritage-cung-an-dinh",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Cung An Định",
-    "address": "97 Phan Đình Phùng, TP Huế",
+    "address": "179 Phan Đình Phùng, Phường Phú Nhuận, Thành phố Huế",
     "name_vi": "Cung An Định",
     "name_en": "An Dinh Palace",
     "subcategory": [
       "heritage",
       "imperial"
     ],
-    "address_vi": "97 Phan Đình Phùng, TP Huế",
+    "address_vi": "179 Phan Đình Phùng, Phường Phú Nhuận, Thành phố Huế",
     "address_en": "97 Phan Dinh Phung Street, Phu Nhuan, Hue",
-    "lat": 16.4578,
-    "lng": 107.5955,
+    "lat": 16.45722,
+    "lng": 107.59778,
     "phone": null,
     "googleRating": 4.5,
     "googleReviewCount": 4800,
-    "coverPhotoUrl": "/images/pois/cung-an-inh.webp",
+    "coverPhotoUrl": "/images/pois/cung-an-dinh.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/cung-an-dinh.webp"
+    ],
+    "img": "/images/pois/cung-an-dinh.webp"
   },
   {
     "id": "heritage-cuu-dinh",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Cửu Đỉnh",
-    "address": "Thế Tổ Miếu, Đại Nội Huế",
+    "address": "Trước sân Thế Miếu, Đại Nội Huế",
     "name_vi": "Cửu Đỉnh",
     "name_en": "Nine Dynastic Urns",
     "subcategory": [
       "heritage",
       "imperial"
     ],
-    "address_vi": "Thế Tổ Miếu, Đại Nội Huế",
+    "address_vi": "Trước sân Thế Miếu, Đại Nội Huế",
     "address_en": "The To Temple, Hue Imperial Citadel",
-    "lat": 16.4682,
-    "lng": 107.5771,
+    "lat": 16.4668,
+    "lng": 107.577,
     "phone": null,
     "googleRating": 4.5,
     "googleReviewCount": 3200,
     "coverPhotoUrl": "/images/pois/cuu-dinh.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/cuu-dinh.webp"
+    ],
+    "img": "/images/pois/cuu-dinh.webp"
   },
   {
     "id": "heritage-dai-noi-hue",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Đại Nội Huế",
-    "address": "Phường Phú Hậu, TP Huế",
+    "address": "Phường Thuận Thành, Thành phố Huế",
     "name_vi": "Đại Nội Huế",
     "name_en": "Imperial City of Hue",
     "subcategory": [
       "heritage",
       "imperial"
     ],
-    "address_vi": "Phường Phú Hậu, TP Huế",
+    "address_vi": "Phường Thuận Thành, Thành phố Huế",
     "address_en": "Phu Hau, Hue City, Thua Thien Hue",
-    "lat": 16.4691,
-    "lng": 107.5775,
+    "lat": 16.4697,
+    "lng": 107.5779,
     "phone": null,
     "googleRating": 4.6,
     "googleReviewCount": 28000,
     "coverPhotoUrl": "/images/pois/dai-noi-hue.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/dai-noi-hue.webp"
+    ],
+    "img": "/images/pois/dai-noi-hue.webp"
   },
   {
     "id": "heritage-dien-hon-chen",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Điện Hòn Chén",
-    "address": "Hải Cát, Hương Thọ, TP Huế",
+    "address": "Núi Ngọc Trản, Làng Hải Cát, Xã Hương Thọ, Thành phố Huế",
     "name_vi": "Điện Hòn Chén",
     "name_en": "Hon Chen Temple",
     "subcategory": [
       "heritage",
       "pagoda"
     ],
-    "address_vi": "Hải Cát, Hương Thọ, TP Huế",
+    "address_vi": "Núi Ngọc Trản, Làng Hải Cát, Xã Hương Thọ, Thành phố Huế",
     "address_en": "Huong Tho, Huong Tra, Thua Thien Hue",
-    "lat": 16.4101,
-    "lng": 107.5452,
+    "lat": 16.42196,
+    "lng": 107.56292,
     "phone": null,
     "googleRating": 4.4,
     "googleReviewCount": 1850,
     "coverPhotoUrl": "/images/pois/dien-hon-chen.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/dien-hon-chen.webp"
+    ],
+    "img": "/images/pois/dien-hon-chen.webp"
   },
   {
     "id": "heritage-dien-thai-hoa",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Điện Thái Hòa",
-    "address": "Trung tâm Đại Nội, TP Huế",
+    "address": "Trung tâm Đại Nội Huế, Phường Thuận Thành, Thành phố Huế",
     "name_vi": "Điện Thái Hòa",
     "name_en": "Thai Hoa Palace",
     "subcategory": [
       "heritage",
       "imperial"
     ],
-    "address_vi": "Trung tâm Đại Nội, TP Huế",
+    "address_vi": "Trung tâm Đại Nội Huế, Phường Thuận Thành, Thành phố Huế",
     "address_en": "Center of Hue Imperial Citadel, Hue City",
-    "lat": 16.4696,
-    "lng": 107.5786,
+    "lat": 16.46972,
+    "lng": 107.57778,
     "phone": null,
     "googleRating": 4.6,
     "googleReviewCount": 7200,
     "coverPhotoUrl": "/images/pois/dien-thai-hoa.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/dien-thai-hoa.webp"
+    ],
+    "img": "/images/pois/dien-thai-hoa.webp"
   },
   {
     "id": "heritage-doi-thien-an",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Đồi Thiên An",
-    "address": "Thủy Bằng, Hương Thủy, TP Huế",
+    "address": "Xã Thủy Bằng, Thành phố Huế",
     "name_vi": "Đồi Thiên An",
     "name_en": "Thien An Hill",
     "subcategory": [
       "heritage",
       "nature"
     ],
-    "address_vi": "Thủy Bằng, Hương Thủy, TP Huế",
+    "address_vi": "Xã Thủy Bằng, Thành phố Huế",
     "address_en": "Thuy Bang, Huong Thuy, Thua Thien Hue",
     "lat": 16.4201,
     "lng": 107.5755,
@@ -378,244 +435,283 @@
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Đồi Vọng Cảnh",
-    "address": "Đoàn Nhữ Hài, Thủy Biều, TP Huế",
+    "address": "Đường Đoàn Nhữ Hài, Phường Thủy Biều, Thành phố Huế",
     "name_vi": "Đồi Vọng Cảnh",
     "name_en": "Vong Canh Hill",
     "subcategory": [
       "heritage",
       "nature"
     ],
-    "address_vi": "Đoàn Nhữ Hài, Thủy Biều, TP Huế",
+    "address_vi": "Đường Đoàn Nhữ Hài, Phường Thủy Biều, Thành phố Huế",
     "address_en": "Thuy Bieu, Hue City",
     "lat": 16.4258,
     "lng": 107.5503,
     "phone": null,
     "googleRating": 4.3,
     "googleReviewCount": 1900,
-    "coverPhotoUrl": "/images/pois/oi-vong-canh.webp",
+    "coverPhotoUrl": "/images/pois/doi-vong-canh.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/doi-vong-canh.webp"
+    ]
   },
   {
     "id": "heritage-ho-tinh-tam",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Hồ Tịnh Tâm",
-    "address": "Hồ Tịnh Tâm, TP Huế",
+    "address": "Đường Đinh Tiên Hoàng, Phường Thuận Thành, Thành phố Huế",
     "name_vi": "Hồ Tịnh Tâm",
     "name_en": "Tinh Tam Lake",
     "subcategory": [
       "heritage",
       "nature"
     ],
-    "address_vi": "Hồ Tịnh Tâm, TP Huế",
+    "address_vi": "Đường Đinh Tiên Hoàng, Phường Thuận Thành, Thành phố Huế",
     "address_en": "Tinh Tam Lake, north of Hue Citadel",
-    "lat": 16.4772,
-    "lng": 107.5791,
+    "lat": 16.47793,
+    "lng": 107.57678,
     "phone": null,
     "googleRating": 4.2,
     "googleReviewCount": 1100,
     "coverPhotoUrl": "/images/pois/ho-tinh-tam.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/ho-tinh-tam.webp"
+    ],
+    "img": "/images/pois/ho-tinh-tam.webp"
   },
   {
     "id": "heritage-lang-dong-khanh",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Lăng Đồng Khánh",
-    "address": "Đoàn Nhữ Hài, Thủy Xuân, TP Huế",
-    "name_vi": "Lăng Đồng Khánh",
+    "name": "Lăng Đồng Khánh (Tư Lăng)",
+    "address": "Thôn Thượng Hai, Phường Thủy Xuân, Thành phố Huế",
+    "name_vi": "Lăng Đồng Khánh (Tư Lăng)",
     "name_en": "Dong Khanh Tomb",
     "subcategory": [
       "heritage",
       "tomb"
     ],
-    "address_vi": "Đoàn Nhữ Hài, Thủy Xuân, TP Huế",
+    "address_vi": "Thôn Thượng Hai, Phường Thủy Xuân, Thành phố Huế",
     "address_en": "Thuy Xuan, Hue City",
-    "lat": 16.4335,
-    "lng": 107.5642,
+    "lat": 16.4333,
+    "lng": 107.5667,
     "phone": null,
     "googleRating": 4.3,
     "googleReviewCount": 1800,
     "coverPhotoUrl": "/images/pois/lang-dong-khanh.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/lang-dong-khanh.webp"
+    ],
+    "img": "/images/pois/lang-dong-khanh.webp"
   },
   {
     "id": "heritage-lang-duc-duc",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Lăng Dục Đức",
-    "address": "Kiệt 179 Duy Tân, Phường An Cựu, TP Huế",
-    "name_vi": "Lăng Dục Đức",
-    "name_en": "Duc Duc Tomb",
+    "name": "Lăng Dục Đức (An Lăng)",
+    "address": "Đường Duy Tân, Phường An Cựu, Thành phố Huế",
+    "name_vi": "Lăng Dục Đức (An Lăng)",
+    "name_en": "Duc Duc Tomb (An Lang)",
     "subcategory": [
       "heritage",
       "tomb"
     ],
-    "address_vi": "Kiệt 179 Duy Tân, Phường An Cựu, TP Huế",
+    "address_vi": "Đường Duy Tân, Phường An Cựu, Thành phố Huế",
     "address_en": "An Cuu, Hue City",
-    "lat": 16.4475,
-    "lng": 107.5878,
+    "lat": 16.45111,
+    "lng": 107.59306,
     "phone": null,
     "googleRating": 4.2,
     "googleReviewCount": 920,
-    "coverPhotoUrl": "/images/pois/lang-duc-uc.webp",
+    "coverPhotoUrl": "/images/pois/lang-duc-duc.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/lang-duc-duc.webp"
+    ],
+    "img": "/images/pois/lang-duc-duc.webp"
   },
   {
     "id": "heritage-lang-gia-long",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Lăng Gia Long",
-    "address": "Định Môn, Hương Thọ, TP Huế",
-    "name_vi": "Lăng Gia Long",
+    "name": "Lăng Gia Long (Thiên Thọ Lăng)",
+    "address": "Thôn Định Môn, Xã Hương Thọ, Thành phố Huế",
+    "name_vi": "Lăng Gia Long (Thiên Thọ Lăng)",
     "name_en": "Gia Long Tomb",
     "subcategory": [
       "heritage",
       "tomb"
     ],
-    "address_vi": "Định Môn, Hương Thọ, TP Huế",
+    "address_vi": "Thôn Định Môn, Xã Hương Thọ, Thành phố Huế",
     "address_en": "Huong Tho, Huong Tra, Thua Thien Hue",
-    "lat": 16.3533,
-    "lng": 107.5878,
+    "lat": 16.375,
+    "lng": 107.596,
     "phone": null,
     "googleRating": 4.4,
     "googleReviewCount": 2400,
     "coverPhotoUrl": "/images/pois/lang-gia-long.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/lang-gia-long.webp"
+    ],
+    "img": "/images/pois/lang-gia-long.webp"
   },
   {
     "id": "heritage-lang-khai-dinh",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Lăng Khải Định",
-    "address": "Châu Chữ, Thủy Bằng, TP Huế",
-    "name_vi": "Lăng Khải Định",
+    "name": "Lăng Khải Định (Ứng Lăng)",
+    "address": "Núi Châu Chữ, Xã Thủy Bằng, Thành phố Huế",
+    "name_vi": "Lăng Khải Định (Ứng Lăng)",
     "name_en": "Tomb of Khai Dinh",
     "subcategory": [
       "heritage",
       "tomb"
     ],
-    "address_vi": "Châu Chữ, Thủy Bằng, TP Huế",
+    "address_vi": "Núi Châu Chữ, Xã Thủy Bằng, Thành phố Huế",
     "address_en": "Thuy Bang, Huong Thuy, Thua Thien Hue",
-    "lat": 16.3989,
-    "lng": 107.5905,
+    "lat": 16.39893,
+    "lng": 107.59029,
     "phone": null,
     "googleRating": 4.6,
     "googleReviewCount": 12000,
     "coverPhotoUrl": "/images/pois/lang-khai-dinh.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/lang-khai-dinh.webp"
+    ],
+    "img": "/images/pois/lang-khai-dinh.webp"
   },
   {
     "id": "heritage-lang-minh-mang",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Lăng Minh Mạng",
-    "address": "An Bằng, Hương Thọ, TP Huế",
-    "name_vi": "Lăng Minh Mạng",
+    "name": "Lăng Minh Mạng (Hiếu Lăng)",
+    "address": "Núi Cẩm Kê, Xã Hương Thọ, Thành phố Huế",
+    "name_vi": "Lăng Minh Mạng (Hiếu Lăng)",
     "name_en": "Tomb of Minh Mang",
     "subcategory": [
       "heritage",
       "tomb"
     ],
-    "address_vi": "An Bằng, Hương Thọ, TP Huế",
+    "address_vi": "Núi Cẩm Kê, Xã Hương Thọ, Thành phố Huế",
     "address_en": "Huong Tho, Huong Tra, Thua Thien Hue",
-    "lat": 16.3888,
-    "lng": 107.5746,
+    "lat": 16.3876,
+    "lng": 107.5694,
     "phone": null,
     "googleRating": 4.5,
     "googleReviewCount": 8900,
     "coverPhotoUrl": "/images/pois/lang-minh-mang.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/lang-minh-mang.webp"
+    ],
+    "img": "/images/pois/lang-minh-mang.webp"
   },
   {
     "id": "heritage-lang-thieu-tri",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Lăng Thiệu Trị",
-    "address": "Cư Chánh, Thủy Bằng, TP Huế",
-    "name_vi": "Lăng Thiệu Trị",
+    "name": "Lăng Thiệu Trị (Xương Lăng)",
+    "address": "Làng Cư Chánh, Xã Thủy Bằng, Thành phố Huế",
+    "name_vi": "Lăng Thiệu Trị (Xương Lăng)",
     "name_en": "Thieu Tri Tomb",
     "subcategory": [
       "heritage",
       "tomb"
     ],
-    "address_vi": "Cư Chánh, Thủy Bằng, TP Huế",
+    "address_vi": "Làng Cư Chánh, Xã Thủy Bằng, Thành phố Huế",
     "address_en": "Thuy Bang, Huong Thuy, Thua Thien Hue",
-    "lat": 16.4172,
-    "lng": 107.5721,
+    "lat": 16.41626,
+    "lng": 107.57322,
     "phone": null,
     "googleRating": 4.3,
     "googleReviewCount": 1500,
     "coverPhotoUrl": "/images/pois/lang-thieu-tri.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/lang-thieu-tri.webp"
+    ],
+    "img": "/images/pois/lang-thieu-tri.webp"
   },
   {
     "id": "heritage-lang-tu-duc",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Lăng Tự Đức",
-    "address": "Thôn Thượng Ba, Thủy Xuân, TP Huế",
-    "name_vi": "Lăng Tự Đức",
+    "name": "Lăng Tự Đức (Khiêm Lăng)",
+    "address": "Thôn Thượng Ba, Phường Thủy Xuân, Thành phố Huế",
+    "name_vi": "Lăng Tự Đức (Khiêm Lăng)",
     "name_en": "Tomb of Tu Duc",
     "subcategory": [
       "heritage",
       "tomb"
     ],
-    "address_vi": "Thôn Thượng Ba, Thủy Xuân, TP Huế",
+    "address_vi": "Thôn Thượng Ba, Phường Thủy Xuân, Thành phố Huế",
     "address_en": "Thuy Bang, Huong Thuy, Thua Thien Hue",
-    "lat": 16.4328,
-    "lng": 107.5658,
+    "lat": 16.43256,
+    "lng": 107.56581,
     "phone": null,
     "googleRating": 4.5,
     "googleReviewCount": 10500,
     "coverPhotoUrl": "/images/pois/lang-tu-duc.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/lang-tu-duc.webp"
+    ],
+    "img": "/images/pois/lang-tu-duc.webp"
   },
   {
     "id": "heritage-ngo-mon",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Ngọ Môn",
-    "address": "Cổng Nam Đại Nội, TP Huế",
-    "name_vi": "Ngọ Môn",
+    "name": "Cổng Ngọ Môn",
+    "address": "Cổng Nam Đại Nội, Phường Thuận Thành, Thành phố Huế",
+    "name_vi": "Cổng Ngọ Môn",
     "name_en": "Ngo Mon Gate",
     "subcategory": [
       "heritage",
       "imperial"
     ],
-    "address_vi": "Cổng Nam Đại Nội, TP Huế",
+    "address_vi": "Cổng Nam Đại Nội, Phường Thuận Thành, Thành phố Huế",
     "address_en": "South Gate of Hue Imperial Citadel",
-    "lat": 16.4674,
-    "lng": 107.5785,
+    "lat": 16.468,
+    "lng": 107.5788,
     "phone": null,
     "googleRating": 4.7,
     "googleReviewCount": 9500,
     "coverPhotoUrl": "/images/pois/ngo-mon.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/ngo-mon.webp"
+    ],
+    "img": "/images/pois/ngo-mon.webp"
   },
   {
     "id": "heritage-nui-ngu-binh",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Núi Ngự Bình",
-    "address": "An Cựu, TP Huế",
+    "address": "Phường An Cựu, Thành phố Huế",
     "name_vi": "Núi Ngự Bình",
     "name_en": "Ngu Binh Mountain",
     "subcategory": [
       "heritage",
       "nature"
     ],
-    "address_vi": "An Cựu, TP Huế",
+    "address_vi": "Phường An Cựu, Thành phố Huế",
     "address_en": "An Cuu, Hue City",
     "lat": 16.4351,
     "lng": 107.5954,
@@ -624,21 +720,24 @@
     "googleReviewCount": 2800,
     "coverPhotoUrl": "/images/pois/nui-ngu-binh.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/nui-ngu-binh.webp"
+    ]
   },
   {
     "id": "heritage-pha-tam-giang",
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Phá Tam Giang",
-    "address": "Quảng Điền, Thừa Thiên Huế",
+    "address": "Huyện Quảng Điền, Thành phố Huế",
     "name_vi": "Phá Tam Giang",
     "name_en": "Tam Giang Lagoon",
     "subcategory": [
       "heritage",
       "nature"
     ],
-    "address_vi": "Quảng Điền, Thừa Thiên Huế",
+    "address_vi": "Huyện Quảng Điền, Thành phố Huế",
     "address_en": "Quang Dien, Thua Thien Hue",
     "lat": 16.5562,
     "lng": 107.5501,
@@ -647,7 +746,10 @@
     "googleReviewCount": 3800,
     "coverPhotoUrl": "/images/pois/pha-tam-giang.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/pha-tam-giang.webp"
+    ]
   },
   {
     "id": "heritage-pho-dem-hue",
@@ -676,15 +778,15 @@
     "id": "heritage-song-huong",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Sông Hương",
-    "address": "Bến Tòa Khâm, Sông Hương, TP Huế",
-    "name_vi": "Sông Hương",
-    "name_en": "Perfume River",
+    "name": "Bến thuyền Tòa Khâm (Sông Hương)",
+    "address": "Bến thuyền Tòa Khâm, Đường Lê Lợi, Phường Phú Hội, Thành phố Huế",
+    "name_vi": "Bến thuyền Tòa Khâm (Sông Hương)",
+    "name_en": "Perfume River & Toa Kham Wharf",
     "subcategory": [
       "heritage",
       "nature"
     ],
-    "address_vi": "Bến Tòa Khâm, Sông Hương, TP Huế",
+    "address_vi": "Bến thuyền Tòa Khâm, Đường Lê Lợi, Phường Phú Hội, Thành phố Huế",
     "address_en": "Huong River — Trang Tien Bridge, Hue",
     "lat": 16.4665,
     "lng": 107.5888,
@@ -693,7 +795,11 @@
     "googleReviewCount": 15000,
     "coverPhotoUrl": "/images/pois/song-huong.webp",
     "confidence": "medium",
-    "demand_score": 0
+    "demand_score": 0,
+    "photos": [
+      "/images/pois/song-huong.webp"
+    ],
+    "img": "/images/pois/song-huong.webp"
   },
   {
     "id": "service-ben-thuyen-toa-kham",
@@ -9009,13 +9115,13 @@
     "vertical": "tour",
     "tier": "local_gem",
     "name": "Lăng Kiên Thái Vương",
-    "address": "Đoàn Nhữ Hải, Thủy Xuân, TP Huế",
+    "address": "Đường Đoàn Nhữ Hài, Phường Thủy Xuân, Thành phố Huế",
     "name_vi": "Lăng Kiên Thái Vương",
     "name_en": "Lăng Kiên Thái Vương",
     "subcategory": [
       "Công trình xây dựng"
     ],
-    "address_vi": "Đoàn Nhữ Hải, Thủy Xuân, TP Huế",
+    "address_vi": "Đường Đoàn Nhữ Hài, Phường Thủy Xuân, Thành phố Huế",
     "address_en": "",
     "lat": 16.4362,
     "lng": 107.567,
@@ -11806,7 +11912,7 @@
     "id": "tour-tieu-dinh-thuong-bac",
     "vertical": "tour",
     "tier": "local_gem",
-    "name": "Tiểu đình Th��ơng Bạc",
+    "name": "Tiểu đình Thương Bạc",
     "address": "FH9P+664 Tiểu đình Thương Bạc, Trần Hưng Đạo, Phú Xuân, Huế, Việt Nam",
     "name_vi": "Tiểu đình Thương Bạc",
     "name_en": "Tiểu đình Thương Bạc",
@@ -12539,12 +12645,13 @@
     "phone": null,
     "googleRating": 4.9,
     "googleReviewCount": 1970,
-    "coverPhotoUrl": "/images/pois/dai-noi-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/dai-noi-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "tour-villa-s-vo-thi-sau-hue",
@@ -18719,12 +18826,13 @@
     "phone": null,
     "googleRating": 4.8,
     "googleReviewCount": 149,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "high",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-binh-banh-canh-ca-loc",
@@ -21221,12 +21329,13 @@
     "phone": null,
     "googleRating": 4.9,
     "googleReviewCount": 15,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-c-beer-hue-nha-hang-mon-ngon-hue-mon-ngon-hue",
@@ -23664,12 +23773,13 @@
     "phone": null,
     "googleRating": 4.7,
     "googleReviewCount": 40,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-com-a-chinh",
@@ -26153,12 +26263,13 @@
     "phone": null,
     "googleRating": 4.7,
     "googleReviewCount": 1104,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-dung-de-9-mon",
@@ -26578,12 +26689,13 @@
     "phone": null,
     "googleRating": 3.3,
     "googleReviewCount": 128,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "high",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-ga-ran-mimu",
@@ -26603,12 +26715,13 @@
     "phone": null,
     "googleRating": 4,
     "googleReviewCount": 31,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "high",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-ganh-hang-rong-banh-canh-nam-pho-nam-loc-goi",
@@ -27213,12 +27326,13 @@
     "phone": null,
     "googleRating": 5,
     "googleReviewCount": 12,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-hang-banh-canh-ca-loc",
@@ -27313,12 +27427,13 @@
     "phone": null,
     "googleRating": 4.8,
     "googleReviewCount": 18,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-hannam-korean-food",
@@ -28597,12 +28712,13 @@
     "phone": null,
     "googleRating": 4.8,
     "googleReviewCount": 1752,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-jollibee-vincom-hue",
@@ -28622,12 +28738,13 @@
     "phone": null,
     "googleRating": 4.9,
     "googleReviewCount": 3570,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-junrei-restaurant-at-the-pilgrimage-village",
@@ -29913,12 +30030,13 @@
     "phone": null,
     "googleRating": 4.6,
     "googleReviewCount": 218,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "high",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-lien-minh-quan",
@@ -30213,12 +30331,13 @@
     "phone": null,
     "googleRating": 4.8,
     "googleReviewCount": 411,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-lotteria-coopmart-hue",
@@ -30238,12 +30357,13 @@
     "phone": null,
     "googleRating": 4.3,
     "googleReviewCount": 597,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-lotteria-go-hue",
@@ -30263,12 +30383,13 @@
     "phone": null,
     "googleRating": 4.7,
     "googleReviewCount": 765,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-lotteria-nguyen-hue-hue",
@@ -30288,12 +30409,13 @@
     "phone": null,
     "googleRating": 4.1,
     "googleReviewCount": 238,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-luc-binh-quan",
@@ -34842,12 +34964,13 @@
     "phone": null,
     "googleRating": 4.5,
     "googleReviewCount": 148,
-    "coverPhotoUrl": "/images/pois/bun-bo-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "high",
     "demand_score": 0,
     "photos": [
       "/images/pois/bun-bo-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "fnb-nho-com-hen-bun-hen",
@@ -43087,12 +43210,13 @@
     "phone": null,
     "googleRating": 4.7,
     "googleReviewCount": 40,
-    "coverPhotoUrl": "/images/pois/ca-phe-muoi-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/ca-phe-muoi-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "cafe-coffee-huong-tram",
@@ -53186,12 +53310,13 @@
     "phone": null,
     "googleRating": 4.9,
     "googleReviewCount": 1970,
-    "coverPhotoUrl": "/images/pois/ca-phe-muoi-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/ca-phe-muoi-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "cafe-view-cafe",
@@ -70553,12 +70678,13 @@
     "phone": null,
     "googleRating": 5,
     "googleReviewCount": 18,
-    "coverPhotoUrl": "/images/pois/homestay-hue.webp",
+    "coverPhotoUrl": "/images/pois/fastfood-hue.webp",
     "confidence": "medium",
     "demand_score": 0,
     "photos": [
       "/images/pois/homestay-hue.webp"
-    ]
+    ],
+    "img": "/images/pois/fastfood-hue.webp"
   },
   {
     "id": "stay-nha-hang-khach-san-hoang-anh-palace-hue",
