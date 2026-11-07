@@ -704,7 +704,95 @@ export function buildNaturalHueResponse(
   // =========================================================================
   // 4. CÂU HỎI VỀ ẨM THỰC & MÓN NGON CỤ THỂ XỨ HUẾ
   // =========================================================================
-  // 4.1. Bún bò Huế
+  // 4.0. Sủi cảo / Há cảo / Hoành thánh / Dimsum / Mì Tàu
+  if (/sủi cảo|há cảo|hoành thánh|dimsum|dim sum|mì sủi cảo|mì tàu|mì kéo|vằn thắn|sui cao|ha cao|hoanh thanh|van than|mi tau/.test(qNorm) || /sui cao|ha cao|hoanh thanh|dimsum|mi tau/.test(qNoAccent)) {
+    return (
+      `Dạ, muốn ăn **Sủi cảo – Hoành thánh – Dimsum** chuẩn vị người Hoa gia truyền ở Huế thì Mệ chỉ bạn ngay những quán nức tiếng lâu năm ni nhen:\n\n` +
+      `🥟 **1. Vĩnh Lợi Mì Gia (Tiệm Mì Gốc Hoa lâu đời nhất Huế)**:\n` +
+      `• **Địa chỉ**: Số 121 Huỳnh Thúc Kháng (gần cầu Gia Hội) & Cơ sở 2 tại 47 Hùng Vương.\n` +
+      `• **Đặc sắc**: Mì sủi cảo tôm thịt tươi giòn sần sật, hoành thánh chiên giòn rụm, nước súp ninh từ xương ống và tôm khô thanh ngọt tự nhiên theo bí quyết gia truyền hơn 40 năm của người Hoa Cố Đô.\n\n` +
+      `🥟 **2. Bảo Thạnh Dimsum & Sủi Cảo**:\n` +
+      `• **Địa chỉ**: Số 20 Bến Nghé (ngay trung tâm bờ Nam, mở 07:00 – 21:30).\n` +
+      `• **Đặc sắc**: Thực đơn đa dạng với sủi cảo hấp, há cảo tôm pha lê vỏ trong veo, xíu mại tôm thịt, bánh bao kim sa nóng hổi, không gian sạch sẽ, máy lạnh mát mẻ.\n\n` +
+      `🥟 **3. Tiệm Mì Tàu Phúc Hưng & Mì Kéo Chợ Đông Ba**:\n` +
+      `• **Địa chỉ**: Cổng Chợ Đông Ba (đầu đường Trần Hưng Đạo) & đường Đinh Tiên Hoàng (trong Thành Nội).\n` +
+      `• **Đặc sắc**: Mì vằn thắn xá xíu, sủi cảo thơm lừng dầu mè, phục vụ từ sáng sớm đến đêm khuya, ăn lót dạ ấm bụng cực kỳ.\n\n` +
+      `• **Giá tham khảo**: 35.000đ – 60.000đ/tô. Bạn muốn ăn sủi cảo nước ngọt thanh hay sủi cảo chiên giòn chấm xì dầu sa tế để Mệ chỉ đường tới tận quán nhen!`
+    );
+  }
+
+  // 4.1. Bánh canh cá lóc / Bánh canh Nam Phổ / Bánh canh cua
+  if (/bánh canh|cháo bột|bánh canh cá lóc|bánh canh nam phổ|bánh canh cua|banh canh|chao bot/.test(qNorm) || /banh canh|chao bot/.test(qNoAccent)) {
+    return (
+      `Dạ, người Huế hay gọi **Bánh canh** là **Cháo bột** — món ăn sáng, ăn xế ấm bụng mà ai đi xa cũng nhớ!\n\n` +
+      `🍲 **Địa chỉ bánh canh nức tiếng Cố Đô**:\n` +
+      `1. **Bánh canh cá lóc Dì Hương**: Số 14 Lê Thánh Tôn (trong Thành Nội) — sợi bột lọc/bột gạo dẻo dai, thịt cá lóc đồng rim nghệ vàng ươm, nước dùng ngọt đậm đà.\n` +
+      `2. **Bánh canh Nam Phổ Thúy**: Số 16 Phạm Hồng Thái — nồi bánh canh sánh đỏ màu gạch tôm cua, ăn kèm chả cua quết dẻo mịn thơm lừng mùi hành ngò.\n` +
+      `3. **Bánh canh cua Nga**: Số 32 Phạm Hồng Thái — thịt cua tươi ngọt và chả cua đầy đặn.\n` +
+      `4. **Bánh canh đêm Hàn Thuyên**: Phố bánh canh đèn dầu mở từ 18:00 đến khuya ngay góc đường Hàn Thuyên trong Thành Nội.\n\n` +
+      `• **Giá tham khảo**: Chỉ từ 20.000đ – 35.000đ/tô!`
+    );
+  }
+
+  // 4.2. Bánh mì Huế (Bánh mì O Tho, Bánh mì kẹp bột lọc, Bánh mì Tràng Tiền)
+  if (/bánh mì|banh mi|bánh mỳ/.test(qNorm) || /banh mi/.test(qNoAccent)) {
+    return (
+      `Dạ, ổ **Bánh mì Huế** nhỏ nhắn, vỏ giòn rụm và đặc biệt là chan nước sốt thịt chan sánh đậm đà cay cay ngọt ngọt rất riêng!\n\n` +
+      `🥖 **Những tiệm bánh mì ngon nhất ở Huế**:\n` +
+      `1. **Bánh mì O Tho**: Số 14 Trần Cao Vân — nổi tiếng nhất Huế với bánh mì thịt nguội, chả lụa, pate gan béo ngậy và ớt rim cay nồng (mở chiều tối).\n` +
+      `2. **Bánh mì kẹp bánh bột lọc**: Món ăn vặt độc nhất vô nhị chỉ có ở Huế! Bánh mì giòn kẹp nhân bánh bột lọc tôm thịt dẻo quánh, chan nước mắm ớt cay xè (bán ở cổng chợ Đông Ba, chợ An Cựu hoặc đường Hùng Vương).\n` +
+      `3. **Bánh mì chân Cầu Tràng Tiền**: Bán từ 19:00 đến 02:00 sáng khuya, vừa ăn vừa ngắm sông Hương.\n\n` +
+      `• **Giá tham khảo**: 12.000đ – 25.000đ/ổ.`
+    );
+  }
+
+  // 4.3. Cơm niêu, Cơm Âm Phủ, Cơm gà, Cơm gia đình
+  if (/cơm niêu|cơm âm phủ|cơm tấm|cơm gà|quán cơm|cơm trưa|cơm tối|com nieu|com am phu|com tam|com ga|quan com/.test(qNorm) || /com nieu|com am phu|com tam|com ga|quan com/.test(qNoAccent)) {
+    return (
+      `Dạ, muốn ăn bữa cơm trưa hay cơm tối đầm ấm, chuẩn vị gia đình hoặc thưởng thức món cơm độc đáo đất Cố Đô thì Mệ gợi ý ngay:\n\n` +
+      `🍚 **1. Cơm Âm Phủ (Món cơm trứ danh hơn 100 năm)**:\n` +
+      `• Quán Cơm Âm Phủ tại **Số 51 Nguyễn Thái Học** — đĩa cơm trắng dẻo bày đủ 7 màu: thịt nướng, chả lụa, nem chua, trứng tráng mỏng, tôm chấy, dưa leo, rau thơm.\n\n` +
+      `🍚 **2. Cơm niêu & Cơm gia đình truyền thống Huế**:\n` +
+      `• **Cơm niêu Không Gian Xưa**: Số 205 Điện Biên Phủ — cơm niêu cháy vàng giòn, cá bống kho tộ, canh rau tập tàng nấu tôm, vả trộn thịt luộc chấm mắm tôm chua.\n` +
+      `• **Cơm niêu Cá Bống**: Số 39 Nguyễn Tri Phương — đậm đà ấm cúng, giá hợp lý.\n\n` +
+      `🍚 **3. Cơm gà xé bóp Cố Đô**:\n` +
+      `• **Cơm gà O Ty**: Số 32 Đặng Thái Thân (trong Thành Nội) — gà đồi xé phay bóp rau răm hành tây thơm giòn.`
+    );
+  }
+
+  // 4.4. Ốc Huế (Ốc hút, Ốc xào sả ớt)
+  if (/ốc hút|quán ốc|ốc huế|ốc xào|ăn ốc|oc hut|quan oc|an oc/.test(qNorm) || /oc hut|quan oc/.test(qNoAccent)) {
+    return (
+      `Dạ, ăn **Ốc hút Huế** giữa tiết trời se lạnh buổi chiều tối là cái thú không thể nào quên! Ốc bươu, ốc gạo, ốc đinh được xào cùng sả cây đập dập, ớt tươi cay xè, gừng thơm lừng, ăn kèm sợi đu đủ xanh ngâm chua giòn sần sật.\n\n` +
+      `🐚 **Top quán ốc ngon chuẩn vị Huế**:\n` +
+      `1. **Khu Ốc Ga Huế (Đường Phan Chu Trinh)**: Dọc bờ sông An Cựu (từ cầu Ga đến ngã ba Phan Bội Châu) — phố ốc nhộn nhịp từ 16:00 đến đêm.\n` +
+      `2. **Quán Ốc Minh Nghĩa**: Số 253 Phan Bội Châu — quán ốc lâu đời nổi tiếng với ốc xào sả ớt và chè sen nóng.\n` +
+      `3. **Ốc Ba Chàng Trai**: Đường Hồ Đắc Di (khu Làng đại học) — tươi ngon, giá sinh viên chỉ 20.000đ – 35.000đ/đĩa.`
+    );
+  }
+
+  // 4.5. Hải sản đầm phá / Đầm Chuồn
+  if (/hải sản|quán nhậu|đầm chuồn|ăn nhậu|phá tam giang|hai san|dam chuon|quan nhau/.test(qNorm) || /hai san|dam chuon/.test(qNoAccent)) {
+    return (
+      `Dạ, về Huế mà muốn ăn hải sản tươi rói và nhâm nhi ngắm cảnh thì nhất định phải về vùng **Đầm Chuồn (Phá Tam Giang)** hoặc biển **Thuận An** nhen:\n\n` +
+      `🐟 **1. Trải nghiệm nhà chòi Đầm Chuồn (Phú Vang - cách trung tâm 12km)**:\n` +
+      `• **Đầm Chuồn Hương Quán** hoặc các nhà chòi nổi trên đầm: Thưởng thức **Bánh khoái cá kình** (loại cá đầm phá thịt thơm ngọt ruột béo ngậy), tôm đất nướng muối ớt, cua đầm phá, ghẹ hấp sả giữa mênh mông sóng nước hoàng hôn.\n\n` +
+      `🦀 **2. Hải sản ven biển Thuận An**:\n` +
+      `• **Quán Duyên Triều / Phú Thuận**: Mực nang tươi rói, ngao hấp sả, tôm hùm, sò điệp nướng mỡ hành đón gió biển lồng lộng.`
+    );
+  }
+
+  // 4.6. Lẩu Huế
+  if (/quán lẩu|ăn lẩu|lẩu bò|lẩu dê|lẩu nấm|lau bo|lau de|quan lau/.test(qNorm) || /quan lau|lau bo/.test(qNoAccent)) {
+    return (
+      `Dạ, muốn quây quần bên nồi **Lẩu nóng hổi** buổi tối ở Huế thì Mệ mách bạn mấy quán ruột người địa phương hay ăn nhen:\n\n` +
+      `🍲 **1. Lẩu bò Thu Thuận**: Số 151 Điện Biên Phủ hoặc đường Phan Bội Châu — lẩu bắp bò gân giòn, nước dùng hầm xương ngọt lịm, giá chỉ từ 150.000đ – 250.000đ/nồi.\n` +
+      `🍲 **2. Lẩu nấm Chay & Mặn An Nhiên**: Khu vực bờ Nam — nước dùng thanh ngọt tự nhiên từ nấm tươi và củ sen.\n` +
+      `🍲 **3. Lẩu dê Nhất Tín**: Đường Lê Hồng Phong hoặc Nguyễn Huệ — thịt dê tươi không hôi, nước chấm chao bùi béo.`
+    );
+  }
+
+  // 4.7. Bún bò Huế
   if (/bún bò|bun bo/.test(qNorm) || /bun bo/.test(qNoAccent)) {
     return (
       `Dạ, nhắc tới **Bún bò Huế** là nhắc tới linh hồn ẩm thực Cố Đô! Tô bún bò chuẩn vị Huế dùng sợi bún nhỏ, nước lèo trong veo ninh từ xương ống bò và giò heo cùng sả cây thơm lừng, dậy mùi mắm ruốc Huế đặc trưng và chút ớt chưng cay nồng.\n\n` +
@@ -717,7 +805,7 @@ export function buildNaturalHueResponse(
     );
   }
 
-  // 4.2. Cơm hến / Bún hến
+  // 4.8. Cơm hến / Bún hến
   if (/cơm hến|bún hến|mì hến|com hen|bun hen/.test(qNorm) || /com hen|bun hen/.test(qNoAccent)) {
     return (
       `Dạ, **Cơm hến – Bún hến** là món ăn dân dã mà tinh tế bậc nhất của vùng Cồn Hến bên sông Hương! Một tô cơm hến đúng chuẩn phải dùng cơm trắng để nguội, trộn cùng hến xào măng khô, tóp mỡ chiên giòn, đậu phộng rang, mắm ruốc, ớt màu cay xè và chan chén nước luộc hến nóng hổi thơm mùi gừng.\n\n` +
@@ -889,6 +977,32 @@ export function buildNaturalHueResponse(
     );
   }
 
+  // 5.1. Câu hỏi về TRANG PHỤC / MẶC GÌ / THUÊ CỔ PHỤC & ÁO DÀI CHỤP ẢNH
+  if (/mặc gì|mặc đồ gì|trang phục|cổ phục|nhật bình|áo dài|chụp ảnh đẹp|chụp hình đẹp|sống ảo|tiệm thuê|mac gi|co phuc|ao dai|chup anh/.test(qNorm) || /mac gi|co phuc|ao dai|chup anh/.test(qNoAccent)) {
+    return (
+      `Dạ, đi chơi Huế mà muốn có bộ ảnh "triệu like" chuẩn chất thơ Cố Đô thì Mệ mách bạn bí kíp chọn trang phục và góc chụp đỉnh nhất ni nhen:\n\n` +
+      `👗 **1. Gợi ý trang phục hợp cảnh nhất**:\n` +
+      `• **Cổ phục Nhật Bình & Áo dài ngũ thân**: Tôn vẻ đẹp đài các, trang nghiêm khi chụp tại **Đại Nội (Cửa Hiển Nhơn, Cung Diên Thọ, Điện Kiến Trung)**, **Lăng Tự Đức** và **Cung An Định**. Nên chọn tông màu rực rỡ (đỏ son, vàng hoàng yến, xanh ngọc bích).\n` +
+      `• **Áo dài trắng truyền thống / Váy vintage tone be, pastel**: Rất hợp để thả dáng tại **Làng hương Thủy Xuân**, cầu gỗ Lim ngắm hoàng hôn sông Hương, hoặc các quán cà phê nhà rường Kim Long.\n\n` +
+      `📸 **2. Địa chỉ thuê cổ phục & áo dài uy tín tại Huế**:\n` +
+      `• **Cổ Phục Kinh Sắc**: Số 38 Nguyễn Công Trứ — đầy đủ áo Nhật Bình, áo tấc, phụ kiện trâm cài, quạt lụa và gói makeup chuyên nghiệp.\n` +
+      `• **Cổ Phục Cố Đô & Tiệm Áo Dài Làng Hương Thủy Xuân**: Ngay dọc đường Huyền Trân Công Chúa — giá thuê chỉ từ 50.000đ – 100.000đ/bộ chụp thỏa thích giữa những bó hương ngũ sắc!\n\n` +
+      `Bạn dự định chụp ảnh ở Đại Nội, lăng tẩm hay Làng Hương để Mệ gợi ý tone màu áo hợp nhất nhen!`
+    );
+  }
+
+  // 5.2. Câu hỏi SO SÁNH LĂNG TẨM / NÊN ĐI LĂNG NÀO / LĂNG MIỄN PHÍ
+  if (/lăng nào đẹp|lăng nào đáng đi|nên đi lăng nào|lăng đẹp nhất|lăng miễn phí|so sánh lăng|lang nao dep|nen di lang/.test(qNorm) || /lang nao dep|nen di lang/.test(qNoAccent)) {
+    return (
+      `Dạ, mỗi lăng tẩm triều Nguyễn đều phản ánh rõ tính cách và dấu ấn thời đại của từng vị hoàng đế. Nếu có ít thời gian, Mệ gợi ý **Top 3 lăng đặc sắc nhất** bạn nên ưu tiên nhen:\n\n` +
+      `👑 **1. Lăng Khải Định (Ứng Lăng)**: Độc đáo nhất! Kiến trúc giao thoa Đông – Tây bằng bê tông sẫm màu uy nghiêm, bên trong cung Thiên Định khảm hàng triệu mảnh sành sứ lộng lẫy và bức bích họa *Cửu Long Ẩn Vân* trên trần.\n` +
+      `👑 **2. Lăng Tự Đức (Khiêm Lăng)**: Thơ mộng và trữ tình nhất! Hồ sen Lưu Khiêm, nhà tạ thưởng trà ngâm thơ Xung Khiêm Tạ như một bức tranh thủy mặc hữu tình.\n` +
+      `👑 **3. Lăng Minh Mạng (Hiếu Lăng)**: Uy nghiêm và chuẩn mực phong thủy phương Đông nhất! Toàn bộ 40 công trình đăng đối tuyệt đối trên trục Thần Đạo giữa hồ sen và rừng thông.\n\n` +
+      `💡 **Mẹo mua vé tiết kiệm**: Thay vì mua lẻ (150.000đ/lăng), bạn nên mua **Combo Tuyến 3 điểm (Đại Nội + Minh Mạng + Khải Định: 420.000đ)** hoặc **Combo 4 điểm (+ Tự Đức: 530.000đ)** ngay tại quầy vé nhen!\n` +
+      `*(Nếu muốn thăm lăng miễn phí vé, bạn có thể ghé Lăng Gia Long hoặc Lăng Thiệu Trị rất cổ kính và vắng lặng).*`
+    );
+  }
+
   // =========================================================================
   // 6. CÂU HỎI VỀ THỜI TIẾT / TRỜI MƯA / MÙA ĐẸP NHẤT ĐI HUẾ
   // =========================================================================
@@ -1003,13 +1117,27 @@ export function buildNaturalHueResponse(
   }
 
   // =========================================================================
-  // 10. PHẢN HỒI TỰ NHIÊN KHI CÂU HỎI MỞ / CHƯA RÕ Ý ĐỊNH
+  // 10. XỬ LÝ LINH HOẠT CÁC CÂU HỎI VỀ ẨM THỰC / TÌM QUÁN ĂN BẤT KỲ
   // =========================================================================
+  if (/\b(ăn|uống|quán|tiệm|thèm|ở đâu bán|chỗ nào có|quán nào|món)\b/i.test(qNorm) || /\b(an|uong|quan|tiem|them|o dau ban|cho nao co)\b/i.test(qNoAccent)) {
+    return (
+      `Dạ, Mệ nghe bạn hỏi tìm chỗ ăn ngon rồi nhen! 🍲\n\n` +
+      `Ẩm thực xứ Huế phong phú lắm, từ các món cung đình cầu kỳ cho tới những hàng quán bình dân hè phố. Nếu bạn đang muốn tìm quán ngon chuẩn vị bản địa, Mệ gợi ý ngay các tụ điểm ăn uống tập trung sầm uất nhất Cố Đô nhen:\n\n` +
+      `• 🥟 **Khu ẩm thực Chợ Đông Ba & đường Trần Hưng Đạo**: Nơi tụ hội đủ món từ mì sủi cảo, bún bò, cháo bột, nem lụi đến các loại bánh bèo nậm lọc gia truyền.\n` +
+      `• 🥢 **Khu phố ẩm thực Thành Nội (Đinh Tiên Hoàng – Nhật Lệ – Mai Thúc Loan)**: Nổi tiếng với bánh ép dẻo, bánh khoái, bún thịt nướng, cháo lòng, cơm gia đình.\n` +
+      `• 🌙 **Phố đêm & Khu phố Tây bờ Nam (Phạm Ngũ Lão – Chu Văn An – Võ Thị Sáu – Bến Nghé)**: Đầy đủ các quán ăn đêm, dimsum, lẩu, nướng, quán nhậu hải sản và pub sôi động.\n` +
+      `• ☕ **Dọc bờ sông An Cựu (Phan Chu Trinh – Phan Đình Phùng)**: Thiên đường ốc hút, bún giò, nem lụi và các quán cà phê ngắm sông thơ mộng.\n\n` +
+      `Bạn cứ nhắn tên món bạn đang muốn ăn (như *sủi cảo, bánh canh, bún bò, cơm niêu, bánh ép, ốc hút, chè heo quay...*), Mệ chỉ đúng địa chỉ quán gia truyền ruột cho bạn liền nghe!`
+    );
+  }
+
+  // =========================================================================
+  // 11. PHẢN HỒI TỰ NHIÊN, THÂN THIỆN NHƯ NGƯỜI BẢN ĐỊA CỐ ĐÔ
+  // =========================================================================
+  const cleanQ = question.trim().replace(/[?!.]+$/, '');
   return (
-    `Dạ Mệ nghe câu hỏi của bạn rồi nhen! Về **"${question.trim()}"**, để Mệ tư vấn sát ý bạn nhất, bạn có thể cho Mệ biết thêm là bạn đang quan tâm tới:\n\n` +
-    `• 🏛️ **Lịch sử, giá vé, giờ mở cửa** của một di tích cụ thể (như *Đại Nội, Lăng Tự Đức, Lăng Khải Định, Lăng Minh Mạng, Chùa Thiên Mụ, Cung An Định*)?\n` +
-    `• 🍜 **Địa chỉ quán ăn ngon chuẩn Huế** (như *bún bò, cơm hến, bánh bèo nậm lọc, bánh khoái, bánh ép, chè heo quay, cà phê muối*)?\n` +
-    `• 🗺️ Hay **Lịch trình tham quan Huế** trong 1 buổi, 1 ngày, 2 ngày?\n\n` +
-    `Bạn cứ nhắn tên món ăn hoặc điểm đến, Mệ chỉ tận nơi liền nghe!`
+    `Dạ, Mệ nghe câu hỏi "${cleanQ}" của bạn rồi nhen! 🌸\n\n` +
+    `Xứ Huế thương có biết bao điều thú vị: từ bề dày lịch sử 143 năm vương triều Nguyễn, vẻ đẹp uy nghiêm của Đại Nội và 7 cụm lăng tẩm hoàng gia, những ngôi chùa cổ thanh tịnh soi bóng dòng Hương Giang, cho tới hàng trăm món ngon đậm đà làm say lòng du khách.\n\n` +
+    `Bạn đang muốn Mệ kể chuyện lịch sử di tích, báo giá vé & giờ mở cửa tham quan, chỉ địa chỉ quán ăn ngon chuẩn gốc hay lên lịch trình khám phá Huế theo sở thích của bạn rứa? Cứ nhắn tự nhiên, Mệ đồng hành cùng bạn liền nghe! 👑`
   );
 }
