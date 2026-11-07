@@ -450,11 +450,12 @@
         "cat": "Other Landmarks",
         "lat": 16.46673,
         "lng": 107.64269,
-        "img": "/images/pois/cau-ngoi-thanh-toan.webp",
+        "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeUFBj7P9X8ycTAbNQljtg55GooFfXLnEQMwhGgE1j1mBZoL68Y2BrU_ZrHFTZobPLGfn5WCn3i861FhZ3G99q3fuxCuUL8dxUeegzUUbXQhiMEG5woXNoDEhcRI4-C-yb_9Mkm-w=w800-h600-k-no",
         "rating": 4.4,
         "reviews": 1600,
         "address": "Xã Thủy Thanh, Thị xã Hương Thủy, Thành phố Huế",
-        "name_en": "Thanh Toan Tile Bridge"
+        "name_en": "Thanh Toan Tile Bridge",
+        "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeUFBj7P9X8ycTAbNQljtg55GooFfXLnEQMwhGgE1j1mBZoL68Y2BrU_ZrHFTZobPLGfn5WCn3i861FhZ3G99q3fuxCuUL8dxUeegzUUbXQhiMEG5woXNoDEhcRI4-C-yb_9Mkm-w=w800-h600-k-no"
       },
       {
         "id": "nature-pha-tam-giang",
