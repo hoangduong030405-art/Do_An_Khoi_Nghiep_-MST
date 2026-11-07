@@ -1,6 +1,6 @@
 /**
  * HUEGO - Image & Shared Config Helper
- * Cung cấp thành phần xử lý ảnh thông minh, chống ảnh giả mạo, tự tạo SVG dự phòng theo thương hiệu Cố Đô.
+ * Cung cấp thành phần xử lý ảnh thông minh, chống ảnh giả mạo, tự tạo thẻ SVG nhận diện hoàng cung Cố Đô.
  */
 
 (function(window) {
@@ -8,7 +8,7 @@
 
   // 1. Cấu hình dùng chung mặc định
   window.HUEGO_CONFIG = {
-    version: '1.0.1',
+    version: '1.0.2',
     appName: 'HUEGO - Du Lịch Khám Phá Cố Đô Huế',
     publicBaseUrl: window.location.origin || '',
     appUrl: (function() { try { return new URL('app/', window.location.href).href; } catch(e) { return './app/'; } })(),
@@ -33,26 +33,25 @@
         window.HUEGO_CONFIG = Object.assign({}, window.HUEGO_CONFIG, remoteConfig);
       }
     } catch (e) {
-      // Dùng fallback an toàn tương đối khi offline hoặc chạy tĩnh
+      // Fallback khi offline
     }
   };
 
   // 2. Danh mục & Biểu tượng Cố Đô
   const CATEGORY_META = {
-    tour: { name: 'Di tích & Thắng cảnh', icon: '🏛️', bg: '#582C83', accent: '#D4AF37' },
-    fnb: { name: 'Ẩm thực Cố Đô', icon: '🍜', bg: '#7C2D12', accent: '#F59E0B' },
-    cafe: { name: 'Cà phê & Trà Quán', icon: '☕', bg: '#451A03', accent: '#FBBF24' },
-    stay: { name: 'Khách sạn & Homestay', icon: '🏨', bg: '#1E3A8A', accent: '#60A5FA' },
+    tour: { name: 'Di tích và Thắng cảnh', icon: '🏛️', bg: '#4A1D96', accent: '#F59E0B' },
+    fnb: { name: 'Ẩm thực Cố Đô', icon: '🍜', bg: '#7C2D12', accent: '#FBBF24' },
+    cafe: { name: 'Cà phê và Trà Quán', icon: '☕', bg: '#451A03', accent: '#FDE047' },
+    stay: { name: 'Khách sạn và Homestay', icon: '🏨', bg: '#1E3A8A', accent: '#93C5FD' },
     specialty: { name: 'Đặc sản Quà Huế', icon: '🎁', bg: '#831843', accent: '#F472B6' },
-    service: { name: 'Dịch vụ Tiện ích', icon: '🚗', bg: '#065F46', accent: '#34D399' }
+    service: { name: 'Dịch vụ Tiện ích', icon: '🚗', bg: '#065F46', accent: '#6EE7B7' }
   };
 
-  // Chuẩn hoá URL tài nguyên (tương thích cả localhost:3000 và GitHub Pages /<repo-name>/)
+  // Chuẩn hoá URL tài nguyên
   function normalizeAssetUrl(url) {
     if (!url || typeof url !== 'string') return url;
     if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
     
-    // Nếu chạy trên GitHub Pages có tên repository
     let pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
     let repoPrefix = '';
     const match = pathname.match(/^(\/[^\/]+)\/(?:app\/|css\/|js\/|data\/|index\.html|map\.html|museum\.html|simulator\.html)?/);
@@ -68,11 +67,22 @@
   }
   window.normalizeAssetUrl = normalizeAssetUrl;
 
-  // 3. Sinh Data URI SVG trực tiếp dự phòng tuyệt đối - Đúng 100% tên địa danh, không bao giờ nhầm sang ảnh khác
+  // 3. Sinh Data URI SVG trực tiếp dự phòng tuyệt đối - Đảm bảo XML hợp lệ 100%, không bao giờ vỡ ảnh
   window.generateDynamicSvgPlaceholder = function(vertical, name) {
     const meta = CATEGORY_META[vertical] || CATEGORY_META.tour;
-    const safeTitle = (name || meta.name).replace(/[<>&"']/g, '');
-    const displayTitle = safeTitle.length > 28 ? safeTitle.slice(0, 26) + '...' : safeTitle;
+    const rawName = (name || meta.name || 'Địa danh Cố Đô').replace(/[<>&"']/g, (c) => {
+      switch (c) {
+        case '&': return 'và';
+        case '<': return '';
+        case '>': return '';
+        case '"': return '';
+        case "'": return '';
+        default: return c;
+      }
+    });
+
+    const displayTitle = rawName.length > 28 ? rawName.slice(0, 26) + '...' : rawName;
+    const catTitle = meta.name.replace(/&/g, 'và').toUpperCase();
 
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="100%" height="100%">
       <defs>
@@ -94,43 +104,36 @@
         <text x="0" y="13" font-family="'Segoe UI', -apple-system, Arial, sans-serif" font-size="30" text-anchor="middle" fill="#FFFFFF">${meta.icon}</text>
       </g>
       <text x="200" y="158" font-family="'Plus Jakarta Sans', -apple-system, Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle" fill="#FFFFFF">${displayTitle}</text>
-      <text x="200" y="184" font-family="'Be Vietnam Pro', -apple-system, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="${meta.accent}" letter-spacing="1.2">HUEGO • ${meta.name.toUpperCase()}</text>
-      <text x="200" y="206" font-family="'Be Vietnam Pro', -apple-system, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" fill="#E2E8F0" opacity="0.75">Cố Đô Huế • Di Tích & Danh Thắng</text>
+      <text x="200" y="184" font-family="'Be Vietnam Pro', -apple-system, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="middle" fill="${meta.accent}" letter-spacing="1.2">HUEGO • ${catTitle}</text>
+      <text x="200" y="206" font-family="'Be Vietnam Pro', -apple-system, Arial, sans-serif" font-size="10" font-weight="500" text-anchor="middle" fill="#E2E8F0" opacity="0.75">Cố Đô Huế • Di Tích và Danh Thắng</text>
     </svg>`;
 
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   };
 
-  // Lấy ảnh chụp thực tế theo danh mục (chỉ dùng ảnh Cố Đô Huế thực tế, không dùng ảnh ngoại lai)
+  // Lấy ảnh chụp thực tế theo danh mục
   function getRealPhoto(vertical, name) {
     const n = (name || '').toLowerCase();
 
-    // 1. Chợ Bến Ngự
     if (n.includes('bến ngự') || n.includes('ben ngu')) {
       return normalizeAssetUrl('/images/pois/cho-ben-ngu.webp');
     }
-    // 2. Chợ Đông Ba
     if (n.includes('đông ba') || n.includes('dong ba')) {
       return normalizeAssetUrl('/images/pois/cho-dong-ba.webp');
     }
-    // 3. Bảo tàng Hồ Chí Minh Huế
     if (n.includes('hồ chí minh') || n.includes('ho chi minh')) {
       return normalizeAssetUrl('/images/pois/bao-tang-ho-chi-minh-hue.webp');
     }
-    // 4. Đại Nội Huế / Ngọ Môn
     if (n.includes('đại nội') || n.includes('ngo mon') || n.includes('ngọ môn') || n.includes('hoàng thành')) {
       return normalizeAssetUrl('/images/pois/dai-noi-hue.webp');
     }
-    // 5. Chùa Thiên Mụ
     if (n.includes('thiên mụ') || n.includes('thien mu')) {
       return normalizeAssetUrl('/images/pois/chua-thien-mu.webp');
     }
-    // 6. Cầu Tràng Tiền
     if (n.includes('tràng tiền') || n.includes('trường tiền') || n.includes('trang tien')) {
       return normalizeAssetUrl('/images/pois/cau-trang-tien.webp');
     }
 
-    // Các địa danh khác chưa có ảnh riêng -> Sinh SVG chuẩn nhận diện HUEGO chính xác tên địa danh
     return window.generateDynamicSvgPlaceholder(vertical, name);
   }
   window.getRealPhoto = getRealPhoto;
@@ -161,7 +164,6 @@
     let candidate = place.coverPhotoUrl || place.img;
     if (candidate && typeof candidate === 'string' && candidate.trim()) {
       candidate = candidate.trim();
-      // Chuyển pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev sang cdn.hue4u.com cho đồng nhất và ổn định
       if (candidate.includes('pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev')) {
         candidate = candidate.replace('https://pub-2a0274a4c8834f6f854b995bcd23969d.r2.dev', 'https://cdn.hue4u.com');
       }
