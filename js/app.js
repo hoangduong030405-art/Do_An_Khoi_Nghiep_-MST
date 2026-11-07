@@ -797,7 +797,18 @@ window.sendQuickPrompt = function(text) {
         return 'Dạ, bạn có thể thuê **Xe đạp xanh công cộng (Eco-Bike)** tại trạm Bến Tòa Khâm (Lê Lợi), Cầu Trường Tiền hoặc Cửa Hiển Nhơn (Đại Nội) với giá 20.000đ – 40.000đ/giờ, hoặc thuê xe máy (120.000đ/ngày tại phố Chu Văn An – Phạm Ngũ Lão) để đi các lăng tẩm ở xa nhen!';
       }
 
-      return 'Dạ Mệ nghe câu hỏi **"' + question.trim() + '"** của bạn rồi nhen! Bạn muốn Mệ báo chi tiết **giá vé & giờ mở cửa di tích** (Đại Nội, Lăng Tự Đức, Khải Định, Minh Mạng, Chùa Thiên Mụ), chỉ **quán ăn ngon chuẩn Huế** (bún bò, cơm hến, bánh bèo lọc, bánh ép, chè heo quay), hay lên **lịch trình 1–3 ngày** thì nhắn Mệ tư vấn sát ý liền nghe!';
+      if (/sủi cảo|há cảo|hoành thánh|dimsum|dim sum|mì sủi cảo|mì tàu|mì kéo|vằn thắn|sui cao|ha cao|hoanh thanh|van than|mi tau/.test(q) || /sui cao|ha cao|hoanh thanh|dimsum|mi tau/.test(qNoAccent)) {
+        return 'Dạ, muốn ăn **Sủi cảo – Hoành thánh – Dimsum** chuẩn vị người Hoa gia truyền ở Huế thì Mệ chỉ bạn ngay những quán nức tiếng lâu năm ni nhen:\n\n🥟 **1. Vĩnh Lợi Mì Gia (Gốc Hoa hơn 40 năm)**: 121 Huỳnh Thúc Kháng (gần cầu Gia Hội) & 47 Hùng Vương — mì sủi cảo tôm thịt tươi giòn, hoành thánh chiên, nước dùng ngọt thanh từ xương ống và tôm khô.\n🥟 **2. Bảo Thạnh Dimsum & Sủi Cảo**: Số 20 Bến Nghé (trung tâm bờ Nam) — sủi cảo hấp, há cảo tôm pha lê, xíu mại, bánh bao kim sa nóng hổi.\n🥟 **3. Tiệm Mì Tàu Phúc Hưng & Mì Kéo Chợ Đông Ba**: Cổng chợ Đông Ba & đường Đinh Tiên Hoàng — mì vằn thắn, sủi cảo xá xíu thơm phức.\n• **Giá**: 35.000đ – 60.000đ/tô.';
+      }
+      if (/bánh canh|cháo bột|bánh canh cá lóc|bánh canh nam phổ|bánh canh cua|banh canh|chao bot/.test(q) || /banh canh|chao bot/.test(qNoAccent)) {
+        return 'Dạ, **Bánh canh (Cháo bột)** ấm nóng trứ danh ở Huế thì ghé ngay:\n1. **Bánh canh cá lóc Dì Hương**: 14 Lê Thánh Tôn (trong Thành Nội) — cá lóc đồng rim nghệ vàng thơm lừng.\n2. **Bánh canh Nam Phổ Thúy**: 16 Phạm Hồng Thái — sánh đỏ gạch tôm cua, chả cua dai ngọt.\n3. **Bánh canh đêm Hàn Thuyên**: Góc đường Hàn Thuyên trong Thành Nội bán từ chiều tối đến khuya.\n• **Giá**: 20.000đ – 35.000đ/tô.';
+      }
+      if (/\b(ăn|uống|quán|tiệm|thèm|ở đâu bán|chỗ nào có|quán nào|món)\b/i.test(q) || /\b(an|uong|quan|tiem|them|o dau ban|cho nao co)\b/i.test(qNoAccent)) {
+        return 'Dạ, Mệ nghe bạn hỏi tìm chỗ ăn ngon rồi nhen! 🍲\n\nẨm thực Cố Đô phong phú lắm, từ món cung đình đến hàng quán hè phố:\n• 🥟 **Khu ẩm thực Chợ Đông Ba & đường Trần Hưng Đạo**: Mì sủi cảo, bún bò, cháo bột, bánh bèo nậm lọc gia truyền.\n• 🥢 **Khu phố ẩm thực Thành Nội (Đinh Tiên Hoàng – Nhật Lệ)**: Bánh ép dẻo, bánh khoái, bún thịt nướng, cơm gia đình.\n• 🌙 **Phố Tây bờ Nam (Phạm Ngũ Lão – Chu Văn An – Võ Thị Sáu)**: Ăn đêm, dimsum, lẩu, hải sản đầm phá.\n• ☕ **Dọc sông An Cựu (Phan Chu Trinh – Phan Đình Phùng)**: Ốc hút, bún giò, nem lụi, cà phê ngắm sông.\n\nBạn cứ nhắn tên món bạn thèm (như *sủi cảo, bánh canh, bún bò, bánh ép, ốc hút, chè heo quay...*), Mệ chỉ đúng quán ruột cho nhen!';
+      }
+
+      const cleanQ = question.trim().replace(/[?!.]+$/, '');
+      return 'Dạ, Mệ nghe câu hỏi "' + cleanQ + '" của bạn rồi nhen! 🌸\n\nXứ Huế thương có biết bao điều thú vị: từ 143 năm lịch sử vương triều Nguyễn, vẻ đẹp Đại Nội và 7 cụm lăng tẩm hoàng gia, những ngôi chùa cổ soi bóng sông Hương, cho tới hàng trăm món ngon đậm đà làm say lòng du khách.\n\nBạn đang muốn Mệ kể chuyện lịch sử di tích, báo giá vé & giờ mở cửa, chỉ địa chỉ quán ăn ngon chuẩn gốc hay lên lịch trình khám phá Huế theo ý bạn rứa? Cứ nhắn tự nhiên, Mệ đồng hành cùng bạn liền nghe! 👑';
     }
 
 window.sendAiMessage = async function() {
