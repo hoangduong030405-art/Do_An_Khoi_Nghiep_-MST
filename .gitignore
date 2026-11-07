@@ -18,6 +18,9 @@ mobile/flutter_01.log
 cloudflared.exe
 persist_token.txt
 temp.json
+test_*.*
+cho-ben-ngu-market.webp
+bao-tang-ho-chi-minh-hue.webp
 backend/backend.err
 backend/persist_token.txt
 backend/temp.json

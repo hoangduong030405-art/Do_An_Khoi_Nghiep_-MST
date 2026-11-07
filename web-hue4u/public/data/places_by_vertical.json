@@ -47,14 +47,14 @@
       "phone": null,
       "googleRating": 4.3,
       "googleReviewCount": 850,
-      "coverPhotoUrl": "/images/pois/bao-tang-ho-chi-minh-hue.webp",
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfEKA6v4JdtXozlY-_JIHIL6ZZw8hAhCXunsBfJiDHYq6StC1U-eKlq6YmQh7BHonRHhlROSDkXFFIyUBC8JTQqs_BBEp5eqcd6-UQLTWj_4Pt3QyRDOdNcfDtq0OMdwqKqrt07zg=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
       "photos": [
-        "/images/pois/bao-tang-ho-chi-minh-hue.webp"
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfEKA6v4JdtXozlY-_JIHIL6ZZw8hAhCXunsBfJiDHYq6StC1U-eKlq6YmQh7BHonRHhlROSDkXFFIyUBC8JTQqs_BBEp5eqcd6-UQLTWj_4Pt3QyRDOdNcfDtq0OMdwqKqrt07zg=w800-h600-k-no"
       ],
-      "img": "/images/pois/bao-tang-ho-chi-minh-hue.webp",
-      "imageCredit": "Bảo tàng Hồ Chí Minh Thừa Thiên Huế (khamphahue.com.vn)"
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfEKA6v4JdtXozlY-_JIHIL6ZZw8hAhCXunsBfJiDHYq6StC1U-eKlq6YmQh7BHonRHhlROSDkXFFIyUBC8JTQqs_BBEp5eqcd6-UQLTWj_4Pt3QyRDOdNcfDtq0OMdwqKqrt07zg=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "heritage-bao-tang-my-thuat-hue",
@@ -159,14 +159,14 @@
       "phone": null,
       "googleRating": 4.1,
       "googleReviewCount": 1900,
-      "coverPhotoUrl": "/images/pois/cho-ben-ngu.webp",
+      "coverPhotoUrl": "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=j9qFpmpmRVoUYio3fTOKCw&cb_client=search.gws-prod.grass&w=800&h=600&yaw=108.738&pitch=0&thumbfov=100",
       "confidence": "medium",
       "demand_score": 0,
       "photos": [
-        "/images/pois/cho-ben-ngu.webp"
+        "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=j9qFpmpmRVoUYio3fTOKCw&cb_client=search.gws-prod.grass&w=800&h=600&yaw=108.738&pitch=0&thumbfov=100"
       ],
-      "img": "/images/pois/cho-ben-ngu.webp",
-      "imageCredit": "Bùi Thụy Đào Nguyên / CC BY-SA 3.0 (Wikimedia Commons)"
+      "img": "https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=j9qFpmpmRVoUYio3fTOKCw&cb_client=search.gws-prod.grass&w=800&h=600&yaw=108.738&pitch=0&thumbfov=100",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "heritage-cho-dong-ba",
@@ -439,12 +439,14 @@
       "phone": null,
       "googleRating": 4.5,
       "googleReviewCount": 2400,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcFDu3yGCzKR6hhZSWr0bcmq8bbfa6jouBmf2VqlGNwTzIyyF3JPiDh39awJcWvJanIwMSi0wk9smJHNqhDYF9iqmG1DMZep3Ne5RvSLdEm9gHXH1KBwGIrOjT_bbNmM0fdaAfl=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcFDu3yGCzKR6hhZSWr0bcmq8bbfa6jouBmf2VqlGNwTzIyyF3JPiDh39awJcWvJanIwMSi0wk9smJHNqhDYF9iqmG1DMZep3Ne5RvSLdEm9gHXH1KBwGIrOjT_bbNmM0fdaAfl=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcFDu3yGCzKR6hhZSWr0bcmq8bbfa6jouBmf2VqlGNwTzIyyF3JPiDh39awJcWvJanIwMSi0wk9smJHNqhDYF9iqmG1DMZep3Ne5RvSLdEm9gHXH1KBwGIrOjT_bbNmM0fdaAfl=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "heritage-doi-vong-canh",
@@ -1315,12 +1317,14 @@
       "phone": null,
       "googleRating": 4.1,
       "googleReviewCount": 126,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLdWNp-MZGbfPb6f9rLkY18Yi_pKY6_8MQJKwxS-Z1opeFMeArmjyEVWN-5zLfmAogrRzy7Lg14nZTacptvoG9bl6KsF3YVysUnZl6ZNh9H41sBD0-cvVVQ8KiatS2MTk0XpnSVV4499onZK=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLdWNp-MZGbfPb6f9rLkY18Yi_pKY6_8MQJKwxS-Z1opeFMeArmjyEVWN-5zLfmAogrRzy7Lg14nZTacptvoG9bl6KsF3YVysUnZl6ZNh9H41sBD0-cvVVQ8KiatS2MTk0XpnSVV4499onZK=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLdWNp-MZGbfPb6f9rLkY18Yi_pKY6_8MQJKwxS-Z1opeFMeArmjyEVWN-5zLfmAogrRzy7Lg14nZTacptvoG9bl6KsF3YVysUnZl6ZNh9H41sBD0-cvVVQ8KiatS2MTk0XpnSVV4499onZK=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-thanh-tra-thuy-bieu",
@@ -1530,12 +1534,14 @@
       "phone": null,
       "googleRating": 4.8,
       "googleReviewCount": 4,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeA-oScLblQ_73CBEUy4uGhGmHguVi-vrKjeUXupi2zgF1Xd2Qr3dVY3ISzYAZ1V3gAsVsLJFCoJfOXelelD2OXMQBL-JxunlWuiCEZCGV3RWfODH9mQhtmyxPhkTUGv-fmam7H=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeA-oScLblQ_73CBEUy4uGhGmHguVi-vrKjeUXupi2zgF1Xd2Qr3dVY3ISzYAZ1V3gAsVsLJFCoJfOXelelD2OXMQBL-JxunlWuiCEZCGV3RWfODH9mQhtmyxPhkTUGv-fmam7H=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeA-oScLblQ_73CBEUy4uGhGmHguVi-vrKjeUXupi2zgF1Xd2Qr3dVY3ISzYAZ1V3gAsVsLJFCoJfOXelelD2OXMQBL-JxunlWuiCEZCGV3RWfODH9mQhtmyxPhkTUGv-fmam7H=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-vuon-sinh-thai-loi-xua",
@@ -1555,12 +1561,14 @@
       "phone": null,
       "googleRating": 4.1,
       "googleReviewCount": 42,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcxh9H5DFDgcsLdga_t2sx8Dj4krecRctDAHC7utelQO8Sn6xGFk-lyA4DGPnphrKhPB_a6IsGUNKbaU8SPl5dEFoP8vEo7UazI-MoJyvSg9S93cE2FJFIJD00JJrj0fCCBwEvvig=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcxh9H5DFDgcsLdga_t2sx8Dj4krecRctDAHC7utelQO8Sn6xGFk-lyA4DGPnphrKhPB_a6IsGUNKbaU8SPl5dEFoP8vEo7UazI-MoJyvSg9S93cE2FJFIJD00JJrj0fCCBwEvvig=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcxh9H5DFDgcsLdga_t2sx8Dj4krecRctDAHC7utelQO8Sn6xGFk-lyA4DGPnphrKhPB_a6IsGUNKbaU8SPl5dEFoP8vEo7UazI-MoJyvSg9S93cE2FJFIJD00JJrj0fCCBwEvvig=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-amazing-easy-riders",
@@ -2271,12 +2279,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 6,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLc_67DI6J-n1AzYooaTDYGIneLC6SxsUCM8kDNSLR8ptKxnyDJ1oB3cCnMVBdO1XrZe5bC05w5mTBPh2SF2FZhUURdrUU1WreBZAsob6NLkZ_EI5wTgs7zjxu0hRRWcSPdBJYPI4H38GfCL=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLc_67DI6J-n1AzYooaTDYGIneLC6SxsUCM8kDNSLR8ptKxnyDJ1oB3cCnMVBdO1XrZe5bC05w5mTBPh2SF2FZhUURdrUU1WreBZAsob6NLkZ_EI5wTgs7zjxu0hRRWcSPdBJYPI4H38GfCL=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLc_67DI6J-n1AzYooaTDYGIneLC6SxsUCM8kDNSLR8ptKxnyDJ1oB3cCnMVBdO1XrZe5bC05w5mTBPh2SF2FZhUURdrUU1WreBZAsob6NLkZ_EI5wTgs7zjxu0hRRWcSPdBJYPI4H38GfCL=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-cau-da-vien",
@@ -2542,12 +2552,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 5,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeUa37RP0XYPqBiOOcP7sWW9N_MyB_FzvBgHhlWpIM2zjnk4yY33c864zbdqhFBZ2LGfdT_O6wZAwkmnyTw806cQZeeQ2Lj1c4WFJtBgM9eeAjWqLTXwkxeau1Wv1EpwSkLdM8r=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeUa37RP0XYPqBiOOcP7sWW9N_MyB_FzvBgHhlWpIM2zjnk4yY33c864zbdqhFBZ2LGfdT_O6wZAwkmnyTw806cQZeeQ2Lj1c4WFJtBgM9eeAjWqLTXwkxeau1Wv1EpwSkLdM8r=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeUa37RP0XYPqBiOOcP7sWW9N_MyB_FzvBgHhlWpIM2zjnk4yY33c864zbdqhFBZ2LGfdT_O6wZAwkmnyTw806cQZeeQ2Lj1c4WFJtBgM9eeAjWqLTXwkxeau1Wv1EpwSkLdM8r=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-cao-xa",
@@ -2811,12 +2823,14 @@
       "phone": null,
       "googleRating": 4.7,
       "googleReviewCount": 11,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfKDRHidDWn2e72znDCJxbvNwmNAzkd94QDRrLy9DzUv3218oeYJlr3n0bnGDcSDdVE-iRQLTpfaLjRi6-J9Zy4BcxhRL87jNZo9Ete1jVcV__XJLLhLpOzNOnLZkIdOmMLmr11VrIsBzk=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfKDRHidDWn2e72znDCJxbvNwmNAzkd94QDRrLy9DzUv3218oeYJlr3n0bnGDcSDdVE-iRQLTpfaLjRi6-J9Zy4BcxhRL87jNZo9Ete1jVcV__XJLLhLpOzNOnLZkIdOmMLmr11VrIsBzk=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfKDRHidDWn2e72znDCJxbvNwmNAzkd94QDRrLy9DzUv3218oeYJlr3n0bnGDcSDdVE-iRQLTpfaLjRi6-J9Zy4BcxhRL87jNZo9Ete1jVcV__XJLLhLpOzNOnLZkIdOmMLmr11VrIsBzk=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-giac-the",
@@ -2917,12 +2931,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 8,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLd_6nHNp7pBzKCCbVbE_xhedD-fzK4xrVYlFSpgHRMDeRpLl44t04gBPOqJ4TzPkQNaqO40wC6u6xlojjhQYCn1MFwl2lvg2t3JH77nvPZS0rXGH_PHKKWr0HY0EGMCjzGYS5oU=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLd_6nHNp7pBzKCCbVbE_xhedD-fzK4xrVYlFSpgHRMDeRpLl44t04gBPOqJ4TzPkQNaqO40wC6u6xlojjhQYCn1MFwl2lvg2t3JH77nvPZS0rXGH_PHKKWr0HY0EGMCjzGYS5oU=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLd_6nHNp7pBzKCCbVbE_xhedD-fzK4xrVYlFSpgHRMDeRpLl44t04gBPOqJ4TzPkQNaqO40wC6u6xlojjhQYCn1MFwl2lvg2t3JH77nvPZS0rXGH_PHKKWr0HY0EGMCjzGYS5oU=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-huong-khe",
@@ -3049,12 +3065,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 6,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLd5CbF7ZdctE_oDT0v8aJ5MjTpI7u_CzGuCiQjWnDEfzdiojT3qlKugBhvYsVIUcg0ouJNwzgRAP8PUoHVMkya0ifQuDnXiNT6xShtym7fEYN4ViwdXtRWfvlHwV6MfO7y57--NVYQmgbQP=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLd5CbF7ZdctE_oDT0v8aJ5MjTpI7u_CzGuCiQjWnDEfzdiojT3qlKugBhvYsVIUcg0ouJNwzgRAP8PUoHVMkya0ifQuDnXiNT6xShtym7fEYN4ViwdXtRWfvlHwV6MfO7y57--NVYQmgbQP=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLd5CbF7ZdctE_oDT0v8aJ5MjTpI7u_CzGuCiQjWnDEfzdiojT3qlKugBhvYsVIUcg0ouJNwzgRAP8PUoHVMkya0ifQuDnXiNT6xShtym7fEYN4ViwdXtRWfvlHwV6MfO7y57--NVYQmgbQP=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-khuong-pho",
@@ -3264,12 +3282,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 2,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcDBbtAbjXEZJ9cVyNGfnzBQou3zCdPsrvmaipBt4nkE7Yd0cnhGGtpnj7OCIbRkmxMC4yLg-kSEx4plFbWZdWdcVjWDn0ItOarikNdyIxfaakSWtcKgsLE8C0MhlHFcT8iBig6plo3OAkv=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcDBbtAbjXEZJ9cVyNGfnzBQou3zCdPsrvmaipBt4nkE7Yd0cnhGGtpnj7OCIbRkmxMC4yLg-kSEx4plFbWZdWdcVjWDn0ItOarikNdyIxfaakSWtcKgsLE8C0MhlHFcT8iBig6plo3OAkv=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcDBbtAbjXEZJ9cVyNGfnzBQou3zCdPsrvmaipBt4nkE7Yd0cnhGGtpnj7OCIbRkmxMC4yLg-kSEx4plFbWZdWdcVjWDn0ItOarikNdyIxfaakSWtcKgsLE8C0MhlHFcT8iBig6plo3OAkv=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-lang-thanh-luong",
@@ -3422,12 +3442,14 @@
       "phone": null,
       "googleRating": 4.8,
       "googleReviewCount": 14,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcw2clUZXR1DplAVfrm38u0QW6QcW0HgZ30hQISG_HDmsjCHguBbvsqi1AE_cYbLAUozM2wzMKNdcSxJ_0i7YS1T_oPSb7Y70CMtumsJKy11nUG122c0kkBy63YLU5aP0tgw47w-g8ZaVk=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcw2clUZXR1DplAVfrm38u0QW6QcW0HgZ30hQISG_HDmsjCHguBbvsqi1AE_cYbLAUozM2wzMKNdcSxJ_0i7YS1T_oPSb7Y70CMtumsJKy11nUG122c0kkBy63YLU5aP0tgw47w-g8ZaVk=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcw2clUZXR1DplAVfrm38u0QW6QcW0HgZ30hQISG_HDmsjCHguBbvsqi1AE_cYbLAUozM2wzMKNdcSxJ_0i7YS1T_oPSb7Y70CMtumsJKy11nUG122c0kkBy63YLU5aP0tgw47w-g8ZaVk=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-nam-son",
@@ -4070,12 +4092,14 @@
       "phone": null,
       "googleRating": 4.5,
       "googleReviewCount": 4,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLftGGsf82cFMghEMqEemaHtuqkiyUkjaduwbg6WhNGfC7H4P_uxmo2hFAM_414X8msHRUOGUVFO4Ukvk5aXOAf3IK0LupKF9iZdp0czsup98nGckYXp-nrjhrci0g5eyELZFvwn=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLftGGsf82cFMghEMqEemaHtuqkiyUkjaduwbg6WhNGfC7H4P_uxmo2hFAM_414X8msHRUOGUVFO4Ukvk5aXOAf3IK0LupKF9iZdp0czsup98nGckYXp-nrjhrci0g5eyELZFvwn=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLftGGsf82cFMghEMqEemaHtuqkiyUkjaduwbg6WhNGfC7H4P_uxmo2hFAM_414X8msHRUOGUVFO4Ukvk5aXOAf3IK0LupKF9iZdp0czsup98nGckYXp-nrjhrci0g5eyELZFvwn=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-tay-loc",
@@ -4746,12 +4770,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 2,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfH1nksXRUXtVmROeOrQyd3DAZqbUAmo1c8QYvVkEnb5Bl64eRQwHmjWqJyvwtBOssQFLAXhJR4TLfKL9P2FbcJ0B81rZeN4_RSPSDiLKmQvTAw54xHyeHmF2s_Gm1KjJDZtPL9vQ=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfH1nksXRUXtVmROeOrQyd3DAZqbUAmo1c8QYvVkEnb5Bl64eRQwHmjWqJyvwtBOssQFLAXhJR4TLfKL9P2FbcJ0B81rZeN4_RSPSDiLKmQvTAw54xHyeHmF2s_Gm1KjJDZtPL9vQ=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfH1nksXRUXtVmROeOrQyd3DAZqbUAmo1c8QYvVkEnb5Bl64eRQwHmjWqJyvwtBOssQFLAXhJR4TLfKL9P2FbcJ0B81rZeN4_RSPSDiLKmQvTAw54xHyeHmF2s_Gm1KjJDZtPL9vQ=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-chua-van-phu",
@@ -5179,12 +5205,14 @@
       "phone": null,
       "googleRating": 4.8,
       "googleReviewCount": 3,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcuZDOhXnyisr-xS3-UH3pd65NN-m6ZzRn3QJUMb5hjgaa_1KuTPS-IUXkhUlssnoEcfalGRGJxvDbXAHme5pQQi2AgjaFHygL8WM4XVZw0-uVzAXi3ARtBXtbDXs2k90cAaew_MeU2cGYs=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcuZDOhXnyisr-xS3-UH3pd65NN-m6ZzRn3QJUMb5hjgaa_1KuTPS-IUXkhUlssnoEcfalGRGJxvDbXAHme5pQQi2AgjaFHygL8WM4XVZw0-uVzAXi3ARtBXtbDXs2k90cAaew_MeU2cGYs=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcuZDOhXnyisr-xS3-UH3pd65NN-m6ZzRn3QJUMb5hjgaa_1KuTPS-IUXkhUlssnoEcfalGRGJxvDbXAHme5pQQi2AgjaFHygL8WM4XVZw0-uVzAXi3ARtBXtbDXs2k90cAaew_MeU2cGYs=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-cong-lang-la-van-ha",
@@ -5312,12 +5340,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 57,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLdkRwpi9HfF2BlvsMmEw1-qisR9vr1VYSKXl3htaRoAa4DiZqcqu-krUCwgYS9nfmy98cWBlHnUn-ZeypBEQSmd1tdh1PqvzyOKpyQmjp4bnap-UH5UD9EErkryb1NYnw57AgUeb_ESg2U=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLdkRwpi9HfF2BlvsMmEw1-qisR9vr1VYSKXl3htaRoAa4DiZqcqu-krUCwgYS9nfmy98cWBlHnUn-ZeypBEQSmd1tdh1PqvzyOKpyQmjp4bnap-UH5UD9EErkryb1NYnw57AgUeb_ESg2U=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLdkRwpi9HfF2BlvsMmEw1-qisR9vr1VYSKXl3htaRoAa4DiZqcqu-krUCwgYS9nfmy98cWBlHnUn-ZeypBEQSmd1tdh1PqvzyOKpyQmjp4bnap-UH5UD9EErkryb1NYnw57AgUeb_ESg2U=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-cong-ty-co-phan-du-lich-dai-bang",
@@ -5795,12 +5825,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 2,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLdeSadOt8hHx-1BL_dvaZ8o_9HXe2wutYd-Fi5pvh33St_tBXdVNnZaW2xoED74KNhOSQkDwa35v3XBcy4KE9A3yYlZmrS3fX0QObumjqbkrgvUFal4BgtKyXYjvW4zj9qDbWrx=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLdeSadOt8hHx-1BL_dvaZ8o_9HXe2wutYd-Fi5pvh33St_tBXdVNnZaW2xoED74KNhOSQkDwa35v3XBcy4KE9A3yYlZmrS3fX0QObumjqbkrgvUFal4BgtKyXYjvW4zj9qDbWrx=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLdeSadOt8hHx-1BL_dvaZ8o_9HXe2wutYd-Fi5pvh33St_tBXdVNnZaW2xoED74KNhOSQkDwa35v3XBcy4KE9A3yYlZmrS3fX0QObumjqbkrgvUFal4BgtKyXYjvW4zj9qDbWrx=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-cuu-vi-than-cong",
@@ -6039,12 +6071,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 46,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLc4V3Fu8GUKAYYHFv8zUGu6aXi6ynKLrDjA7ooRqDzDlsT4sfy3OD3OiWfy90Ly0dV6v0CDNJoiyo--nJupfe39Lyn4wUPEFncKTra49JUYZ5JIEBL8Y7XRe7OnrV6iB1O4u3JS6nu2mgE=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLc4V3Fu8GUKAYYHFv8zUGu6aXi6ynKLrDjA7ooRqDzDlsT4sfy3OD3OiWfy90Ly0dV6v0CDNJoiyo--nJupfe39Lyn4wUPEFncKTra49JUYZ5JIEBL8Y7XRe7OnrV6iB1O4u3JS6nu2mgE=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLc4V3Fu8GUKAYYHFv8zUGu6aXi6ynKLrDjA7ooRqDzDlsT4sfy3OD3OiWfy90Ly0dV6v0CDNJoiyo--nJupfe39Lyn4wUPEFncKTra49JUYZ5JIEBL8Y7XRe7OnrV6iB1O4u3JS6nu2mgE=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-di-bien",
@@ -6091,12 +6125,14 @@
       "phone": null,
       "googleRating": 4.6,
       "googleReviewCount": 7,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcKC_qcYAkLv6u8rdjR46sUVz-0_t_jp5XfF8N2m5FbV-kUN9E0gssP-NJF38_w8-KHco65dQ1KMOQItoYoru8Ihm7jpu_xH1CJbQ4RDzPYaidXuuDxDgVa2itpyJ_MUpaBfL3Bnz7GEEQ=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcKC_qcYAkLv6u8rdjR46sUVz-0_t_jp5XfF8N2m5FbV-kUN9E0gssP-NJF38_w8-KHco65dQ1KMOQItoYoru8Ihm7jpu_xH1CJbQ4RDzPYaidXuuDxDgVa2itpyJ_MUpaBfL3Bnz7GEEQ=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcKC_qcYAkLv6u8rdjR46sUVz-0_t_jp5XfF8N2m5FbV-kUN9E0gssP-NJF38_w8-KHco65dQ1KMOQItoYoru8Ihm7jpu_xH1CJbQ4RDzPYaidXuuDxDgVa2itpyJ_MUpaBfL3Bnz7GEEQ=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-di-tich-dan-am-hon",
@@ -6252,12 +6288,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 78,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfKSJ_fuTAgDZXY-fvwlXhtBJ9AqWhGz-P_qAdHIaPwlBNF0fG2SxFul9fq89LcxVJXJhXTtngcWCWRuFVC93OgTAmw8lzWtfM6uGRoEyOhS0K8DqTrztiqozSLkaSyRUp7G-GMxzn5uTHD=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfKSJ_fuTAgDZXY-fvwlXhtBJ9AqWhGz-P_qAdHIaPwlBNF0fG2SxFul9fq89LcxVJXJhXTtngcWCWRuFVC93OgTAmw8lzWtfM6uGRoEyOhS0K8DqTrztiqozSLkaSyRUp7G-GMxzn5uTHD=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfKSJ_fuTAgDZXY-fvwlXhtBJ9AqWhGz-P_qAdHIaPwlBNF0fG2SxFul9fq89LcxVJXJhXTtngcWCWRuFVC93OgTAmw8lzWtfM6uGRoEyOhS0K8DqTrztiqozSLkaSyRUp7G-GMxzn5uTHD=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-dien-can-chanh",
@@ -7011,12 +7049,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 9,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeMp_J6llnqwRriPii1OzsHilwusob-_pP94rXxuoD_D5HHhAawsjtTye_G7ywEWYo7duVqQrqZzVSUj53MdOkU5UJnACncoYGDATKjG5ccOvjhjU5PK5kHtjG69KAzuw2cxqotYC3St45D=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeMp_J6llnqwRriPii1OzsHilwusob-_pP94rXxuoD_D5HHhAawsjtTye_G7ywEWYo7duVqQrqZzVSUj53MdOkU5UJnACncoYGDATKjG5ccOvjhjU5PK5kHtjG69KAzuw2cxqotYC3St45D=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeMp_J6llnqwRriPii1OzsHilwusob-_pP94rXxuoD_D5HHhAawsjtTye_G7ywEWYo7duVqQrqZzVSUj53MdOkU5UJnACncoYGDATKjG5ccOvjhjU5PK5kHtjG69KAzuw2cxqotYC3St45D=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-dinh-lang-van-hoa-cu-lai",
@@ -7036,12 +7076,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfHVlOnZKn9_U7yQSNfwg0oxNDCUl5uIjmaU19uaazG_NHrxzSJb1uKi5gXV8TyC3QuIF0cauj0TwW-Nkm9bWFzNREn4FdioRWvFMd5PfDCbLr0bGafmIhzRXFkwKtc4KOj3A0W7g=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfHVlOnZKn9_U7yQSNfwg0oxNDCUl5uIjmaU19uaazG_NHrxzSJb1uKi5gXV8TyC3QuIF0cauj0TwW-Nkm9bWFzNREn4FdioRWvFMd5PfDCbLr0bGafmIhzRXFkwKtc4KOj3A0W7g=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfHVlOnZKn9_U7yQSNfwg0oxNDCUl5uIjmaU19uaazG_NHrxzSJb1uKi5gXV8TyC3QuIF0cauj0TwW-Nkm9bWFzNREn4FdioRWvFMd5PfDCbLr0bGafmIhzRXFkwKtc4KOj3A0W7g=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-dinh-quy-lai",
@@ -7529,12 +7571,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 59,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcVNC7Jsrkl8GQTOf5N4TL-784rjzXAPpxP58i3aLJdF63ctuBOnrmW797x9FhFV-IrXDJ1VK6cOnYwvnbJKgF88rkvzd1A_rXitoehsUcaQLp-9VA-hshZd35VZkNw8gG4VB8=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcVNC7Jsrkl8GQTOf5N4TL-784rjzXAPpxP58i3aLJdF63ctuBOnrmW797x9FhFV-IrXDJ1VK6cOnYwvnbJKgF88rkvzd1A_rXitoehsUcaQLp-9VA-hshZd35VZkNw8gG4VB8=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcVNC7Jsrkl8GQTOf5N4TL-784rjzXAPpxP58i3aLJdF63ctuBOnrmW797x9FhFV-IrXDJ1VK6cOnYwvnbJKgF88rkvzd1A_rXitoehsUcaQLp-9VA-hshZd35VZkNw8gG4VB8=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-feniko-station",
@@ -7554,12 +7598,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 17,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe1TCKHm0mQj7CK3wUHVzHlTF0NiXkFBu2wuq0yRcNTgP8ahVUhEMgBxtbEVx5UanZ4eaWql040ZsFk4yR5IpV_yXDLg_wAevCf_tKD0i4fDFI3GM5WzV77T42ne-pN96Lf-LoHzfmi8Ug=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe1TCKHm0mQj7CK3wUHVzHlTF0NiXkFBu2wuq0yRcNTgP8ahVUhEMgBxtbEVx5UanZ4eaWql040ZsFk4yR5IpV_yXDLg_wAevCf_tKD0i4fDFI3GM5WzV77T42ne-pN96Lf-LoHzfmi8Ug=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe1TCKHm0mQj7CK3wUHVzHlTF0NiXkFBu2wuq0yRcNTgP8ahVUhEMgBxtbEVx5UanZ4eaWql040ZsFk4yR5IpV_yXDLg_wAevCf_tKD0i4fDFI3GM5WzV77T42ne-pN96Lf-LoHzfmi8Ug=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-fine-art-gakka-gallery-studio",
@@ -9771,12 +9817,14 @@
       "phone": null,
       "googleRating": null,
       "googleReviewCount": null,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLftU-BxX1j9aSN1FeYAm6Bk_qyjG30U0xyytltCdW-YBFWVp-Cq3SXrDiyHVI0Re8REr9Q6MpiITWjpx93pddY3rWy7x33vQpD98CVhq3t_iKBgadVeBxKQTQfbnqlpDTEXTHfV=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLftU-BxX1j9aSN1FeYAm6Bk_qyjG30U0xyytltCdW-YBFWVp-Cq3SXrDiyHVI0Re8REr9Q6MpiITWjpx93pddY3rWy7x33vQpD98CVhq3t_iKBgadVeBxKQTQfbnqlpDTEXTHfV=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLftU-BxX1j9aSN1FeYAm6Bk_qyjG30U0xyytltCdW-YBFWVp-Cq3SXrDiyHVI0Re8REr9Q6MpiITWjpx93pddY3rWy7x33vQpD98CVhq3t_iKBgadVeBxKQTQfbnqlpDTEXTHfV=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "tour-lang-mo-doan-hung-quan-cong",
@@ -32988,12 +33036,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 525,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcSwlJmsId9XuV_mNZmcSeIBr12HDhLePeYfggSjy_cGbH7yH63xWE7IthTcBJdyJbsctUgLmighcx8pfnMPeFskgvK8xJbjNPz4daqINgZ_oWogopUoXw5puXO5Vrt9ZPyTcIsXJH8GbXl=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcSwlJmsId9XuV_mNZmcSeIBr12HDhLePeYfggSjy_cGbH7yH63xWE7IthTcBJdyJbsctUgLmighcx8pfnMPeFskgvK8xJbjNPz4daqINgZ_oWogopUoXw5puXO5Vrt9ZPyTcIsXJH8GbXl=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcSwlJmsId9XuV_mNZmcSeIBr12HDhLePeYfggSjy_cGbH7yH63xWE7IthTcBJdyJbsctUgLmighcx8pfnMPeFskgvK8xJbjNPz4daqINgZ_oWogopUoXw5puXO5Vrt9ZPyTcIsXJH8GbXl=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-mam-com-viet-loi-hue",
@@ -38525,12 +38575,14 @@
       "phone": null,
       "googleRating": 4.5,
       "googleReviewCount": 63,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLdZSUOU492YV_bB-8rsf1IcKAp1QGt6N3rkAIsPFOGOuhDioWrHpayNHtyh29EkK6brvB06RqCRR4OqcejUI_EYNb1mk5oyBj_htaT22Wkd8igLwzN_qMiV-P4dfK5oKQx6dCAFwg=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLdZSUOU492YV_bB-8rsf1IcKAp1QGt6N3rkAIsPFOGOuhDioWrHpayNHtyh29EkK6brvB06RqCRR4OqcejUI_EYNb1mk5oyBj_htaT22Wkd8igLwzN_qMiV-P4dfK5oKQx6dCAFwg=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLdZSUOU492YV_bB-8rsf1IcKAp1QGt6N3rkAIsPFOGOuhDioWrHpayNHtyh29EkK6brvB06RqCRR4OqcejUI_EYNb1mk5oyBj_htaT22Wkd8igLwzN_qMiV-P4dfK5oKQx6dCAFwg=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-pho-ha-noi-xuan-loc",
@@ -39122,12 +39174,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 6,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfbnpnpF_kvtrpPgylIul92O8LSQaROqxO-vXc2sGn8NW3zPI2USA9n56iSXx0VKaKI51H_xZlhYn50UB-om9lxtu35JRpYvD8YKB0b4XAKhCJW9jXyR3Lflg8KrWZqzqVU9qh8zBJpYhrI=w800-h600-k-no",
       "confidence": "high",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfbnpnpF_kvtrpPgylIul92O8LSQaROqxO-vXc2sGn8NW3zPI2USA9n56iSXx0VKaKI51H_xZlhYn50UB-om9lxtu35JRpYvD8YKB0b4XAKhCJW9jXyR3Lflg8KrWZqzqVU9qh8zBJpYhrI=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfbnpnpF_kvtrpPgylIul92O8LSQaROqxO-vXc2sGn8NW3zPI2USA9n56iSXx0VKaKI51H_xZlhYn50UB-om9lxtu35JRpYvD8YKB0b4XAKhCJW9jXyR3Lflg8KrWZqzqVU9qh8zBJpYhrI=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-play-barbershop",
@@ -40037,12 +40091,14 @@
       "phone": null,
       "googleRating": 4.1,
       "googleReviewCount": 48,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfzAKtsu-PzS9zmHb3G50f_FgvwlPnzHmVJqWmQspgITkggd5unn57LlK9GmePwrwMCi-s71EwgyXCfhnr3ISWy-IsGo1YNVBkXhvW_PUofD5r3Po-qaYGagJuunmbjBh46RZwL=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfzAKtsu-PzS9zmHb3G50f_FgvwlPnzHmVJqWmQspgITkggd5unn57LlK9GmePwrwMCi-s71EwgyXCfhnr3ISWy-IsGo1YNVBkXhvW_PUofD5r3Po-qaYGagJuunmbjBh46RZwL=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfzAKtsu-PzS9zmHb3G50f_FgvwlPnzHmVJqWmQspgITkggd5unn57LlK9GmePwrwMCi-s71EwgyXCfhnr3ISWy-IsGo1YNVBkXhvW_PUofD5r3Po-qaYGagJuunmbjBh46RZwL=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-quan-ba-gai-beo-nam",
@@ -40522,12 +40578,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 3,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeJt7EGMO_z8RIJiGNAtEH9YWuMPoHPl7vPtsnDUzKaMxbWK5Vvpo4AmpfZPpCpbRjdgBqNoAEeI0mbnA9cgkLCHdKM2f7HVWQ8JY_5FYYjk5yitksCQzNnrlks7FFwJ-t9yr8=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeJt7EGMO_z8RIJiGNAtEH9YWuMPoHPl7vPtsnDUzKaMxbWK5Vvpo4AmpfZPpCpbRjdgBqNoAEeI0mbnA9cgkLCHdKM2f7HVWQ8JY_5FYYjk5yitksCQzNnrlks7FFwJ-t9yr8=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeJt7EGMO_z8RIJiGNAtEH9YWuMPoHPl7vPtsnDUzKaMxbWK5Vvpo4AmpfZPpCpbRjdgBqNoAEeI0mbnA9cgkLCHdKM2f7HVWQ8JY_5FYYjk5yitksCQzNnrlks7FFwJ-t9yr8=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-quan-bun-bo-gio-cha-na",
@@ -40790,12 +40848,14 @@
       "phone": null,
       "googleRating": 4.3,
       "googleReviewCount": 19,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcA4Wfg4Qdhe-xwZl2YE06Nye0E6RMu6WFiqfd818ak5bw437LKc90YayGuAvRLu8HAf_xvJ4AQWCv3lCJHP-4z8ykxO1UcgN9uGZEKZc4H44dX0X7whZI30of_di3rXHu0APE0ow=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcA4Wfg4Qdhe-xwZl2YE06Nye0E6RMu6WFiqfd818ak5bw437LKc90YayGuAvRLu8HAf_xvJ4AQWCv3lCJHP-4z8ykxO1UcgN9uGZEKZc4H44dX0X7whZI30of_di3rXHu0APE0ow=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcA4Wfg4Qdhe-xwZl2YE06Nye0E6RMu6WFiqfd818ak5bw437LKc90YayGuAvRLu8HAf_xvJ4AQWCv3lCJHP-4z8ykxO1UcgN9uGZEKZc4H44dX0X7whZI30of_di3rXHu0APE0ow=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-quan-bun-chau-ngoc",
@@ -40869,12 +40929,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 2,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfouT40-syKJEX4fX4hGsu_3k7ub9ikBwggpqsYK4Cj-0hcVUo3UA2OdSpS_OYXEArwloRK5S24okBUV5Cz81pqrRl00khHGLnFZ8QbdtBg4CAL1ys1TVRrtvU73yrkscFujH8=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfouT40-syKJEX4fX4hGsu_3k7ub9ikBwggpqsYK4Cj-0hcVUo3UA2OdSpS_OYXEArwloRK5S24okBUV5Cz81pqrRl00khHGLnFZ8QbdtBg4CAL1ys1TVRrtvU73yrkscFujH8=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfouT40-syKJEX4fX4hGsu_3k7ub9ikBwggpqsYK4Cj-0hcVUo3UA2OdSpS_OYXEArwloRK5S24okBUV5Cz81pqrRl00khHGLnFZ8QbdtBg4CAL1ys1TVRrtvU73yrkscFujH8=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-quan-bun-hoa-2",
@@ -40894,12 +40956,14 @@
       "phone": null,
       "googleRating": 4.1,
       "googleReviewCount": 12,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcPe16zoJZ73eMWUyiSMU5bY0SfRkNultIRLYNoIG3f9xrmo3fce5F2zWGkYhJQa9iQy2DvMT9sap0_otcDjXJBiT2AhvLGEil0sA_J_0MhN84Er6L-V7mLZQoXwW3aPyFxRvM=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcPe16zoJZ73eMWUyiSMU5bY0SfRkNultIRLYNoIG3f9xrmo3fce5F2zWGkYhJQa9iQy2DvMT9sap0_otcDjXJBiT2AhvLGEil0sA_J_0MhN84Er6L-V7mLZQoXwW3aPyFxRvM=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcPe16zoJZ73eMWUyiSMU5bY0SfRkNultIRLYNoIG3f9xrmo3fce5F2zWGkYhJQa9iQy2DvMT9sap0_otcDjXJBiT2AhvLGEil0sA_J_0MhN84Er6L-V7mLZQoXwW3aPyFxRvM=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-quan-bun-hue",
@@ -41027,12 +41091,14 @@
       "phone": null,
       "googleRating": 4.3,
       "googleReviewCount": 39,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLdA7oAMw1R5bJCRhTbrnxlO8023CQHpnMJ9sBfuGqAkmqs3Qa_5FL_cxCcdbSS1LFC1L3vBEUJvw0SBkAdusuXtryfeoHFRywV-szWx5D9xNqDEkvJhhkhGRg52XC-mFfuHlq4=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLdA7oAMw1R5bJCRhTbrnxlO8023CQHpnMJ9sBfuGqAkmqs3Qa_5FL_cxCcdbSS1LFC1L3vBEUJvw0SBkAdusuXtryfeoHFRywV-szWx5D9xNqDEkvJhhkhGRg52XC-mFfuHlq4=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLdA7oAMw1R5bJCRhTbrnxlO8023CQHpnMJ9sBfuGqAkmqs3Qa_5FL_cxCcdbSS1LFC1L3vBEUJvw0SBkAdusuXtryfeoHFRywV-szWx5D9xNqDEkvJhhkhGRg52XC-mFfuHlq4=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "fnb-quan-bun-thit-nuong",
@@ -43396,12 +43462,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 5,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe1cvZCojbTJrAaPoBKPE6kKBbR1VIImeCw0ERtm1Hpj_sOA18S1vTdePW-S-wJuSrqsAlRlvW0Ykr5ni3pQCSYojHfzIqVinlAFIcApNcSqLMVqvQ8xjQTzSjNTKS6ZDruuwnNhg=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe1cvZCojbTJrAaPoBKPE6kKBbR1VIImeCw0ERtm1Hpj_sOA18S1vTdePW-S-wJuSrqsAlRlvW0Ykr5ni3pQCSYojHfzIqVinlAFIcApNcSqLMVqvQ8xjQTzSjNTKS6ZDruuwnNhg=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe1cvZCojbTJrAaPoBKPE6kKBbR1VIImeCw0ERtm1Hpj_sOA18S1vTdePW-S-wJuSrqsAlRlvW0Ykr5ni3pQCSYojHfzIqVinlAFIcApNcSqLMVqvQ8xjQTzSjNTKS6ZDruuwnNhg=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "cafe-ca-phe-vuon-xoai",
@@ -50969,12 +51037,14 @@
       "phone": null,
       "googleRating": 4.5,
       "googleReviewCount": 175,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfYwQmboy5ho1kvgGhKUnIE6lejbdSEt8o6b1K7-yTAMkVW9KZXDHuyC5PmmJHpY7h6tEm1DCWd5HJETkQmAD9zLv03PnLIUNnkjpXg9NC9QpvmIsddzvCVk_BV9HnN0Ny7MHUAsQ=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfYwQmboy5ho1kvgGhKUnIE6lejbdSEt8o6b1K7-yTAMkVW9KZXDHuyC5PmmJHpY7h6tEm1DCWd5HJETkQmAD9zLv03PnLIUNnkjpXg9NC9QpvmIsddzvCVk_BV9HnN0Ny7MHUAsQ=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfYwQmboy5ho1kvgGhKUnIE6lejbdSEt8o6b1K7-yTAMkVW9KZXDHuyC5PmmJHpY7h6tEm1DCWd5HJETkQmAD9zLv03PnLIUNnkjpXg9NC9QpvmIsddzvCVk_BV9HnN0Ny7MHUAsQ=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "cafe-mota-coffee",
@@ -51077,12 +51147,14 @@
       "phone": null,
       "googleRating": 4.6,
       "googleReviewCount": 46,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLebuoTQWA9dM0NLaQErKM3o_vG32CMrILzhqbi_JKUJU8l0Un1HtLw-j008H_BXac5wCqMSTwSH3nW7CraJS2w1BMD1PQviW0VYu8nE52uTAYGt8WiU-UcPS952HlqAqDoQi4pBhA=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLebuoTQWA9dM0NLaQErKM3o_vG32CMrILzhqbi_JKUJU8l0Un1HtLw-j008H_BXac5wCqMSTwSH3nW7CraJS2w1BMD1PQviW0VYu8nE52uTAYGt8WiU-UcPS952HlqAqDoQi4pBhA=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLebuoTQWA9dM0NLaQErKM3o_vG32CMrILzhqbi_JKUJU8l0Un1HtLw-j008H_BXac5wCqMSTwSH3nW7CraJS2w1BMD1PQviW0VYu8nE52uTAYGt8WiU-UcPS952HlqAqDoQi4pBhA=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "cafe-my-hue-coffee-canteen-pxu",
@@ -52164,12 +52236,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLdQ65SL2W_O4Vs4TzmHN_JXcLIv6PbDvQGejo6kl9eoaVjFOWWlOVuHbNrg6wn3tVP_4nm-rdfUaUyJdq2okQDpovpNSqOsghJqwyQTQO9aaokMPkuvvC3ThiImGNt0VM-ePk9D-4n99MIG=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLdQ65SL2W_O4Vs4TzmHN_JXcLIv6PbDvQGejo6kl9eoaVjFOWWlOVuHbNrg6wn3tVP_4nm-rdfUaUyJdq2okQDpovpNSqOsghJqwyQTQO9aaokMPkuvvC3ThiImGNt0VM-ePk9D-4n99MIG=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLdQ65SL2W_O4Vs4TzmHN_JXcLIv6PbDvQGejo6kl9eoaVjFOWWlOVuHbNrg6wn3tVP_4nm-rdfUaUyJdq2okQDpovpNSqOsghJqwyQTQO9aaokMPkuvvC3ThiImGNt0VM-ePk9D-4n99MIG=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "cafe-pheday-coffee",
@@ -57838,12 +57912,14 @@
       "phone": null,
       "googleRating": 4.6,
       "googleReviewCount": 18,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcMQYZBUcWU8rvcr3wVoTqngo_1a5L5ri2cExzH7kv_mI-6ME_k7HKYozd1hzBAqc8LaLzre0ULpRs4nOown4O0Ub_UpvvdMVUgM7bvhlneZHcu5wvuqFzeSl1MS-2nuRBVdpvW8pQKK8f0=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcMQYZBUcWU8rvcr3wVoTqngo_1a5L5ri2cExzH7kv_mI-6ME_k7HKYozd1hzBAqc8LaLzre0ULpRs4nOown4O0Ub_UpvvdMVUgM7bvhlneZHcu5wvuqFzeSl1MS-2nuRBVdpvW8pQKK8f0=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcMQYZBUcWU8rvcr3wVoTqngo_1a5L5ri2cExzH7kv_mI-6ME_k7HKYozd1hzBAqc8LaLzre0ULpRs4nOown4O0Ub_UpvvdMVUgM7bvhlneZHcu5wvuqFzeSl1MS-2nuRBVdpvW8pQKK8f0=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-anh-kafe",
@@ -59999,12 +60075,14 @@
       "phone": null,
       "googleRating": 4.7,
       "googleReviewCount": 28,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLf5z76_JDycUPqkM8RN2-JGFmYceGm5nah7k5iC5YY95yakP3Wn3EB9fd94IbMRxkVqBWUJJS5As2LPSarJwZ0He8wFTmuRum8gO-rw2KXqrQ4gfkwkgfFwtaiRyGccTNmEOM754RAAWmLN=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLf5z76_JDycUPqkM8RN2-JGFmYceGm5nah7k5iC5YY95yakP3Wn3EB9fd94IbMRxkVqBWUJJS5As2LPSarJwZ0He8wFTmuRum8gO-rw2KXqrQ4gfkwkgfFwtaiRyGccTNmEOM754RAAWmLN=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLf5z76_JDycUPqkM8RN2-JGFmYceGm5nah7k5iC5YY95yakP3Wn3EB9fd94IbMRxkVqBWUJJS5As2LPSarJwZ0He8wFTmuRum8gO-rw2KXqrQ4gfkwkgfFwtaiRyGccTNmEOM754RAAWmLN=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-yi-he-tang-20-hai-ba-trung-hue",
@@ -60137,12 +60215,14 @@
       "phone": null,
       "googleRating": 4.1,
       "googleReviewCount": 113,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLek90RB-do8vEr5yd7WV_kysQ8yZzOS_rMm0uZzio9YZBIRIrOyJuXbj_9qEC3uqQMjKVphkf8qa00C3HYIg-_Tk2osikgUqkQ3_3fRdd2zQjh2OlaYqI1HT7WU4y3kdBKmilhV4w=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLek90RB-do8vEr5yd7WV_kysQ8yZzOS_rMm0uZzio9YZBIRIrOyJuXbj_9qEC3uqQMjKVphkf8qa00C3HYIg-_Tk2osikgUqkQ3_3fRdd2zQjh2OlaYqI1HT7WU4y3kdBKmilhV4w=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLek90RB-do8vEr5yd7WV_kysQ8yZzOS_rMm0uZzio9YZBIRIrOyJuXbj_9qEC3uqQMjKVphkf8qa00C3HYIg-_Tk2osikgUqkQ3_3fRdd2zQjh2OlaYqI1HT7WU4y3kdBKmilhV4w=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-che-co-anh",
@@ -60244,12 +60324,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 20,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe4OoNImSJR8jp_X-Ey3gJdWgr6zR41wE7A2aZt1tI7pAXBx_aDv9D3FMEY685FS5G3wqWLHtDj9-B7CLo-c6lJz_q8EocsVm0JhT9P8Ex1M9t9KB9YaSGWdSR94wW2LujgEOcc=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe4OoNImSJR8jp_X-Ey3gJdWgr6zR41wE7A2aZt1tI7pAXBx_aDv9D3FMEY685FS5G3wqWLHtDj9-B7CLo-c6lJz_q8EocsVm0JhT9P8Ex1M9t9KB9YaSGWdSR94wW2LujgEOcc=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe4OoNImSJR8jp_X-Ey3gJdWgr6zR41wE7A2aZt1tI7pAXBx_aDv9D3FMEY685FS5G3wqWLHtDj9-B7CLo-c6lJz_q8EocsVm0JhT9P8Ex1M9t9KB9YaSGWdSR94wW2LujgEOcc=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-hieu-banh-bao-thanh",
@@ -60378,12 +60460,14 @@
       "phone": null,
       "googleRating": 4,
       "googleReviewCount": 8,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfLbbI8BG3wNYHT2ClWxrSbn0DC1oPvNv8RJrQtvtCWgOt10BSJT_rldGXtvwHhQ0XZWc7sxZ685Tpj-3keP4XlQds17VkTSeK6GOtmwlUu70HHWPr4mSSnWLqctpW_fVLySaknYg=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfLbbI8BG3wNYHT2ClWxrSbn0DC1oPvNv8RJrQtvtCWgOt10BSJT_rldGXtvwHhQ0XZWc7sxZ685Tpj-3keP4XlQds17VkTSeK6GOtmwlUu70HHWPr4mSSnWLqctpW_fVLySaknYg=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfLbbI8BG3wNYHT2ClWxrSbn0DC1oPvNv8RJrQtvtCWgOt10BSJT_rldGXtvwHhQ0XZWc7sxZ685Tpj-3keP4XlQds17VkTSeK6GOtmwlUu70HHWPr4mSSnWLqctpW_fVLySaknYg=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-sua-chua-tran-chau-ha-long",
@@ -63581,12 +63665,14 @@
       "phone": null,
       "googleRating": 4.8,
       "googleReviewCount": 204,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLdsaqjCuPK-lSSoTUP7KgBhnMp2kEgAyF_dOxVuWFBLHN-IOJqVO2xl1eCXL9L4IAEXzlbdAoaiRVVL15EPJhzUXJzf7t0GkO4iol3cgndFqXDcy4aka9PWGA67u-scfIRgR1_ezsjfV9Y=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLdsaqjCuPK-lSSoTUP7KgBhnMp2kEgAyF_dOxVuWFBLHN-IOJqVO2xl1eCXL9L4IAEXzlbdAoaiRVVL15EPJhzUXJzf7t0GkO4iol3cgndFqXDcy4aka9PWGA67u-scfIRgR1_ezsjfV9Y=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLdsaqjCuPK-lSSoTUP7KgBhnMp2kEgAyF_dOxVuWFBLHN-IOJqVO2xl1eCXL9L4IAEXzlbdAoaiRVVL15EPJhzUXJzf7t0GkO4iol3cgndFqXDcy4aka9PWGA67u-scfIRgR1_ezsjfV9Y=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-tt-villa",
@@ -63972,12 +64058,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 261,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeV6gMSqE3yiZSR0HWZkX45w0igg6KeaTRuUrRzS2LlOJBg3eXxkbt-hJ6U-EnosVc-W4chB5eawr_pobwJyb3cXMrgMcoXfpjMnPwpYdM7FOOYpARk4KG2COT_h2QDnDagIzboJA=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeV6gMSqE3yiZSR0HWZkX45w0igg6KeaTRuUrRzS2LlOJBg3eXxkbt-hJ6U-EnosVc-W4chB5eawr_pobwJyb3cXMrgMcoXfpjMnPwpYdM7FOOYpARk4KG2COT_h2QDnDagIzboJA=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeV6gMSqE3yiZSR0HWZkX45w0igg6KeaTRuUrRzS2LlOJBg3eXxkbt-hJ6U-EnosVc-W4chB5eawr_pobwJyb3cXMrgMcoXfpjMnPwpYdM7FOOYpARk4KG2COT_h2QDnDagIzboJA=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-a-hue-homestay",
@@ -65220,12 +65308,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 26,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLc1lnAXwYQjlune04aQ2I9ouVggkbQKT3O3uJ-24_ogB6VVKiiNmCDAZDmRA765zO__uEjSDjKY7E-DukYWPlPLbpnq2lwTVYLoD5n7CHM-R9XmrT1xkcqz74lHs-SfBzROz0eh=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLc1lnAXwYQjlune04aQ2I9ouVggkbQKT3O3uJ-24_ogB6VVKiiNmCDAZDmRA765zO__uEjSDjKY7E-DukYWPlPLbpnq2lwTVYLoD5n7CHM-R9XmrT1xkcqz74lHs-SfBzROz0eh=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLc1lnAXwYQjlune04aQ2I9ouVggkbQKT3O3uJ-24_ogB6VVKiiNmCDAZDmRA765zO__uEjSDjKY7E-DukYWPlPLbpnq2lwTVYLoD5n7CHM-R9XmrT1xkcqz74lHs-SfBzROz0eh=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-belam-in-hue-villa",
@@ -65893,12 +65983,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 50,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfFLNzZhJhj77GpVUaMHHV7ytzviMGFw8o-OjlLgCiR9QcLj6gv3E9d7zSPadGs72X9a03sJu23YRFJ-HS0P7XjPzd0u3QsS3At9F1zDHixW2f2orx2jlKuCZoGjihWMX0WzhgB_uhg-uc5=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfFLNzZhJhj77GpVUaMHHV7ytzviMGFw8o-OjlLgCiR9QcLj6gv3E9d7zSPadGs72X9a03sJu23YRFJ-HS0P7XjPzd0u3QsS3At9F1zDHixW2f2orx2jlKuCZoGjihWMX0WzhgB_uhg-uc5=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfFLNzZhJhj77GpVUaMHHV7ytzviMGFw8o-OjlLgCiR9QcLj6gv3E9d7zSPadGs72X9a03sJu23YRFJ-HS0P7XjPzd0u3QsS3At9F1zDHixW2f2orx2jlKuCZoGjihWMX0WzhgB_uhg-uc5=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-capital-o-1078-sun-sea-resort-hue",
@@ -66766,12 +66858,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 22,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfvLJbDFCidSkNjCQ6_lUYAHe-HcBeODLaz6PfF2JkT6DJKw7QPObcAyZyTROu-vj7toU5skwToCrknnHCy6eixWzB-afihS_M2yh5XxaUIrDplXdoujHryh-iibp2pWQCFCAjBTw=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfvLJbDFCidSkNjCQ6_lUYAHe-HcBeODLaz6PfF2JkT6DJKw7QPObcAyZyTROu-vj7toU5skwToCrknnHCy6eixWzB-afihS_M2yh5XxaUIrDplXdoujHryh-iibp2pWQCFCAjBTw=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfvLJbDFCidSkNjCQ6_lUYAHe-HcBeODLaz6PfF2JkT6DJKw7QPObcAyZyTROu-vj7toU5skwToCrknnHCy6eixWzB-afihS_M2yh5XxaUIrDplXdoujHryh-iibp2pWQCFCAjBTw=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-dai-noi-saphia-villa",
@@ -69262,12 +69356,14 @@
       "phone": null,
       "googleRating": 4.2,
       "googleReviewCount": 5,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeE1mnwXvhL-QV5PqfvgBlnp3ptek6iJqYXz3ot8RExVNYHSMW5nvy_LtI1GrsD4n1q1xRzCrt_L8dKw5sBDDvqVRLb0C9TFy2fo-Z8pTwkR4ekV5k12pEqVJBiNnW7l9HhAQMl4TqncBoZ=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeE1mnwXvhL-QV5PqfvgBlnp3ptek6iJqYXz3ot8RExVNYHSMW5nvy_LtI1GrsD4n1q1xRzCrt_L8dKw5sBDDvqVRLb0C9TFy2fo-Z8pTwkR4ekV5k12pEqVJBiNnW7l9HhAQMl4TqncBoZ=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeE1mnwXvhL-QV5PqfvgBlnp3ptek6iJqYXz3ot8RExVNYHSMW5nvy_LtI1GrsD4n1q1xRzCrt_L8dKw5sBDDvqVRLb0C9TFy2fo-Z8pTwkR4ekV5k12pEqVJBiNnW7l9HhAQMl4TqncBoZ=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-homestay-coffee-ngoc-linh",
@@ -72385,12 +72481,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 7,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe1v6ksyAJ6rzKz65IAxH9B1uhXrmO1Vls6y108F_ayj5e6KkTWXk_K2Vvq7Nfx0QXP-aQDZsHKaRWHmPUhWsXHpgMCn9iftSiMB-7MtiTICe1J4ixKEjxBWOyFO1ig3G5atQ2wB64qUTC5=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe1v6ksyAJ6rzKz65IAxH9B1uhXrmO1Vls6y108F_ayj5e6KkTWXk_K2Vvq7Nfx0QXP-aQDZsHKaRWHmPUhWsXHpgMCn9iftSiMB-7MtiTICe1J4ixKEjxBWOyFO1ig3G5atQ2wB64qUTC5=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe1v6ksyAJ6rzKz65IAxH9B1uhXrmO1Vls6y108F_ayj5e6KkTWXk_K2Vvq7Nfx0QXP-aQDZsHKaRWHmPUhWsXHpgMCn9iftSiMB-7MtiTICe1J4ixKEjxBWOyFO1ig3G5atQ2wB64qUTC5=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-kinhdo-s-house",
@@ -73983,12 +74081,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe9SSfVWvqO9bCMohIwb0f10Ahzk2tMqwMX650cmO1LfiP_LQGYVSByftgudNysv1D-xPndUpxsy7hYIqac9RkqZLD6skYYFmG7anZ7IpRJptkhey5NasUEQRm8qtaP1iQRsFYWn5gmWXM=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe9SSfVWvqO9bCMohIwb0f10Ahzk2tMqwMX650cmO1LfiP_LQGYVSByftgudNysv1D-xPndUpxsy7hYIqac9RkqZLD6skYYFmG7anZ7IpRJptkhey5NasUEQRm8qtaP1iQRsFYWn5gmWXM=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe9SSfVWvqO9bCMohIwb0f10Ahzk2tMqwMX650cmO1LfiP_LQGYVSByftgudNysv1D-xPndUpxsy7hYIqac9RkqZLD6skYYFmG7anZ7IpRJptkhey5NasUEQRm8qtaP1iQRsFYWn5gmWXM=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-lumiere-boutique-vy-da",
@@ -74331,12 +74431,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 2,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLffF7AxG55JNysW5BNavOO7gFTy108BLAbGkhblzqztEo0xmRG5U0Qa7KAui-WHQDGWG8DDAeRlF9DEgeVwgThyFyQRjjaXc4f2dpADLWC9lF_Sjz6D8l5NjPJsCxX-Owd-3FC2frj2tP10=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLffF7AxG55JNysW5BNavOO7gFTy108BLAbGkhblzqztEo0xmRG5U0Qa7KAui-WHQDGWG8DDAeRlF9DEgeVwgThyFyQRjjaXc4f2dpADLWC9lF_Sjz6D8l5NjPJsCxX-Owd-3FC2frj2tP10=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLffF7AxG55JNysW5BNavOO7gFTy108BLAbGkhblzqztEo0xmRG5U0Qa7KAui-WHQDGWG8DDAeRlF9DEgeVwgThyFyQRjjaXc4f2dpADLWC9lF_Sjz6D8l5NjPJsCxX-Owd-3FC2frj2tP10=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-mangogarden-coffee-homestay",
@@ -74754,12 +74856,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": null,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLesth98Xuz_qCTcIH36srkc3mVm0zIYPjX9QXtVE6y5ndRzlQzYN5koKW5sSqXJvCTb87x1H_6kRM_6GEFEHyf87GxvHc46yQ99ISAQWep8-iTWxwIe6clHFKKvWv-a7DgJTpsYLw=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLesth98Xuz_qCTcIH36srkc3mVm0zIYPjX9QXtVE6y5ndRzlQzYN5koKW5sSqXJvCTb87x1H_6kRM_6GEFEHyf87GxvHc46yQ99ISAQWep8-iTWxwIe6clHFKKvWv-a7DgJTpsYLw=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLesth98Xuz_qCTcIH36srkc3mVm0zIYPjX9QXtVE6y5ndRzlQzYN5koKW5sSqXJvCTb87x1H_6kRM_6GEFEHyf87GxvHc46yQ99ISAQWep8-iTWxwIe6clHFKKvWv-a7DgJTpsYLw=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-min-hy-homestay",
@@ -75777,12 +75881,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 5,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeT2ChcURAYo-d4ybaEw4wnb-UTvpD5XONQDtBeh0mSlVEwDNz7UVZJLKMHLkiGht703EO5QJ_I_Px04AxanVLu6I3Vq_4AfPvzp50u4hddmTMJKQZbbKoQEAg1g7Sd1Nz7o59Qeg=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeT2ChcURAYo-d4ybaEw4wnb-UTvpD5XONQDtBeh0mSlVEwDNz7UVZJLKMHLkiGht703EO5QJ_I_Px04AxanVLu6I3Vq_4AfPvzp50u4hddmTMJKQZbbKoQEAg1g7Sd1Nz7o59Qeg=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeT2ChcURAYo-d4ybaEw4wnb-UTvpD5XONQDtBeh0mSlVEwDNz7UVZJLKMHLkiGht703EO5QJ_I_Px04AxanVLu6I3Vq_4AfPvzp50u4hddmTMJKQZbbKoQEAg1g7Sd1Nz7o59Qeg=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-nau-homestay",
@@ -76273,12 +76379,14 @@
       "phone": null,
       "googleRating": 4,
       "googleReviewCount": 85,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe18F63BZCbpOaep_hpqVeak_7MMnuo0__um5u9ckanTxmxY42F_IMBerH6bDy66pbyMbcwprPhPX3d9kQZfxdy5MN1dyPaZCGkhFVU4jYhrdb9-A_ZDQEbdZ7VJ5GmJLCjflfrR6-3NBW5=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe18F63BZCbpOaep_hpqVeak_7MMnuo0__um5u9ckanTxmxY42F_IMBerH6bDy66pbyMbcwprPhPX3d9kQZfxdy5MN1dyPaZCGkhFVU4jYhrdb9-A_ZDQEbdZ7VJ5GmJLCjflfrR6-3NBW5=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe18F63BZCbpOaep_hpqVeak_7MMnuo0__um5u9ckanTxmxY42F_IMBerH6bDy66pbyMbcwprPhPX3d9kQZfxdy5MN1dyPaZCGkhFVU4jYhrdb9-A_ZDQEbdZ7VJ5GmJLCjflfrR6-3NBW5=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-nha-luoi-homestay",
@@ -76769,12 +76877,14 @@
       "phone": null,
       "googleRating": 4.7,
       "googleReviewCount": 10,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfZ96odqLcCcpXY-fAYkrnA9Ph-7EMz0zn4tPWEYj2gf5UnR3Q3CeAHXWHvg2xB08ginsDLkiGR2cQD5etMYuPGSPwxOKN1pLB-he_Su0L4an0qsblQeFbS5baDKOCwEd-mjxYm=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfZ96odqLcCcpXY-fAYkrnA9Ph-7EMz0zn4tPWEYj2gf5UnR3Q3CeAHXWHvg2xB08ginsDLkiGR2cQD5etMYuPGSPwxOKN1pLB-he_Su0L4an0qsblQeFbS5baDKOCwEd-mjxYm=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfZ96odqLcCcpXY-fAYkrnA9Ph-7EMz0zn4tPWEYj2gf5UnR3Q3CeAHXWHvg2xB08ginsDLkiGR2cQD5etMYuPGSPwxOKN1pLB-he_Su0L4an0qsblQeFbS5baDKOCwEd-mjxYm=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-nha-nghi-hoan-hao",
@@ -78990,12 +79100,14 @@
       "phone": null,
       "googleRating": 4.9,
       "googleReviewCount": 46,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLegyHh_jRJ9tOjBxwllDpFjS73qB6hUwN9-X6fOhqCovSketoQudR07OW-w4l-jtFFde67KaQZp538BEknv85L-sr_on0asAT3Q3eTmyVQO7m-Gj1514-TwF65ow4R3FpIzTN8Rvg=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLegyHh_jRJ9tOjBxwllDpFjS73qB6hUwN9-X6fOhqCovSketoQudR07OW-w4l-jtFFde67KaQZp538BEknv85L-sr_on0asAT3Q3eTmyVQO7m-Gj1514-TwF65ow4R3FpIzTN8Rvg=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLegyHh_jRJ9tOjBxwllDpFjS73qB6hUwN9-X6fOhqCovSketoQudR07OW-w4l-jtFFde67KaQZp538BEknv85L-sr_on0asAT3Q3eTmyVQO7m-Gj1514-TwF65ow4R3FpIzTN8Rvg=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "stay-ruby-villa",
@@ -83570,12 +83682,14 @@
       "phone": null,
       "googleRating": 4,
       "googleReviewCount": 2,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfVY52DwxbCxbn3wU__8RQJOMsJpyHSX24zaXgVy6xIeS0SvKYmCVJkFok7PhOHScKQzVaYae4Ch84lwfHERH4IyAjjVMPC8eV4LAPRmaSl-cQXkiNjQw6I8BVExAjUWKB5gVTzLnurHypS=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfVY52DwxbCxbn3wU__8RQJOMsJpyHSX24zaXgVy6xIeS0SvKYmCVJkFok7PhOHScKQzVaYae4Ch84lwfHERH4IyAjjVMPC8eV4LAPRmaSl-cQXkiNjQw6I8BVExAjUWKB5gVTzLnurHypS=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfVY52DwxbCxbn3wU__8RQJOMsJpyHSX24zaXgVy6xIeS0SvKYmCVJkFok7PhOHScKQzVaYae4Ch84lwfHERH4IyAjjVMPC8eV4LAPRmaSl-cQXkiNjQw6I8BVExAjUWKB5gVTzLnurHypS=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-ao-dai-phuc",
@@ -84550,12 +84664,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 10,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeNthAr4UTt5eUMV9SDtVnEPd2ODKIrotEUNNQyqLv6xyuQSwzCdYnN06P9aGYi1hl5IEKq4J5OCpDID3uhLZrdYbUZEVQ6eKmCgxExrDTtOlaIilIFLLzRPoH8BwJTwWsvkbAj=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeNthAr4UTt5eUMV9SDtVnEPd2ODKIrotEUNNQyqLv6xyuQSwzCdYnN06P9aGYi1hl5IEKq4J5OCpDID3uhLZrdYbUZEVQ6eKmCgxExrDTtOlaIilIFLLzRPoH8BwJTwWsvkbAj=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeNthAr4UTt5eUMV9SDtVnEPd2ODKIrotEUNNQyqLv6xyuQSwzCdYnN06P9aGYi1hl5IEKq4J5OCpDID3uhLZrdYbUZEVQ6eKmCgxExrDTtOlaIilIFLLzRPoH8BwJTwWsvkbAj=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-cong-ty-tnhh-me-xung-viet-thanh",
@@ -85123,12 +85239,14 @@
       "phone": null,
       "googleRating": null,
       "googleReviewCount": null,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcHtBEOt7mEamM2pDU5tdudC1nuA7CzLUX_HL1Oz0aP8bAY8644Blgla4IEifJpE8kymGM6TJtCKdEOFAUq9nNc7LW7NFFUPcUvWD9aWZi882RbaJAtmBynFkn3CFRkujQnEolEMjUlPq41=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcHtBEOt7mEamM2pDU5tdudC1nuA7CzLUX_HL1Oz0aP8bAY8644Blgla4IEifJpE8kymGM6TJtCKdEOFAUq9nNc7LW7NFFUPcUvWD9aWZi882RbaJAtmBynFkn3CFRkujQnEolEMjUlPq41=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcHtBEOt7mEamM2pDU5tdudC1nuA7CzLUX_HL1Oz0aP8bAY8644Blgla4IEifJpE8kymGM6TJtCKdEOFAUq9nNc7LW7NFFUPcUvWD9aWZi882RbaJAtmBynFkn3CFRkujQnEolEMjUlPq41=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-dac-san-banh-loc-nam-hue-co-nga",
@@ -85721,12 +85839,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLc9UunlJsVN-jxBDE_N0cxRK0oB1i8_RrtJ2dOLvFqdik6esEXBXBM1of4IajmMB_k1UPMQYImm0m8xvSVWPTWse995WGzJmWXSu1aljCTiEPJzjGChUZm_mSShIEgj3ENc00_2=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLc9UunlJsVN-jxBDE_N0cxRK0oB1i8_RrtJ2dOLvFqdik6esEXBXBM1of4IajmMB_k1UPMQYImm0m8xvSVWPTWse995WGzJmWXSu1aljCTiEPJzjGChUZm_mSShIEgj3ENc00_2=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLc9UunlJsVN-jxBDE_N0cxRK0oB1i8_RrtJ2dOLvFqdik6esEXBXBM1of4IajmMB_k1UPMQYImm0m8xvSVWPTWse995WGzJmWXSu1aljCTiEPJzjGChUZm_mSShIEgj3ENc00_2=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-dau-massage-hue-cung-dinh-vy-da",
@@ -85828,12 +85948,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLf8z99USyltRevBrBJoS9UUtTuPmtreEHJKGmrWzt8d1HJiAqNEpPmcmRoC0724RHymINzVcsJwen2SqzPApAO7ptlzmGKhrsDBKhL-VKCeB8O2wyrK5QnSQVmWGP_lOohB-9AftMTjw-4I=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLf8z99USyltRevBrBJoS9UUtTuPmtreEHJKGmrWzt8d1HJiAqNEpPmcmRoC0724RHymINzVcsJwen2SqzPApAO7ptlzmGKhrsDBKhL-VKCeB8O2wyrK5QnSQVmWGP_lOohB-9AftMTjw-4I=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLf8z99USyltRevBrBJoS9UUtTuPmtreEHJKGmrWzt8d1HJiAqNEpPmcmRoC0724RHymINzVcsJwen2SqzPApAO7ptlzmGKhrsDBKhL-VKCeB8O2wyrK5QnSQVmWGP_lOohB-9AftMTjw-4I=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-dau-tram-hue-dau-tram-hoa-nen",
@@ -87054,12 +87176,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfu8RrFs_d-ZYYz-pXNdw9Vle3BaT-fp7JCBzWzbXPSpF7v85woBHNHR8j_jwoXYdL9-RfTboH1DaqZPpx3s5ABzhMAqhl3TUFewri3E4LmSeOiuO_xp03CuNUNl4oZcCS7_2m8SXxNMXjM=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfu8RrFs_d-ZYYz-pXNdw9Vle3BaT-fp7JCBzWzbXPSpF7v85woBHNHR8j_jwoXYdL9-RfTboH1DaqZPpx3s5ABzhMAqhl3TUFewri3E4LmSeOiuO_xp03CuNUNl4oZcCS7_2m8SXxNMXjM=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfu8RrFs_d-ZYYz-pXNdw9Vle3BaT-fp7JCBzWzbXPSpF7v85woBHNHR8j_jwoXYdL9-RfTboH1DaqZPpx3s5ABzhMAqhl3TUFewri3E4LmSeOiuO_xp03CuNUNl4oZcCS7_2m8SXxNMXjM=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-mam-tom-chua-ba-lai",
@@ -87808,12 +87932,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 3,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcNooDEjehWjxq4tj_HKopTAbYU_IGH2EkdJPVhxjg3o0qw33eXnxnjR5WXTpqF6a5W6eLZYinhK7o7Kox6OqbyPVJSDafYG9sMVUu-Hbty7TU2p5lx0oCMmK9yXRbx_Aik198r_Q=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcNooDEjehWjxq4tj_HKopTAbYU_IGH2EkdJPVhxjg3o0qw33eXnxnjR5WXTpqF6a5W6eLZYinhK7o7Kox6OqbyPVJSDafYG9sMVUu-Hbty7TU2p5lx0oCMmK9yXRbx_Aik198r_Q=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcNooDEjehWjxq4tj_HKopTAbYU_IGH2EkdJPVhxjg3o0qw33eXnxnjR5WXTpqF6a5W6eLZYinhK7o7Kox6OqbyPVJSDafYG9sMVUu-Hbty7TU2p5lx0oCMmK9yXRbx_Aik198r_Q=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-non-co-do",
@@ -89134,12 +89260,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcKjOi2MBEu0opWwdYH4Mg7c60m0GMaVpb1H9wau7PS0Bcn0Xne1p64I5pDONxfQyncq20WmUKuExo_1qR37UXGXNcxMSiOAkqJS59hwu4ZN8M9LdFKbj4uAoDIVVVOC5o9z_O1CtN7qJw=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcKjOi2MBEu0opWwdYH4Mg7c60m0GMaVpb1H9wau7PS0Bcn0Xne1p64I5pDONxfQyncq20WmUKuExo_1qR37UXGXNcxMSiOAkqJS59hwu4ZN8M9LdFKbj4uAoDIVVVOC5o9z_O1CtN7qJw=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcKjOi2MBEu0opWwdYH4Mg7c60m0GMaVpb1H9wau7PS0Bcn0Xne1p64I5pDONxfQyncq20WmUKuExo_1qR37UXGXNcxMSiOAkqJS59hwu4ZN8M9LdFKbj4uAoDIVVVOC5o9z_O1CtN7qJw=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "specialty-tram-huong-xu-hue",
@@ -92167,12 +92295,14 @@
       "phone": null,
       "googleRating": null,
       "googleReviewCount": null,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe02XjvFr4PuAh_SaoeeOh6jHlWNiL-Xj-mdgYOFLzXZpZlHpXKserdHbn-juWAlvwZLki5XevZm-QblPbwREXo3O3T52nMo64QzPPtLHCOuB2-q1p5-gZpnVdGyASbUUY0XctW=w800-h600-k-no",
       "confidence": "high",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe02XjvFr4PuAh_SaoeeOh6jHlWNiL-Xj-mdgYOFLzXZpZlHpXKserdHbn-juWAlvwZLki5XevZm-QblPbwREXo3O3T52nMo64QzPPtLHCOuB2-q1p5-gZpnVdGyASbUUY0XctW=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe02XjvFr4PuAh_SaoeeOh6jHlWNiL-Xj-mdgYOFLzXZpZlHpXKserdHbn-juWAlvwZLki5XevZm-QblPbwREXo3O3T52nMo64QzPPtLHCOuB2-q1p5-gZpnVdGyASbUUY0XctW=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-cat-toc-nam-nu-trieu-my",
@@ -101559,12 +101689,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 1,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLe-KTUMfkhi5Obq31JggivaBWSwjORpRjgm8OQUx6muAYwVkZ9kmJ5LCrzc0iUAFCjFp4PJB5LPLyK0RUYigjbzqyBDDFznwADeaBan0P0s7BjqLEShFwHytVT8rEUOFbNCOQ-CLpK6g_Y=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLe-KTUMfkhi5Obq31JggivaBWSwjORpRjgm8OQUx6muAYwVkZ9kmJ5LCrzc0iUAFCjFp4PJB5LPLyK0RUYigjbzqyBDDFznwADeaBan0P0s7BjqLEShFwHytVT8rEUOFbNCOQ-CLpK6g_Y=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLe-KTUMfkhi5Obq31JggivaBWSwjORpRjgm8OQUx6muAYwVkZ9kmJ5LCrzc0iUAFCjFp4PJB5LPLyK0RUYigjbzqyBDDFznwADeaBan0P0s7BjqLEShFwHytVT8rEUOFbNCOQ-CLpK6g_Y=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-nang-chuyen-combo-nam",
@@ -103542,12 +103674,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 13,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLcaLnqtptdI6Q7idFq-quApcymLK_Kegs4a1p_fH1bffTnH5FTog1W6wDScnlQ-W2RgJBeE3xRUSerjza9q3ExVNJ7qiI6AYMqTh9YzMvoaJe5sfTB9tcV6Pq3uzOp8UW2k3uHC6g=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLcaLnqtptdI6Q7idFq-quApcymLK_Kegs4a1p_fH1bffTnH5FTog1W6wDScnlQ-W2RgJBeE3xRUSerjza9q3ExVNJ7qiI6AYMqTh9YzMvoaJe5sfTB9tcV6Pq3uzOp8UW2k3uHC6g=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLcaLnqtptdI6Q7idFq-quApcymLK_Kegs4a1p_fH1bffTnH5FTog1W6wDScnlQ-W2RgJBeE3xRUSerjza9q3ExVNJ7qiI6AYMqTh9YzMvoaJe5sfTB9tcV6Pq3uzOp8UW2k3uHC6g=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-nha-rap-hai-duong",
@@ -103567,12 +103701,14 @@
       "phone": null,
       "googleRating": null,
       "googleReviewCount": null,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLflNlrzOapkWcPjPsGR2iboooWwKT4oJC4HeAVnNXh6v5j36keLfPgByqvy_XAt65evSABC2RFgx1uWznuKPPYYXYbKhueoCBG1ErBHEOhkCqHcbMWJpQvMYrv-0KNb0kNDXLxx=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLflNlrzOapkWcPjPsGR2iboooWwKT4oJC4HeAVnNXh6v5j36keLfPgByqvy_XAt65evSABC2RFgx1uWznuKPPYYXYbKhueoCBG1ErBHEOhkCqHcbMWJpQvMYrv-0KNb0kNDXLxx=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLflNlrzOapkWcPjPsGR2iboooWwKT4oJC4HeAVnNXh6v5j36keLfPgByqvy_XAt65evSABC2RFgx1uWznuKPPYYXYbKhueoCBG1ErBHEOhkCqHcbMWJpQvMYrv-0KNb0kNDXLxx=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-nha-thong-minh-hong-an-hue",
@@ -112846,12 +112982,14 @@
       "phone": null,
       "googleRating": 3.4,
       "googleReviewCount": 119,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeNnfnWrtK7Ojs8DMBCwBiz8LXIMJ3S9nWpA4F1NfPU0oQBWIB-d6u2BQ0Oc5-KtHQfYN-jQJreql6GnKAXFE8AELkD5sqMvS-sePqwoe2BZ6PigEDDCUcpA0tKm03sMPDQy9-J=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeNnfnWrtK7Ojs8DMBCwBiz8LXIMJ3S9nWpA4F1NfPU0oQBWIB-d6u2BQ0Oc5-KtHQfYN-jQJreql6GnKAXFE8AELkD5sqMvS-sePqwoe2BZ6PigEDDCUcpA0tKm03sMPDQy9-J=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeNnfnWrtK7Ojs8DMBCwBiz8LXIMJ3S9nWpA4F1NfPU0oQBWIB-d6u2BQ0Oc5-KtHQfYN-jQJreql6GnKAXFE8AELkD5sqMvS-sePqwoe2BZ6PigEDDCUcpA0tKm03sMPDQy9-J=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-tay-spa",
@@ -113086,12 +113224,14 @@
       "phone": null,
       "googleRating": 5,
       "googleReviewCount": 27,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLfOcFsCrcSreto2U25pCTQjRYtbKA483aJ7wxoOUfuE8zBL4CLyQQNZVBqv2Zxjk1e9iOQpEHRthw9yxykWT4iZ3YQzt_zgj_ecB2d4UVEERlgwLEEy8H17MetC2AL-sL_wiUc=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLfOcFsCrcSreto2U25pCTQjRYtbKA483aJ7wxoOUfuE8zBL4CLyQQNZVBqv2Zxjk1e9iOQpEHRthw9yxykWT4iZ3YQzt_zgj_ecB2d4UVEERlgwLEEy8H17MetC2AL-sL_wiUc=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLfOcFsCrcSreto2U25pCTQjRYtbKA483aJ7wxoOUfuE8zBL4CLyQQNZVBqv2Zxjk1e9iOQpEHRthw9yxykWT4iZ3YQzt_zgj_ecB2d4UVEERlgwLEEy8H17MetC2AL-sL_wiUc=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-tham-my-vien-dr-celeb",
@@ -114489,12 +114629,14 @@
       "phone": null,
       "googleRating": 4.5,
       "googleReviewCount": 2,
-      "coverPhotoUrl": null,
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLftsGHm8i_L2k6qrkjakhNdbaJ3YtrnPhzWqKVkr2Py51PNHQhsR-YA0axG5HOaKD9cf2XnU-KnR8FUe_qpniEdbOguDJ6EMHeQ3aKKjD6qRP7-wV2o9VM0PlBThUBdFeDFNOdbeNFHTdXY=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
-      "photos": [],
-      "img": null,
-      "imageCredit": null
+      "photos": [
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLftsGHm8i_L2k6qrkjakhNdbaJ3YtrnPhzWqKVkr2Py51PNHQhsR-YA0axG5HOaKD9cf2XnU-KnR8FUe_qpniEdbOguDJ6EMHeQ3aKKjD6qRP7-wV2o9VM0PlBThUBdFeDFNOdbeNFHTdXY=w800-h600-k-no"
+      ],
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLftsGHm8i_L2k6qrkjakhNdbaJ3YtrnPhzWqKVkr2Py51PNHQhsR-YA0axG5HOaKD9cf2XnU-KnR8FUe_qpniEdbOguDJ6EMHeQ3aKKjD6qRP7-wV2o9VM0PlBThUBdFeDFNOdbeNFHTdXY=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "service-tiem-cat-toc-hoai-nam",
