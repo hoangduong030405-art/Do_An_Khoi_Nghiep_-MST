@@ -27,3 +27,4 @@ const { chromium } = require('playwright');
   await browser.close();
   console.log('Saved pagodas screenshot!');
 })();
+
