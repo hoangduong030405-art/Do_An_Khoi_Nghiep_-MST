@@ -103,14 +103,14 @@
       "phone": null,
       "googleRating": 4.4,
       "googleReviewCount": 1600,
-      "coverPhotoUrl": "/images/pois/cau-ngoi-thanh-toan.webp",
+      "coverPhotoUrl": "https://lh3.googleusercontent.com/grass-cs/AABkmLeUFBj7P9X8ycTAbNQljtg55GooFfXLnEQMwhGgE1j1mBZoL68Y2BrU_ZrHFTZobPLGfn5WCn3i861FhZ3G99q3fuxCuUL8dxUeegzUUbXQhiMEG5woXNoDEhcRI4-C-yb_9Mkm-w=w800-h600-k-no",
       "confidence": "medium",
       "demand_score": 0,
       "photos": [
-        "/images/pois/cau-ngoi-thanh-toan.webp"
+        "https://lh3.googleusercontent.com/grass-cs/AABkmLeUFBj7P9X8ycTAbNQljtg55GooFfXLnEQMwhGgE1j1mBZoL68Y2BrU_ZrHFTZobPLGfn5WCn3i861FhZ3G99q3fuxCuUL8dxUeegzUUbXQhiMEG5woXNoDEhcRI4-C-yb_9Mkm-w=w800-h600-k-no"
       ],
-      "img": "/images/pois/cau-ngoi-thanh-toan.webp",
-      "imageCredit": "Lưu Ly at Vietnamese Wikipedia / Public domain (Wikimedia Commons)"
+      "img": "https://lh3.googleusercontent.com/grass-cs/AABkmLeUFBj7P9X8ycTAbNQljtg55GooFfXLnEQMwhGgE1j1mBZoL68Y2BrU_ZrHFTZobPLGfn5WCn3i861FhZ3G99q3fuxCuUL8dxUeegzUUbXQhiMEG5woXNoDEhcRI4-C-yb_9Mkm-w=w800-h600-k-no",
+      "imageCredit": "Google Maps"
     },
     {
       "id": "heritage-cau-trang-tien",
