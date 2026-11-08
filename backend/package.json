@@ -22,6 +22,7 @@
     "seed": "ts-node src/database/seed.ts",
     "verify:demo": "node scripts/verify-demo.js",
     "verify:full": "node scripts/verify-full.js",
+    "verify:phase5": "node scripts/verify-phase5.js",
     "test": "jest --runInBand",
     "audit:images": "node ../scripts/audit-images.js",
     "verify:responsive": "node ../scripts/verify-responsive.js",

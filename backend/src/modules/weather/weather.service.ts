@@ -138,6 +138,47 @@ export class WeatherService implements OnModuleInit, OnModuleDestroy {
       this.logger.warn('Chưa cấu hình OPENWEATHER_API_KEY trong file .env hoặc biến môi trường.');
     }
 
+    // Fallback: Trạm khí tượng Open-Meteo vệ tinh thời gian thực (Zero-key, độ chính xác cao cho Huế 16.4673°N)
+    if (!newData) {
+      try {
+        const omUrl = `https://api.open-meteo.com/v1/forecast?latitude=${roundedLat}&longitude=${roundedLng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,weather_code,wind_speed_10m&timezone=Asia%2FBangkok`;
+        const omRes = await axios.get(omUrl, { timeout: 6000 });
+        if (omRes.data?.current) {
+          const cur = omRes.data.current;
+          const code = cur.weather_code ?? 0;
+          const isRaining = cur.rain > 0.1 || cur.precipitation > 0.1 || [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(code);
+          const tempCelsius = Math.round(cur.temperature_2m * 10) / 10;
+          const isExtremelyHot = tempCelsius >= 37;
+
+          let desc = 'Trời quang đãng, nắng ấm Cố Đô';
+          if (isRaining) desc = 'Trời đổ mưa ngâu xứ Huế';
+          else if ([1, 2].includes(code)) desc = 'Mây rải rác, gió sông Hương dịu mát';
+          else if (code === 3) desc = 'Trời nhiều mây, râm mát dễ chịu';
+          else if ([45, 48].includes(code)) desc = 'Sương mù bảng lảng Cố Đô';
+
+          let recommendation = 'Thời tiết thuận lợi cho các hoạt động tham quan ngoài trời.';
+          if (isRaining) {
+            recommendation = 'Trời đang mưa Huế. Khuyến nghị chuyển sang các địa điểm tham quan trong nhà hoặc thưởng trà cung đình.';
+          } else if (isExtremelyHot) {
+            recommendation = 'Trời nắng gắt. Khuyến nghị tránh hoạt động ngoài trời lúc giữa trưa, ưu tiên di chuyển bằng xe điện hoặc nghỉ chân tại các nhà vườn có bóng râm.';
+          }
+
+          newData = {
+            condition: isRaining ? 'Rain' : (code === 0 ? 'Clear' : 'Clouds'),
+            description: desc,
+            tempCelsius,
+            isRaining,
+            isExtremelyHot,
+            humidity: Math.round(cur.relative_humidity_2m ?? 80),
+            recommendation,
+          };
+          this.logger.log(`[Open-Meteo Live Fallback] Huế: ${tempCelsius}°C, ${desc}, độ ẩm ${newData.humidity}%`);
+        }
+      } catch (err: any) {
+        this.logger.warn(`Lỗi gọi Open-Meteo fallback: ${err.message}`);
+      }
+    }
+
     if (newData) {
       await this.setCache(cacheKey, newData, now);
       return { ...newData, source: 'live', stale: false };

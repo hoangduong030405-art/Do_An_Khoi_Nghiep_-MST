@@ -501,7 +501,7 @@
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 4px 15px rgba(88, 44, 131, 0.25);
-      z-index: 100;
+      z-index: 1001;
     }
     .app-brand { display: flex; align-items: center; gap: 8px; }
     .app-brand h2 { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
@@ -1429,6 +1429,8 @@
 </style>
   <script src="../js/image-helper.js"></script>
   <script src="../js/location-service.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/weather.js"></script>
 </head>
 <body>
 
@@ -1472,7 +1474,8 @@
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
           <button id="authStatusBtn" onclick="openAuthModal()" style="background:rgba(212,175,55,0.2); border:1px solid var(--imperial-gold); color:var(--imperial-gold); border-radius:12px; padding:3px 8px; font-size:10px; font-weight:700; cursor:pointer;">👤 Vào thử demo</button>
-          <div class="header-points-badge" id="headerPointsBadge" onclick="switchTab('tab-green', document.querySelectorAll('.nav-btn')[4])" title="Xem chi tiết điểm xanh và chứng nhận">
+          <div id="appLangSelector" style="margin-right: 6px;"></div>
+      <div class="header-points-badge" id="headerPointsBadge" onclick="switchTab('tab-green', document.querySelectorAll('.nav-btn')[4])" title="Xem chi tiết điểm xanh và chứng nhận">
             <span>🌿</span>
             <span id="userTotalPoints">0 GP</span>
           </div>
@@ -1772,23 +1775,23 @@
       <div class="bottom-nav">
         <button class="nav-btn active" onclick="switchTab('tab-map', this)">
           <span class="nav-icon">🗺️</span>
-          <span>Bản Đồ</span>
+          <span data-i18n="app_tab_map">Bản Đồ</span>
         </button>
         <button class="nav-btn" onclick="switchTab('tab-itinerary', this)">
           <span class="nav-icon">🧭</span>
-          <span>Lộ Trình</span>
+          <span data-i18n="app_tab_itinerary">Lộ Trình</span>
         </button>
         <button class="nav-btn" onclick="switchTab('tab-wheel', this)">
           <span class="nav-icon">🎲</span>
-          <span>Vòng Quay</span>
+          <span data-i18n="app_tab_wheel">Vòng Quay</span>
         </button>
         <button class="nav-btn" onclick="switchTab('tab-ai', this)">
           <span class="nav-icon">💬</span>
-          <span>O Huế AI</span>
+          <span data-i18n="app_tab_ai">O Huế AI</span>
         </button>
         <button class="nav-btn" onclick="switchTab('tab-green', this)">
           <span class="nav-icon">👑</span>
-          <span>Chứng Nhận</span>
+          <span data-i18n="app_tab_points">Chứng Nhận</span>
         </button>
       </div>
 
@@ -3637,7 +3640,7 @@
       let token = localStorage.getItem('huego_token');
       if (token) return token;
       try {
-        const demoRes = await fetch('/api/v1/auth/demo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+        const demoRes = await apiFetch('/api/v1/auth/demo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
         if (demoRes.ok) {
           const demoData = await demoRes.json();
           if (demoData.accessToken) {
@@ -3666,7 +3669,7 @@
         const makeReq = (tk) => {
           const headers = { 'Content-Type': 'application/json' };
           if (tk) headers['Authorization'] = 'Bearer ' + tk;
-          return fetch('/api/v1/ai-guide/chat', {
+          return apiFetch('/api/v1/ai-guide/chat', {
             method: 'POST',
             headers,
             body: JSON.stringify({
@@ -3850,16 +3853,158 @@
     let isSimulatingRain = false;
     let liveWeather = null;
 
+    // --- HUEGO DYNAMIC API ADAPTER & GITHUB PAGES GRACEFUL MODE ---
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    const configuredApi = localStorage.getItem('huego_api_endpoint');
+    const API_CLOUD_BASE = configuredApi || window.HUEGO_API_CLOUD_URL || (isGitHubPages ? null : '');
+
+    function resolveApiUrl(url) {
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      if (API_CLOUD_BASE) {
+        return API_CLOUD_BASE.replace(/\/+$/, '') + (url.startsWith('/') ? url : '/' + url);
+      }
+      return url;
+    }
+
+    function mockApiResponse(data, status = 200) {
+      return Promise.resolve(new Response(JSON.stringify(data), {
+        status,
+        headers: { 'Content-Type': 'application/json' }
+      }));
+    }
+
+    function handleGitHubPagesMockApi(url, options = {}) {
+      const method = (options.method || 'GET').toUpperCase();
+      const cleanUrl = url.split('?')[0];
+
+      if (cleanUrl.includes('/auth/demo')) {
+        return mockApiResponse({
+          accessToken: 'demo-gh-jwt-token',
+          refreshToken: 'demo-gh-refresh-token',
+          user: {
+            id: 'gh-demo-tourist',
+            email: 'tourist.demo@huego.vn',
+            fullName: 'Du Khách Cố Đô (Demo)',
+            greenPoints: 320,
+            currentLevel: 2,
+            role: 'TOURIST'
+          }
+        });
+      }
+      if (cleanUrl.includes('/auth/login') || cleanUrl.includes('/auth/register') || cleanUrl.includes('/auth/refresh')) {
+        return mockApiResponse({
+          accessToken: 'demo-gh-jwt-token',
+          refreshToken: 'demo-gh-refresh-token',
+          user: {
+            id: 'gh-demo-tourist',
+            email: 'tourist.demo@huego.vn',
+            fullName: 'Du Khách Cố Đô',
+            greenPoints: 320,
+            currentLevel: 2,
+            role: 'TOURIST'
+          }
+        });
+      }
+      if (cleanUrl.includes('/auth/logout')) {
+        return mockApiResponse({ success: true, message: 'Đăng xuất thành công' });
+      }
+      if (cleanUrl.includes('/weather/hue-current')) {
+        return mockApiResponse({
+          condition: 'clear',
+          description: 'Trời nắng ráo mát mẻ Cố Đô, gió sông Hương dịu nhẹ',
+          tempCelsius: 28,
+          isRaining: isSimulatingRain,
+          isExtremelyHot: false,
+          airQualityIndex: 32,
+          recommendation: 'Thời tiết tuyệt đẹp để tham quan Đại Nội và đạp xe quanh sông Hương',
+          source: 'github-pages-graceful-adapter'
+        });
+      }
+      if (cleanUrl.includes('/gamification/me') || cleanUrl.includes('/gamification/profile')) {
+        return mockApiResponse({
+          totalPoints: 320,
+          currentLevel: 2,
+          canGenerateCertificate: true,
+          pointsToNextCertificate: 0,
+          user: {
+            id: 'gh-demo-tourist',
+            fullName: 'Du Khách Cố Đô',
+            greenPoints: 320,
+            currentLevel: 2,
+            role: 'TOURIST'
+          },
+          badges: [
+            { badgeCode: 'NEWBIE_EXPLORER', title: 'Khám Phá Cố Đô', description: 'Mở khóa địa điểm đầu tiên', isUnlocked: true },
+            { badgeCode: 'GREEN_TRAVELER', title: 'Du Khách Xanh', description: 'Đi bộ và tiết kiệm CO2', isUnlocked: true }
+          ],
+          stats: {
+            totalUnlockedPlaces: 12,
+            totalSystemPlaces: 30,
+            progressPercent: 40,
+            co2SavedKg: 12.5,
+            ecoActivities: 5
+          }
+        });
+      }
+      if (cleanUrl.includes('/ai-guide/chat')) {
+        return mockApiResponse({
+          answer: 'Dạ Mệ Huế chào bạn! Hiện bạn đang trải nghiệm phiên bản tĩnh trên GitHub Pages. Mệ gợi ý bạn ghé thăm Đại Nội, Chùa Thiên Mụ, và thưởng thức Bún Bò Huế nhen!',
+          reply: 'Dạ Mệ Huế chào bạn! Hiện bạn đang trải nghiệm phiên bản tĩnh trên GitHub Pages. Mệ gợi ý bạn ghé thăm Đại Nội, Chùa Thiên Mụ, và thưởng thức Bún Bò Huế nhen!',
+          suggestedPlaces: []
+        });
+      }
+      if (cleanUrl.includes('/ai-guide/place-story')) {
+        return mockApiResponse({
+          available: true,
+          audioNarrationScript: 'Chào mừng quý khách đến với di tích Cố Đô Huế. Nơi đây lưu giữ những giá trị văn hóa ngàn năm của dân tộc.',
+          secretHistoricalFact: 'Địa danh lịch sử tiêu biểu trong quần thể di sản Cố Đô.'
+        });
+      }
+      if (cleanUrl.includes('/itinerary') && cleanUrl.includes('/share')) {
+        if (method === 'DELETE') {
+          return mockApiResponse({ success: true, message: 'Đã thu hồi liên kết chia sẻ' });
+        }
+        return mockApiResponse({
+          isShared: true,
+          shareUrl: window.location.origin + window.location.pathname + '#shared-demo',
+          expiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
+          viewCount: 1,
+          includeNotes: true,
+          allowCopy: true
+        });
+      }
+      if (cleanUrl.includes('/itinerary')) {
+        return mockApiResponse({ id: 'itin-gh-pages', title: 'Lộ trình Cố Đô', stops: [] });
+      }
+      if (cleanUrl.includes('/geofencing/unlock')) {
+        return mockApiResponse({ success: true, unlocked: true, earnedPoints: 20, newTotalPoints: 340, message: 'Check-in thành công tại di tích Cố Đô!' });
+      }
+      if (cleanUrl.includes('/crowdsource/submit')) {
+        return mockApiResponse({ success: true, message: 'Đã tiếp nhận đóng góp di sản của bạn!' });
+      }
+
+      return mockApiResponse({ ok: true, status: 'offline-adapter' });
+    }
+
+    async function apiFetch(url, options = {}) {
+      if (isGitHubPages && !API_CLOUD_BASE && (url.startsWith('/api') || url.includes('/api/v1/'))) {
+        return handleGitHubPagesMockApi(url, options);
+      }
+      return fetch(resolveApiUrl(url), options);
+    }
+    window.resolveApiUrl = resolveApiUrl;
+    window.apiFetch = apiFetch;
+
     // A. Wrapper gọi API có xác thực & Tự Động Refresh Token (Retry 1 lần khi 401)
     async function fetchWithAuth(url, options = {}) {
       if (!options.headers) options.headers = {};
       if (authToken) {
         options.headers['Authorization'] = 'Bearer ' + authToken;
       }
-      let res = await fetch(url, options);
-      if (res.status === 401 && refreshToken) {
+      let res = await apiFetch(url, options);
+      if (res.status === 401 && refreshToken && (!isGitHubPages || API_CLOUD_BASE)) {
         try {
-          const refreshRes = await fetch('/api/v1/auth/refresh', {
+          const refreshRes = await apiFetch('/api/v1/auth/refresh', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refreshToken })
@@ -3872,7 +4017,7 @@
             if (refreshToken) localStorage.setItem('huego_refresh_token', refreshToken);
             // Thử lại yêu cầu ban đầu một lần
             options.headers['Authorization'] = 'Bearer ' + authToken;
-            res = await fetch(url, options);
+            res = await apiFetch(url, options);
           } else {
             console.warn('Phiên làm việc hết hạn, vui lòng đăng nhập lại.');
             handleLogout(false);
@@ -3945,7 +4090,7 @@
 
     async function loginDemoAccount(silent = false) {
       try {
-        const res = await fetch('/api/v1/auth/demo', {
+        const res = await apiFetch('/api/v1/auth/demo', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -3991,7 +4136,7 @@
         return;
       }
       try {
-        const res = await fetch('/api/v1/auth/login', {
+        const res = await apiFetch('/api/v1/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -4024,7 +4169,7 @@
         return;
       }
       try {
-        const res = await fetch('/api/v1/auth/register', {
+        const res = await apiFetch('/api/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, fullName: email.split('@')[0] })
@@ -4052,7 +4197,7 @@
     async function handleLogout(sendServerRevoke = true) {
       if (sendServerRevoke && refreshToken && authToken) {
         try {
-          await fetch('/api/v1/auth/logout', {
+          await apiFetch('/api/v1/auth/logout', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -4112,7 +4257,7 @@
     // E. Thời Tiết Thực Tế & Thích Ứng Không Gian
     async function loadLiveWeather() {
       try {
-        const res = await fetch('/api/v1/weather/hue-current');
+        const res = await apiFetch('/api/v1/weather/hue-current');
         if (res.ok) {
           liveWeather = await res.json();
           updateWeatherBannerUI();
@@ -4382,6 +4527,7 @@
 
     // Khởi tạo hiển thị nhãn demo khi tải trang
     document.addEventListener('DOMContentLoaded', function() {
+      if (window.HuegoI18n) window.HuegoI18n.renderLanguageSelector('#appLangSelector');
       if (isDemoMode) {
         const banner = document.getElementById('demoModeBanner');
         if (banner) banner.style.display = 'block';

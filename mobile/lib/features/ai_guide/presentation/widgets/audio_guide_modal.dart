@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../core/services/audio_player/huego_audio_player.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../map/data/place_dto.dart';
 
@@ -28,11 +29,18 @@ class _AudioGuideModalState extends State<AudioGuideModal> with SingleTickerProv
   String? _errorMessage;
   Map<String, dynamic>? _narrationData;
 
+  late final HuegoAudioPlayerInterface _audioPlayer;
+  StreamSubscription? _posSub;
+  StreamSubscription? _durSub;
+  StreamSubscription? _completeSub;
+
+  Duration _currentPosition = Duration.zero;
+  Duration _totalDuration = const Duration(minutes: 2);
+
   bool _isPlaying = false;
   double _progress = 0.0;
   double _playbackSpeed = 1.0;
   String _selectedLang = 'vi';
-  Timer? _playbackTimer;
 
   late AnimationController _waveController;
 
@@ -44,12 +52,42 @@ class _AudioGuideModalState extends State<AudioGuideModal> with SingleTickerProv
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
+    _audioPlayer = createHuegoAudioPlayer();
+
+    _posSub = _audioPlayer.onPositionChanged.listen((pos) {
+      if (!mounted) return;
+      setState(() {
+        _currentPosition = pos;
+        if (_totalDuration.inMilliseconds > 0) {
+          _progress = (_currentPosition.inMilliseconds / _totalDuration.inMilliseconds).clamp(0.0, 1.0);
+        }
+      });
+    });
+
+    _durSub = _audioPlayer.onDurationChanged.listen((dur) {
+      if (!mounted) return;
+      setState(() {
+        _totalDuration = dur;
+      });
+    });
+
+    _completeSub = _audioPlayer.onPlayerComplete.listen((_) {
+      if (!mounted) return;
+      setState(() {
+        _isPlaying = false;
+        _progress = 1.0;
+      });
+    });
+
     _fetchAudioNarrative();
   }
 
   @override
   void dispose() {
-    _playbackTimer?.cancel();
+    _posSub?.cancel();
+    _durSub?.cancel();
+    _completeSub?.cancel();
+    _audioPlayer.dispose();
     _waveController.dispose();
     super.dispose();
   }
@@ -102,60 +140,48 @@ class _AudioGuideModalState extends State<AudioGuideModal> with SingleTickerProv
     }
   }
 
-  void _togglePlayPause() {
+  Future<void> _togglePlayPause() async {
+    final script = _narrationData?['audioNarrationScript'] ?? widget.place.name;
     if (_isPlaying) {
-      _playbackTimer?.cancel();
+      await _audioPlayer.pause();
       setState(() => _isPlaying = false);
     } else {
+      if (_progress >= 1.0 || _currentPosition == Duration.zero) {
+        final ttsUrl = '${ApiEndpoints.tts}?lang=$_selectedLang&text=${Uri.encodeComponent(script)}';
+        await _audioPlayer.play(ttsUrl);
+      } else {
+        await _audioPlayer.resume();
+      }
+      await _audioPlayer.setPlaybackRate(_playbackSpeed);
       setState(() => _isPlaying = true);
-      _playbackTimer?.cancel();
-      _playbackTimer = Timer.periodic(Duration(milliseconds: (200 / _playbackSpeed).round()), (timer) {
-        if (!mounted) return;
-        setState(() {
-          _progress += 0.005;
-          if (_progress >= 1.0) {
-            _progress = 1.0;
-            _isPlaying = false;
-            timer.cancel();
-          }
-        });
-      });
     }
   }
 
-  void _replay() {
+  Future<void> _replay() async {
+    final script = _narrationData?['audioNarrationScript'] ?? widget.place.name;
+    final ttsUrl = '${ApiEndpoints.tts}?lang=$_selectedLang&text=${Uri.encodeComponent(script)}';
     setState(() {
       _progress = 0.0;
+      _currentPosition = Duration.zero;
       _isPlaying = true;
     });
-    _playbackTimer?.cancel();
-    _playbackTimer = Timer.periodic(Duration(milliseconds: (200 / _playbackSpeed).round()), (timer) {
-      if (!mounted) return;
-      setState(() {
-        _progress += 0.005;
-        if (_progress >= 1.0) {
-          _progress = 1.0;
-          _isPlaying = false;
-          timer.cancel();
-        }
-      });
-    });
+    await _audioPlayer.play(ttsUrl);
+    await _audioPlayer.setPlaybackRate(_playbackSpeed);
   }
 
-  void _cycleSpeed() {
-    setState(() {
-      if (_playbackSpeed == 1.0) {
-        _playbackSpeed = 1.25;
-      } else if (_playbackSpeed == 1.25) {
-        _playbackSpeed = 0.8;
-      } else {
-        _playbackSpeed = 1.0;
-      }
-    });
-    if (_isPlaying) {
-      _togglePlayPause();
-      _togglePlayPause();
+  Future<void> _cycleSpeed() async {
+    double nextSpeed = 1.0;
+    if (_playbackSpeed == 1.0) {
+      nextSpeed = 1.2;
+    } else if (_playbackSpeed == 1.2) {
+      nextSpeed = 0.8;
+    } else {
+      nextSpeed = 1.0;
     }
+    setState(() {
+      _playbackSpeed = nextSpeed;
+    });
+    await _audioPlayer.setPlaybackRate(_playbackSpeed);
   }
 
   @override
@@ -374,10 +400,13 @@ class _AudioGuideModalState extends State<AudioGuideModal> with SingleTickerProv
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      _formatTime((_progress * 120).round()),
+                                      _formatTime(_currentPosition.inSeconds),
                                       style: const TextStyle(color: Colors.white70, fontSize: 11),
                                     ),
-                                    const Text('02:00', style: TextStyle(color: Colors.white70, fontSize: 11)),
+                                    Text(
+                                      _formatTime(_totalDuration.inSeconds > 0 ? _totalDuration.inSeconds : 120),
+                                      style: const TextStyle(color: Colors.white70, fontSize: 11),
+                                    ),
                                   ],
                                 ),
                               ),

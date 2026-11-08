@@ -30,6 +30,7 @@ class ApiEndpoints {
   static final String aiChat = '$baseUrl/ai-guide/chat';
   static final String placeStory = '$baseUrl/ai-guide/place-story';
   static final String adaptItinerary = '$baseUrl/ai-guide/adapt-itinerary';
+  static final String tts = '$baseUrl/ai-guide/tts';
 
   // Gamification & Green Points
   static final String gamificationProfile = '$baseUrl/gamification/profile';

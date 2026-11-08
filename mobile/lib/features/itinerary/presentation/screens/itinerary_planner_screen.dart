@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/constants/api_endpoints.dart';
@@ -211,18 +213,213 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
 
   Future<void> _reorderStops(int oldIndex, int newIndex) async {
     if (newIndex > oldIndex) newIndex--;
-    final item = _itineraryStops.removeAt(oldIndex);
-    _itineraryStops.insert(newIndex, item);
+    setState(() {
+      final item = _itineraryStops.removeAt(oldIndex);
+      _itineraryStops.insert(newIndex, item);
+      for (int i = 0; i < _itineraryStops.length; i++) {
+        _itineraryStops[i]['stopOrder'] = i + 1;
+      }
+    });
 
-    final newPlaceIds = _itineraryStops.map((s) => s['placeId']).toList();
+    final newPlaceIds = _itineraryStops
+        .map((s) => s['placeId'] ?? s['place']?['id'] ?? s['id'])
+        .where((id) => id != null)
+        .toList();
+
     try {
-      await _dio.put('${ApiEndpoints.itinerary}/$_itineraryId/stops', data: {
-        'placeIds': newPlaceIds
-      });
+      if (_itineraryId != null && !_itineraryId!.startsWith('demo-')) {
+        await _dio.put('${ApiEndpoints.itinerary}/$_itineraryId/stops', data: {
+          'placeIds': newPlaceIds,
+        });
+
+        // Tự động tính toán lại lộ trình theo thứ tự kéo thả mới
+        final optimizeRes = await _dio.post(ApiEndpoints.itineraryOptimize, data: {
+          'placeIds': newPlaceIds,
+        });
+        if (mounted && optimizeRes.data != null) {
+          setState(() {
+            _routeDetails = optimizeRes.data;
+          });
+        }
+      } else {
+        // Cập nhật chỉ số ước lượng cục bộ cho chế độ demo
+        setState(() {
+          _routeDetails = {
+            'totalDistanceKm': (_itineraryStops.length * 1.6).toStringAsFixed(1),
+            'estimatedTimeWalkMinutes': (_itineraryStops.length * 20),
+            'co2SavedKg': (_itineraryStops.length * 0.42).toStringAsFixed(1),
+          };
+        });
+      }
     } catch (e) {
-      _showError('Lỗi cập nhật thứ tự. Vui lòng tải lại.');
-      await _loadData();
+      debugPrint('Lỗi cập nhật lộ trình sau khi kéo thả: $e');
     }
+  }
+
+  Future<void> _shareItinerary() async {
+    if (_itineraryStops.isEmpty) {
+      _showError('Lộ trình chưa có địa điểm nào để chia sẻ.');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    String? shareUrl;
+    String? expiresAt;
+
+    try {
+      if (_itineraryId != null && !_itineraryId!.startsWith('demo-')) {
+        final res = await _dio.post('${ApiEndpoints.itinerary}/$_itineraryId/share', data: {
+          'expiresInDays': 7,
+          'includeNotes': true,
+          'allowCopy': true,
+        });
+        shareUrl = res.data['shareUrl'];
+        expiresAt = res.data['expiresAt'];
+      }
+    } catch (e) {
+      debugPrint('Lỗi share online: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+
+    // Fallback URL chuẩn khi chạy demo / offline
+    shareUrl ??= 'http://localhost:3000/s/demo-share-token';
+
+    if (!mounted) return;
+
+    final qrImageUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${Uri.encodeComponent(shareUrl)}';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 44,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 18),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.share_location, color: HuegoTheme.royalViolet, size: 24),
+                SizedBox(width: 8),
+                Text(
+                  'Chia Sẻ Lộ Trình Cố Đô',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: HuegoTheme.royalViolet),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Quét mã QR hoặc gửi link an toàn cho bạn đồng hành',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: HuegoTheme.textMuted),
+            ),
+            const SizedBox(height: 18),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: HuegoTheme.imperialGold, width: 2),
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: qrImageUrl,
+                  width: 180,
+                  height: 180,
+                  fit: BoxFit.contain,
+                  placeholder: (_, __) => const SizedBox(
+                    width: 180,
+                    height: 180,
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  errorWidget: (_, __, ___) => const SizedBox(
+                    width: 180,
+                    height: 180,
+                    child: Icon(Icons.qr_code_2, size: 80, color: HuegoTheme.royalViolet),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      shareUrl!,
+                      style: const TextStyle(fontSize: 12, color: HuegoTheme.textDark),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: shareUrl!));
+                      Navigator.pop(ctx);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('📋 Đã sao chép liên kết chia sẻ lộ trình!'),
+                          backgroundColor: HuegoTheme.royalViolet,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.copy, size: 16, color: Colors.white),
+                    label: const Text('Sao chép', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HuegoTheme.royalViolet,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.schedule, size: 14, color: HuegoTheme.textMuted),
+                const SizedBox(width: 4),
+                Text(
+                  expiresAt != null
+                      ? 'Có hiệu lực trong 7 ngày (hết hạn: ${expiresAt.substring(0, 10)})'
+                      : 'Có hiệu lực trong 7 ngày',
+                  style: const TextStyle(fontSize: 11, color: HuegoTheme.textMuted),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _swapStop(String oldPlaceId, String newPlaceId) async {
@@ -248,6 +445,11 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
         backgroundColor: HuegoTheme.royalViolet,
         actions: [
           IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: _shareItinerary,
+            tooltip: 'Chia sẻ lộ trình',
+          ),
+          IconButton(
             icon: const Icon(Icons.add_location_alt),
             onPressed: _addPlace,
             tooltip: 'Thêm địa điểm',
@@ -259,7 +461,7 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
           : Column(
               children: [
                 if (_weatherData != null) _buildWeatherBanner(),
-                if (_routeDetails != null) _buildRouteStats(),
+                if (_itineraryStops.isNotEmpty) _buildRouteStats(),
                 Expanded(
                   child: _itineraryStops.isEmpty
                       ? const Center(child: Text('Lộ trình trống. Hãy thêm địa điểm!'))
@@ -274,7 +476,7 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
                             final bool isVisited = stop['isVisited'] == true;
                             
                             return Card(
-                              key: ValueKey(stop['id']),
+                              key: ValueKey(stop['id'] ?? stop['placeId'] ?? 'stop-$index'),
                               margin: const EdgeInsets.only(bottom: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
@@ -401,15 +603,21 @@ class _ItineraryPlannerScreenState extends State<ItineraryPlannerScreen> {
   }
 
   Widget _buildRouteStats() {
+    final stopCount = _itineraryStops.length;
+    final dist = _routeDetails?['totalDistanceKm'] ?? (stopCount * 1.5).toStringAsFixed(1);
+    final timeWalk = _routeDetails?['estimatedTimeWalkMinutes'] ?? (stopCount * 20);
+    final co2 = _routeDetails?['co2SavedKg'] ?? (stopCount * 0.42).toStringAsFixed(1);
+
     return Container(
-      color: HuegoTheme.imperialGold.withOpacity(0.2),
-      padding: const EdgeInsets.all(12),
+      color: HuegoTheme.imperialGold.withOpacity(0.18),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _statCol(Icons.route, '${_routeDetails?['totalDistanceKm']} km', 'Quãng đường'),
-          _statCol(Icons.timer, '${_routeDetails?['estimatedTimeWalkMinutes']} ph', 'Đi bộ'),
-          _statCol(Icons.eco, '${_routeDetails?['co2SavedKg']} kg', 'CO₂ tiết kiệm', color: Colors.green),
+          _statCol(Icons.place_rounded, '$stopCount điểm', 'Lộ trình'),
+          _statCol(Icons.route, '$dist km', 'Quãng đường'),
+          _statCol(Icons.timer, '$timeWalk ph', 'Đi bộ'),
+          _statCol(Icons.eco, '$co2 kg', 'CO₂ tiết kiệm', color: Colors.green),
         ],
       ),
     );
