@@ -2,6 +2,15 @@
 <html lang="vi" data-theme="light">
 <head>
   <meta charset="UTF-8">
+  <script>
+    // Tự động mở Chuyến bay 3D Cố Đô đón khách khi vào trang chủ mặc định
+    (function() {
+      var p = new URLSearchParams(window.location.search);
+      if (!p.has('portal') && !p.has('direct') && !p.has('tab') && !p.has('vertical')) {
+        window.location.replace('./3d/');
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <script src="./js/image-helper.js"></script>
   <script src="./js/i18n.js"></script>

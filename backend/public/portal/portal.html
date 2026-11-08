@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <script src="./js/image-helper.js"></script>
+  <script src="./js/i18n.js"></script>
+  <script src="./js/weather.js"></script>
+  <title>HUEGO — Nền tảng Du lịch Thông minh Cố Đô Huế · Di sản, AI & Bản đồ số</title>
+  <meta name="description" content="HUEGO - Nền tảng du lịch Cố Đô Huế thông minh: hơn 4.350 địa điểm di tích, ẩm thực, bảo tàng 3D và Trợ lý AI Mệ Huế bản địa.">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#582C83">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23582c83'><circle cx='12' cy='12' r='10'/></svg>">
+    <link rel="stylesheet" href="./css/style.css?v=20261022_03">
+  <style>
+    /* CRITICAL MOBILE BOTTOM NAV OVERRIDE (IMMUNE TO BROWSER CSS CACHE) */
+    @media (max-width: 992px) {
+      .mobile-nav {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        transform: none !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-sizing: border-box !important;
+        height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+        padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px)) 0 !important;
+        z-index: 1000 !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08) !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+      }
+      .mobile-nav-item {
+        flex: 1 1 0 !important;
+        max-width: 20% !important;
+        min-height: 44px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 4px 2px !important;
+        gap: 2px !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        color: #64748B !important;
+        white-space: nowrap !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
+      }
+      .mobile-nav-item svg {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        flex-shrink: 0 !important;
+      }
+      .mobile-nav-item.active {
+        color: #582C83 !important;
+        background: rgba(88, 44, 131, 0.08) !important;
+        font-weight: 700 !important;
+      }
+      .ai-fab-btn, .btn-ai-float, #ai-chat-btn {
+        position: fixed !important;
+        bottom: calc(72px + env(safe-area-inset-bottom, 10px)) !important;
+        right: 16px !important;
+        width: 52px !important;
+        height: 52px !important;
+        min-width: 52px !important;
+        min-height: 52px !important;
+        font-size: 24px !important;
+        z-index: 999 !important;
+        box-shadow: 0 6px 20px rgba(88, 44, 131, 0.45) !important;
+      }
+      .top-bar-actions .btn-open-app {
+        display: none !important;
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .mobile-nav {
+        background: rgba(20, 28, 22, 0.95) !important;
+        border-top-color: rgba(255, 255, 255, 0.08) !important;
+      }
+      :root:not([data-theme="light"]) .mobile-nav-item {
+        color: #94A3B8 !important;
+      }
+      :root:not([data-theme="light"]) .mobile-nav-item.active {
+        color: #E9D5FF !important;
+        background: rgba(88, 44, 131, 0.35) !important;
+      }
+    }
+    [data-theme="dark"] .mobile-nav {
+      background: rgba(20, 28, 22, 0.95) !important;
+      border-top-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    [data-theme="dark"] .mobile-nav-item {
+      color: #94A3B8 !important;
+    }
+    [data-theme="dark"] .mobile-nav-item.active {
+      color: #E9D5FF !important;
+      background: rgba(88, 44, 131, 0.35) !important;
+    }
+  </style>
+  <style>
+    svg { max-width: 100%; }
+    .nav-item svg, .mobile-nav-item svg { width: 20px; height: 20px; min-width: 20px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Máy tính -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-header">
+        <a href="./index.html" class="brand-logo" style="display:flex;align-items:center;gap:4px;text-decoration:none;">
+          <span style="font-size:1.6rem;font-weight:900;color:var(--primary);letter-spacing:1px;font-family:'Playfair Display',serif;">HUE</span>
+          <span class="brand-badge" style="background:var(--accent-gold);color:#1e1b4b;font-weight:900;padding:2px 8px;border-radius:8px;">GO</span>
+        </a>
+      </div>
+
+      <nav class="nav-links">
+        <a href="./index.html" class="nav-item active">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
+          <span data-i18n="nav_explore">Khám phá Huế</span>
+        </a>
+        <a href="./hue.html" class="nav-item">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path></svg>
+          <span data-i18n="nav_guide">Cẩm nang Huế</span>
+        </a>
+        <a href="./map.html" class="nav-item">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+          <span data-i18n="nav_map">Bản đồ số Du lịch</span>
+        </a>
+        <a href="./museum.html" class="nav-item">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+          <span data-i18n="nav_museum">Bảo tàng số 3D</span>
+        </a>
+        <a href="./simulator.html" class="nav-item">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+          <span data-i18n="nav_simulation">Mô phỏng 1 ngày</span>
+        </a>
+        <a href="./essentials.html" class="nav-item">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span data-i18n="nav_essentials">Khẩn cấp & Hỗ trợ</span>
+        </a>
+        <a href="./3d/" class="nav-item" style="color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);border-radius:12px;margin-top:4px;">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span data-i18n="nav_flight3d">Chuyến bay 3D Cố Đô ✨</span>
+        </a>
+        <a href="./app/" class="nav-item btn-open-app" style="color:var(--primary);font-weight:700;background:var(--primary-light);border-radius:12px;margin-top:6px;">
+          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          <span data-i18n="nav_open_app">Mở App HUEGO 📱</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Đổi giao diện sáng/tối">
+          <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span id="theme-label">Giao diện Tối</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Khu vực nội dung chính -->
+    <main class="main-wrapper">
+      <!-- Thanh điều hướng trên đỉnh -->
+      <header class="top-bar">
+        <div class="search-box-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="search-input" id="search-input" placeholder="Tìm kiếm địa điểm, di tích, món ngon, quán cà phê Huế..." data-i18n-placeholder="search_placeholder" autocomplete="off">
+        </div>
+
+        <div class="top-bar-actions" style="display:flex;align-items:center;gap:10px;">
+          <!-- Language Selector Dropdown -->
+          <div id="portalLangSelector"></div>
+          <!-- Live Weather Badge -->
+          <div class="weather-badge" id="liveWeatherBadge">
+            <span class="weather-icon">⛅</span>
+            <span>Huế 27°C · Dịu mát</span>
+          </div>
+
+          <!-- Lịch trình đã lưu -->
+          <a href="./simulator.html" class="btn-save-itinerary" style="text-decoration:none;" title="Xem các điểm trong lịch trình cá nhân">
+            <span data-i18n="btn_itinerary">🔖 Lịch trình</span>
+            <span id="itineraryBadge" style="background:var(--primary);color:white;border-radius:9999px;padding:1px 6px;font-size:11px;font-weight:800;"></span>
+          </a>
+
+          <!-- Landing 3D Experience Button -->
+          <a href="./3d/" class="btn-3d-experience" style="font-size: 0.85rem; font-weight: 700; color: #78350f; background: #fef3c7; border: 1px solid #fde68a; padding: 0.45rem 0.9rem; border-radius: 9999px; text-decoration:none; display:flex; align-items:center; gap:6px; box-shadow: 0 2px 6px rgba(217,119,6,0.15);" title="Trải nghiệm Cố Đô Huế 3D">
+            <span>✨</span> <span data-i18n="btn_flight_3d">Chuyến bay 3D</span>
+          </a>
+
+          <!-- App Mobile Shortcut -->
+          <a href="./app/" class="btn-open-app" style="font-size: 0.85rem; font-weight: 700; color: white; background: var(--primary); padding: 0.45rem 1rem; border-radius: 9999px; text-decoration:none; display:flex; align-items:center; gap:6px; box-shadow: 0 2px 8px rgba(88,44,131,0.25);">
+            <span>📱</span> <span data-i18n="btn_open_app_action">Mở App</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Hero Banner -->
+      <section class="hero-banner">
+        <h1 class="hero-title"><span data-i18n="hero_title_prefix">Khám phá</span> <span data-i18n="hero_title_accent">Cố Đô Huế</span> <span data-i18n="hero_title_suffix">cùng Trợ lý HUEGO</span></h1>
+        <p class="hero-subtitle" data-i18n="hero_subtitle">Nền tảng du lịch thông minh kết hợp bản đồ số, bảo tàng 3D, thuyết minh audio và Trợ lý AI Mệ Huế bản địa am hiểu sâu sắc ẩm thực & lịch sử Cố Đô.</p>
+      </section>
+
+      <!-- Bộ lọc Danh mục Tabs -->
+      <nav class="category-tabs-container" aria-label="Bộ lọc danh mục">
+        <button class="category-tab-btn active" data-vertical="all" data-i18n="tab_all">🌟 Tất cả địa điểm</button>
+        <button class="category-tab-btn" data-vertical="tour" data-i18n="tab_tour">🏛️ Di tích & Tour (513)</button>
+        <button class="category-tab-btn" data-vertical="fnb" data-i18n="tab_fnb">🍜 Ẩm thực & Quán ngon (1.000)</button>
+        <button class="category-tab-btn" data-vertical="cafe" data-i18n="tab_cafe">☕ Cà phê & Chill (714)</button>
+        <button class="category-tab-btn" data-vertical="stay" data-i18n="tab_stay">🏨 Khách sạn & Nghỉ dưỡng (897)</button>
+        <button class="category-tab-btn" data-vertical="specialty" data-i18n="tab_craft">🎁 Đặc sản làm quà (228)</button>
+        <button class="category-tab-btn" data-vertical="service" data-i18n="tab_eco">🚗 Dịch vụ du lịch (1.000)</button>
+      </nav>
+
+      <!-- Phần Bộ sưu tập nổi bật -->
+      <section class="section-wrapper">
+        <div class="section-header">
+          <h2 class="section-title" data-i18n="section_journeys">Hành trình gợi ý</h2>
+        </div>
+        <div class="collections-grid" id="collections-grid">
+          <!-- Render tự động từ API -->
+        </div>
+
+        <!-- Danh sách địa điểm -->
+        <div class="section-header">
+          <h2 class="section-title" data-i18n="section_places">Danh sách Địa điểm</h2>
+          <span id="results-count" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Đang tải...</span>
+        </div>
+
+        <div class="places-grid" id="places-grid">
+          <!-- Render tự động từ API -->
+        </div>
+
+        <!-- Phân trang -->
+        <div class="pagination-container" id="pagination-container">
+          <!-- Render tự động từ pagination -->
+        </div>
+      </section>
+
+      <!-- HUEGO Site Footer -->
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
+              <span style="font-size:1.6rem;font-weight:900;color:var(--accent-gold);font-family:'Playfair Display',serif;">HUE</span>
+              <span style="background:var(--accent-gold);color:#1E1B4B;font-weight:900;padding:2px 8px;border-radius:6px;font-size:14px;">GO</span>
+            </div>
+            <p data-i18n="footer_brand_desc">HUEGO — Nền tảng Du lịch Thông minh Cố Đô Huế. Kết nối di sản văn hóa ngàn năm với công nghệ Bản đồ số Geofencing, Bảo tàng 3D và Trợ lý AI Mệ Huế bản địa.</p>
+            <p style="color:var(--accent-gold);font-weight:700;font-size:0.85rem;" data-i18n="footer_hotline">📞 Đường dây nóng du lịch Huế: 0234.3822288</p>
+          </div>
+          <div class="footer-col">
+            <h4 data-i18n="footer_explore_title">Khám Phá Di Sản</h4>
+            <ul class="footer-links">
+              <li><a href="./map.html" data-i18n="footer_link_map">Bản đồ số 4.352 điểm</a></li>
+              <li><a href="./museum.html" data-i18n="footer_link_museum">Bảo tàng 10 cổ vật 3D</a></li>
+              <li><a href="./hue.html" data-i18n="footer_link_guide">Cẩm nang lịch trình Cố Đô</a></li>
+              <li><a href="./simulator.html" data-i18n="footer_link_simulation">Mô phỏng 1 ngày ở Huế</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 data-i18n="footer_services_title">Dịch Vụ & Hỗ Trợ</h4>
+            <ul class="footer-links">
+              <li><a href="./essentials.html" data-i18n="footer_emergency">Cứu hộ khẩn cấp 113/114/115</a></li>
+              <li><a href="./essentials.html#hospitals" data-i18n="footer_hospital">Bệnh viện TW Huế</a></li>
+              <li><a href="./app/" style="color:var(--accent-gold);font-weight:700;" data-i18n="footer_app_online">📱 Trải nghiệm App HUEGO Trực tuyến</a></li>
+              <li><a href="https://github.com/hoangduong030405-art/Do_An_Khoi_Nghiep_-MST" target="_blank" data-i18n="footer_github">Mã nguồn dự án GitHub</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 data-i18n="footer_ai_title">Trợ Lý Du Lịch AI</h4>
+            <p data-i18n="footer_ai_desc">Trò chuyện 24/7 với Mệ Huế AI để được tư vấn quán ăn ngon, lộ trình di chuyển và giai thoại lịch sử theo thời tiết thực tế.</p>
+            <button onclick="toggleAiChat()" class="btn-primary" style="margin-top:8px;font-size:0.85rem;padding:0.6rem 1.2rem;">
+              <span data-i18n="footer_ai_btn">👑 Trò chuyện với Mệ Huế</span>
+            </button>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span data-i18n="footer_copyright">© 2026 HUEGO — Dự Án Khởi Nghiệp Đổi Mới Sáng Tạo Du Lịch Cố Đô Huế.</span>
+          <span data-i18n="footer_rights">Bảo lưu mọi quyền · Phát triển vì Di sản Việt Nam</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Liquid Bar -->
+  <nav class="mobile-nav" aria-label="Điều hướng di động">
+    <a href="./index.html" class="mobile-nav-item active">
+      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
+      <span data-i18n="mobile_nav_explore">Khám phá</span>
+    </a>
+    <a href="./map.html" class="mobile-nav-item">
+      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon></svg>
+      <span data-i18n="mobile_nav_map">Bản đồ</span>
+    </a>
+    <a href="./museum.html" class="mobile-nav-item">
+      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
+      <span data-i18n="mobile_nav_museum">Bảo tàng</span>
+    </a>
+    <a href="./hue.html" class="mobile-nav-item">
+      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path></svg>
+      <span data-i18n="mobile_nav_guide">Cẩm nang</span>
+    </a>
+    <a href="./app/" class="mobile-nav-item btn-open-app" style="color:var(--primary);font-weight:700;">
+      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+      <span data-i18n="mobile_nav_app">App Huế</span>
+    </a>
+  </nav>
+
+  <!-- Modal Chi tiết Địa điểm -->
+  <div class="modal-overlay" id="place-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Đóng cửa sổ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div id="modal-dynamic-content">
+        <!-- Render nội dung chi tiết -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       HUEGO FLOATING AI GUIDE WIDGET (MỆ HUẾ 24/7)
+       ========================================================== -->
+  <button class="ai-fab-btn" onclick="toggleAiChat()" title="Hỏi Trợ lý Mệ Huế AI 24/7" aria-label="Trợ lý AI Mệ Huế">
+    <span>👑</span>
+    <span class="ai-fab-badge">AI</span>
+  </button>
+
+  <div class="ai-chat-drawer" id="aiChatDrawer">
+    <div class="ai-chat-header">
+      <div class="ai-header-info">
+        <div class="ai-header-avatar">👑</div>
+        <div>
+          <div class="ai-header-title" data-i18n="ai_fab_title">Mệ Huế (AI Guide)</div>
+          <div class="ai-header-sub" data-i18n="ai_header_sub">Trợ lý Cố Đô thông minh 24/7</div>
+        </div>
+      </div>
+      <button class="ai-chat-close-btn" onclick="toggleAiChat()" aria-label="Đóng chat">✕</button>
+    </div>
+
+    <div class="ai-chat-messages" id="aiChatMessages">
+      <div class="chat-msg msg-ai">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--primary);font-weight:800;font-size:0.8rem;">
+          <span>👑</span><span>Mệ Huế AI Guide</span>
+        </div>
+        <div>
+          <span data-i18n="ai_welcome_msg">Dạ Mệ chào quý khách nhen! Mệ là Trợ lý bản địa của HUEGO. Người muốn hỏi đường đi, tìm quán ăn ngon hay nghe giai thoại lịch sử chi ở Cố Đô cứ nói Mệ nghe!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gợi ý câu hỏi nhanh -->
+    <div class="ai-quick-prompts">
+      <button class="quick-prompt-chip" data-i18n="ai_chip_food" onclick="sendQuickPrompt('Món ăn vặt nào ngon nhất quanh Hoàng Thành?')">🍜 Ăn vặt Đại Nội</button>
+      <button class="quick-prompt-chip" data-i18n="ai_chip_tombs" onclick="sendQuickPrompt('Nên đi lăng vua nào trước nếu chỉ có 1 buổi chiều?')">🏛️ Lăng tẩm 1 buổi</button>
+      <button class="quick-prompt-chip" data-i18n="ai_chip_salt_coffee" onclick="sendQuickPrompt('Quán cà phê muối nào ngon và chuẩn vị nhất?')">☕ Cà phê muối</button>
+      <button class="quick-prompt-chip" data-i18n="ai_chip_rain" onclick="sendQuickPrompt('Trời mưa Huế thì nên đi đâu chơi?')">🌧️ Lịch trình ngày mưa</button>
+    </div>
+
+    <div class="ai-chat-input-bar">
+      <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Hỏi Mệ Huế bất kỳ điều gì..." data-i18n-placeholder="ai_input_placeholder" autocomplete="off">
+      <button class="ai-chat-send-btn" onclick="sendAiMessage()" aria-label="Gửi tin nhắn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="./js/app.js"></script>
+  <script>
+    if (window.HuegoI18n) {
+      window.HuegoI18n.renderLanguageSelector("#portalLangSelector");
+    }
+  </script>
+
+  <!-- Modal Quét Mã QR Mở App (Dành cho Desktop) -->
+  <div class="modal-overlay" id="app-qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+    <div class="modal-content qr-modal-box">
+      <button class="modal-close-btn" id="qr-modal-close-btn" aria-label="Đóng cửa sổ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div class="qr-modal-body" style="text-align:center;padding:1.5rem 1rem;">
+        <div class="qr-header">
+          <span style="font-size:2.5rem;display:inline-block;margin-bottom:0.5rem;">📱</span>
+          <h2 id="qr-modal-title" style="font-size:1.35rem;font-weight:800;color:var(--text-main);">Trải Nghiệm App HUEGO Trên Điện Thoại</h2>
+          <p style="font-size:0.9rem;color:var(--text-muted);margin:0.5rem auto 1rem;max-width:380px;">Quét mã QR bằng camera điện thoại để kích hoạt tính năng định vị GPS Geofencing, Audio Thuyết minh & Check-in di tích Cố Đô.</p>
+        </div>
+        <div class="qr-code-wrapper" style="margin:1rem auto;padding:1rem;background:#FFFFFF;border-radius:16px;display:inline-block;box-shadow:0 10px 25px rgba(0,0,0,0.12);border:2px solid var(--accent-gold);">
+          <img id="qr-modal-image" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%232E1065%22%2F%3E%3Ctext%20x%3D%2250%22%20y%3D%2255%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%3E%F0%9F%8F%9B%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E" alt="Mã QR mở ứng dụng HUEGO" style="width:190px;height:190px;display:block;border-radius:8px;" />
+        </div>
+        <div class="qr-app-url-box" style="margin:0.75rem auto 1.5rem;font-size:0.85rem;color:var(--text-muted);word-break:break-all;max-width:400px;">
+          Địa chỉ: <strong id="qr-modal-url-text" style="color:var(--primary);"></strong>
+        </div>
+        <div>
+          <a href="./app/" id="qr-direct-link" class="btn-primary" style="text-decoration:none;font-size:0.9rem;padding:0.75rem 1.5rem;border-radius:12px;font-weight:700;">
+            <span>Mở trực tiếp trên máy tính này →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
