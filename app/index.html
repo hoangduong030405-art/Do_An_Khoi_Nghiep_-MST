@@ -3854,7 +3854,7 @@
     let liveWeather = null;
 
     // --- HUEGO DYNAMIC API ADAPTER & GITHUB PAGES GRACEFUL MODE ---
-    const isGitHubPages = window.location.hostname.includes('github.io');
+    const isGitHubPages = window.location.hostname.includes('github.io') || window.location.hostname.includes('huego.id.vn');
     const configuredApi = localStorage.getItem('huego_api_endpoint');
     const API_CLOUD_BASE = configuredApi || window.HUEGO_API_CLOUD_URL || (isGitHubPages ? null : '');
 
@@ -4501,7 +4501,7 @@
     // ==========================================
     const isDemoMode = (function() {
       const host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
-      return host.includes('github.io') || host.includes('localhost') || host === '127.0.0.1';
+      return host.includes('github.io') || host.includes('huego.id.vn') || host.includes('localhost') || host === '127.0.0.1';
     })();
 
     // Điểm GP demo lưu trong localStorage dưới khóa riêng 'demo_gp'

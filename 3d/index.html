@@ -19,25 +19,82 @@
   <!-- Google Fonts: Hoàng Gia & Hiện Đại (Hỗ trợ chuẩn tiếng Việt) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&subset=vietnamese&display=swap" rel="stylesheet" />
+  <style>
+    .word {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .hero-title {
+      font-family: "Playfair Display", "Be Vietnam Pro", Georgia, serif !important;
+      font-size: clamp(2.4rem, 5.8vw, 5.2rem) !important;
+      line-height: 1.18 !important;
+      word-break: keep-all !important;
+      overflow-wrap: normal !important;
+      max-width: 1200px !important;
+    }
+  </style>
 
   <!-- Main Styles -->
-  <script type="module" crossorigin src="./assets/index-AT2-hPUR.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CDR6EYcE.css">
-  <script src="../js/i18n.js"></script>
+  <script type="module" crossorigin src="./assets/index-BHEcBvSP.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DYe85Xae.css">
 </head>
 <body>
 
-  <!-- 1. PRELOADER & MASK REVEAL -->
+  <!-- 1. PRELOADER & ROYAL DRAGON-PHOENIX ENTRANCE REVEAL -->
   <div id="preloader">
+    <div class="preloader-bg-glow"></div>
+    <div class="preloader-shockwave" id="preloader-shockwave"></div>
+
     <div class="preloader-header">
-      <div class="preloader-brand">HUEGO // CỐ ĐÔ 3D</div>
-      <div class="preloader-coords">FLIGHT HUE-2026 // CỐ ĐÔ HUẾ 16°28'N</div>
+      <div class="preloader-brand">
+        <span class="brand-sparkle">✦</span> HUEGO // LONG PHỤNG CỐ ĐÔ 3D
+      </div>
+      <div class="preloader-coords">LONG PHỤNG TRÌNH TƯỜNG // CỐ ĐÔ HUẾ 16°28'N</div>
     </div>
-    <div class="preloader-center">
-      <div id="preloader-percent">00%</div>
-      <div id="preloader-status">KHỞI TẠO KHÔNG GIAN DI SẢN SỐ HUẾ...</div>
+
+    <!-- Sân khấu Linh vật Hoàng gia Long - Phụng chầu tâm -->
+    <div class="preloader-stage">
+      <!-- Cánh Tả: Thanh Long Triều Nguyễn -->
+      <div class="creature-wrapper creature-dragon" id="intro-dragon">
+        <div class="creature-aura aura-dragon"></div>
+        <div class="creature-frame">
+          <img src="./images/thanh_long_dragon.png" alt="Thanh Long Hoàng Cung Triều Nguyễn" class="creature-img" />
+        </div>
+        <div class="creature-badge">
+          <span class="badge-icon">🐉</span>
+          <span class="badge-text">THANH LONG TRIỀU NGUYỄN</span>
+        </div>
+      </div>
+
+      <!-- Tâm giữa: Ấn ngọc hoa sen hoàng kim & Bộ đếm Tiến trình -->
+      <div class="preloader-center">
+        <div class="royal-seal-emblem">
+          <svg class="seal-lotus-spin" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="46" stroke="#f5b861" stroke-width="2" stroke-dasharray="6 4" />
+            <circle cx="50" cy="50" r="38" stroke="rgba(245, 184, 97, 0.4)" stroke-width="1.5" />
+            <path d="M50 18 C52 28, 58 35, 68 38 C58 42, 54 50, 54 62 C50 54, 46 54, 46 62 C46 50, 42 42, 32 38 C42 35, 48 28, 50 18 Z" fill="#f5b861" />
+            <circle cx="50" cy="42" r="4" fill="#fff" />
+          </svg>
+        </div>
+        <div id="preloader-percent">00%</div>
+        <div class="preloader-sub-tag">HUEGO • LONG PHỤNG KHAI MÔN</div>
+        <div id="preloader-status">KHỞI TẠO KHÔNG GIAN DI SẢN SỐ HUẾ...</div>
+      </div>
+
+      <!-- Cánh Hữu: Hỏa Phượng Hoàng Triều -->
+      <div class="creature-wrapper creature-phoenix" id="intro-phoenix">
+        <div class="creature-aura aura-phoenix"></div>
+        <div class="creature-frame">
+          <img src="./images/hoa_phuong_phoenix.png" alt="Hỏa Phượng Hoàng Cung Triều Nguyễn" class="creature-img" />
+        </div>
+        <div class="creature-badge">
+          <span class="badge-icon">🦚</span>
+          <span class="badge-text">HỎA PHƯỢNG HOÀNG TRIỀU</span>
+        </div>
+      </div>
     </div>
+
     <div class="preloader-footer">
       <div class="preloader-progress-track">
         <div id="preloader-bar"></div>
@@ -92,14 +149,14 @@
     </a>
 
     <nav class="nav-links" aria-label="Main Navigation">
-      <a href="#songhuong" data-cursor="Khám Phá" data-i18n="flight_nav_river">Sông Hương</a>
-      <a href="#thienmu" data-cursor="Khám Phá" data-i18n="flight_nav_thienmu">Thiên Mụ</a>
-      <a href="#langtam" data-cursor="Khám Phá" data-i18n="flight_nav_tombs">Lăng Tẩm</a>
-      <a href="#gallery" data-cursor="Bộ sưu tập" data-i18n="flight_nav_experience">Trải Nghiệm 3D</a>
+      <a href="#songhuong" data-cursor="Khám Phá">Sông Hương</a>
+      <a href="#thienmu" data-cursor="Khám Phá">Thiên Mụ</a>
+      <a href="#langtam" data-cursor="Khám Phá">Lăng Tẩm</a>
+      <a href="#gallery" data-cursor="Bộ sưu tập">Trải Nghiệm 3D</a>
       <a href="#impact" data-cursor="Số liệu">Đánh Giá</a>
     </nav>
 
-    <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="header-cta-btn magnetic-btn" data-cursor="Mở Web">
+    <a href="../portal.html" target="_self"  class="header-cta-btn magnetic-btn" data-cursor="Mở Web">
       <span class="btn-text">Vào Web HUEGO ↗</span>
     </a>
   </header>
@@ -111,32 +168,32 @@
     <section class="flight-section" id="hero">
       <div class="hero-meta">APP DU LỊCH HUẾ 3D // HÀNH TRÌNH DI SẢN HOÀNG GIA</div>
       <h1 class="hero-title">
-        <span class="char">H</span><span class="char">U</span><span class="char">E</span><span class="char">G</span><span class="char">O</span>
+        <span class="word"><span class="char">H</span><span class="char">U</span><span class="char">E</span><span class="char">G</span><span class="char">O</span></span>
         <span class="char">&nbsp;</span>
         <span class="char">—</span>
         <span class="char">&nbsp;</span>
-        <span class="char">C</span><span class="char">h</span><span class="char">ạ</span><span class="char">m</span>
+        <span class="word"><span class="char">C</span><span class="char">h</span><span class="char">ạ</span><span class="char">m</span></span>
         <span class="char">&nbsp;</span>
-        <span class="char">V</span><span class="char">à</span><span class="char">o</span>
+        <span class="word"><span class="char">V</span><span class="char">à</span><span class="char">o</span></span>
         <br />
-        <span class="char">D</span><span class="char">i</span>
+        <span class="word"><span class="char">D</span><span class="char">i</span></span>
         <span class="char">&nbsp;</span>
-        <span class="char">S</span><span class="char">ả</span><span class="char">n</span>
+        <span class="word"><span class="char">S</span><span class="char">ả</span><span class="char">n</span></span>
         <span class="char">&nbsp;</span>
-        <span class="char">C</span><span class="char">ố</span>
+        <span class="word"><span class="char">C</span><span class="char">ố</span></span>
         <span class="char">&nbsp;</span>
-        <span class="char">Đ</span><span class="char">ô</span>
+        <span class="word"><span class="char">Đ</span><span class="char">ô</span></span>
         <span class="char">&nbsp;</span>
-        <span class="char">H</span><span class="char">u</span><span class="char">ế</span>
+        <span class="word"><span class="char">H</span><span class="char">u</span><span class="char">ế</span></span>
       </h1>
       <p class="hero-subtitle">
         Ứng dụng du lịch thông minh dẫn lối du khách bay xuyên không gian 3D, tái hiện vàng son triều Nguyễn qua lăng kính công nghệ số.
       </p>
       <div class="hero-cta-group">
         <a href="#songhuong" class="primary-btn magnetic-btn" data-cursor="Khám phá">
-          <span class="btn-text" data-i18n="flight_btn_start">Bay Khám Phá 3D</span>
+          <span class="btn-text">Bay Khám Phá 3D</span>
         </a>
-        <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="secondary-btn magnetic-btn" data-cursor="Vào Web">
+        <a href="../portal.html" target="_self"  class="secondary-btn magnetic-btn" data-cursor="Vào Web">
           <span class="btn-text">Vào Web HUEGO ↗</span>
         </a>
       </div>
@@ -199,29 +256,84 @@
       </div>
       <div class="gallery-viewport">
         <div id="gallery-track">
-          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
-            <span class="card-num">01</span>
-            <span class="gallery-card-badge">Thực Tế Ảo</span>
-            <h3 class="gallery-card-title">VR Hoàng Thành 3D</h3>
-            <p class="gallery-card-desc">Tái hiện lầu Ngũ Phụng, Điện Thái Hòa và Tử Cấm Thành thời thịnh trị dưới dạng 3D tương tác đa chiều. Bấm để trải nghiệm ngay ↗</p>
+          <!-- CARD 01: VR HOÀNG THÀNH 3D -->
+          <a href="../portal.html" target="_self"  class="gallery-card" data-cursor="Mở Web">
+            <div class="card-top-bar">
+              <span class="card-num">01</span>
+              <span class="gallery-card-badge">Thực Tế Ảo</span>
+            </div>
+            <div class="card-visual-frame">
+              <img src="./images/gallery-vr-hoangthanh-3d.webp" alt="VR Hoàng Thành 3D Đại Nội Huế" class="card-3d-img" />
+              <div class="card-visual-glow"></div>
+            </div>
+            <div class="card-content-block">
+              <h3 class="gallery-card-title">VR Hoàng Thành 3D</h3>
+              <p class="gallery-card-desc">Tái hiện lầu Ngũ Phụng, Điện Thái Hòa và Tử Cấm Thành thời thịnh trị dưới dạng 3D tương tác đa chiều.</p>
+              <div class="card-action-link">
+                <span>Khám Phá Trải Nghiệm</span>
+                <span class="action-arrow">↗</span>
+              </div>
+            </div>
           </a>
-          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
-            <span class="card-num">02</span>
-            <span class="gallery-card-badge">Âm Nhạc</span>
-            <h3 class="gallery-card-title">Ca Huế Sông Hương</h3>
-            <p class="gallery-card-desc">Đặt chỗ thưởng thức Nhã nhạc Cung đình trên thuyền rồng, kết nối trực tiếp các nghệ nhân di sản. Bấm để trải nghiệm ngay ↗</p>
+
+          <!-- CARD 02: CA HUẾ SÔNG HƯƠNG -->
+          <a href="../portal.html" target="_self"  class="gallery-card" data-cursor="Mở Web">
+            <div class="card-top-bar">
+              <span class="card-num">02</span>
+              <span class="gallery-card-badge">Âm Nhạc</span>
+            </div>
+            <div class="card-visual-frame">
+              <img src="./images/gallery-cahue-songhuong-3d.webp" alt="Ca Huế Sông Hương Thuyền Rồng" class="card-3d-img" />
+              <div class="card-visual-glow"></div>
+            </div>
+            <div class="card-content-block">
+              <h3 class="gallery-card-title">Ca Huế Sông Hương</h3>
+              <p class="gallery-card-desc">Đặt chỗ thưởng thức Nhã nhạc Cung đình trên thuyền rồng, kết nối trực tiếp các nghệ nhân di sản.</p>
+              <div class="card-action-link">
+                <span>Khám Phá Trải Nghiệm</span>
+                <span class="action-arrow">↗</span>
+              </div>
+            </div>
           </a>
-          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
-            <span class="card-num">03</span>
-            <span class="gallery-card-badge">Bảo Tàng Số</span>
-            <h3 class="gallery-card-title">Cổ Vật Triều Nguyễn 3D</h3>
-            <p class="gallery-card-desc">Xoay ngắm 360 độ ngọc tỷ truyền quốc, mũ bình thiên, áo phụng hoàng gia cùng thuyết minh âm thanh. Bấm để trải nghiệm ngay ↗</p>
+
+          <!-- CARD 03: CỔ VẬT TRIỀU NGUYỄN 3D -->
+          <a href="../portal.html" target="_self"  class="gallery-card" data-cursor="Mở Web">
+            <div class="card-top-bar">
+              <span class="card-num">03</span>
+              <span class="gallery-card-badge">Bảo Tàng Số</span>
+            </div>
+            <div class="card-visual-frame">
+              <img src="./images/gallery-covat-trieunguyen-3d.webp" alt="Cổ Vật Triều Nguyễn 3D Bảo Tàng Số" class="card-3d-img" />
+              <div class="card-visual-glow"></div>
+            </div>
+            <div class="card-content-block">
+              <h3 class="gallery-card-title">Cổ Vật Triều Nguyễn 3D</h3>
+              <p class="gallery-card-desc">Xoay ngắm 360 độ ngọc tỷ truyền quốc, mũ bình thiên, áo phụng hoàng gia cùng thuyết minh âm thanh.</p>
+              <div class="card-action-link">
+                <span>Khám Phá Trải Nghiệm</span>
+                <span class="action-arrow">↗</span>
+              </div>
+            </div>
           </a>
-          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="gallery-card" data-cursor="Mở Web">
-            <span class="card-num">04</span>
-            <span class="gallery-card-badge">Ẩm Thực</span>
-            <h3 class="gallery-card-title">Bản Đồ Ẩm Thực Cố Đô</h3>
-            <p class="gallery-card-desc">Dẫn đường AR tìm đến quán bánh bèo nậm lọc gia truyền, bún bò mệ Kéo và tiệc chè tiến vua. Bấm để trải nghiệm ngay ↗</p>
+
+          <!-- CARD 04: BẢN ĐỒ ẨM THỰC CỐ ĐÔ -->
+          <a href="../portal.html" target="_self"  class="gallery-card" data-cursor="Mở Web">
+            <div class="card-top-bar">
+              <span class="card-num">04</span>
+              <span class="gallery-card-badge">Ẩm Thực</span>
+            </div>
+            <div class="card-visual-frame">
+              <img src="./images/gallery-amthuc-cungdinh-3d.webp" alt="Bản Đồ Ẩm Thực Cố Đô Huế" class="card-3d-img" />
+              <div class="card-visual-glow"></div>
+            </div>
+            <div class="card-content-block">
+              <h3 class="gallery-card-title">Bản Đồ Ẩm Thực Cố Đô</h3>
+              <p class="gallery-card-desc">Dẫn đường AR tìm đến quán bánh bèo nậm lọc gia truyền, bún bò mệ Kéo và tiệc chè tiến vua.</p>
+              <div class="card-action-link">
+                <span>Khám Phá Trải Nghiệm</span>
+                <span class="action-arrow">↗</span>
+              </div>
+            </div>
           </a>
         </div>
       </div>
@@ -263,7 +375,7 @@
           Truy cập ngay nền tảng web thông minh HUEGO để mở khóa bản đồ số hơn 4.350 địa điểm di tích, ẩm thực, bảo tàng 3D và Trợ lý AI Mệ Huế bản địa.
         </p>
         <div style="display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;">
-          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="primary-btn magnetic-btn" id="open-booking-btn" data-cursor="Vào Web">
+          <a href="../portal.html" target="_self"  class="primary-btn magnetic-btn" id="open-booking-btn" data-cursor="Vào Web">
             <span class="btn-text">Vào Ngay Web HUEGO ↗</span>
           </a>
         </div>
@@ -280,7 +392,7 @@
           <a href="#thienmu">Thiên Mụ</a>
           <a href="#langtam">Lăng Tẩm</a>
           <a href="#gallery">Trải Nghiệm 3D</a>
-          <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" style="color: var(--c-gold-primary);">Vào Web HUEGO ↗</a>
+          <a href="../portal.html" target="_self"  style="color: var(--c-gold-primary);">Vào Web HUEGO ↗</a>
         </nav>
       </div>
       <div class="footer-bottom">
@@ -292,10 +404,5 @@
   </main>
 
   <!-- Script Entry Point -->
-  <script>
-    if (window.HuegoI18n) {
-      window.HuegoI18n.renderLanguageSelector('#portalLangSelector');
-    }
-  </script>
 </body>
 </html>
