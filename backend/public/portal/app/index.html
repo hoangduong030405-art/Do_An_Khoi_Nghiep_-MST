@@ -2646,22 +2646,78 @@
       return ttsAudioPlayer;
     }
 
+    function updatePlayButtonUI() {
+      const btn = document.getElementById('audioMainPlayBtn');
+      if (btn) btn.innerHTML = audioState.isPlaying ? '⏸' : '▶';
+      const miniBtn = document.getElementById('miniPlayBtn');
+      if (miniBtn) miniBtn.innerHTML = audioState.isPlaying ? '⏸' : '▶';
+    }
+
+    let audioQueue = [];
+    let audioQueueIdx = 0;
+    let ttsTimer = null;
+
     function startAudioPlayback() {
       audioState.isPlaying = true;
       updatePlayButtonUI();
 
-      // Sử dụng luồng âm thanh tiếng Việt thực thụ từ máy chủ HUEGO
+      const text = audioState.scriptText || (audioState.place ? audioState.place.desc : '');
+      if (!text) return;
+
+      const sentences = text.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) || [text];
+      audioQueue = sentences.map(s => s.trim()).filter(s => s.length > 0);
+      audioQueueIdx = 0;
+
+      // Ước lượng tổng thời lượng
+      const totalWords = text.split(/\s+/).length;
+      audioState.duration = Math.max(30, Math.round(totalWords / 2.8));
+      audioState.currentTime = 0;
+      updateAudioTimelineUI();
+
+      if (ttsTimer) clearInterval(ttsTimer);
+      ttsTimer = setInterval(() => {
+        if (audioState.isPlaying && audioState.currentTime < audioState.duration) {
+          audioState.currentTime++;
+          updateAudioTimelineUI();
+        }
+      }, 1000);
+
+      playCurrentQueueSentence();
+    }
+
+    function playCurrentQueueSentence() {
+      if (!audioState.isPlaying || audioQueueIdx >= audioQueue.length) {
+        stopAudioGuide();
+        return;
+      }
+
+      const s = audioQueue[audioQueueIdx];
+      const scriptEl = document.getElementById('audioScriptText');
+      if (scriptEl) scriptEl.innerText = s;
+
       const player = getAudioPlayer();
-      const streamUrl = '/api/v1/ai-guide/tts?lang=' + (audioState.lang || 'vi') + '&text=' + encodeURIComponent(audioState.scriptText);
-      player.src = streamUrl;
+      const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${audioState.lang || 'vi'}&client=tw-ob&q=${encodeURIComponent(s)}`;
+      
+      player.src = googleTtsUrl;
       player.playbackRate = audioState.speed || 1.0;
+
+      player.onended = () => {
+        if (audioState.isPlaying) {
+          audioQueueIdx++;
+          playCurrentQueueSentence();
+        }
+      };
+
       player.play().catch(err => {
-        console.warn('Trình duyệt yêu cầu người dùng chạm để phát âm thanh:', err);
-        audioState.isPlaying = false;
-        updatePlayButtonUI();
+        console.warn('Google TTS không phát được, chuyển sang Web Speech:', err);
+        fallbackWebSpeech();
       });
     }
 
+    window.openAudioGuide = openAudioGuide;
+    window.playAiNarration = playAiNarration;
+    window.stopAudioGuide = stopAudioGuide;
+    window.toggleAudioPlay = toggleAudioPlay;
     // HUEGO SMART SPEECH CONTROLLER (Tương thích iOS Safari & Chống ngắt câu dài)
     window.huegoSpeech = {
       utterQueue: [],
@@ -2853,57 +2909,26 @@
 
     function toggleAudioPlay() {
       const player = getAudioPlayer();
-      if (player.src && !player.paused) {
+      if (audioState.isPlaying) {
         player.pause();
         audioState.isPlaying = false;
-        if ('speechSynthesis' in window) window.speechSynthesis.pause();
-      } else if (player.src) {
-        player.playbackRate = audioState.speed || 1.0;
-        player.play().catch(console.error);
-        audioState.isPlaying = true;
+        if (ttsTimer) clearInterval(ttsTimer);
+        updatePlayButtonUI();
       } else {
-        startAudioPlayback();
-      }
-      updatePlayButtonUI();
-    }
-
-    function updatePlayButtonUI() {
-      const mainBtn = document.getElementById('audioMainPlayBtn');
-      const miniBtn = document.getElementById('miniPlayBtn');
-      const wave = document.getElementById('audioWaveWrap');
-      const cover = document.getElementById('audioCover');
-
-      if (audioState.isPlaying) {
-        mainBtn.innerText = '⏸';
-        miniBtn.innerText = '⏸';
-        wave.classList.add('active');
-        cover.classList.add('spinning');
-      } else {
-        mainBtn.innerText = '▶';
-        miniBtn.innerText = '▶';
-        wave.classList.remove('active');
-        cover.classList.remove('spinning');
-      }
-    }
-
-    function rewindAudio(sec) {
-      const player = getAudioPlayer();
-      if (player.src) {
-        player.currentTime = Math.max(0, player.currentTime - sec);
-      }
-    }
-
-    function forwardAudio(sec) {
-      const player = getAudioPlayer();
-      if (player.src) {
-        player.currentTime = Math.min(player.duration || 120, player.currentTime + sec);
-      }
-    }
-
-    function seekAudio(val) {
-      const player = getAudioPlayer();
-      if (player.src && player.duration) {
-        player.currentTime = (val / 100) * player.duration;
+        if (player.src && audioQueueIdx < audioQueue.length) {
+          audioState.isPlaying = true;
+          player.play().catch(() => {});
+          updatePlayButtonUI();
+          if (ttsTimer) clearInterval(ttsTimer);
+          ttsTimer = setInterval(() => {
+            if (audioState.isPlaying && audioState.currentTime < audioState.duration) {
+              audioState.currentTime++;
+              updateAudioTimelineUI();
+            }
+          }, 1000);
+        } else {
+          startAudioPlayback();
+        }
       }
     }
 
@@ -2959,6 +2984,7 @@
     }
 
     function stopAudioGuide() {
+      if (ttsTimer) { clearInterval(ttsTimer); ttsTimer = null; }
       audioState.isPlaying = false;
       audioState.currentTime = 0;
       if (ttsAudioPlayer) {
