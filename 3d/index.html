@@ -24,6 +24,7 @@
   <!-- Main Styles -->
   <script type="module" crossorigin src="./assets/index-AT2-hPUR.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-CDR6EYcE.css">
+  <script src="../js/i18n.js"></script>
 </head>
 <body>
 
@@ -91,10 +92,10 @@
     </a>
 
     <nav class="nav-links" aria-label="Main Navigation">
-      <a href="#songhuong" data-cursor="Khám Phá">Sông Hương</a>
-      <a href="#thienmu" data-cursor="Khám Phá">Thiên Mụ</a>
-      <a href="#langtam" data-cursor="Khám Phá">Lăng Tẩm</a>
-      <a href="#gallery" data-cursor="Bộ sưu tập">Trải Nghiệm 3D</a>
+      <a href="#songhuong" data-cursor="Khám Phá" data-i18n="flight_nav_river">Sông Hương</a>
+      <a href="#thienmu" data-cursor="Khám Phá" data-i18n="flight_nav_thienmu">Thiên Mụ</a>
+      <a href="#langtam" data-cursor="Khám Phá" data-i18n="flight_nav_tombs">Lăng Tẩm</a>
+      <a href="#gallery" data-cursor="Bộ sưu tập" data-i18n="flight_nav_experience">Trải Nghiệm 3D</a>
       <a href="#impact" data-cursor="Số liệu">Đánh Giá</a>
     </nav>
 
@@ -133,7 +134,7 @@
       </p>
       <div class="hero-cta-group">
         <a href="#songhuong" class="primary-btn magnetic-btn" data-cursor="Khám phá">
-          <span class="btn-text">Bay Khám Phá 3D</span>
+          <span class="btn-text" data-i18n="flight_btn_start">Bay Khám Phá 3D</span>
         </a>
         <a href="https://hoangduong030405-art.github.io/Do_An_Khoi_Nghiep_-MST/" target="_blank" rel="noopener noreferrer" class="secondary-btn magnetic-btn" data-cursor="Vào Web">
           <span class="btn-text">Vào Web HUEGO ↗</span>
@@ -291,5 +292,10 @@
   </main>
 
   <!-- Script Entry Point -->
+  <script>
+    if (window.HuegoI18n) {
+      window.HuegoI18n.renderLanguageSelector('#portalLangSelector');
+    }
+  </script>
 </body>
 </html>

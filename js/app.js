@@ -3,6 +3,19 @@
  * Quản lý tìm kiếm, lọc danh mục, phân trang, và hiển thị chi tiết địa điểm
  */
 
+// --- HUEGO DYNAMIC API ADAPTER & GITHUB PAGES GRACEFUL MODE ---
+const isGitHubPages = window.location.hostname.includes('github.io');
+const configuredApi = localStorage.getItem('huego_api_endpoint');
+const API_CLOUD_BASE = configuredApi || window.HUEGO_API_CLOUD_URL || (isGitHubPages ? null : '');
+
+function resolveApiUrl(url) {
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (API_CLOUD_BASE) {
+    return API_CLOUD_BASE.replace(/\/+$/, '') + (url.startsWith('/') ? url : '/' + url);
+  }
+  return url;
+}
+
 let currentVertical = 'all';
 let currentPage = 1;
 let currentSearch = '';
@@ -142,28 +155,31 @@ async function loadCollections() {
   const container = document.getElementById('collections-grid');
   if (!container) return;
 
+  const lang = window.HuegoI18n ? window.HuegoI18n.getCurrentLang() : 'vi';
+
   try {
     let res = await fetch('/api/collections');
     if (!res.ok) res = await fetch('./data/collections.json');
     const list = await res.json();
 
     container.innerHTML = list.map(item => {
-      const fallbackSvg = window.generateDynamicSvgPlaceholder ? window.generateDynamicSvgPlaceholder(item.vertical, item.title) : item.heroImage;
+      const tr = window.HuegoI18n ? window.HuegoI18n.translateCollection(item, lang) : item;
+      const fallbackSvg = window.generateDynamicSvgPlaceholder ? window.generateDynamicSvgPlaceholder(item.vertical, tr.title) : item.heroImage;
       const initialImg = item.heroImage || fallbackSvg;
 
       return `
         <div class="collection-card" onclick="filterByCollection('${item.vertical}')">
           <img class="collection-img" 
                src="${initialImg}" 
-               alt="${item.title}" 
+               alt="${tr.title}" 
                loading="lazy" 
                decoding="async"
                data-vertical="${item.vertical}"
-               data-name="${item.title}"
-               onerror="if(window.handleImgError){window.handleImgError(this, '${item.vertical}', '${item.title.replace(/'/g, "\\'")}');}else{this.onerror=null;this.src='${fallbackSvg}';}" />
+               data-name="${tr.title}"
+               onerror="if(window.handleImgError){window.handleImgError(this, '${item.vertical}', '${tr.title.replace(/'/g, "\\\'")}');}else{this.onerror=null;this.src='${fallbackSvg}';}" />
           <div class="collection-overlay">
-            <h3 class="collection-name">${item.title}</h3>
-            <p class="collection-sub">${item.subtitle}</p>
+            <h3 class="collection-name">${tr.title}</h3>
+            <p class="collection-sub">${tr.subtitle}</p>
           </div>
         </div>
       `;
@@ -282,7 +298,9 @@ async function loadPlaces() {
     }
 
     if (countLabel) {
-      countLabel.textContent = `Tìm thấy ${data.total.toLocaleString()} địa điểm`;
+      const lang = window.HuegoI18n ? window.HuegoI18n.getCurrentLang() : 'vi';
+      const t = (k) => (window.HuegoI18n ? window.HuegoI18n.t(k, lang) : k);
+      countLabel.textContent = t('found_places').replace('{n}', data.total.toLocaleString());
     }
 
     totalPages = data.totalPages || 1;
@@ -296,43 +314,38 @@ async function loadPlaces() {
 // Hiển thị thẻ địa điểm
 function renderPlaces(items) {
   const grid = document.getElementById('places-grid');
+  const lang = window.HuegoI18n ? window.HuegoI18n.getCurrentLang() : 'vi';
+  const t = (k) => (window.HuegoI18n ? window.HuegoI18n.t(k, lang) : k);
+
   if (!items || items.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem;">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-dim); margin-bottom: 1rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Không tìm thấy địa điểm phù hợp</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">Vui lòng thử tìm kiếm với từ khóa khác hoặc chuyển danh mục.</p>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">${t('no_places_title')}</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">${t('no_places_desc')}</p>
       </div>
     `;
     return;
   }
 
-  const verticalLabels = {
-    tour: 'Di tích & Tour',
-    fnb: 'Ẩm thực',
-    cafe: 'Cà phê',
-    stay: 'Lưu trú',
-    specialty: 'Đặc sản',
-    service: 'Dịch vụ'
-  };
-
   grid.innerHTML = items.map(p => {
+    const tr = window.HuegoI18n ? window.HuegoI18n.translatePlace(p, lang) : p;
     const photo = window.resolvePlaceImage ? window.resolvePlaceImage(p) : (p.coverPhotoUrl || '');
-    const tag = verticalLabels[p.vertical] || p.vertical;
-    const rating = p.googleRating ? p.googleRating.toFixed(1) : 'Mới';
+    const tag = tr.tag || p.vertical;
+    const rating = p.googleRating ? p.googleRating.toFixed(1) : t('label_new');
     const reviews = p.googleReviewCount ? `(${p.googleReviewCount})` : '';
-    const safeName = (p.name_vi || p.name || 'Địa danh Huế').replace(/'/g, "\\'");
+    const safeName = (tr.name || 'Địa danh Huế').replace(/'/g, "\\'");
 
     return `
       <div class="place-card" onclick="openPlaceDetail('${p.id}')">
         <div class="card-img-wrapper">
           <img class="place-card-img" 
                src="${photo}" 
-               alt="${p.name_vi || p.name || ''}" 
+               alt="${safeName}" 
                loading="lazy" 
                decoding="async" 
                data-vertical="${p.vertical || 'tour'}"
-               data-name="${p.name_vi || p.name || ''}"
+               data-name="${safeName}"
                onerror="if(window.handleImgError){window.handleImgError(this, '${p.vertical}', '${safeName}');}else{this.onerror=null;}" />
           <span class="badge-tag">${tag}</span>
           <span class="rating-badge">
@@ -341,14 +354,14 @@ function renderPlaces(items) {
           </span>
         </div>
         <div class="place-card-body">
-          <h3 class="place-name">${p.name_vi || p.name}</h3>
-          <p class="place-address">${p.address_vi || p.address || 'Thành phố Huế'}</p>
+          <h3 class="place-name">${tr.name}</h3>
+          <p class="place-address">${tr.address || t('city_hue')}</p>
           <div class="place-footer">
             <div class="subcategories-list">
-              ${(p.subcategory || []).slice(0, 2).map(s => `<span class="sub-pill">${s}</span>`).join('')}
+              ${(tr.subcategory || []).slice(0, 2).map(s => `<span class="sub-pill">${s}</span>`).join('')}
             </div>
             <span class="view-detail-btn">
-              Chi tiết
+              ${t('btn_details')}
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg>
             </span>
           </div>
@@ -357,7 +370,6 @@ function renderPlaces(items) {
     `;
   }).join('');
 }
-
 
 // Kiểm tra xem địa điểm có thuộc diện Di tích lịch sử hoặc Du lịch thiên nhiên liên quan chiến tranh
 function isNarratableHeritagePlace(p) {
@@ -384,8 +396,11 @@ window.openPlaceDetail = async function(id) {
   const container = document.getElementById('modal-dynamic-content');
   if (!modal || !container) return;
 
+  const lang = window.HuegoI18n ? window.HuegoI18n.getCurrentLang() : 'vi';
+  const t = (k) => (window.HuegoI18n ? window.HuegoI18n.t(k, lang) : k);
+
   modal.classList.add('active');
-  container.innerHTML = `<div style="text-align: center; padding: 3rem;"><p>Đang tải thông tin chi tiết...</p></div>`;
+  container.innerHTML = `<div style="text-align: center; padding: 3rem;"><p>${t('loading_places')}</p></div>`;
 
   try {
     let p = null;
@@ -401,18 +416,19 @@ window.openPlaceDetail = async function(id) {
       }
       p = staticAllPlaces.find(item => item.id === id);
     }
-    if (!p) throw new Error('Không tìm thấy thông tin địa điểm');
+    if (!p) throw new Error(t('no_places_title'));
 
+    const tr = window.HuegoI18n ? window.HuegoI18n.translatePlace(p, lang) : p;
     const photo = window.resolvePlaceImage ? window.resolvePlaceImage(p) : (p.coverPhotoUrl || '');
     const mapsLink = p.lat && p.lng 
       ? `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`
-      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((p.name || '') + ' Huế')}`;
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((tr.name || '') + ' Huế')}`;
 
     container.innerHTML = `
-      <img class="modal-hero-img" src="${photo}" alt="${p.name}" loading="lazy" decoding="async" onerror="if(window.handleImgError){window.handleImgError(this, '${p.vertical}', '${(p.name_vi||p.name||"").replace(/'/g, "\\'")}');}else{this.onerror=null;}" />
+      <img class="modal-hero-img" src="${photo}" alt="${tr.name}" loading="lazy" decoding="async" onerror="if(window.handleImgError){window.handleImgError(this, '${p.vertical}', '${(tr.name||"").replace(/'/g, "\\\'")}');}else{this.onerror=null;}" />
       <div class="modal-body">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
-          <h2 class="modal-title">${p.name_vi || p.name}</h2>
+          <h2 class="modal-title">${tr.name}</h2>
           <span style="background: var(--primary-light); color: var(--primary); padding: 0.35rem 0.85rem; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
             ★ ${p.googleRating ? p.googleRating.toFixed(1) : '5.0'}
           </span>
@@ -421,8 +437,8 @@ window.openPlaceDetail = async function(id) {
         <div class="modal-info-row">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
           <div>
-            <strong>Địa chỉ:</strong>
-            <p>${p.address_vi || p.address || 'Thành phố Huế'}</p>
+            <strong>${t('label_address')}:</strong>
+            <p>${tr.address || t('city_hue')}</p>
           </div>
         </div>
 
@@ -430,19 +446,19 @@ window.openPlaceDetail = async function(id) {
           <div class="modal-info-row">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             <div>
-              <strong>Điện thoại:</strong>
+              <strong>${t('label_phone')}:</strong>
               <p><a href="tel:${p.phone}" style="color: var(--primary); text-decoration: none;">${p.phone}</a></p>
             </div>
           </div>
         ` : ''}
 
-        ${p.subcategory && p.subcategory.length > 0 ? `
+        ${tr.subcategory && tr.subcategory.length > 0 ? `
           <div class="modal-info-row">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3.85 8.62 4.77-4.76a2 2 0 0 1 2.83 0l4.77 4.76a2 2 0 0 1 0 2.83l-4.77 4.76a2 2 0 0 1-2.83 0L3.85 11.45a2 2 0 0 1 0-2.83Z"></path></svg>
             <div>
-              <strong>Phân loại:</strong>
+              <strong>${t('label_category')}:</strong>
               <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
-                ${p.subcategory.map(s => `<span class="sub-pill">${s}</span>`).join('')}
+                ${tr.subcategory.map(s => `<span class="sub-pill">${s}</span>`).join('')}
               </div>
             </div>
           </div>
@@ -453,30 +469,30 @@ window.openPlaceDetail = async function(id) {
           <div class="audio-guide-header">
             <span class="audio-guide-title">
               <span>👑</span>
-              <span>Audio Guide Cố Đô (Thuyết minh AI)</span>
+              <span>${t('label_audio_guide_title')}</span>
             </span>
-            <button class="audio-guide-btn" id="modalAudioBtn" onclick="toggleAudioGuide('${encodeURIComponent(p.name_vi || p.name)}', '${encodeURIComponent(p.address_vi || p.address || '')}', '${p.vertical}')">
+            <button class="audio-guide-btn" id="modalAudioBtn" onclick="toggleAudioGuide('${p.id}', '${encodeURIComponent(tr.name)}', '${encodeURIComponent(tr.address)}', '${p.vertical}')">
               <span>🔊</span>
-              <span id="audioBtnText">Nghe Thuyết Minh</span>
+              <span id="audioBtnText">${t('btn_audio_guide')}</span>
             </button>
           </div>
           <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
-            Giọng đọc Cố Đô truyền cảm, tự động thuyết minh lịch sử, nét độc đáo và gợi ý trải nghiệm khi ghé ${p.name_vi || p.name}.
+            ${t('audio_guide_desc_place').replace('{place}', tr.name)}
           </p>
         </div>
 
         <div class="modal-actions">
-          <button class="btn-save-itinerary" id="saveItineraryBtn" onclick="toggleSaveItinerary('${p.id}', '${encodeURIComponent(p.name_vi || p.name)}', '${p.vertical}', '${photo}')">
+          <button class="btn-save-itinerary" id="saveItineraryBtn" onclick="toggleSaveItinerary('${p.id}', '${encodeURIComponent(tr.name)}', '${p.vertical}', '${photo}')">
             <span>🔖</span>
-            <span id="saveItineraryText">Lưu Lịch Trình</span>
+            <span id="saveItineraryText">${t('btn_add_itinerary')}</span>
           </button>
           <a class="btn-primary" href="${mapsLink}" target="_blank" rel="noopener noreferrer">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-            Chỉ đường Google Maps
+            ${t('btn_google_maps')}
           </a>
           <a class="btn-secondary" href="/map.html?lat=${p.lat || 16.4691}&lng=${p.lng || 107.5775}&id=${p.id}">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-            Bản đồ số
+            ${t('btn_digital_map')}
           </a>
         </div>
       </div>
@@ -494,9 +510,12 @@ function renderPagination(current, total) {
     return;
   }
 
+  const lang = window.HuegoI18n ? window.HuegoI18n.getCurrentLang() : 'vi';
+  const t = (k) => (window.HuegoI18n ? window.HuegoI18n.t(k, lang) : k);
+
   let html = `
     <button class="page-btn" ${current === 1 ? 'disabled' : ''} onclick="changePage(${current - 1})">
-      &laquo; Trước
+      ${t('btn_prev')}
     </button>
   `;
 
@@ -521,7 +540,7 @@ function renderPagination(current, total) {
 
   html += `
     <button class="page-btn" ${current === total ? 'disabled' : ''} onclick="changePage(${current + 1})">
-      Sau &raquo;
+      ${t('btn_next')}
     </button>
   `;
 
@@ -547,9 +566,26 @@ async function loadLiveWeather() {
   if (!badge) return;
 
   try {
-    const res = await fetch('/api/v1/weather/hue-current');
-    if (res.ok) {
-      const data = await res.json();
+    let data;
+    if (isGitHubPages && !API_CLOUD_BASE) {
+      data = {
+        condition: 'clear',
+        description: 'Huế 28°C · Nắng ráo Cố Đô, gió sông Hương dịu mát',
+        tempCelsius: 28,
+        isRaining: webRainSim,
+        isExtremelyHot: false,
+        airQualityIndex: 32,
+        recommendation: 'Thời tiết tuyệt vời để tham quan Đại Nội và đạp xe quanh sông Hương',
+        source: 'github-pages-graceful-adapter'
+      };
+    } else {
+      const res = await fetch(resolveApiUrl('/api/v1/weather/hue-current'));
+      if (res.ok) {
+        data = await res.json();
+      }
+    }
+
+    if (data) {
       if (data.condition === 'no_key' && !webRainSim) {
         badge.innerHTML = `
           <span class="weather-icon">📡</span>
@@ -597,86 +633,105 @@ window.toggleAudioGuide = async function(placeId, encodedName, encodedAddr, vert
   const btnText = document.getElementById('audioBtnText');
   const summaryElem = document.getElementById('audioGuideSummaryText');
 
+  const lang = window.HuegoI18n ? window.HuegoI18n.getCurrentLang() : 'vi';
+  const t = (k) => (window.HuegoI18n ? window.HuegoI18n.t(k, lang) : k);
+
   if (isAudioPlaying) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
     isAudioPlaying = false;
     if (btn) btn.classList.remove('playing');
-    if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+    if (btnText) btnText.textContent = t('btn_audio_guide');
     return;
   }
 
-  if (btnText) btnText.textContent = 'Đang tải bài...';
+  if (btnText) btnText.textContent = t('btn_audio_loading');
 
   try {
-    const res = await fetch('/api/v1/ai-guide/place-story', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        placeId: placeId,
-        placeName: name,
-        category: vertical,
-        address: addr,
-        language: 'vi',
-      }),
-    });
-
     let textToSpeak = '';
-    if (res.ok) {
-      const data = await res.json();
-      if (data.available === false || !data.audioNarrationScript) {
-        alert(data.message || 'Địa điểm này không có bài thuyết minh riêng (chỉ áp dụng cho di tích lịch sử và danh thắng chiến tranh).');
-        if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
-        return;
-      }
-      textToSpeak = data.audioNarrationScript;
-      if (summaryElem && data.secretHistoricalFact) {
-        summaryElem.innerHTML = '<strong>Ký ức & Lịch sử:</strong> ' + data.secretHistoricalFact;
+    if (isGitHubPages && !API_CLOUD_BASE) {
+      const intros = {
+        vi: `Chào mừng quý khách đến với ${name}. Đây là một trong những địa danh mang đậm trầm tích lịch sử và văn hóa độc đáo của Cố Đô Huế. Hãy thong thả lắng nghe và khám phá nét đẹp ngàn năm nơi đây.`,
+        en: `Welcome to ${name}. This is one of the most iconic historical landmarks of Hue Imperial Capital. Take your time to discover its timeless beauty.`,
+        fr: `Bienvenue à ${name}. C'est l'un des monuments les plus emblématiques de la cité royale de Hué. Prenez le temps de savourer sa beauté séculaire.`,
+        ko: `${name}에 오신 것을 환영합니다. 후에 고도의 유구한 역사와 품격을 간직한 대표적인 명소입니다. 아름다운 이야기를 함께 느껴보세요.`,
+        ja: `${name}へようこそ。ここはベトナム古都フエを象徴する歴史と文化の息づく名所です。悠久の美をごゆっくりご堪能ください。`
+      };
+      textToSpeak = intros[lang] || intros.vi;
+      if (summaryElem) {
+        summaryElem.innerHTML = `<strong>${t('label_audio_guide_title')}:</strong> ${name}`;
       }
     } else {
-      alert('Không thể tải bài thuyết minh từ máy chủ.');
-      if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
-      return;
+      const res = await fetch(resolveApiUrl('/api/v1/ai-guide/place-story'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          placeId: placeId,
+          placeName: name,
+          category: vertical,
+          address: addr,
+          language: lang,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.available === false || !data.audioNarrationScript) {
+          alert(data.message || 'Địa điểm này không có bài thuyết minh riêng (chỉ áp dụng cho di tích lịch sử và danh thắng chiến tranh).');
+          if (btnText) btnText.textContent = t('btn_audio_guide');
+          return;
+        }
+        textToSpeak = data.audioNarrationScript;
+        if (summaryElem && data.secretHistoricalFact) {
+          summaryElem.innerHTML = '<strong>' + t('label_audio_guide_title') + ':</strong> ' + data.secretHistoricalFact;
+        }
+      } else {
+        alert('Không thể tải bài thuyết minh từ máy chủ.');
+        if (btnText) btnText.textContent = t('btn_audio_guide');
+        return;
+      }
     }
 
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-      currentUtterance.lang = 'vi-VN';
+      const langLocales = { vi: 'vi-VN', en: 'en-US', fr: 'fr-FR', ko: 'ko-KR', ja: 'ja-JP' };
+      currentUtterance.lang = langLocales[lang] || 'vi-VN';
       currentUtterance.rate = 0.95;
 
       const voices = window.speechSynthesis.getVoices();
-      const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VIE'));
-      if (viVoice) currentUtterance.voice = viVoice;
+      const targetPrefix = currentUtterance.lang.split('-')[0].toLowerCase();
+      const matchedVoice = voices.find(v => v.lang.toLowerCase().startsWith(targetPrefix));
+      if (matchedVoice) currentUtterance.voice = matchedVoice;
 
       currentUtterance.onstart = () => {
         isAudioPlaying = true;
         if (btn) btn.classList.add('playing');
-        if (btnText) btnText.textContent = 'Dừng Thuyết Minh';
+        if (btnText) btnText.textContent = t('btn_audio_stop');
       };
 
       currentUtterance.onend = () => {
         isAudioPlaying = false;
         if (btn) btn.classList.remove('playing');
-        if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+        if (btnText) btnText.textContent = t('btn_audio_guide');
       };
 
       currentUtterance.onerror = () => {
         isAudioPlaying = false;
         if (btn) btn.classList.remove('playing');
-        if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+        if (btnText) btnText.textContent = t('btn_audio_guide');
       };
 
       window.speechSynthesis.speak(currentUtterance);
     } else {
       alert('Trình duyệt của bạn chưa hỗ trợ phát âm thanh trực tiếp.');
-      if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+      if (btnText) btnText.textContent = t('btn_audio_guide');
     }
   } catch (err) {
     console.error('Lỗi phát thuyết minh:', err);
     alert('Không thể kết nối máy chủ để tải thuyết minh.');
-    if (btnText) btnText.textContent = 'Nghe Thuyết Minh';
+    if (btnText) btnText.textContent = t('btn_audio_guide');
   }
 };
 
@@ -825,8 +880,9 @@ window.sendAiMessage = async function() {
   async function getWebChatToken() {
     let tk = localStorage.getItem('huego_token');
     if (tk) return tk;
+    if (isGitHubPages && !API_CLOUD_BASE) return 'mock-gh-token';
     try {
-      const r = await fetch('/api/v1/auth/demo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      const r = await fetch(resolveApiUrl('/api/v1/auth/demo'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
       if (r.ok) {
         const d = await r.json();
         if (d.accessToken) {
@@ -839,11 +895,19 @@ window.sendAiMessage = async function() {
   }
 
   try {
+    if (isGitHubPages && !API_CLOUD_BASE) {
+      setTimeout(() => {
+        removeTypingWebMsg(typingId);
+        appendWebChatMsg('msg-ai', getLocalAiReply(text));
+      }, 400);
+      return;
+    }
+
     let token = await getWebChatToken();
     const callChat = (tk) => {
       const headers = { 'Content-Type': 'application/json' };
       if (tk) headers['Authorization'] = 'Bearer ' + tk;
-      return fetch('/api/v1/ai-guide/chat', {
+      return fetch(resolveApiUrl('/api/v1/ai-guide/chat'), {
         method: 'POST',
         headers,
         body: JSON.stringify({ question: text, language: 'vi' })
@@ -922,4 +986,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Enter') sendAiMessage();
     });
   }
+});
+
+// Lắng nghe sự kiện chuyển đổi ngôn ngữ để làm mới giao diện và dữ liệu tức thì
+window.addEventListener('huego:langchange', () => {
+  loadCollections();
+  loadPlaces();
+  if (typeof updateItineraryBadge === 'function') updateItineraryBadge();
 });
