@@ -529,37 +529,22 @@ window.openPlaceDetail = async function (id) {
         }
 
         <!-- HUEGO Audio Guide Player -->
-        <div class="audio-guide-box">
-          <div class="audio-guide-header">
-            <span class="audio-guide-title">
+        <div class="audio-guide-box" style="margin-top: 1rem; padding: 1rem; background: linear-gradient(135deg, rgba(88,44,131,0.08), rgba(212,175,55,0.12)); border: 1px solid rgba(212,175,55,0.3); border-radius: 12px;">
+          <div class="audio-guide-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span class="audio-guide-title" style="font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px;">
               <span>👑</span>
               <span>Audio Guide Cố Đô (Thuyết minh AI)</span>
             </span>
-            <button class="audio-guide-btn" id="modalAudioBtn" onclick="toggleAudioGuide('${encodeURIComponent(p.name_vi || p.name)}', '${encodeURIComponent(p.address_vi || p.address || "")}', '${p.vertical}')">
+            <button class="audio-guide-btn" id="modalAudioBtn" onclick="toggleAudioGuide('${p.id || ""}', '${encodeURIComponent(p.name_vi || p.name || "")}', '${encodeURIComponent(p.address_vi || p.address || "")}', '${p.vertical || ""}')" style="background: var(--primary); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s;">
               <span>🔊</span>
               <span id="audioBtnText">Nghe Thuyết Minh</span>
             </button>
           </div>
-          <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
+          <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 4px;">
             Giọng đọc Cố Đô truyền cảm, tự động thuyết minh lịch sử, nét độc đáo và gợi ý trải nghiệm khi ghé ${p.name_vi || p.name}.
           </p>
+          <div id="audioGuideSummaryText" style="display:none; font-size: 0.82rem; color: #1f2937; background: rgba(255,255,255,0.9); border-left: 3px solid var(--accent-gold); padding: 8px 10px; border-radius: 4px; margin-top: 8px; line-height: 1.5;"></div>
         </div>
-
-        <div class="modal-actions">
-          <button class="btn-save-itinerary" id="saveItineraryBtn" onclick="toggleSaveItinerary('${p.id}', '${encodeURIComponent(p.name_vi || p.name)}', '${p.vertical}', '${photo}')">
-            <span>🔖</span>
-            <span id="saveItineraryText">Lưu Lịch Trình</span>
-          </button>
-          <a class="btn-primary" href="${mapsLink}" target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-            Chỉ đường Google Maps
-          </a>
-          <a class="btn-secondary" href="/map.html?lat=${p.lat || 16.4691}&lng=${p.lng || 107.5775}&id=${p.id}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-            Bản đồ số
-          </a>
-        </div>
-      </div>
     `;
   } catch (err) {
     container.innerHTML = `<p style="color: red; padding: 2rem;">Lỗi tải thông tin: ${err.message}</p>`;
@@ -689,116 +674,215 @@ window.toggleWebRainSimulation = function (e) {
   }
 };
 
-// 2. Audio Guide Player (Gọi API để lấy bài thuyết minh riêng, chuẩn lịch sử)
+// 2. Audio Guide Player (Thuyết minh AI Cố Đô chuẩn văn hóa & tương thích 100% mọi trình duyệt)
 let isAudioPlaying = false;
-let currentUtterance = null;
+let currentAudioPlayer = null;
+let currentAudioQueue = [];
+let currentAudioIdx = 0;
 
-window.toggleAudioGuide = async function (
-  placeId,
-  encodedName,
-  encodedAddr,
-  vertical,
-) {
-  const name = decodeURIComponent(encodedName || "");
-  const addr = decodeURIComponent(encodedAddr || "");
+const HUE_HERITAGE_LORE = {
+  '1': {
+    name: 'Đại Nội Huế',
+    match: ['đại nội', 'hoàng thành', 'tử cấm thành', 'ngọ môn', 'thái hòa', 'cửu đỉnh', 'thế miếu', 'kiến trung'],
+    script: 'Dạ, kính chào quý khách đã đến với Đại Nội Huế – trái tim của vương triều nhà Nguyễn suốt 143 năm từ năm 1802 đến 1945. Nơi đây gồm Hoàng Thành và Tử Cấm Thành, với những công trình biểu tượng như Ngọ Môn ngũ phụng tề phi, Điện Thái Hòa nơi đặt ngai vàng uy nghiêm của 13 vị hoàng đế, và Cửu Đỉnh đúc năm 1835 tượng trưng cho sự trường tồn và thống nhất non sông gấm vóc.',
+    fact: 'Sân Đại Triều Nghi trước điện Thái Hòa được lát bằng đá Thanh đẽo gọt độ dốc mai rùa giúp thoát nước mưa tức thì và khuếch đại giọng xướng truyền chỉ của quan tán vang rền khắp khoảng sân rộng.'
+  },
+  '2': {
+    name: 'Chùa Thiên Mụ',
+    match: ['thiên mụ', 'linh mụ', 'phước duyên', 'hà khê'],
+    script: 'Dạ thưa quý khách, chào mừng người ghé thăm Chùa Thiên Mụ – đệ nhất cổ tự xứ Huế tọa lạc trên đồi Hà Khê soi bóng xuống dòng sông Hương. Chùa được chúa Tiên Nguyễn Hoàng khởi lập vào năm Tân Sửu 1601. Điểm nhấn nổi bật nhất trước sân chùa là Tháp Phước Duyên hình bát giác 7 tầng cao 21 mét xây dựng năm 1844 dưới triều vua Thiệu Trị, cùng quả Đại Hồng Chung đúc năm 1710 ngân vang mỗi sớm chiều.',
+    fact: 'Phía sau hoa viên chùa còn lưu giữ di vật lịch sử: chiếc xe ô tô Austin màu xanh lam đưa cố Hòa thượng Thích Quảng Đức tự thiêu vì tự do tín ngưỡng năm 1963.'
+  },
+  '3': {
+    name: 'Bảo tàng Cổ vật Cung đình Huế (Điện Long An)',
+    match: ['cổ vật', 'điện long an', 'bảo tàng cung đình'],
+    script: 'Dạ thưa quý khách, hiện bạn đang dừng chân trước Điện Long An – nơi lưu giữ Bảo tàng Cổ vật Cung đình Huế tại số 3 đường Lê Trực. Ngôi điện được xây dựng vào năm 1845 dưới triều vua Thiệu Trị, là kiệt tác kiến trúc cung đình trùng thiềm điệp ốc tráng lệ bậc nhất Việt Nam với 128 cột gỗ lim bề thế, vách gỗ chạm trổ hoa văn lưỡng long và khắc 448 bài thơ chữ Hán thếp vàng.',
+    fact: 'Trên vách gỗ gian giữa Điện Long An có bài thơ hồi văn 56 chữ sắp xếp hình bát quái của vua Thiệu Trị mang tên "Vũ trung sơn thủy", có thể tách đọc thành 64 bài thơ thất ngôn và ngũ ngôn hoàn chỉnh.'
+  },
+  '4': {
+    name: 'Lăng Khải Định',
+    match: ['khải định', 'ứng lăng', 'châu chữ', 'thiên định'],
+    script: 'Dạ thưa quý khách, chúng ta đang đứng trước Lăng Khải Định – lăng tẩm có phong cách kiến trúc độc nhất vô nhị trên triền núi Châu Chữ, hoàn thành năm 1931. Công trình là đỉnh cao giao thoa táo bạo giữa kiến trúc cung đình truyền thống phương Đông với nghệ thuật Baroque và Gothic phương Tây. Cung Thiên Định ở tầng cao nhất là tuyệt tác của nghệ thuật khảm hàng triệu mảnh sành sứ và pha lê ghép nổi sống động như gấm vóc.',
+    fact: 'Bức đại bích họa "Cửu Long Ẩn Vân" trên trần Cung Thiên Định do nghệ nhân bậc thầy Phan Văn Tánh dùng cả hai tay và mười đầu ngón chân kẹp cọ vẽ nên, bền màu suốt hơn một thế kỷ.'
+  },
+  '5': {
+    name: 'Lăng Tự Đức',
+    match: ['tự đức', 'khiêm lăng', 'lưu khiêm', 'xung khiêm tạ'],
+    script: 'Dạ thưa quý khách, chào mừng người ghé thăm Khiêm Lăng – nơi an nghỉ ngàn thu của vua Tự Đức, vị vua thi sĩ tài hoa của triều Nguyễn. Được xây dựng giữa một thung lũng thôn Thượng Ba, lăng tẩm mang vẻ đẹp hữu tình, lãng mạn như một bức tranh thủy mặc với gần 50 công trình đều mang chữ Khiêm. Mặt hồ Lưu Khiêm phẳng lặng thả đầy hoa sen ngát hương soi bóng Xung Khiêm Tạ và Dũ Khiêm Tạ cổ kính.',
+    fact: 'Trong Bi Đình có tấm bia đá Thanh "Khiêm Cung Ký" nặng hơn 20 tấn, tấm bia lớn nhất Việt Nam, do chính vua Tự Đức tự tay soạn thảo trần tình nỗi niềm trước vận nước.'
+  },
+  '6': {
+    name: 'Cầu Tràng Tiền',
+    match: ['tràng tiền', 'trường tiền', 'sông hương', 'hương giang'],
+    script: 'Dạ thưa quý khách, đứng trước dòng sông Hương thơ mộng, không ai có thể bỏ qua cây cầu Tràng Tiền – chứng nhân lịch sử hơn 125 năm gắn liền với từng nhịp thở của Cố Đô Huế. Cầu được khởi công xây dựng vào năm 1897 do hãng Eiffel thiết kế, khánh thành năm 1899 với 6 vài 12 nhịp thép hình vành lược duyên dáng vắt qua dòng sông Hương, dài 402,6 mét.',
+    fact: 'Đợt đại trùng tu năm 1937 dưới thời vua Bảo Đại đã mở rộng thêm các ban-công ngắm cảnh hình bán nguyệt chìa ra lòng sông Hương thi vị như ngày nay.'
+  },
+  '8': {
+    name: 'Đồi Vọng Cảnh',
+    match: ['vọng cảnh', 'đồi vọng cảnh'],
+    script: 'Dạ thưa quý khách, đồi Vọng Cảnh cao 43 mét nằm thoai thoải bên bờ Nam sông Hương. Đúng như tên gọi, đây được mệnh danh là điểm ngắm khúc uốn dòng sông Hương ngoạn mục và thơ mộng nhất xứ Huế. Từ đỉnh đồi lộng gió rợp bóng thông xanh, bạn sẽ thấy dòng Hương Giang uốn mình mềm mại ôm lấy chân đồi, hai bên là vườn thanh trà Nguyệt Biều xanh biếc.',
+    fact: 'Trên đỉnh đồi hiện đã được phục dựng thành đài vọng cảnh sinh thái với sàn gỗ 360 độ trên nền lô cốt cũ, bao quát trọn vẹn cảnh sắc núi Ngự sông Hương.'
+  },
+  '11': {
+    name: 'Làng Hương Thủy Xuân',
+    match: ['thủy xuân', 'làng hương', 'trầm hương'],
+    script: 'Dạ thưa quý khách, bước chân vào đường Huyền Trân Công Chúa, khứu giác của bạn sẽ được đánh thức bởi mùi hương trầm mộc mạc của Làng hương Thủy Xuân – làng nghề truyền thống hơn 700 năm tuổi. Người thợ Thủy Xuân làm hương hoàn toàn từ nguyên liệu tự nhiên: trầm kiến, quế chi, hoa hồi, đinh hương và vỏ bưởi giã mịn, xòe thành những đóa hoa hương rực rỡ.',
+    fact: 'Hương trầm Thủy Xuân chính gốc cháy rất đượm, tàn uốn cong mềm mại và tỏa ra làn khói mỏng thơm dịu giúp thanh lọc không khí, an định tinh thần.'
+  },
+  'dong-ba': {
+    name: 'Chợ Đông Ba',
+    match: ['đông ba', 'chợ đông ba'],
+    script: 'Dạ thưa quý khách, chào mừng người ghé thăm Chợ Đông Ba – ngôi chợ lớn và sầm uất bậc nhất xứ Huế nằm bên bờ sông Hương suốt hơn 120 năm qua. Nơi đây là kho tàng văn hóa ẩm thực và nếp sống sinh hoạt đời thường đậm chất Huế với hàng trăm món ngon nức tiếng từ bún bò, bánh bèo nậm lọc, cơm hến cho tới chè bột lọc bọc heo quay.',
+    fact: 'Chợ Đông Ba nguyên nằm bên ngoài cửa Chánh Đông (cửa Đông Ba), đến năm 1899 vua Thành Thái cho dời ra vị trí đắc địa bên bờ sông Hương như hiện nay.'
+  }
+};
+
+window.toggleAudioGuide = async function (arg1, arg2, arg3, arg4) {
+  let placeId = "";
+  let name = "";
+  let addr = "";
+  let vertical = "";
+
+  if (arg4 !== undefined) {
+    placeId = String(arg1 || "");
+    name = decodeURIComponent(arg2 || "");
+    addr = decodeURIComponent(arg3 || "");
+    vertical = String(arg4 || "");
+  } else {
+    name = decodeURIComponent(arg1 || "");
+    addr = decodeURIComponent(arg2 || "");
+    vertical = String(arg3 || "");
+    placeId = "";
+  }
+
   const btn = document.getElementById("modalAudioBtn");
   const btnText = document.getElementById("audioBtnText");
   const summaryElem = document.getElementById("audioGuideSummaryText");
 
+  // Dừng nếu đang phát
   if (isAudioPlaying) {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-    isAudioPlaying = false;
-    if (btn) btn.classList.remove("playing");
-    if (btnText) btnText.textContent = "Nghe Thuyết Minh";
+    stopCurrentAudio();
     return;
+  }
+
+  function stopCurrentAudio() {
+    isAudioPlaying = false;
+    if (currentAudioPlayer) {
+      try {
+        currentAudioPlayer.pause();
+        currentAudioPlayer.currentTime = 0;
+      } catch (_) {}
+    }
+    if ("speechSynthesis" in window) {
+      try { window.speechSynthesis.cancel(); } catch (_) {}
+    }
+    if (btn) {
+      btn.classList.remove("playing");
+      btn.style.background = "var(--primary)";
+    }
+    if (btnText) btnText.textContent = "Nghe Thuyết Minh";
   }
 
   if (btnText) btnText.textContent = "Đang tải bài...";
 
-  try {
-    let textToSpeak = "";
-    if (isGitHubPages && !API_CLOUD_BASE) {
-      textToSpeak = `Chào mừng quý khách đến với ${name}. Đây là một trong những địa danh mang đậm trầm tích lịch sử và văn hóa độc đáo của Cố Đô Huế. Hãy thong thả lắng nghe và khám phá nét đẹp ngàn năm nơi đây.`;
-      if (summaryElem) {
-        summaryElem.innerHTML = `<strong>Ký ức & Lịch sử:</strong> Di tích lịch sử - văn hóa tiêu biểu của vùng đất Thần Kinh Cố Đô.`;
-      }
-    } else {
-      const res = await fetch(resolveApiUrl("/api/v1/ai-guide/place-story"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          placeId: placeId,
-          placeName: name,
-          category: vertical,
-          address: addr,
-          language: "vi",
-        }),
-      });
+  // 1. Tìm câu chuyện lịch sử phù hợp
+  let matchedStory = null;
+  const lowerName = (name + " " + placeId).toLowerCase();
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.available === false || !data.audioNarrationScript) {
-          alert(
-            data.message ||
-              "Địa điểm này không có bài thuyết minh riêng (chỉ áp dụng cho di tích lịch sử và danh thắng chiến tranh).",
-          );
-          if (btnText) btnText.textContent = "Nghe Thuyết Minh";
-          return;
-        }
-        textToSpeak = data.audioNarrationScript;
-        if (summaryElem && data.secretHistoricalFact) {
-          summaryElem.innerHTML =
-            "<strong>Ký ức & Lịch sử:</strong> " + data.secretHistoricalFact;
-        }
-      } else {
-        alert("Không thể tải bài thuyết minh từ máy chủ.");
-        if (btnText) btnText.textContent = "Nghe Thuyết Minh";
-        return;
-      }
+  for (const key in HUE_HERITAGE_LORE) {
+    const item = HUE_HERITAGE_LORE[key];
+    if (item.match && item.match.some(m => lowerName.includes(m))) {
+      matchedStory = item;
+      break;
     }
-
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-      currentUtterance.lang = "vi-VN";
-      currentUtterance.rate = 0.95;
-
-      const voices = window.speechSynthesis.getVoices();
-      const viVoice = voices.find(
-        (v) => v.lang.includes("vi") || v.lang.includes("VIE"),
-      );
-      if (viVoice) currentUtterance.voice = viVoice;
-
-      currentUtterance.onstart = () => {
-        isAudioPlaying = true;
-        if (btn) btn.classList.add("playing");
-        if (btnText) btnText.textContent = "Dừng Thuyết Minh";
-      };
-
-      currentUtterance.onend = () => {
-        isAudioPlaying = false;
-        if (btn) btn.classList.remove("playing");
-        if (btnText) btnText.textContent = "Nghe Thuyết Minh";
-      };
-
-      currentUtterance.onerror = () => {
-        isAudioPlaying = false;
-        if (btn) btn.classList.remove("playing");
-        if (btnText) btnText.textContent = "Nghe Thuyết Minh";
-      };
-
-      window.speechSynthesis.speak(currentUtterance);
-    } else {
-      alert("Trình duyệt của bạn chưa hỗ trợ phát âm thanh trực tiếp.");
-      if (btnText) btnText.textContent = "Nghe Thuyết Minh";
-    }
-  } catch (err) {
-    console.error("Lỗi phát thuyết minh:", err);
-    alert("Không thể kết nối máy chủ để tải thuyết minh.");
-    if (btnText) btnText.textContent = "Nghe Thuyết Minh";
   }
+
+  let textToSpeak = "";
+  let factText = "";
+
+  if (matchedStory) {
+    textToSpeak = matchedStory.script;
+    factText = matchedStory.fact;
+  } else {
+    textToSpeak = `Chào mừng quý khách đến với ${name || "Cố Đô Huế"}. Đây là một trong những điểm dừng chân mang đậm nét văn hóa và trầm tích lịch sử độc đáo của Cố Đô. Xin mời quý khách lắng nghe và khám phá nét đẹp ngàn năm nơi đây.`;
+    factText = `Địa danh ${name || "Huế"} nằm trong quần thể không gian văn hóa di sản của vùng đất Thần Kinh Cố Đô.`;
+  }
+
+  if (summaryElem) {
+    summaryElem.style.display = "block";
+    summaryElem.innerHTML = `<strong>Ký ức & Lịch sử:</strong> ${factText}`;
+  }
+
+  // 2. Phát âm thanh
+  isAudioPlaying = true;
+  if (btn) {
+    btn.classList.add("playing");
+    btn.style.background = "#DC2626";
+  }
+  if (btnText) btnText.textContent = "Dừng Thuyết Minh";
+
+  const rawSentences = textToSpeak.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) || [textToSpeak];
+  currentAudioQueue = rawSentences.map(s => s.trim()).filter(s => s.length > 0);
+  currentAudioIdx = 0;
+
+  if (!currentAudioPlayer) {
+    currentAudioPlayer = new Audio();
+  }
+
+  function playNextSentence() {
+    if (!isAudioPlaying || currentAudioIdx >= currentAudioQueue.length) {
+      stopCurrentAudio();
+      return;
+    }
+
+    const s = currentAudioQueue[currentAudioIdx];
+    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(s)}`;
+    
+    currentAudioPlayer.src = ttsUrl;
+    currentAudioPlayer.onended = () => {
+      if (isAudioPlaying) {
+        currentAudioIdx++;
+        playNextSentence();
+      }
+    };
+    currentAudioPlayer.onerror = () => {
+      speakWithWebSpeech(s);
+    };
+
+    currentAudioPlayer.play().catch(err => {
+      speakWithWebSpeech(s);
+    });
+  }
+
+  function speakWithWebSpeech(sentence) {
+    if (!('speechSynthesis' in window)) {
+      stopCurrentAudio();
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(sentence);
+    utter.lang = 'vi-VN';
+    utter.rate = 0.95;
+    const voices = window.speechSynthesis.getVoices();
+    const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VIE'));
+    if (viVoice) utter.voice = viVoice;
+
+    utter.onend = () => {
+      if (isAudioPlaying) {
+        currentAudioIdx++;
+        playNextSentence();
+      }
+    };
+    utter.onerror = () => {
+      if (isAudioPlaying) {
+        currentAudioIdx++;
+        playNextSentence();
+      }
+    };
+    window.speechSynthesis.speak(utter);
+  }
+
+  playNextSentence();
 };
 
 // 3. Itinerary / Save Place
