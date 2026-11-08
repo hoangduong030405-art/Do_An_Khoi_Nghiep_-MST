@@ -1,379 +1,636 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" data-theme="light">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bảo tàng số 3D · HUEGO — 10 Bảo vật Hoàng cung Triều Nguyễn Trực quan</title>
-  <meta name="description" content="Trải nghiệm số hóa 3D các cổ vật, bảo vật hoàng gia triều Nguyễn HUEGO: xoay 360 độ và ngắm chi tiết trên WebGL.">
-    <link rel="stylesheet" href="./css/style.css?v=20261022_03">
-  <style>
-    /* CRITICAL MOBILE BOTTOM NAV OVERRIDE (IMMUNE TO BROWSER CSS CACHE) */
-    @media (max-width: 992px) {
-      .mobile-nav {
-        display: flex !important;
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        transform: none !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        box-sizing: border-box !important;
-        height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
-        padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px)) 0 !important;
-        z-index: 1000 !important;
-        background: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
-        border-left: none !important;
-        border-right: none !important;
-        border-bottom: none !important;
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08) !important;
-        justify-content: space-around !important;
-        align-items: center !important;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Bảo tàng số 3D · HUEGO — 10 Bảo vật Hoàng cung Triều Nguyễn Trực quan
+    </title>
+    <meta
+      name="description"
+      content="Trải nghiệm số hóa 3D các cổ vật, bảo vật hoàng gia triều Nguyễn HUEGO: xoay 360 độ và ngắm chi tiết trên WebGL."
+    />
+    <link rel="stylesheet" href="./css/style.css?v=20261022_03" />
+    <style>
+      /* CRITICAL MOBILE BOTTOM NAV OVERRIDE (IMMUNE TO BROWSER CSS CACHE) */
+      @media (max-width: 992px) {
+        .mobile-nav {
+          display: flex !important;
+          position: fixed !important;
+          bottom: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          transform: none !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+          box-sizing: border-box !important;
+          height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+          padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px)) 0 !important;
+          z-index: 1000 !important;
+          background: rgba(255, 255, 255, 0.95) !important;
+          backdrop-filter: blur(20px) !important;
+          -webkit-backdrop-filter: blur(20px) !important;
+          border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+          border-left: none !important;
+          border-right: none !important;
+          border-bottom: none !important;
+          box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08) !important;
+          justify-content: space-around !important;
+          align-items: center !important;
+        }
+        .mobile-nav-item {
+          flex: 1 1 0 !important;
+          max-width: 20% !important;
+          min-height: 44px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
+          padding: 4px 2px !important;
+          gap: 2px !important;
+          font-size: 11px !important;
+          font-weight: 600 !important;
+          text-decoration: none !important;
+          color: #64748b !important;
+          white-space: nowrap !important;
+          border-radius: 8px !important;
+          box-sizing: border-box !important;
+        }
+        .mobile-nav-item svg {
+          width: 18px !important;
+          height: 18px !important;
+          min-width: 18px !important;
+          flex-shrink: 0 !important;
+        }
+        .mobile-nav-item.active {
+          color: #582c83 !important;
+          background: rgba(88, 44, 131, 0.08) !important;
+          font-weight: 700 !important;
+        }
+        .ai-fab-btn,
+        .btn-ai-float,
+        #ai-chat-btn {
+          position: fixed !important;
+          bottom: calc(72px + env(safe-area-inset-bottom, 10px)) !important;
+          right: 16px !important;
+          width: 52px !important;
+          height: 52px !important;
+          min-width: 52px !important;
+          min-height: 52px !important;
+          font-size: 24px !important;
+          z-index: 999 !important;
+          box-shadow: 0 6px 20px rgba(88, 44, 131, 0.45) !important;
+        }
+        .top-bar-actions .btn-open-app {
+          display: none !important;
+        }
       }
-      .mobile-nav-item {
-        flex: 1 1 0 !important;
-        max-width: 20% !important;
-        min-height: 44px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 4px 2px !important;
-        gap: 2px !important;
-        font-size: 11px !important;
-        font-weight: 600 !important;
-        text-decoration: none !important;
-        color: #64748B !important;
-        white-space: nowrap !important;
-        border-radius: 8px !important;
-        box-sizing: border-box !important;
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mobile-nav {
+          background: rgba(20, 28, 22, 0.95) !important;
+          border-top-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        :root:not([data-theme="light"]) .mobile-nav-item {
+          color: #94a3b8 !important;
+        }
+        :root:not([data-theme="light"]) .mobile-nav-item.active {
+          color: #e9d5ff !important;
+          background: rgba(88, 44, 131, 0.35) !important;
+        }
       }
-      .mobile-nav-item svg {
-        width: 18px !important;
-        height: 18px !important;
-        min-width: 18px !important;
-        flex-shrink: 0 !important;
-      }
-      .mobile-nav-item.active {
-        color: #582C83 !important;
-        background: rgba(88, 44, 131, 0.08) !important;
-        font-weight: 700 !important;
-      }
-      .ai-fab-btn, .btn-ai-float, #ai-chat-btn {
-        position: fixed !important;
-        bottom: calc(72px + env(safe-area-inset-bottom, 10px)) !important;
-        right: 16px !important;
-        width: 52px !important;
-        height: 52px !important;
-        min-width: 52px !important;
-        min-height: 52px !important;
-        font-size: 24px !important;
-        z-index: 999 !important;
-        box-shadow: 0 6px 20px rgba(88, 44, 131, 0.45) !important;
-      }
-      .top-bar-actions .btn-open-app {
-        display: none !important;
-      }
-    }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) .mobile-nav {
+      [data-theme="dark"] .mobile-nav {
         background: rgba(20, 28, 22, 0.95) !important;
         border-top-color: rgba(255, 255, 255, 0.08) !important;
       }
-      :root:not([data-theme="light"]) .mobile-nav-item {
-        color: #94A3B8 !important;
+      [data-theme="dark"] .mobile-nav-item {
+        color: #94a3b8 !important;
       }
-      :root:not([data-theme="light"]) .mobile-nav-item.active {
-        color: #E9D5FF !important;
+      [data-theme="dark"] .mobile-nav-item.active {
+        color: #e9d5ff !important;
         background: rgba(88, 44, 131, 0.35) !important;
       }
-    }
-    [data-theme="dark"] .mobile-nav {
-      background: rgba(20, 28, 22, 0.95) !important;
-      border-top-color: rgba(255, 255, 255, 0.08) !important;
-    }
-    [data-theme="dark"] .mobile-nav-item {
-      color: #94A3B8 !important;
-    }
-    [data-theme="dark"] .mobile-nav-item.active {
-      color: #E9D5FF !important;
-      background: rgba(88, 44, 131, 0.35) !important;
-    }
-  </style>
-  <!-- Google Model Viewer cho 3D WebGL tương tác mượt mà -->
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-  <style>
-    svg { max-width: 100%; }
-    .nav-item svg, .mobile-nav-item svg { width: 20px; height: 20px; min-width: 20px; flex-shrink: 0; }
-    .museum-page-layout {
-      padding: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .artifact-selector {
-      display: flex;
-      gap: 0.75rem;
-      overflow-x: auto;
-      padding-bottom: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .artifact-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      padding: 0.65rem 1.25rem;
-      border-radius: 9999px;
-      color: var(--text-main);
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .artifact-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-    .artifact-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-      box-shadow: 0 4px 14px var(--primary-glow);
-    }
-    .viewer-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
-    }
-    model-viewer {
-      width: 100%;
-      height: 520px;
-      background: radial-gradient(circle at center, #261f18 0%, #0d0a08 100%);
-      --poster-color: transparent;
-    }
-    .artifact-info-panel {
-      padding: 2rem;
-    }
-    .artifact-title {
-      font-family: var(--font-serif);
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.5rem;
-    }
-    .artifact-origin-badge {
-      display: inline-block;
-      background: var(--primary-light);
-      color: var(--primary);
-      padding: 0.35rem 0.85rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 1.25rem;
-    }
-    .artifact-desc {
-      color: var(--text-muted);
-      line-height: 1.8;
-      font-size: 1.05rem;
-      white-space: pre-line;
-    }
-    .hint-3d {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(0, 0, 0, 0.6);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 9999px;
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      font-size: 0.8rem;
-      backdrop-filter: blur(8px);
-      pointer-events: none;
-    }
-  </style>
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-  <script src="./js/image-helper.js"></script>
-  <script src="./js/i18n.js"></script>
-</head>
-<body>
-  <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="brand-header">
-        <a href="./index.html" class="brand-logo" style="display:flex;align-items:center;gap:4px;text-decoration:none;">
-          <span style="font-size:1.6rem;font-weight:900;color:var(--primary);letter-spacing:1px;font-family:'Playfair Display',serif;">HUE</span>
-          <span class="brand-badge" style="background:var(--accent-gold);color:#1e1b4b;font-weight:900;padding:2px 8px;border-radius:8px;">GO</span>
-        </a>
-      </div>
-      <nav class="nav-links">
-        <a href="./index.html" class="nav-item">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
-          <span data-i18n="nav_explore">Khám phá Huế</span>
-        </a>
-        <a href="./hue.html" class="nav-item">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path></svg>
-          <span data-i18n="nav_guide">Cẩm nang Huế</span>
-        </a>
-        <a href="./map.html" class="nav-item">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-          <span data-i18n="nav_map">Bản đồ số Du lịch</span>
-        </a>
-        <a href="./museum.html" class="nav-item active">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
-          <span data-i18n="nav_museum">Bảo tàng số 3D</span>
-        </a>
-        <a href="./simulator.html" class="nav-item">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
-          <span data-i18n="nav_simulation">Mô phỏng 1 ngày</span>
-        </a>
-        <a href="./essentials.html" class="nav-item">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <span data-i18n="nav_essentials">Khẩn cấp & Hỗ trợ</span>
-        </a>
-        <a href="./3d/" class="nav-item" style="color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);border-radius:12px;margin-top:4px;">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          <span data-i18n="nav_flight3d">Chuyến bay 3D Cố Đô ✨</span>
-        </a>
-        <a href="./app/" class="nav-item btn-open-app" style="color:var(--primary);font-weight:700;background:var(--primary-light);border-radius:12px;margin-top:6px;">
-          <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-          <span data-i18n="nav_open_app">Mở App HUEGO 📱</span>
-        </a>
-      </nav>
-    </aside>
-
-    <!-- Museum Main Content -->
-    <main class="main-wrapper museum-page-layout">
-      <div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border-subtle);">
-        <div id="portalLangSelector"></div>
-      </div>
-      <div style="margin-bottom: 2rem;">
-        <h1 style="font-family: var(--font-serif); font-size: 2.25rem; font-weight: 700; margin-bottom: 0.5rem;">
-          <span data-i18n="museum_hero_title">Trải nghiệm số Bảo tàng Cung đình 3D</span>
-        </h1>
-        <p style="color: var(--text-muted); font-size: 1.05rem;">
-          <span data-i18n="museum_hero_sub">Tương tác xoay 360 độ và chiêm ngưỡng các cổ vật bảo vật vô giá của vương triều nhà Nguyễn.</span>
-        </p>
-      </div>
-
-      <!-- Chọn cổ vật -->
-      <div class="artifact-selector" id="artifact-selector">
-        <!-- Render danh sách bảo vật -->
-      </div>
-
-      <!-- Trình hiển thị 3D & Thuyết minh -->
-      <div class="viewer-card">
-        <div style="position: relative;">
-          <model-viewer id="model-3d-viewer"
-            src="./models/ngai-hoang-de.glb"
-            camera-controls
-            auto-rotate
-            rotation-per-second="15deg"
-            shadow-intensity="1.5"
-            exposure="1.2"
-            ar
-            ar-modes="webxr scene-viewer quick-look"
-            camera-orbit="0deg 75deg 105%"
-            alt="Mô hình 3D cổ vật triều Nguyễn">
-            <button slot="ar-button" id="ar-button" style="background-color: var(--primary); border-radius: 20px; border: none; position: absolute; bottom: 16px; right: 16px; padding: 10px 18px; color: white; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; z-index: 10;">
-              <span>📱</span> <span data-i18n="btn_view_ar">Xem trong không gian thật (AR)</span>
-            </button>
-          </model-viewer>
-          <div class="hint-3d">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            <span data-i18n="museum_hint_3d">Kéo chuột để xoay 360° | Cuộn để phóng to</span>
-          </div>
-        </div>
-
-        <div class="artifact-info-panel">
-          <span class="artifact-origin-badge"><span data-i18n="museum_origin_badge">👑 Bảo tàng Cổ vật Cung đình Huế</span></span>
-          <h2 class="artifact-title" id="art-title">Ngai của Hoàng đế</h2>
-          <div class="artifact-desc" id="art-desc">
-            Ngai vàng của các vị vua triều Nguyễn đặt tại Điện Thái Hòa (Hoàng thành Huế). Biểu trưng cho quyền lực tối cao của thiên tử, được chế tác từ gỗ quý sơn son thếp vàng tinh xảo với họa tiết rồng vờn mây uy nghi.
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- Mobile Bottom Bar -->
-  <nav class="mobile-nav">
-    <a href="./index.html" class="mobile-nav-item">
-      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"></polygon></svg>
-      <span data-i18n="mobile_nav_explore">Khám phá</span>
-    </a>
-    <a href="./map.html" class="mobile-nav-item">
-      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon></svg>
-      <span data-i18n="mobile_nav_map">Bản đồ</span>
-    </a>
-    <a href="./museum.html" class="mobile-nav-item active">
-      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path></svg>
-      <span data-i18n="mobile_nav_museum">Bảo tàng 3D</span>
-    </a>
-    <a href="./hue.html" class="mobile-nav-item">
-      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path></svg>
-      <span data-i18n="mobile_nav_guide">Cẩm nang</span>
-    </a>
-    <a href="./app/" class="mobile-nav-item" style="color:var(--primary);font-weight:700;">
-      <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-      <span data-i18n="mobile_nav_app">App Huế</span>
-    </a>
-  </nav>
-
-  <script>
-    let artifactsList = [];
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        let res = await fetch('./data/museum_artifacts.json').catch(() => null);
-        if (!res || !res.ok) res = await fetch('/api/museum');
-        artifactsList = await res.json();
-        renderArtifactButtons();
-      } catch (err) {
-        console.error('Error loading museum:', err);
+    </style>
+    <!-- Google Model Viewer cho 3D WebGL tương tác mượt mà -->
+    <script
+      type="module"
+      src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"
+    ></script>
+    <style>
+      svg {
+        max-width: 100%;
       }
-    });
+      .nav-item svg,
+      .mobile-nav-item svg {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        flex-shrink: 0;
+      }
+      .museum-page-layout {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .artifact-selector {
+        display: flex;
+        gap: 0.75rem;
+        overflow-x: auto;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .artifact-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        padding: 0.65rem 1.25rem;
+        border-radius: 9999px;
+        color: var(--text-main);
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+      }
+      .artifact-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .artifact-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 4px 14px var(--primary-glow);
+      }
+      .viewer-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+      }
+      model-viewer {
+        width: 100%;
+        height: 520px;
+        background: radial-gradient(circle at center, #261f18 0%, #0d0a08 100%);
+        --poster-color: transparent;
+      }
+      .artifact-info-panel {
+        padding: 2rem;
+      }
+      .artifact-title {
+        font-family: var(--font-serif);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+      }
+      .artifact-origin-badge {
+        display: inline-block;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 0.35rem 0.85rem;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+      }
+      .artifact-desc {
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-size: 1.05rem;
+        white-space: pre-line;
+      }
+      .hint-3d {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        font-size: 0.8rem;
+        backdrop-filter: blur(8px);
+        pointer-events: none;
+      }
+    </style>
+    <script
+      type="module"
+      src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"
+    ></script>
+    <script src="./js/image-helper.js"></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="brand-header">
+          <a
+            href="./index.html"
+            class="brand-logo"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              text-decoration: none;
+            "
+          >
+            <span
+              style="
+                font-size: 1.6rem;
+                font-weight: 900;
+                color: var(--primary);
+                letter-spacing: 1px;
+                font-family: &quot;Playfair Display&quot;, serif;
+              "
+              >HUE</span
+            >
+            <span
+              class="brand-badge"
+              style="
+                background: var(--accent-gold);
+                color: #1e1b4b;
+                font-weight: 900;
+                padding: 2px 8px;
+                border-radius: 8px;
+              "
+              >GO</span
+            >
+          </a>
+        </div>
+        <nav class="nav-links">
+          <a href="./index.html" class="nav-item">
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon
+                points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"
+              ></polygon>
+            </svg>
+            <span>Khám phá Huế</span>
+          </a>
+          <a href="./hue.html" class="nav-item">
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+              ></path>
+              <path d="M6 6h10"></path>
+              <path d="M6 10h10"></path>
+            </svg>
+            <span>Cẩm nang Huế</span>
+          </a>
+          <a href="./map.html" class="nav-item">
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon
+                points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"
+              ></polygon>
+              <line x1="8" y1="2" x2="8" y2="18"></line>
+              <line x1="16" y1="6" x2="16" y2="22"></line>
+            </svg>
+            <span>Bản đồ số Du lịch</span>
+          </a>
+          <a href="./museum.html" class="nav-item active">
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
+              ></path>
+            </svg>
+            <span>Bảo tàng số 3D</span>
+          </a>
+          <a href="./simulator.html" class="nav-item">
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+              ></path>
+            </svg>
+            <span>Mô phỏng 1 ngày</span>
+          </a>
+          <a href="./essentials.html" class="nav-item">
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>Khẩn cấp & Hỗ trợ</span>
+          </a>
+          <a
+            href="./app/"
+            class="nav-item"
+            style="
+              color: var(--primary);
+              font-weight: 700;
+              background: var(--primary-light);
+              border-radius: 12px;
+              margin-top: 6px;
+            "
+          >
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            <span>Mở App HUEGO 📱</span>
+          </a>
+        </nav>
+      </aside>
 
-    function renderArtifactButtons() {
-      const container = document.getElementById('artifact-selector');
-      if (!container) return;
+      <!-- Museum Main Content -->
+      <main class="main-wrapper museum-page-layout">
+        <div style="margin-bottom: 2rem">
+          <h1
+            style="
+              font-family: var(--font-serif);
+              font-size: 2.25rem;
+              font-weight: 700;
+              margin-bottom: 0.5rem;
+            "
+          >
+            Trải nghiệm số
+            <span style="color: var(--primary)">Bảo tàng Cung đình 3D</span>
+          </h1>
+          <p style="color: var(--text-muted); font-size: 1.05rem">
+            Tương tác xoay 360 độ và chiêm ngưỡng các cổ vật bảo vật vô giá của
+            vương triều nhà Nguyễn.
+          </p>
+        </div>
 
-      container.innerHTML = artifactsList.map((art, idx) => `
-        <button class="artifact-btn ${idx === 0 ? 'active' : ''}" onclick="selectArtifact('${art.slug}', this)">
+        <!-- Chọn cổ vật -->
+        <div class="artifact-selector" id="artifact-selector">
+          <!-- Render danh sách bảo vật -->
+        </div>
+
+        <!-- Trình hiển thị 3D & Thuyết minh -->
+        <div class="viewer-card">
+          <div style="position: relative">
+            <model-viewer
+              id="model-3d-viewer"
+              src="./models/ngai-hoang-de.glb"
+              camera-controls
+              auto-rotate
+              rotation-per-second="15deg"
+              shadow-intensity="1.5"
+              exposure="1.2"
+              ar
+              ar-modes="webxr scene-viewer quick-look"
+              camera-orbit="0deg 75deg 105%"
+              alt="Mô hình 3D cổ vật triều Nguyễn"
+            >
+              <button
+                slot="ar-button"
+                id="ar-button"
+                style="
+                  background-color: var(--primary);
+                  border-radius: 20px;
+                  border: none;
+                  position: absolute;
+                  bottom: 16px;
+                  right: 16px;
+                  padding: 10px 18px;
+                  color: white;
+                  font-weight: bold;
+                  font-size: 13px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                  cursor: pointer;
+                  z-index: 10;
+                "
+              >
+                <span>📱</span> Xem trong không gian thật (AR)
+              </button>
+            </model-viewer>
+            <div class="hint-3d">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"
+                />
+              </svg>
+              Kéo chuột để xoay 360° | Cuộn để phóng to
+            </div>
+          </div>
+
+          <div class="artifact-info-panel">
+            <span class="artifact-origin-badge"
+              >👑 Bảo tàng Cổ vật Cung đình Huế</span
+            >
+            <h2 class="artifact-title" id="art-title">Ngai của Hoàng đế</h2>
+            <div class="artifact-desc" id="art-desc">
+              Ngai vàng của các vị vua triều Nguyễn đặt tại Điện Thái Hòa (Hoàng
+              thành Huế). Biểu trưng cho quyền lực tối cao của thiên tử, được
+              chế tác từ gỗ quý sơn son thếp vàng tinh xảo với họa tiết rồng vờn
+              mây uy nghi.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Bar -->
+    <nav class="mobile-nav">
+      <a href="./index.html" class="mobile-nav-item">
+        <svg
+          width="20"
+          height="20"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon
+            points="16.24 7.76 14.44 13.17 9.03 14.97 10.83 9.56 16.24 7.76"
+          ></polygon>
+        </svg>
+        <span>Khám phá</span>
+      </a>
+      <a href="./map.html" class="mobile-nav-item">
+        <svg
+          width="20"
+          height="20"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon
+            points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"
+          ></polygon>
+        </svg>
+        <span>Bản đồ</span>
+      </a>
+      <a href="./museum.html" class="mobile-nav-item active">
+        <svg
+          width="20"
+          height="20"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"
+          ></path>
+        </svg>
+        <span>Bảo tàng 3D</span>
+      </a>
+      <a href="./hue.html" class="mobile-nav-item">
+        <svg
+          width="20"
+          height="20"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+          ></path>
+        </svg>
+        <span>Cẩm nang</span>
+      </a>
+      <a
+        href="./app/"
+        class="mobile-nav-item"
+        style="color: var(--primary); font-weight: 700"
+      >
+        <svg
+          width="20"
+          height="20"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        <span>App Huế</span>
+      </a>
+    </nav>
+
+    <script>
+      let artifactsList = [];
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          let res = await fetch("./data/museum_artifacts.json").catch(
+            () => null,
+          );
+          if (!res || !res.ok) res = await fetch("/api/museum");
+          artifactsList = await res.json();
+          renderArtifactButtons();
+        } catch (err) {
+          console.error("Error loading museum:", err);
+        }
+      });
+
+      function renderArtifactButtons() {
+        const container = document.getElementById("artifact-selector");
+        if (!container) return;
+
+        container.innerHTML = artifactsList
+          .map(
+            (art, idx) => `
+        <button class="artifact-btn ${idx === 0 ? "active" : ""}" onclick="selectArtifact('${art.slug}', this)">
           ✨ ${art.title}
         </button>
-      `).join('');
-    }
+      `,
+          )
+          .join("");
+      }
 
-    window.selectArtifact = function(slug, btn) {
-      document.querySelectorAll('.artifact-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      window.selectArtifact = function (slug, btn) {
+        document
+          .querySelectorAll(".artifact-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
 
-      const art = artifactsList.find(a => a.slug === slug);
-      if (!art) return;
+        const art = artifactsList.find((a) => a.slug === slug);
+        if (!art) return;
 
-      const viewer = document.getElementById('model-3d-viewer');
-      const title = document.getElementById('art-title');
-      const desc = document.getElementById('art-desc');
+        const viewer = document.getElementById("model-3d-viewer");
+        const title = document.getElementById("art-title");
+        const desc = document.getElementById("art-desc");
 
-      viewer.src = `./models/${art.slug}.glb`;
-      title.textContent = art.title;
-      desc.textContent = art.description || 'Bảo vật hoàng cung triều Nguyễn lưu giữ tại Bảo tàng Cổ vật Cung đình Huế.';
-    };
-  </script>
-  <script>
-    if (window.HuegoI18n) {
-      window.HuegoI18n.renderLanguageSelector('#portalLangSelector');
-    }
-  </script>
-</body>
+        viewer.src = `./models/${art.slug}.glb`;
+        title.textContent = art.title;
+        desc.textContent =
+          art.description ||
+          "Bảo vật hoàng cung triều Nguyễn lưu giữ tại Bảo tàng Cổ vật Cung đình Huế.";
+      };
+    </script>
+  </body>
 </html>
