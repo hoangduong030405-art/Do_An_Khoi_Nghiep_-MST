@@ -545,6 +545,21 @@ window.openPlaceDetail = async function (id) {
           </p>
           <div id="audioGuideSummaryText" style="display:none; font-size: 0.82rem; color: #1f2937; background: rgba(255,255,255,0.9); border-left: 3px solid var(--accent-gold); padding: 8px 10px; border-radius: 4px; margin-top: 8px; line-height: 1.5;"></div>
         </div>
+
+        <div class="modal-actions" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem;">
+          <button class="btn-save-itinerary" id="saveItineraryBtn" onclick="toggleSaveItinerary('${p.id}', '${encodeURIComponent(p.name_vi || p.name)}', '${p.vertical}', '${photo}')" style="padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600;">
+            <span>🔖</span>
+            <span id="saveItineraryText">Lưu Lịch Trình</span>
+          </button>
+          <a class="btn-primary" href="${mapsLink}" target="_blank" rel="noopener noreferrer" style="padding: 0.6rem 1.2rem; border-radius: 10px; background: var(--primary); color: white; text-decoration: none; display: flex; align-items: center; gap: 6px; font-weight: 600;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+            Chỉ đường Google Maps
+          </a>
+          <a class="btn-secondary" href="./app/" style="padding: 0.6rem 1.2rem; border-radius: 10px; background: rgba(88,44,131,0.1); color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 6px; font-weight: 600;">
+            <span>📱</span> Mở App Bản Đồ 3D
+          </a>
+        </div>
+      </div>
     `;
   } catch (err) {
     container.innerHTML = `<p style="color: red; padding: 2rem;">Lỗi tải thông tin: ${err.message}</p>`;
